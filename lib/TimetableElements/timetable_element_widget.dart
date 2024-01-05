@@ -9,6 +9,7 @@ class TimetableElementWidget extends StatelessWidget{
   late String location = "NULL";
   late String displayStartTime = "NULL";
   late String displayEndTime = "NULL";
+  late bool isExam = false;
 
   TimetableElementWidget({super.key, required this.entry, required this.position}){
     title = entry.title;
@@ -41,6 +42,8 @@ class TimetableElementWidget extends StatelessWidget{
     hour = date.hour.toString().padLeft(2, '0');
     minute = date.minute.toString().padLeft(2, '0');
     displayEndTime =  "$hour:$minute";
+
+    isExam = entry.isExam;
   }
 
   final api.CalendarEntry entry;
@@ -50,6 +53,15 @@ class TimetableElementWidget extends StatelessWidget{
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+      padding: isExam ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10) : null,
+      decoration: isExam ? BoxDecoration(
+        border: Border.all(
+          color: const Color.fromRGBO(0xBF, 0x86, 0x86, .5),
+          width: .75
+        ),
+        borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+        color: const Color.fromRGBO(0xBF, 0x86, 0x86, .05)
+      ) : null,
       child: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: Row(
@@ -58,7 +70,7 @@ class TimetableElementWidget extends StatelessWidget{
             // Leftmost position
             Container(
               margin: const EdgeInsets.fromLTRB(0, 0, 30, 0),
-              child: Text(
+              child: !isExam ? Text(
                 "$position.",
                 textAlign: TextAlign.center,
                 style: const TextStyle(
@@ -67,6 +79,10 @@ class TimetableElementWidget extends StatelessWidget{
                   fontSize: 26.0,
                 ),
                 maxLines: 1,
+              ) : const Icon(
+                  Icons.warning_rounded,
+                  color: Color.fromRGBO(0xBF, 0x86, 0x86, 1.0),
+                  size: 28.0,
               ),
             ),
             // Center
@@ -106,9 +122,10 @@ class TimetableElementWidget extends StatelessWidget{
                     style: TextStyle(
                       color: Colors.white.withOpacity(0.7),
                       fontWeight: FontWeight.w600,
-                      fontSize: 14.0,
+                      fontSize: !isExam ? 14.0 : 16.0,
                     ),
                   ),
+                  !isExam ?
                   Text(
                     displayEndTime,
                     textAlign: TextAlign.right,
@@ -117,7 +134,7 @@ class TimetableElementWidget extends StatelessWidget{
                       fontWeight: FontWeight.w300,
                       fontSize: 12.0,
                     ),
-                  ),
+                  ) : const SizedBox(),
                 ],
               ),
             ),

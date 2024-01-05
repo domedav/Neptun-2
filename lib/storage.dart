@@ -51,6 +51,7 @@ class DataCache{
   late bool? _hasLogin = false;
   late bool? _hasCachedCalendar = false;
   late bool? _hasCachedMarkbook = false;
+  late bool? _hasCachedPayments = false;
 
 
   static Future<void> loadData() async{return _instance._loadData();}
@@ -70,6 +71,9 @@ class DataCache{
 
     tmp = await getInt('HasCachedMarkbook');
     _hasCachedMarkbook = tmp != null && tmp != 0;
+
+    tmp = await getInt('HasCachedPayments');
+    _hasCachedPayments = tmp != null && tmp != 0;
 
     _hasNetwork = await Connectivity().checkConnectivity() != ConnectivityResult.none;
     Connectivity().onConnectivityChanged.listen((event) async {
@@ -113,5 +117,11 @@ class DataCache{
   static Future<void> setHasCachedMarkbook(int? value) async {
     _instance._hasCachedMarkbook = value != null && value != 0;
     saveInt('HasCachedMarkbook', value ?? 0);
+  }
+
+  static bool? getHasCachedPayments(){return _instance._hasCachedPayments;}
+  static Future<void> setHasCachedPayments(int? value) async{
+    _instance._hasCachedPayments = value != null && value != 0;
+    saveInt('HasCachedPayments', value ?? 0);
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:convert' as conv;
+import 'dart:developer';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import '../storage.dart' as storage;
@@ -71,7 +72,7 @@ class CalendarRequest{
     var list = <CalendarEntry>[].toList();
     Map<String, dynamic> map = conv.json.decode(json);
     if(map['calendarData'] == null) {
-      list.add(CalendarEntry(DateTime(1970, 1, 6).millisecondsSinceEpoch.toString(), DateTime.now().millisecondsSinceEpoch.toString(), 'Please Refresh!', 'Error Loading Calendar Data!'));
+      list.add(CalendarEntry(DateTime(1970, 1, 6).millisecondsSinceEpoch.toString(), DateTime.now().millisecondsSinceEpoch.toString(), 'Please Refresh!', 'Error Loading Calendar Data!', false));
       return list;
     }
     List<dynamic> sublist = map['calendarData'];
@@ -82,7 +83,8 @@ class CalendarRequest{
           numberRegex.firstMatch(map['start'].toString())!.group(0)!,
           numberRegex.firstMatch(map['end'].toString())!.group(0)!,
           map['location'].toString(),
-          map['title'].toString()));
+          map['title'].toString(),
+          map['type'] == 1));
     }
     return list;
   }
@@ -117,6 +119,7 @@ class CalendarRequest{
         '"UserLogin":"$username",'
         '"Password":"$password",'
         '"Time":true,'
+        '"Exam":true,'
         '"startDate":"/Date($epochStart)/",'
         '"endDate":"/Date($epochEnd)/"'
       '}';
@@ -179,10 +182,84 @@ class MarkbookRequest{
 
     for (var markbook in markbooklistRaw){
       final markbookMap = markbook as Map<String, dynamic>;
-      subjects.add(Subject(markbookMap['Completed'], markbookMap['Credit'], markbookMap['SubjectName'], markbookMap['ID']));
+      subjects.add(Subject(markbookMap['Completed'], markbookMap['Credit'], markbookMap['SubjectName'], markbookMap['ID'], parseTextToGrade(markbookMap['Values']), parseTextToFailstate(markbookMap['Signer'])));
     }
 
     return subjects;
+  }
+
+  static int parseTextToFailstate(String failState){
+    RegExp regex = RegExp(r'^(.*?)<br/>');
+    Match? match = regex.firstMatch(failState);
+    if(match == null){
+      return 0;
+    }
+    failState = (match.group(1) ?? '').trim().toLowerCase();
+    if(failState.isEmpty){
+      return 0;
+    }
+
+    switch (failState.toLowerCase()){
+      case "megtagadva":
+        return 1;
+      default:
+        return 0;
+    }
+  }
+
+  static int parseTextToGrade(String gradeTxt){
+    RegExp regex = RegExp(r'^(.*?)<br/>');
+    Match? match = regex.firstMatch(gradeTxt);
+    if(match == null){
+      return 0;
+    }
+
+    gradeTxt = (match.group(1) ?? '').trim().toLowerCase();
+
+    if(gradeTxt.isEmpty){
+      return 0;
+    }
+
+    switch (gradeTxt){
+      case 'jeles':
+        return 5;
+      case 'jó':
+        return 4;
+      case 'közepes':
+        return 3;
+      case 'elégséges':
+        return 2;
+      default:
+        return 0;
+    }
+  }
+}
+
+class CashinRequest{
+  static Future<List<CashinEntry>> getAllCashins() async{
+    final username = storage.DataCache.getUsername();
+    final password = storage.DataCache.getPassword();
+    String requestBody = _APIRequest.getGenericPostData(username!, password!);
+
+    final url = Uri.parse(storage.DataCache.getInstituteUrl()! + URLs.GETCASHIN_URL);
+
+    List<CashinEntry> entries = CashinRequest._jsonToCashinEntry(await _APIRequest.postRequest(url, requestBody));
+    return entries;
+  }
+  
+  
+  static List<CashinEntry> _jsonToCashinEntry(String json){
+    List<CashinEntry> ls = List.empty(growable: true);
+    final List<dynamic> cashins = conv.json.decode(json)['CashinDataRows'];
+    for (var cashin in cashins){
+      ls.add(CashinEntry(
+          cashin['amount'],
+          int.parse(cashin['deadline'].toString().replaceAll('/Date', '').replaceAll('/', '')),
+          cashin['appellation'],
+          cashin['status_name']
+      ));
+    }
+    return ls;
   }
 }
 
@@ -198,20 +275,34 @@ class Subject{
   int credit;
   int id;
   String name;
+  int grade = 0;
+  int failState = 0;
 
-  Subject(this.completed, this.credit, this.name, this.id);
+
+  Subject(this.completed, this.credit, this.name, this.id, this.grade, this.failState);
 
   @override
   String toString() {
-    return '$completed\n$credit\n$id\n$name';
+    return '$completed\n$credit\n$id\n$name\n$grade\n$failState';
   }
 
   Subject fillWithExisting(String existing){
     var data = existing.split('\n');
+    if(data.length < 6){
+      completed = false;
+      credit = 0;
+      id = 0;
+      name = 'ERROR';
+      grade = 0;
+      failState = 1;
+      return this;
+    }
     completed = bool.parse(data[0]);
     credit = int.parse(data[1]);
     id = int.parse(data[2]);
     name = data[3];
+    grade = int.parse(data[4]);
+    failState = int.parse(data[5]);
     return this;
   }
 }
@@ -233,8 +324,9 @@ class CalendarEntry{
   late int endEpoch;
   late String location;
   late String title;
+  late bool isExam;
 
-  CalendarEntry(String start, String end, String loc, String rawTitle){
+  CalendarEntry(String start, String end, String loc, String rawTitle, this.isExam){
     startEpoch = int.parse(start);
     startEpoch = DateTime.fromMillisecondsSinceEpoch(startEpoch).subtract(const Duration(hours: 1)).millisecondsSinceEpoch; // need to offset
 
@@ -261,15 +353,49 @@ class CalendarEntry{
 
   @override
   String toString() {
-    return '$startEpoch\n$endEpoch\n$location\n$title';
+    return '$startEpoch\n$endEpoch\n$location\n$title\n$isExam';
   }
 
   CalendarEntry fillWithExisting(String existing){
     var data = existing.split('\n');
+    if(data.isEmpty || data.length < 5){
+      return this;
+    }
     startEpoch = int.parse(data[0]);
     endEpoch = int.parse(data[1]);
     location = data[2];
     title = data[3];
+    isExam = bool.parse(data[4]);
+    return this;
+  }
+}
+
+class CashinEntry{
+  late final int ammount;
+  late final int dueDateMs;
+  late final String comment;
+  late final bool completed;
+
+  CashinEntry(this.ammount, this.dueDateMs, this.comment, String completed){
+    if(completed.toLowerCase() == 'teljesített'){
+      this.completed = true;
+    }
+  }
+
+  @override
+  String toString() {
+    return '$ammount\n$dueDateMs\n$comment\n$completed';
+  }
+
+  CashinEntry fillWithExisting(String existing){
+    var data = existing.split('\n');
+    if(data.isEmpty || data.length < 4){
+      return this;
+    }
+    ammount = int.parse(data[0]);
+    dueDateMs = int.parse(data[1]);
+    comment = data[2];
+    completed = bool.parse(data[3]);
     return this;
   }
 }

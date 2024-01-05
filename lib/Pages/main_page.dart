@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -47,6 +48,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
   late List<api.CalendarEntry> calendarEntries = <api.CalendarEntry>[].toList();
   late List<api.Subject> markbookEntries = <api.Subject>[].toList();
+  late List<api.CashinEntry> paymentsEntries = <api.CashinEntry>[].toList();
 
   late final List<Widget> mondayCalendar = <Widget>[].toList();
   late final List<Widget> tuesdayCalendar = <Widget>[].toList();
@@ -55,6 +57,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   late final List<Widget> fridayCalendar = <Widget>[].toList();
 
   late final List<Widget> markbookList = <Widget>[].toList();
+
+  late final List<Widget> paymentsList = <Widget>[].toList();
 
   bool canDoCalendarPaging = true;
   int weeksSinceStart = 1;
@@ -65,6 +69,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
   int totalCredits = 0;
   int totalMoney = 0;
+  double totalAvg = 0;
 
   @override
   void initState() {
@@ -149,6 +154,13 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     });
   }
 
+  void clearPayments(){
+    setState(() {
+      paymentsEntries.clear();
+      paymentsList.clear();
+    });
+  }
+
   void setupCalendar(){
     setState(() {
       _setupCalendar();
@@ -158,6 +170,12 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   void setupMarkbook(){
     setState(() {
       _setupMarkbook();
+    });
+  }
+
+  void setupPayments(){
+    setState(() {
+      _setupPayments();
     });
   }
 
@@ -236,19 +254,57 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
     // set them up
     totalCredits = 0;
+    totalAvg = 0;
+    var currCredits = 0;
+    var hasCompleted = false;
+    var hasIncomplete = false;
     for (var item in markbookEntries){
       totalCredits += item.credit;
       if(item.completed){
+        hasCompleted = true;
         continue;
       }
-      markbookList.add(mbook.MarkbookElementWidget(name: item.name, credit: item.credit, completed: item.completed));
+      hasIncomplete = true;
+      markbookList.add(mbook.MarkbookElementWidget(
+        name: item.name,
+        credit: item.credit,
+        completed: item.completed,
+        grade: item.grade,
+        isFailed: item.failState == 1,
+      ));
     }
-    for (var item in markbookEntries){
-      if(!item.completed){
-        continue;
+    if(hasCompleted) {
+      if(hasIncomplete){
+        markbookList.add(
+            Container(
+              height: 2,
+              margin: const EdgeInsets.symmetric(horizontal: 30),
+              color: Colors.white.withOpacity(0.3),
+            )
+        );
       }
-      markbookList.add(mbook.MarkbookElementWidget(name: item.name, credit: item.credit, completed: item.completed));
+      for (var item in markbookEntries) {
+        if (!item.completed) {
+          continue;
+        }
+        markbookList.add(mbook.MarkbookElementWidget(
+          name: item.name,
+          credit: item.credit,
+          completed: item.completed,
+          grade: item.grade,
+          isFailed: item.failState == 1,
+        ));
+        if (item.grade >= 2) {
+          currCredits += item.credit;
+          totalAvg += item.grade * item.credit;
+        }
+      }
+      totalAvg /= currCredits;
     }
+  }
+
+  void _setupPayments(){
+
   }
 
   Future<void> stepCalendar_Back() async{
@@ -273,7 +329,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       final len = await storage.getInt('CachedCalendarLength');
       for(int i = 0; i < len!; i++){
         final calEntry = await storage.getString('CachedCalendar_$i');
-        calendarEntries.add(api.CalendarEntry('0', '0', 'NULL', 'NULL').fillWithExisting(calEntry!));
+        calendarEntries.add(api.CalendarEntry('0', '0', 'NULL', 'NULL', false).fillWithExisting(calEntry!));
       }
       return;
     }
@@ -305,7 +361,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       final len = await storage.getInt('CachedMarkbookLength');
       for(int i = 0; i < len!; i++){
         final calEntry = await storage.getString('CachedMarkbook_$i');
-        markbookEntries.add(api.Subject(false, 0, 'NULL', 0).fillWithExisting(calEntry!));
+        markbookEntries.add(api.Subject(false, 0, 'NULL', 0, 0, 0).fillWithExisting(calEntry!));
       }
       return;
     }
@@ -327,6 +383,42 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     storage.DataCache.setHasCachedMarkbook(1);
   }
 
+  Future<void> fetchPayments() async{
+    bool hasCachedPayments = storage.DataCache.getHasCachedPayments() ?? false;
+
+    final cacheTime = await storage.getString('PaymentsCacheTime');
+
+    if(!hasCachedPayments && !storage.DataCache.getHasNetwork()){
+      return;
+    }
+
+    // if we had a save, and the cached value is not older than a day, we can load that up
+    if(hasCachedPayments && cacheTime != null && (DateTime.now().millisecondsSinceEpoch - DateTime.parse(cacheTime).millisecondsSinceEpoch) < const Duration(hours: 24).inMilliseconds) {
+      final len = await storage.getInt('CachedPaymentsLength');
+      for(int i = 0; i < len!; i++){
+        final calEntry = await storage.getString('CachedPayments_$i');
+        paymentsEntries.add(api.CashinEntry(0, 0, 'NULL', 'NULL').fillWithExisting(calEntry!));
+      }
+      return;
+    }
+
+    //otherwise, just fetch again
+    final request = await api.CashinRequest.getAllCashins();
+    if(request.isEmpty){
+      return;
+    }
+    paymentsEntries = request;
+
+    storage.saveInt('CachedPaymentsLength', paymentsEntries.length);
+    //cache calendar
+    for (int i = 0; i < paymentsEntries.length; i++) {
+      storage.saveString('CachedPayments_$i', paymentsEntries[i].toString());
+    }
+    storage.saveString('PaymentsCacheTime', DateTime.now().toString());
+
+    storage.DataCache.setHasCachedPayments(1);
+  }
+
   Future<void> onCalendarRefresh() async{
     clearCalendar();
     await storage.DataCache.setHasCachedCalendar(0);
@@ -340,23 +432,30 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     setupMarkbook();
   }
   Future<void> onPaymentsRefresh() async{
-
+    clearPayments();
+    await storage.DataCache.setHasCachedPayments(0);
+    await fetchPayments();
+    setupPayments();
   }
 
   int calcPassedWeeks() {
     final now = DateTime.now();
+    final yearlessNow = DateTime(1, now.month, now.day);
+    final sepOne = DateTime(yearlessNow.year - 1, 9, 1); // first week
 
+    final timepassSinceSepOne = Duration(milliseconds: (yearlessNow.millisecondsSinceEpoch - sepOne.millisecondsSinceEpoch));
+    final weeksPassed = timepassSinceSepOne.inDays / 7;
+    /*
     // Find the most recent Monday on or before the current date
     final mondayOffset = (now.weekday - 1) % 7;
     final monday = now.subtract(Duration(days: mondayOffset));
 
-    final sepOne = DateTime(now.year, 9, 1); // first week
     final elapsedWeeks = (monday.difference(sepOne).inDays / 7).floor();
     final isWeekend = now.weekday == DateTime.saturday || now.weekday == DateTime.sunday ? 1 : 0;
 
-    return elapsedWeeks + currentWeekOffset - 1 + isWeekend;
+    return elapsedWeeks + currentWeekOffset - 1 + isWeekend;*/
+    return weeksPassed.floor() + currentWeekOffset - 1;
   }
-
 
   @override
   void dispose() {
@@ -370,6 +469,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     markbookEntries.clear();
     markbookList.clear();
     calendarTabController.dispose();
+    paymentsEntries.clear();
+    paymentsList.clear();
   }
 
   static Container getSeparatorLine(BuildContext context){
@@ -411,7 +512,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
           ),
           Visibility(
               visible: currentView == 1,
-              child: MarkbookPageWidget(homePage: this, totalCredits: totalCredits)
+              child: MarkbookPageWidget(homePage: this, totalCredits: totalCredits, totalAvg: totalAvg,)
           ),
           Visibility(
               visible: currentView == 2,
@@ -735,10 +836,29 @@ class _FloatingButtonOffset extends FloatingActionButtonLocation{
 class MarkbookPageWidget extends StatelessWidget{
   final HomePageState homePage;
   final int totalCredits;
-  const MarkbookPageWidget({super.key, required this.homePage, required this.totalCredits});
+  final double totalAvg;
+  const MarkbookPageWidget({super.key, required this.homePage, required this.totalCredits, required this.totalAvg});
 
   Future<void> onRefresh() async{
     homePage.onMarkbookRefresh();
+  }
+
+  String reactionForAvg(double avg){
+    if(avg >= 4.25){
+      return "🤓";
+    }
+    else if(avg >= 3.75){
+      return "😌";
+    }
+    else if(avg >= 2.75){
+      return "😐";
+    }
+    else if(avg >= 2){
+      return "😬";
+    }
+    else{
+      return "🫠";
+    }
   }
 
   @override
@@ -749,7 +869,7 @@ class MarkbookPageWidget extends StatelessWidget{
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              topnav.TopNavigatorWidget(homePage: homePage, displayString: "Tantárgyak", smallHintText: "Összes Kredited: $totalCredits🎖️️"),
+              topnav.TopNavigatorWidget(homePage: homePage, displayString: "Tantárgyak", smallHintText: "Össz Kredited: $totalCredits🎖️\nÁtlagod: ${totalAvg.toStringAsFixed(2)} ${reactionForAvg(totalAvg)}"),
               HomePageState.getSeparatorLine(context),
               Expanded(
                   child: RefreshIndicator(
