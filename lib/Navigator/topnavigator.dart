@@ -43,8 +43,7 @@ class TopNavigatorWidget extends StatelessWidget{
                     ).then((selectedValue) {
                       homePage.setBlurComplex(false);
                       if(selectedValue == 'logout'){
-                        storage.DataCache.setHasLogin(0);
-                        storage.DataCache.setHasCachedCalendar(0);
+                        storage.DataCache.dataWipe();
                         Navigator.popUntil(context, (route) => route.willHandlePopInternally);
                         Navigator.push(
                           context,

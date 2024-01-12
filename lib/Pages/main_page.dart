@@ -3,10 +3,12 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:neptun2/Misc/popup.dart';
 import '../API/api_coms.dart' as api;
 import '../storage.dart' as storage;
 import '../TimetableElements/timetable_element_widget.dart' as t_table;
 import '../MarkbookElements/markbook_element_widget.dart' as mbook;
+import '../PeriodsElements/periods_element_widget.dart' as priods;
 import '../Navigator/bottomnavigator.dart' as bottomnav;
 import '../Navigator/topnavigator.dart' as topnav;
 
@@ -49,6 +51,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   late List<api.CalendarEntry> calendarEntries = <api.CalendarEntry>[].toList();
   late List<api.Subject> markbookEntries = <api.Subject>[].toList();
   late List<api.CashinEntry> paymentsEntries = <api.CashinEntry>[].toList();
+  late List<api.PeriodEntry> periodEntries = <api.PeriodEntry>[].toList();
 
   late final List<Widget> mondayCalendar = <Widget>[].toList();
   late final List<Widget> tuesdayCalendar = <Widget>[].toList();
@@ -59,6 +62,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   late final List<Widget> markbookList = <Widget>[].toList();
 
   late final List<Widget> paymentsList = <Widget>[].toList();
+  late final List<Widget> periodList = <Widget>[].toList();
 
   bool canDoCalendarPaging = true;
   int weeksSinceStart = 1;
@@ -70,6 +74,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   int totalCredits = 0;
   int totalMoney = 0;
   double totalAvg = 0;
+
+  int currentSemester = -1;
 
   @override
   void initState() {
@@ -97,7 +103,31 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       setupMarkbook();
     });
 
+    Future.delayed(Duration.zero, () async{
+      await fetchPayments();
+    }).then((value) {
+      setupPayments();
+    });
+
+    Future.delayed(Duration.zero, () async{
+      await fetchPeriods();
+    }).then((value) {
+      setupPeriods();
+    });
+
     setupCalendarGreetText();
+
+    PopupWidgetHandler(homePage: this);
+
+    //api.InstitutesRequest.getFirstStudyweek();
+
+    /*api.PeriodsRequest.getPeriods().then((value) {
+      for (var item in value!){
+        final startTime = DateTime.fromMillisecondsSinceEpoch(item.startEpoch);
+        final endTime = DateTime.fromMillisecondsSinceEpoch(item.endEpoch);
+        log("${item.name} - $startTime -- $endTime --- ${item.isActive}");
+      }
+    });*/
   }
 
   void setupCalendarGreetText(){
@@ -160,6 +190,13 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       paymentsList.clear();
     });
   }
+  void clearPeriods(){
+    setState(() {
+      periodEntries.clear();
+      periodList.clear();
+      currentSemester = -1;
+    });
+  }
 
   void setupCalendar(){
     setState(() {
@@ -176,6 +213,12 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   void setupPayments(){
     setState(() {
       _setupPayments();
+    });
+  }
+
+  void setupPeriods(){
+    setState(() {
+      _setupPeriods();
     });
   }
 
@@ -307,6 +350,57 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
   }
 
+  void _setupPeriods(){
+    //order them
+    for (int i = 0; i < periodEntries.length; i++){
+      for (int j = i; j < periodEntries.length; j++){
+        if(periodEntries[j].startEpoch < periodEntries[i].startEpoch){
+          final tmp = periodEntries[i];
+          periodEntries[i] = periodEntries[j];
+          periodEntries[j] = tmp;
+        }
+      }
+    }
+
+    int prevSemester = -1;
+    //Map<String, List<api.PeriodType>> values = Map<String, List<api.PeriodType>>.identity();
+    for(var item in periodEntries){
+      final starttime = DateTime.fromMillisecondsSinceEpoch(item.startEpoch);
+      final endtime = DateTime.fromMillisecondsSinceEpoch(item.endEpoch);
+      final now = DateTime.now().millisecondsSinceEpoch;
+      if(now > endtime.millisecondsSinceEpoch){
+        continue; // expired
+      }
+      if(prevSemester == -1){
+        prevSemester = item.partofSemester;
+      }
+      else if(item.partofSemester != prevSemester){
+        periodList.add(
+            Container(
+              height: 2,
+              margin: const EdgeInsets.symmetric(horizontal: 30),
+              color: Colors.white.withOpacity(0.3),
+            )
+        );
+        prevSemester = item.partofSemester;
+      }
+      periodList.add(priods.PeriodsElementWidget(
+        displayName: item.name,
+        formattedStartTime: '${api.Generic.monthToText(starttime.month)} ${starttime.day}',
+        formattedStartTimeYear: '${starttime.year}',
+        formattedEndTime: '${api.Generic.monthToText(endtime.month)} ${endtime.day}',
+        formattedEndTimeYear: '${endtime.year}',
+        isActive: item.isActive,
+        periodType: item.type,
+        startTime: item.startEpoch,
+        endTime: item.endEpoch,
+      ));
+      if(currentSemester == -1) {
+        currentSemester = item.partofSemester;
+      }
+    }
+  }
+
   Future<void> stepCalendar_Back() async{
     currentWeekOffset--;
     await onCalendarRefresh();
@@ -331,6 +425,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         final calEntry = await storage.getString('CachedCalendar_$i');
         calendarEntries.add(api.CalendarEntry('0', '0', 'NULL', 'NULL', false).fillWithExisting(calEntry!));
       }
+      storage.DataCache.setHasCachedFirstWeekEpoch(1); // dont fetch this, as there is still no network
       return;
     }
     //otherwise, just fetch again
@@ -347,6 +442,10 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       storage.saveString('CalendarCacheTime', DateTime.now().toString());
     }
     storage.DataCache.setHasCachedCalendar(1);
+
+    final firstWeekOfSemester = await api.InstitutesRequest.getFirstStudyweek();
+    storage.DataCache.setHasCachedFirstWeekEpoch(1);
+    await storage.DataCache.setFirstWeekEpoch(firstWeekOfSemester);
   }
   Future<void> fetchMarkbook() async{
     bool hasCachedMarkbook= storage.DataCache.getHasCachedMarkbook() ?? false;
@@ -419,9 +518,46 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     storage.DataCache.setHasCachedPayments(1);
   }
 
+  Future<void> fetchPeriods() async{
+    bool hasCachedPeriods = storage.DataCache.getHasCachedPeriods() ?? false;
+
+    final cacheTime = await storage.getString('PeriodsCacheTime');
+
+    if(!hasCachedPeriods && !storage.DataCache.getHasNetwork()){
+      return;
+    }
+
+    // if we had a save, and the cached value is not older than a day, we can load that up
+    if(hasCachedPeriods && cacheTime != null && (DateTime.now().millisecondsSinceEpoch - DateTime.parse(cacheTime).millisecondsSinceEpoch) < const Duration(hours: 24).inMilliseconds) {
+      final len = await storage.getInt('CachedPeriodsLength');
+      for(int i = 0; i < len!; i++){
+        final calEntry = await storage.getString('CachedPeriods_$i');
+        periodEntries.add(api.PeriodEntry("ERROR", 0, 0, 0).fillWithExisting(calEntry!));
+      }
+      return;
+    }
+
+    //otherwise, just fetch again
+    final request = await api.PeriodsRequest.getPeriods();
+    if(request != null && request.isEmpty){
+      return;
+    }
+    periodEntries = request!;
+
+    storage.saveInt('CachedPeriodsLength', periodEntries.length);
+    //cache calendar
+    for (int i = 0; i < periodEntries.length; i++) {
+      storage.saveString('CachedPeriods_$i', periodEntries[i].toString());
+    }
+    storage.saveString('PeriodsCacheTime', DateTime.now().toString());
+
+    storage.DataCache.setHasCachedPeriods(1);
+  }
+
   Future<void> onCalendarRefresh() async{
     clearCalendar();
     await storage.DataCache.setHasCachedCalendar(0);
+    await storage.DataCache.setHasCachedFirstWeekEpoch(0);
     await fetchCalendar();
     setupCalendar();
   }
@@ -437,11 +573,19 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     await fetchPayments();
     setupPayments();
   }
+  Future<void> onPeriodsRefresh()async{
+    clearPeriods();
+    await storage.DataCache.setHasCachedPeriods(0);
+    await fetchPeriods();
+    setupPeriods();
+  }
 
   int calcPassedWeeks() {
+    final epochsemester = storage.DataCache.getFirstWeekEpoch()!;
+    final determiner = epochsemester > 0 ? DateTime.fromMillisecondsSinceEpoch(epochsemester) : null;
     final now = DateTime.now();
     final yearlessNow = DateTime(1, now.month, now.day);
-    final sepOne = DateTime(yearlessNow.year - 1, 9, 1); // first week
+    final sepOne = DateTime(yearlessNow.year - 1, epochsemester > 0 ? determiner!.month : 9, epochsemester > 0 ? determiner!.day : 1); // first week
 
     final timepassSinceSepOne = Duration(milliseconds: (yearlessNow.millisecondsSinceEpoch - sepOne.millisecondsSinceEpoch));
     final weeksPassed = timepassSinceSepOne.inDays / 7;
@@ -471,6 +615,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     calendarTabController.dispose();
     paymentsEntries.clear();
     paymentsList.clear();
+    periodList.clear();
+    periodEntries.clear();
   }
 
   static Container getSeparatorLine(BuildContext context){
@@ -517,6 +663,10 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
           Visibility(
               visible: currentView == 2,
               child: PaymentsPageWidget(homePage: this, totalMoney: totalMoney)
+          ),
+          Visibility(
+            visible: currentView == 3,
+            child: PeriodsPageWidget(homePage: this, currentSemester: currentSemester),
           ),
           Visibility(
             visible: _showBlur,
@@ -844,7 +994,10 @@ class MarkbookPageWidget extends StatelessWidget{
   }
 
   String reactionForAvg(double avg){
-    if(avg >= 4.25){
+    if(avg >= 5.0){
+      return "💀";
+    }
+    else if(avg >= 4.25){
       return "🤓";
     }
     else if(avg >= 3.75){
@@ -857,7 +1010,7 @@ class MarkbookPageWidget extends StatelessWidget{
       return "😬";
     }
     else{
-      return "🫠";
+      return "😞";
     }
   }
 
@@ -955,6 +1108,69 @@ class PaymentsPageWidget extends StatelessWidget{
         ],
       ),
       floatingActionButton: null
+    );
+  }
+}
+
+class PeriodsPageWidget extends StatelessWidget{
+  final HomePageState homePage;
+  final int currentSemester;
+  const PeriodsPageWidget({super.key, required this.homePage, required this.currentSemester});
+
+  Future<void> onRefresh() async{
+    homePage.onPeriodsRefresh();
+  }
+
+  @override
+  Widget build(BuildContext context){
+    return Scaffold(
+        body: Stack(
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                topnav.TopNavigatorWidget(homePage: homePage, displayString: "Időszakok", smallHintText: "Jelenleg ${currentSemester != -1 ? "az $currentSemester." : "egy"} félév van 🗓️"),
+                HomePageState.getSeparatorLine(context),
+                Expanded(
+                    child: RefreshIndicator(
+                        onRefresh: onRefresh,
+                        child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(
+                              decelerationRate: ScrollDecelerationRate.fast
+                          ),
+                          scrollDirection: Axis.vertical,
+                          child: Container(
+                            margin: const EdgeInsets.all(15),
+                            decoration: BoxDecoration(
+                              color: homePage.periodList.isNotEmpty ? Colors.white.withOpacity(0.03) : Colors.transparent,
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisSize: MainAxisSize.max,
+                                children: homePage.periodList.isNotEmpty ? homePage.periodList : <Widget>[
+                                  Center(
+                                    child: SizedBox(
+                                      height: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
+                                      width: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
+                                      child: const CircularProgressIndicator(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ]
+                            ),
+                          ),
+                        )
+                    )
+                ),
+                HomePageState.getSeparatorLine(context),
+                bottomnav.BottomNavigatorWidget(homePage: homePage),
+              ],
+            ),
+          ],
+        ),
+        floatingActionButton: null
     );
   }
 }

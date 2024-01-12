@@ -42,6 +42,27 @@ Future<List<String>?> getStringList(String key) async {
 }
 
 class DataCache{
+  static Future<void> dataWipe() async{
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+    prefs.reload();
+    _instance._localWipe();
+  }
+
+  void _localWipe(){
+    _username = '';
+    _password = '';
+    _instituteUrl = '';
+    _hasNetwork = false;
+    _hasLogin = false;
+    _hasCachedCalendar = false;
+    _hasCachedMarkbook = false;
+    _hasCachedPayments = false;
+    _hasCachedFirstWeekEpoch = false;
+    _hasCachedPeriods = false;
+    _firstweekOfSemesterEpoch = 0;
+  }
+
   static final DataCache _instance = DataCache();
 
   late String? _username;
@@ -52,6 +73,9 @@ class DataCache{
   late bool? _hasCachedCalendar = false;
   late bool? _hasCachedMarkbook = false;
   late bool? _hasCachedPayments = false;
+  late bool? _hasCachedPeriods = false;
+  late bool? _hasCachedFirstWeekEpoch = false;
+  late int? _firstweekOfSemesterEpoch = 0;
 
 
   static Future<void> loadData() async{return _instance._loadData();}
@@ -75,10 +99,19 @@ class DataCache{
     tmp = await getInt('HasCachedPayments');
     _hasCachedPayments = tmp != null && tmp != 0;
 
+    tmp = await getInt('HasCachedPeriods');
+    _hasCachedPeriods = tmp != null && tmp != 0;
+
     _hasNetwork = await Connectivity().checkConnectivity() != ConnectivityResult.none;
     Connectivity().onConnectivityChanged.listen((event) async {
       _hasNetwork = await Connectivity().checkConnectivity() != ConnectivityResult.none;
     });
+
+    tmp = await getInt('HasCachedFirstWeekEpoch');
+    _hasCachedFirstWeekEpoch = tmp != null && tmp != 0;
+
+    tmp = await getInt('FirstWeekOfSemesterEpoch');
+    _firstweekOfSemesterEpoch = tmp ?? 0;
   }
 
   static String? getUsername(){return _instance._username;}
@@ -123,5 +156,23 @@ class DataCache{
   static Future<void> setHasCachedPayments(int? value) async{
     _instance._hasCachedPayments = value != null && value != 0;
     saveInt('HasCachedPayments', value ?? 0);
+  }
+
+  static bool? getHasCachedPeriods(){return _instance._hasCachedPeriods;}
+  static Future<void> setHasCachedPeriods(int? value) async{
+    _instance._hasCachedPeriods = value != null && value != 0;
+    saveInt('HasCachedPeriods', value ?? 0);
+  }
+
+  static bool? getHasCachedFirstWeekEpoch(){return _instance._hasCachedFirstWeekEpoch;}
+  static Future<void> setHasCachedFirstWeekEpoch(int? value) async{
+    _instance._hasCachedFirstWeekEpoch = value != null && value != 0;
+    saveInt('HasCachedFirstWeekEpoch', value ?? 0);
+  }
+
+  static int? getFirstWeekEpoch(){return _instance._firstweekOfSemesterEpoch;}
+  static Future<void> setFirstWeekEpoch(int? value) async{
+    _instance._firstweekOfSemesterEpoch = value ?? 0;
+    saveInt('FirstWeekOfSemesterEpoch', value ?? 0);
   }
 }

@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:neptun2/API/api_coms.dart' as api;
 import '../storage.dart';
 import 'main_page.dart' as main_page;
 import 'setup_page.dart' as setup_page;
@@ -19,7 +22,18 @@ class _SplitterState extends State<Splitter>{
       statusBarColor: Color.fromRGBO(0x22, 0x22, 0x22, 1.0), // status bar color
     ));
 
-    DataCache.loadData().then((value) {
+    DataCache.loadData().then((value) async {
+      final flag = DataCache.getHasCachedFirstWeekEpoch();
+
+      if(DataCache.getHasNetwork() && DataCache.getHasLogin()!){
+        final firstWeekOfSemester = await api.InstitutesRequest.getFirstStudyweek();
+        DataCache.setHasCachedFirstWeekEpoch(1);
+        await DataCache.setFirstWeekEpoch(firstWeekOfSemester);
+      }
+      else if(flag != null && !flag){
+        await DataCache.setFirstWeekEpoch(-1);
+      }
+    }).then((value) {
       Navigator.popUntil(context, (route) => route.willHandlePopInternally);
       if (DataCache.getHasLogin() != null && DataCache.getHasLogin()!) {
         Navigator.push(

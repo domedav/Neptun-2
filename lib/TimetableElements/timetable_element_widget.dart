@@ -174,10 +174,10 @@ class FreedayElementWidget extends StatelessWidget{
 
 class WeekoffseterElementWidget extends StatelessWidget{
   WeekoffseterElementWidget({super.key, required this.week, required this.from, required this.to, required this.onBackPressed, required this.onForwardPressed, required this.canDoPaging}){
-    final startMonth = from != null ? _monthToText(from!.month) : "_";
+    final startMonth = from != null ? api.Generic.monthToText(from!.month) : "_";
     final startDay = from != null ? from!.day : "";
 
-    final endMonth = _monthToText(to.month);
+    final endMonth = api.Generic.monthToText(to.month);
     final endDay = to.day;
 
     if(startMonth == "_"){
@@ -198,36 +198,6 @@ class WeekoffseterElementWidget extends StatelessWidget{
   final Callback onForwardPressed;
 
   late String displayString = "NULL";
-
-  String _monthToText(int month){
-    switch (month){
-      case 1:
-        return "Január";
-      case 2:
-        return "Február";
-      case 3:
-        return "Március";
-      case 4:
-        return "Április";
-      case 5:
-        return "Május";
-      case 6:
-        return "Június";
-      case 7:
-        return "Július";
-      case 8:
-        return "Augusztus";
-      case 9:
-        return "Szeptember";
-      case 10:
-        return "Október";
-      case 11:
-        return "November";
-      case 12:
-        return "December";
-    }
-    return "NULL";
-  }
 
   @override
   Widget build(BuildContext context) {

@@ -9,6 +9,7 @@ class URLs{
   static const String TRAININGS_URL = "/GetTrainings";
   static const String CALENDAR_URL = "/GetCalendarData";
   static const String PERIODTERMS_URL = "/GetPeriodTerms";
+  static const String PERIODS_URL = "/GetPeriods";
   static const String GETCASHIN_URL = "/GetCashinData";
   static const String CURRICULUMS_URL = "/GetCurriculums";
   static const String MARKBOOK_URL = "/GetMarkbookData";
@@ -41,6 +42,22 @@ class _APIRequest{
         '"Password":"$password"'
       '}';
   }
+
+  static Future<List<Term>> _getTermIDs() async{
+    final username = storage.DataCache.getUsername();
+    final password = storage.DataCache.getPassword();
+    final url = Uri.parse(storage.DataCache.getInstituteUrl()! + URLs.PERIODTERMS_URL);
+    final request = await _APIRequest.postRequest(url, _APIRequest.getGenericPostData(username!, password!));
+
+    List<dynamic> termList = conv.json.decode(request)['PeriodTermsList'];
+    List<Term> terms = [];
+    for (var term in termList){
+      final map = term as Map<String, dynamic>;
+      terms.add(Term(map['Id'], map['TermName']));
+    }
+
+    return terms;
+  }
 }
 
 class InstitutesRequest{
@@ -64,6 +81,29 @@ class InstitutesRequest{
   static Future<bool> validateLoginCredentials(Institute institute, String username, String password) async{
     final request = await _APIRequest.postRequest(Uri.parse(institute.URL + URLs.TRAININGS_URL), _APIRequest.getGenericPostData(username, password));
     return conv.json.decode(request)["ErrorMessage"] == null;
+  }
+  static Future<int?> getFirstStudyweek() async{
+    final periods = await PeriodsRequest.getPeriods();
+    final now = DateTime.now().millisecondsSinceEpoch;
+    if(periods == null){
+      return null;
+    }
+
+    PeriodEntry? period;
+
+    for (var item in periods){
+      if(item.name.toLowerCase().contains('jegybeírási időszak')){
+        if(item.startEpoch <= now){
+          period = item;
+        }
+      }
+    }
+    if(period == null){
+      return null;
+    }
+
+    //final startDate = DateTime.fromMillisecondsSinceEpoch(period!.startEpoch);
+    return period.startEpoch;
   }
 }
 
@@ -127,22 +167,6 @@ class CalendarRequest{
 }
 
 class MarkbookRequest{
-  static Future<List<Term>> _getTermIDs() async{
-    final username = storage.DataCache.getUsername();
-    final password = storage.DataCache.getPassword();
-    final url = Uri.parse(storage.DataCache.getInstituteUrl()! + URLs.PERIODTERMS_URL);
-    final request = await _APIRequest.postRequest(url, _APIRequest.getGenericPostData(username!, password!));
-
-    List<dynamic> termList = conv.json.decode(request)['PeriodTermsList'];
-    List<Term> terms = [];
-    for (var term in termList){
-      final map = term as Map<String, dynamic>;
-      terms.add(Term(map['Id'], map['TermName']));
-    }
-
-    return terms;
-  }
-
   static Future<String> _getMarkbookJSon(int termID) async{
     final username = storage.DataCache.getUsername();
     final password = storage.DataCache.getPassword();
@@ -159,7 +183,7 @@ class MarkbookRequest{
   }
 
   static Future<List<Subject>?> getMarkbookSubjects() async{
-    List<Term> terms = await _getTermIDs();
+    List<Term> terms = await _APIRequest._getTermIDs();
     if(terms.isEmpty){
       return null;
     }
@@ -207,20 +231,35 @@ class MarkbookRequest{
     }
   }
 
+  static bool isMark(String txt){
+    switch(txt){
+      case 'jeles':
+      case 'jó':
+      case 'közepes':
+      case 'elégséges':
+      case 'elégtelen':
+        return true;
+      default:
+        return false;
+    }
+  }
+
   static int parseTextToGrade(String gradeTxt){
-    RegExp regex = RegExp(r'^(.*?)<br/>');
-    Match? match = regex.firstMatch(gradeTxt);
-    if(match == null){
+    final lst = gradeTxt.split('<br/>');
+    var lst2 = <String>[];
+    for (var item in lst){
+      final checkFor = item.trim().toLowerCase();
+      if(isMark(checkFor)){
+        lst2.add(checkFor);
+      }
+    }
+    if(!lst2.isNotEmpty){
       return 0;
     }
 
-    gradeTxt = (match.group(1) ?? '').trim().toLowerCase();
+    final latestGrade = lst2[lst2.length - 1];
 
-    if(gradeTxt.isEmpty){
-      return 0;
-    }
-
-    switch (gradeTxt){
+    switch (latestGrade){
       case 'jeles':
         return 5;
       case 'jó':
@@ -229,10 +268,14 @@ class MarkbookRequest{
         return 3;
       case 'elégséges':
         return 2;
+      case 'elégtelen':
+        return 1;
       default:
         return 0;
     }
   }
+
+
 }
 
 class CashinRequest{
@@ -254,12 +297,48 @@ class CashinRequest{
     for (var cashin in cashins){
       ls.add(CashinEntry(
           cashin['amount'],
-          int.parse(cashin['deadline'].toString().replaceAll('/Date', '').replaceAll('/', '')),
+          int.parse(cashin['deadline'].toString().replaceAll('/Date(', '').replaceAll(')/', '')),
           cashin['appellation'],
           cashin['status_name']
       ));
     }
     return ls;
+  }
+}
+
+class PeriodsRequest{
+
+  static Future<List<PeriodEntry>?> getPeriods() async{
+    final terms = await _APIRequest._getTermIDs();
+    if(terms.isEmpty){
+      return null;
+    }
+    List<PeriodEntry> periods = <PeriodEntry>[];
+    int cntperiod = terms.length;
+    for(var term in terms){
+      final jsonresult = await _getPeriodJSon(term.id);
+      final result = conv.json.decode(jsonresult)['PeriodList'] as List<dynamic>;
+      for(var period in result){
+        final currPeriod = period as Map<String, dynamic>;
+        periods.add(PeriodEntry(currPeriod['PeriodTypeName'], int.parse(currPeriod['FromDate'].toString().replaceAll('/Date(', '').replaceAll(')/', '')), int.parse(currPeriod['ToDate'].toString().replaceAll('/Date(', '').replaceAll(')/', '')), cntperiod));
+      }
+      cntperiod--;
+    }
+    return periods;
+  }
+
+  static Future<String> _getPeriodJSon(int termID) async{
+    final username = storage.DataCache.getUsername();
+    final password = storage.DataCache.getPassword();
+    final url = Uri.parse(storage.DataCache.getInstituteUrl()! + URLs.PERIODS_URL);
+    final json =
+        '{'
+        '"UserLogin":"$username",'
+        '"Password":"$password",'
+        '"PeriodTermID":$termID,'
+        '}';
+    final request = await _APIRequest.postRequest(url, json);
+    return request;
   }
 }
 
@@ -371,10 +450,10 @@ class CalendarEntry{
 }
 
 class CashinEntry{
-  late final int ammount;
-  late final int dueDateMs;
-  late final String comment;
-  late final bool completed;
+  late int ammount;
+  late int dueDateMs;
+  late String comment;
+  late bool completed;
 
   CashinEntry(this.ammount, this.dueDateMs, this.comment, String completed){
     if(completed.toLowerCase() == 'teljesített'){
@@ -397,6 +476,131 @@ class CashinEntry{
     comment = data[2];
     completed = bool.parse(data[3]);
     return this;
+  }
+}
+
+enum PeriodType{
+  timetableRegistration,
+  gradingTime,
+  loginTime,
+  pregivenGradingAccepting,
+  timetableFinalization,
+  coursesRegistration,
+  nerdTime,
+  examTime,
+  none
+}
+
+class PeriodEntry{
+  late String name;
+  late int startEpoch;
+  late int endEpoch;
+  late bool isActive;
+  late int partofSemester;
+  late PeriodType type;
+
+  PeriodEntry(this.name, startEpoch, endEpoch, this.partofSemester){
+    final startEp = DateTime.fromMillisecondsSinceEpoch(startEpoch);
+    final correctedStartEpoch = DateTime(startEp.year, startEp.month, startEp.day);
+    this.startEpoch = correctedStartEpoch.millisecondsSinceEpoch;
+
+    final endEp = DateTime.fromMillisecondsSinceEpoch(endEpoch);
+    final correctedEndEpoch = DateTime(endEp.year, endEp.month, endEp.day);
+    this.endEpoch = correctedEndEpoch.millisecondsSinceEpoch;
+
+
+    fillIsActiveStatus();
+  }
+
+  @override
+  String toString() {
+    return '$name\n$startEpoch\n$endEpoch\n$partofSemester';
+  }
+
+  String getValue(){
+    return '$startEpoch-$endEpoch';
+  }
+
+  PeriodEntry fillWithExisting(String existing){
+    var data = existing.split('\n');
+    if(data.isEmpty || data.length < 4){
+      return this;
+    }
+    name = data[0];
+    startEpoch = int.parse(data[1]);
+    endEpoch = int.parse(data[2]);
+    partofSemester = int.parse(data[3]);
+    fillIsActiveStatus();
+    return this;
+  }
+
+  void fillIsActiveStatus() {
+    final now = DateTime
+        .now()
+        .millisecondsSinceEpoch;
+    isActive = (startEpoch < now && now < endEpoch);
+
+    switch (name.toLowerCase().trim()){
+      case 'előzetes tárgyjelentkezés':
+        type = PeriodType.timetableRegistration;
+        break;
+      case 'jegybeírási időszak':
+        type = PeriodType.gradingTime;
+        break;
+      case 'bejelentkezési időszak':
+        type = PeriodType.loginTime;
+        break;
+      case 'megajánlott jegy beírási időszak':
+        type = PeriodType.pregivenGradingAccepting;
+        break;
+      case 'végleges tárgyjelentkezés':
+        type = PeriodType.timetableFinalization;
+        break;
+      case 'kurzusjelentkezési időszak':
+        type = PeriodType.coursesRegistration;
+        break;
+      case 'szorgalmi időszak':
+        type = PeriodType.nerdTime;
+        break;
+      case 'vizsgajelentkezési időszak':
+        type = PeriodType.examTime;
+        break;
+      default:
+        type = PeriodType.none;
+        break;
+    }
+  }
+}
+
+class Generic{
+  static String monthToText(int month){
+    switch (month){
+      case 1:
+        return "Január";
+      case 2:
+        return "Február";
+      case 3:
+        return "Március";
+      case 4:
+        return "Április";
+      case 5:
+        return "Május";
+      case 6:
+        return "Június";
+      case 7:
+        return "Július";
+      case 8:
+        return "Augusztus";
+      case 9:
+        return "Szeptember";
+      case 10:
+        return "Október";
+      case 11:
+        return "November";
+      case 12:
+        return "December";
+    }
+    return "NULL";
   }
 }
 

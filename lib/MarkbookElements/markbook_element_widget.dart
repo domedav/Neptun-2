@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:neptun2/Misc/popup.dart';
 import '../Misc/emojirich_text.dart';
 
 class MarkbookElementWidget extends StatelessWidget{
@@ -8,10 +11,9 @@ class MarkbookElementWidget extends StatelessWidget{
   final int grade;
   final bool isFailed;
 
+  static double sliderValue = 1;
+
   Color getGradeColor(){
-    if(grade < 2){
-      return Colors.transparent;
-    }
     switch (grade){
       case 5:
         return Colors.green.shade200;
@@ -21,6 +23,8 @@ class MarkbookElementWidget extends StatelessWidget{
         return Colors.yellow.shade200;
       case 2:
         return Colors.red.shade200;
+      case 1:
+        return Colors.redAccent.shade200;
       default:
         return Colors.transparent;
     }
@@ -30,9 +34,20 @@ class MarkbookElementWidget extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
-        child: SizedBox(
+    return ElevatedButton(
+        onPressed: grade >= 2 || completed ? null : () {
+          PopupWidgetHandler.doPopup(context);
+        },
+        style: ButtonStyle(
+          enableFeedback: true,
+          backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.transparent),
+          foregroundColor: MaterialStateProperty.resolveWith((states) => Colors.white),
+          overlayColor: MaterialStateProperty.resolveWith((states) => Colors.transparent),
+          shadowColor: MaterialStateProperty.resolveWith((states) => Colors.transparent),
+          surfaceTintColor: MaterialStateProperty.resolveWith((states) => Colors.black.withOpacity(.04)),
+        ),
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
           width: MediaQuery.of(context).size.width,
           child: Row(
             mainAxisSize: MainAxisSize.max,
@@ -70,7 +85,7 @@ class MarkbookElementWidget extends StatelessWidget{
                 )
               ),
               Visibility(
-                visible: !completed && isFailed,
+                visible: !completed && isFailed || grade == 1,
                   child: Expanded(
                     flex: 1,
                     child: Column(

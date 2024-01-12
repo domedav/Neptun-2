@@ -22,7 +22,8 @@ class BottomNavigatorWidget extends StatelessWidget {
               children: <Widget>[
                 _buildNavigationButton(0, Icons.calendar_month_rounded, Icons.calendar_month_outlined),
                 _buildNavigationButton(1, Icons.backpack_rounded, Icons.backpack_outlined),
-                //_buildNavigationButton(2, Icons.price_change_rounded, Icons.price_change_outlined),
+                _buildNavigationButton(3, Icons.timer_rounded, Icons.timer_outlined),
+                _buildNavigationButton(2, Icons.price_change_rounded, Icons.price_change_outlined),
               ],
             ),
           ),
