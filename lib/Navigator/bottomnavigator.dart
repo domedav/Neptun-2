@@ -1,9 +1,9 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import '../Pages/main_page.dart';
 
 class BottomNavigatorWidget extends StatelessWidget {
   final HomePageState homePage;
-
   const BottomNavigatorWidget({super.key, required this.homePage});
 
   @override
@@ -13,6 +13,7 @@ class BottomNavigatorWidget extends StatelessWidget {
       color: const Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
       child: Center(
         child: SingleChildScrollView(
+          controller: homePage.bottomnavController,
           physics: const BouncingScrollPhysics(decelerationRate: ScrollDecelerationRate.fast),
           scrollDirection: Axis.horizontal,
           child: SizedBox(

@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:neptun2/Misc/popup.dart';
 import '../API/api_coms.dart' as api;
 import '../storage.dart' as storage;
@@ -64,6 +65,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   late final List<Widget> paymentsList = <Widget>[].toList();
   late final List<Widget> periodList = <Widget>[].toList();
 
+  late final LinkedScrollControllerGroup bottomnavScrollCntroller;
+  late final ScrollController bottomnavController;
+
   bool canDoCalendarPaging = true;
   int weeksSinceStart = 1;
   int currentWeekOffset = 1;
@@ -89,6 +93,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     ));
 
     calendarTabController = TabController(length: 5, vsync: this);
+    bottomnavScrollCntroller = LinkedScrollControllerGroup();
+    bottomnavController = bottomnavScrollCntroller.addAndGet();
     weeksSinceStart = calcPassedWeeks();
 
     Future.delayed(Duration.zero, () async {
