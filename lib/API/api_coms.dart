@@ -44,6 +44,9 @@ class _APIRequest{
   }
 
   static Future<List<Term>> _getTermIDs() async{
+    if(storage.DataCache.getIsDemoAccount()!){
+      return <Term>[Term(70876, 'DEMO Félév')];
+    }
     final username = storage.DataCache.getUsername();
     final password = storage.DataCache.getPassword();
     final url = Uri.parse(storage.DataCache.getInstituteUrl()! + URLs.PERIODTERMS_URL);
@@ -79,11 +82,18 @@ class InstitutesRequest{
     return newList;
   }
   static Future<bool> validateLoginCredentials(Institute institute, String username, String password) async{
+    if(username == 'DEMO' && password == 'DEMO'){
+      await storage.DataCache.setIsDemoAccount(1);
+      return true;
+    }
     final request = await _APIRequest.postRequest(Uri.parse(institute.URL + URLs.TRAININGS_URL), _APIRequest.getGenericPostData(username, password));
     return conv.json.decode(request)["ErrorMessage"] == null;
   }
   static Future<int?> getFirstStudyweek() async{
     final periods = await PeriodsRequest.getPeriods();
+    if(storage.DataCache.getIsDemoAccount()!){
+      return DateTime.now().millisecondsSinceEpoch;
+    }
     final now = DateTime.now().millisecondsSinceEpoch;
     if(periods == null){
       return null;
@@ -109,10 +119,13 @@ class InstitutesRequest{
 
 class CalendarRequest{
   static List<CalendarEntry> getCalendarEntriesFromJSON(String json){
+    if(storage.DataCache.getIsDemoAccount()!){
+      return <CalendarEntry>[CalendarEntry(DateTime(2024, 1, 14).millisecondsSinceEpoch.toString(), DateTime.now().millisecondsSinceEpoch.toString(), 'DEMO helyszín', 'DEMO név', false)];
+    }
     var list = <CalendarEntry>[].toList();
     Map<String, dynamic> map = conv.json.decode(json);
     if(map['calendarData'] == null) {
-      list.add(CalendarEntry(DateTime(1970, 1, 6).millisecondsSinceEpoch.toString(), DateTime.now().millisecondsSinceEpoch.toString(), 'Please Refresh!', 'Error Loading Calendar Data!', false));
+      list.add(CalendarEntry(DateTime(1970, 1, 6).millisecondsSinceEpoch.toString(), DateTime.now().millisecondsSinceEpoch.toString(), 'ERROR', 'ERROR', false));
       return list;
     }
     List<dynamic> sublist = map['calendarData'];
@@ -130,12 +143,18 @@ class CalendarRequest{
   }
 
   static Future<String> makeCalendarRequest(String calendarJson) async{
+    if(storage.DataCache.getIsDemoAccount()!){
+      return '';
+    }
     final url = Uri.parse(storage.DataCache.getInstituteUrl()! + URLs.CALENDAR_URL);
     final request = await _APIRequest.postRequest(url, calendarJson);
     return request;
   }
 
   static String getCalendarOneWeekJSON(String username, String password, int weekOffset){
+    if(storage.DataCache.getIsDemoAccount()!){
+      return '';
+    }
     final DateTime now = DateTime.now();
     DateTime previousMonday = now.subtract(Duration(days: now.weekday));
     if (previousMonday.weekday == 7) {
@@ -168,6 +187,9 @@ class CalendarRequest{
 
 class MarkbookRequest{
   static Future<String> _getMarkbookJSon(int termID) async{
+    if(storage.DataCache.getIsDemoAccount()!){
+      return '';
+    }
     final username = storage.DataCache.getUsername();
     final password = storage.DataCache.getPassword();
     final url = Uri.parse(storage.DataCache.getInstituteUrl()! + URLs.MARKBOOK_URL);
@@ -183,6 +205,9 @@ class MarkbookRequest{
   }
 
   static Future<List<Subject>?> getMarkbookSubjects() async{
+    if(storage.DataCache.getIsDemoAccount()!){
+      return <Subject>[Subject(false, 30, 'DEMO tantárgy', 0, 4, 0)];
+    }
     List<Term> terms = await _APIRequest._getTermIDs();
     if(terms.isEmpty){
       return null;
@@ -280,6 +305,9 @@ class MarkbookRequest{
 
 class CashinRequest{
   static Future<List<CashinEntry>> getAllCashins() async{
+    if(storage.DataCache.getIsDemoAccount()!){
+      return <CashinEntry>[CashinEntry(87878, 999999999, 'DEMO befizetés', 'teljesítve')];
+    }
     final username = storage.DataCache.getUsername();
     final password = storage.DataCache.getPassword();
     String requestBody = _APIRequest.getGenericPostData(username!, password!);
@@ -292,6 +320,9 @@ class CashinRequest{
   
   
   static List<CashinEntry> _jsonToCashinEntry(String json){
+    if(storage.DataCache.getIsDemoAccount()!){
+      return <CashinEntry>[CashinEntry(87878, 999999999, 'DEMO befizetés', 'teljesítve')];
+    }
     List<CashinEntry> ls = List.empty(growable: true);
     final List<dynamic> cashins = conv.json.decode(json)['CashinDataRows'];
     for (var cashin in cashins){
@@ -309,6 +340,9 @@ class CashinRequest{
 class PeriodsRequest{
 
   static Future<List<PeriodEntry>?> getPeriods() async{
+    if(storage.DataCache.getIsDemoAccount()!){
+      return <PeriodEntry>[PeriodEntry('jegybeírási időszak', DateTime.now().millisecondsSinceEpoch - 20000, DateTime.now().millisecondsSinceEpoch + 1000000, 1)];
+    }
     final terms = await _APIRequest._getTermIDs();
     if(terms.isEmpty){
       return null;
@@ -328,6 +362,9 @@ class PeriodsRequest{
   }
 
   static Future<String> _getPeriodJSon(int termID) async{
+    if(storage.DataCache.getIsDemoAccount()!){
+      return '';
+    }
     final username = storage.DataCache.getUsername();
     final password = storage.DataCache.getPassword();
     final url = Uri.parse(storage.DataCache.getInstituteUrl()! + URLs.PERIODS_URL);
@@ -453,7 +490,7 @@ class CashinEntry{
   late int ammount;
   late int dueDateMs;
   late String comment;
-  late bool completed;
+  late bool completed = false;
 
   CashinEntry(this.ammount, this.dueDateMs, this.comment, String completed){
     if(completed.toLowerCase() == 'teljesített'){

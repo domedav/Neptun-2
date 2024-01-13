@@ -36,7 +36,7 @@ class MarkbookElementWidget extends StatelessWidget{
   Widget build(BuildContext context) {
     return ElevatedButton(
         onPressed: grade >= 2 || completed ? null : () {
-          PopupWidgetHandler.doPopup(context);
+          //PopupWidgetHandler.doPopup(context);
         },
         style: ButtonStyle(
           enableFeedback: true,

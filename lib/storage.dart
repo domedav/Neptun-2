@@ -61,6 +61,7 @@ class DataCache{
     _hasCachedFirstWeekEpoch = false;
     _hasCachedPeriods = false;
     _firstweekOfSemesterEpoch = 0;
+    _isDemoAccount = false;
   }
 
   static final DataCache _instance = DataCache();
@@ -76,6 +77,7 @@ class DataCache{
   late bool? _hasCachedPeriods = false;
   late bool? _hasCachedFirstWeekEpoch = false;
   late int? _firstweekOfSemesterEpoch = 0;
+  late bool? _isDemoAccount = false;
 
   static Future<void> loadData() async{return _instance._loadData();}
 
@@ -111,6 +113,9 @@ class DataCache{
 
     tmp = await getInt('FirstWeekOfSemesterEpoch');
     _firstweekOfSemesterEpoch = tmp ?? 0;
+
+    tmp = await getInt('IsDemoAccount');
+    _isDemoAccount = tmp != null && tmp != 0;
   }
 
   static String? getUsername(){return _instance._username;}
@@ -173,5 +178,11 @@ class DataCache{
   static Future<void> setFirstWeekEpoch(int? value) async{
     _instance._firstweekOfSemesterEpoch = value ?? 0;
     saveInt('FirstWeekOfSemesterEpoch', value ?? 0);
+  }
+
+  static bool? getIsDemoAccount(){return _instance._isDemoAccount;}
+  static Future<void> setIsDemoAccount(int? value) async{
+    _instance._isDemoAccount = value != null && value != 0;
+    saveInt('IsDemoAccount', value ?? 0);
   }
 }
