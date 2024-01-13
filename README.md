@@ -21,4 +21,4 @@ Időszakok és Befizetések fül, kisebb javítások
 Tantárgyak fül, emojik stb...
 
 ## 1.0.0
-Órarend fül, bejelentkezés stb stb alapok lesz
+Órarend fül, bejelentkezés stb... alapok
