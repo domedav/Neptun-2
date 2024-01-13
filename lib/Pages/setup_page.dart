@@ -44,6 +44,9 @@ class _Page1State extends State<Page1> {
     FlutterNativeSplash.remove();
 
     if(widget.fetchData) {
+      if(!storage.DataCache.getHasNetwork()){
+        return;
+      }
       api.InstitutesRequest.fetchInstitudesJSON().then((value) {
         setState(() {
           _institutes = api.InstitutesRequest.getDataFromInstitudesJSON(value);

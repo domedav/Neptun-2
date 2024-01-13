@@ -269,7 +269,7 @@ class PeriodsElementWidget extends StatelessWidget{
             ],
           ),
           Text(
-            !isActive ? '(${Duration(milliseconds: startTime - now).inDays} nap múlva)' : '(${Duration(milliseconds: endTime - now).inDays} nap van hátra)',
+            !isActive ? '(${Duration(milliseconds: startTime - now).inDays + 1} nap múlva)' : '(${Duration(milliseconds: endTime - now).inDays + 1} nap van hátra)',
             style: TextStyle(
               color: Colors.white.withOpacity(0.4),
               fontWeight: FontWeight.w400,

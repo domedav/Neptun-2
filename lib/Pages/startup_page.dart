@@ -25,13 +25,15 @@ class _SplitterState extends State<Splitter>{
     DataCache.loadData().then((value) async {
       final flag = DataCache.getHasCachedFirstWeekEpoch();
 
-      if(DataCache.getHasNetwork() && DataCache.getHasLogin()!){
-        final firstWeekOfSemester = await api.InstitutesRequest.getFirstStudyweek();
-        DataCache.setHasCachedFirstWeekEpoch(1);
-        await DataCache.setFirstWeekEpoch(firstWeekOfSemester);
+      if(flag != null && !flag && DataCache.getHasNetwork() && DataCache.getHasLogin()!){
+        Future.delayed(Duration.zero, () async{
+          final firstWeekOfSemester = await api.InstitutesRequest.getFirstStudyweek();
+          DataCache.setHasCachedFirstWeekEpoch(1);
+          DataCache.setFirstWeekEpoch(firstWeekOfSemester);
+        });
       }
       else if(flag != null && !flag){
-        await DataCache.setFirstWeekEpoch(-1);
+        DataCache.setFirstWeekEpoch(-1);
       }
     }).then((value) {
       Navigator.popUntil(context, (route) => route.willHandlePopInternally);

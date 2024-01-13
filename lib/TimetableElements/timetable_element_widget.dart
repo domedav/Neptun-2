@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../API/api_coms.dart' as api;
+import '../Misc/emojirich_text.dart';
 
 typedef Callback = Future<void> Function();
 
@@ -156,15 +157,18 @@ class FreedayElementWidget extends StatelessWidget{
         child: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: const Center(
-            child: Text(
-              "🥳 Szabadnap! 🥳",
-              textAlign: TextAlign.center,
-              style: TextStyle(
+            child: EmojiRichText(
+              text: "🥳Szabadnap!🥳",
+              defaultStyle: TextStyle(
                 color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
                 fontWeight: FontWeight.w900,
                 fontSize: 34.0,
               ),
-              maxLines: 1,
+              emojiStyle: TextStyle(
+                  color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                  fontSize: 34.0,
+                  fontFamily: "Noto Color Emoji"
+              ),
             ),
         ),
       )

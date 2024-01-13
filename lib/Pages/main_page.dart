@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
+import 'package:neptun2/Misc/emojirich_text.dart';
 import 'package:neptun2/Misc/popup.dart';
+import 'package:neptun2/PaymentsElements/payment_element_widget.dart';
 import '../API/api_coms.dart' as api;
 import '../storage.dart' as storage;
 import '../TimetableElements/timetable_element_widget.dart' as t_table;
@@ -95,7 +97,6 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     calendarTabController = TabController(length: 5, vsync: this);
     bottomnavScrollCntroller = LinkedScrollControllerGroup();
     bottomnavController = bottomnavScrollCntroller.addAndGet();
-    weeksSinceStart = calcPassedWeeks();
 
     Future.delayed(Duration.zero, () async {
       await fetchCalendar();
@@ -120,6 +121,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     }).then((value) {
       setupPeriods();
     });
+
+
+    weeksSinceStart = calcPassedWeeks();
 
     setupCalendarGreetText();
 
@@ -353,7 +357,50 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   }
 
   void _setupPayments(){
+    totalMoney = 0;
+    //order them
+    for (int i = 0; i < paymentsEntries.length; i++){
+      for (int j = i; j < paymentsEntries.length; j++){
+        if(paymentsEntries[j].dueDateMs < paymentsEntries[i].dueDateMs){
+          final tmp = paymentsEntries[i];
+          paymentsEntries[i] = paymentsEntries[j];
+          paymentsEntries[j] = tmp;
+        }
+      }
+    }
 
+    bool isEmpty = true;
+    for(var item in paymentsEntries){
+      if(item.completed){
+        totalMoney += item.ammount;
+          continue;
+      }
+      isEmpty = false;
+      paymentsList.add(PaymentElementWidget(ammount: item.ammount, dueDateMs: item.dueDateMs, name: item.comment));
+    }
+
+    if(isEmpty){
+      paymentsList.add(Container(
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        width: MediaQuery.of(context).size.width,
+        child: const Center(
+          child: EmojiRichText(
+            text: '😇Nem Tartozol😇',
+            defaultStyle: TextStyle(
+              color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+              fontWeight: FontWeight.w900,
+              fontSize: 26.0,
+            ),
+            emojiStyle: TextStyle(
+                color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                fontSize: 26.0,
+                fontFamily: "Noto Color Emoji"
+            ),
+          ),
+        ),
+      ));
+    }
   }
 
   void _setupPeriods(){
@@ -561,6 +608,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   }
 
   Future<void> onCalendarRefresh() async{
+    if(!storage.DataCache.getHasNetwork()){
+      return;
+    }
     clearCalendar();
     await storage.DataCache.setHasCachedCalendar(0);
     await storage.DataCache.setHasCachedFirstWeekEpoch(0);
@@ -568,18 +618,27 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     setupCalendar();
   }
   Future<void> onMarkbookRefresh() async{
+    if(!storage.DataCache.getHasNetwork()){
+      return;
+    }
     clearMarkbook();
     await storage.DataCache.setHasCachedMarkbook(0);
     await fetchMarkbook();
     setupMarkbook();
   }
   Future<void> onPaymentsRefresh() async{
+    if(!storage.DataCache.getHasNetwork()){
+      return;
+    }
     clearPayments();
     await storage.DataCache.setHasCachedPayments(0);
     await fetchPayments();
     setupPayments();
   }
   Future<void> onPeriodsRefresh()async{
+    if(!storage.DataCache.getHasNetwork()){
+      return;
+    }
     clearPeriods();
     await storage.DataCache.setHasCachedPeriods(0);
     await fetchPeriods();
@@ -595,16 +654,17 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
     final timepassSinceSepOne = Duration(milliseconds: (yearlessNow.millisecondsSinceEpoch - sepOne.millisecondsSinceEpoch));
     final weeksPassed = timepassSinceSepOne.inDays / 7;
+    final isWeekend = now.weekday == DateTime.saturday || now.weekday == DateTime.sunday ? 1 : 0;
+
     /*
     // Find the most recent Monday on or before the current date
     final mondayOffset = (now.weekday - 1) % 7;
     final monday = now.subtract(Duration(days: mondayOffset));
 
     final elapsedWeeks = (monday.difference(sepOne).inDays / 7).floor();
-    final isWeekend = now.weekday == DateTime.saturday || now.weekday == DateTime.sunday ? 1 : 0;
 
     return elapsedWeeks + currentWeekOffset - 1 + isWeekend;*/
-    return weeksPassed.floor() + currentWeekOffset - 1;
+    return weeksPassed.floor() + currentWeekOffset - 1 + isWeekend;
   }
 
   @override
@@ -790,9 +850,7 @@ class CalendarPageWidget extends StatelessWidget{
                     RefreshIndicator(
                       onRefresh: onRefresh,
                       child: SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(
-                            decelerationRate: ScrollDecelerationRate.fast
-                        ),
+                        physics: const AlwaysScrollableScrollPhysics(),
                         scrollDirection: Axis.vertical,
                         child: Container(
                           margin: const EdgeInsets.all(15),
@@ -1034,9 +1092,7 @@ class MarkbookPageWidget extends StatelessWidget{
                   child: RefreshIndicator(
                     onRefresh: onRefresh,
                     child: SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(
-                            decelerationRate: ScrollDecelerationRate.fast
-                        ),
+                        physics: const AlwaysScrollableScrollPhysics(),
                         scrollDirection: Axis.vertical,
                         child: Container(
                           margin: const EdgeInsets.all(15),
@@ -1091,18 +1147,37 @@ class PaymentsPageWidget extends StatelessWidget{
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              topnav.TopNavigatorWidget(homePage: homePage, displayString: "Befizetendők", smallHintText: "$totalMoney Ft Van A Neptun Számládon 💸"),
+              //topnav.TopNavigatorWidget(homePage: homePage, displayString: "Befizetendők", smallHintText: "$totalMoney Ft Van A Számládon 💸"),
+              topnav.TopNavigatorWidget(homePage: homePage, displayString: "Befizetendők", smallHintText: "${totalMoney}Ft-ot Költöttél Az Egyetemre 💸"),
               HomePageState.getSeparatorLine(context),
               Expanded(
                   child: RefreshIndicator(
                       onRefresh: onRefresh,
                       child: SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(
-                            decelerationRate: ScrollDecelerationRate.fast
-                        ),
+                        physics: const AlwaysScrollableScrollPhysics(),
                         scrollDirection: Axis.vertical,
                         child: Container(
-
+                          margin: const EdgeInsets.all(15),
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                            color: homePage.paymentsList.isNotEmpty ? Colors.white.withOpacity(0.03) : Colors.transparent,
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              mainAxisSize: MainAxisSize.max,
+                              children: homePage.paymentsList.isNotEmpty ? homePage.paymentsList : <Widget>[
+                                Center(
+                                  child: SizedBox(
+                                    height: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
+                                    width: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
+                                    child: const CircularProgressIndicator(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ]
+                          ),
                         ),
                       )
                   )
@@ -1135,15 +1210,13 @@ class PeriodsPageWidget extends StatelessWidget{
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                topnav.TopNavigatorWidget(homePage: homePage, displayString: "Időszakok", smallHintText: "Jelenleg ${currentSemester != -1 ? "az $currentSemester." : "egy"} félév van 🗓️"),
+                topnav.TopNavigatorWidget(homePage: homePage, displayString: "Időszakok", smallHintText: "Jelenleg ${currentSemester != -1 ? "Az $currentSemester." : "Egy"} Félév Van 🗓️"),
                 HomePageState.getSeparatorLine(context),
                 Expanded(
                     child: RefreshIndicator(
                         onRefresh: onRefresh,
                         child: SingleChildScrollView(
-                          physics: const BouncingScrollPhysics(
-                              decelerationRate: ScrollDecelerationRate.fast
-                          ),
+                          physics: const AlwaysScrollableScrollPhysics(),
                           scrollDirection: Axis.vertical,
                           child: Container(
                             margin: const EdgeInsets.all(15),

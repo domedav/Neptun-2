@@ -297,7 +297,7 @@ class CashinRequest{
     for (var cashin in cashins){
       ls.add(CashinEntry(
           cashin['amount'],
-          int.parse(cashin['deadline'].toString().replaceAll('/Date(', '').replaceAll(')/', '')),
+          int.parse(cashin['deadline'] == null ? '0' : cashin['deadline'].toString().replaceAll('/Date(', '').replaceAll(')/', '')),
           cashin['appellation'],
           cashin['status_name']
       ));

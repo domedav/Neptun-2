@@ -77,7 +77,6 @@ class DataCache{
   late bool? _hasCachedFirstWeekEpoch = false;
   late int? _firstweekOfSemesterEpoch = 0;
 
-
   static Future<void> loadData() async{return _instance._loadData();}
 
   Future<void> _loadData() async{
