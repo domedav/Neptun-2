@@ -12,7 +12,7 @@ Töltsd le a Play Áruházból!
 https://play.google.com/store/apps/details?id=com.domedav.neptun2
 
 ## 1.0.3
-Iőszakok és Befizetések fül, kisebb javítások
+Időszakok és Befizetések fül, kisebb javítások
 
 ## 1.0.2
 Órarend javítások, vizsgaidőpontok, aláírás és aláírás megtagadás + jegyek a tantárgyak fülbe, kisebb UI javítások
