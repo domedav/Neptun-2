@@ -387,6 +387,43 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     calendarTabController.index = currWeekday - 1 > 6 ? 0 : currWeekday - 1;
   }
 
+  void _mbookPopupResult(int result, int idx){
+    if(result == -1){
+      setState(() {
+        final e = markbookList[idx] as mbook.MarkbookElementWidget;
+        setState(() {
+          markbookList[idx] = mbook.MarkbookElementWidget(
+            name: e.name,
+            credit: e.credit,
+            completed: e.completed,
+            grade: e.grade,
+            isFailed: e.isFailed,
+            onPopupResult: e.onPopupResult,
+            listIndex: e.listIndex,
+            ghostGrade: -1,
+          );
+          _markbookCalcGhostAvg();
+        });
+      });
+      return;
+    }
+
+    final grade = result + 1;
+    final e = markbookList[idx] as mbook.MarkbookElementWidget;
+    setState(() {
+      markbookList[idx] = mbook.MarkbookElementWidget(
+        name: e.name,
+        credit: e.credit,
+        completed: e.completed,
+        grade: e.grade,
+        isFailed: e.isFailed,
+        onPopupResult: e.onPopupResult,
+        listIndex: e.listIndex,
+        ghostGrade: grade,
+      );
+      _markbookCalcGhostAvg();
+    });
+  }
   
   void _setupMarkbook(){
     //order them
@@ -403,9 +440,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     // set them up
     totalCredits = 0;
     totalAvg = 0;
-    var currCredits = 0;
     var hasCompleted = false;
     var hasIncomplete = false;
+    int idx = 0;
     for (var item in markbookEntries){
       totalCredits += item.credit;
       if(item.completed){
@@ -419,7 +456,11 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         completed: item.completed,
         grade: item.grade,
         isFailed: item.failState == 1,
+        onPopupResult: _mbookPopupResult,
+        listIndex: idx,
+        ghostGrade: -1,
       ));
+      idx++;
     }
     if(hasCompleted) {
       if(hasIncomplete){
@@ -430,7 +471,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
               color: Colors.white.withOpacity(0.3),
             )
         );
+        idx++;
       }
+
       for (var item in markbookEntries) {
         if (!item.completed) {
           continue;
@@ -441,14 +484,51 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
           completed: item.completed,
           grade: item.grade,
           isFailed: item.failState == 1,
+          onPopupResult: _mbookPopupResult,
+          listIndex: idx,
+          ghostGrade: -1,
         ));
+        idx++;
+      }
+    }
+    _markbookCalcAvg();
+  }
+
+  void _markbookCalcAvg(){
+    var currCredits = 0;
+    for(var item in markbookEntries){
+      if (!item.completed) {
+        continue;
+      }
+      if (item.grade >= 2) {
+        currCredits += item.credit;
+        totalAvg += item.grade * item.credit;
+      }
+    }
+    totalAvg /= currCredits;
+  }
+
+  void _markbookCalcGhostAvg(){
+    var currCredits = 0;
+    totalAvg = 0;
+    for(var item in markbookList){
+      try{
+        final itm = item as mbook.MarkbookElementWidget;
+        if(!itm.completed && itm.ghostGrade == -1){
+          continue;
+        }
         if (item.grade >= 2) {
           currCredits += item.credit;
           totalAvg += item.grade * item.credit;
         }
+        else if(item.ghostGrade != -1){
+          currCredits += item.credit;
+          totalAvg += item.ghostGrade * item.credit;
+        }
       }
-      totalAvg /= currCredits;
+      catch(_){}
     }
+    totalAvg /= currCredits;
   }
 
   void _setupPayments(){

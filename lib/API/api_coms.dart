@@ -234,6 +234,7 @@ class MarkbookRequest{
         Subject(true, 0, 'DEMO tantárgy 10', 0, 0, 0),
         Subject(false, 0, 'DEMO tantárgy 11', 0, 1, 0),
         Subject(false, 10, 'DEMO szellemjegy 1', 1, 0, 0),
+        Subject(true, 2, 'DEMO szellemjegy 2', 1, 0, 0),
       ];
     }
     List<Term> terms = await _APIRequest._getTermIDs();

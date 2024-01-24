@@ -4,14 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:neptun2/Misc/popup.dart';
 import '../Misc/emojirich_text.dart';
 
+typedef Callback = void Function(int, int);
+
 class MarkbookElementWidget extends StatelessWidget{
   final String name;
   final int credit;
   final bool completed;
   final int grade;
   final bool isFailed;
+  final Callback onPopupResult;
+  final int listIndex;
+  final int ghostGrade;
 
   Color getGradeColor(){
+    if(ghostGrade != -1){
+      return Colors.white.withOpacity(.4);
+    }
     switch (grade){
       case 5:
         return Colors.green.shade200;
@@ -28,21 +36,15 @@ class MarkbookElementWidget extends StatelessWidget{
     }
   }
 
-  const MarkbookElementWidget({super.key, required this.name, required this.credit, required this.completed, required this.grade, required this.isFailed});
-
-  void popupResult(int result){
-    if(result == -1){
-      return;
-    }
-    final grade = result + 1;
-    log('$grade');
-  }
+  const MarkbookElementWidget({super.key, required this.name, required this.credit, required this.completed, required this.grade, required this.isFailed, required this.onPopupResult, required this.listIndex, required this.ghostGrade});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
         onPressed: grade >= 2 || credit == 0 ? null : () {
-          PopupWidgetHandler(mode: 0, callback: popupResult);
+          PopupWidgetHandler(mode: 0, callback: (r){
+            onPopupResult(r, listIndex);
+          });
           PopupWidgetHandler.doPopup(context);
         },
         style: ButtonStyle(
@@ -73,7 +75,7 @@ class MarkbookElementWidget extends StatelessWidget{
                     color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
                     fontSize: 19.0,
                     fontFamily: "Noto Color Emoji"
-                  ),
+                    ),
                   ),
                 ),
               // Center
@@ -92,7 +94,7 @@ class MarkbookElementWidget extends StatelessWidget{
                 )
               ),
               Visibility(
-                visible: !completed && isFailed || grade == 1,
+                visible: (!completed && isFailed || grade == 1) && ghostGrade == -1,
                   child: Expanded(
                     flex: 1,
                     child: Column(
@@ -110,7 +112,7 @@ class MarkbookElementWidget extends StatelessWidget{
                   )
               ),
               Visibility(
-                visible: completed,
+                visible: completed || ghostGrade != -1,
                 child: Expanded(
                   flex: 1,
                   child: Column(
@@ -118,13 +120,13 @@ class MarkbookElementWidget extends StatelessWidget{
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      grade < 2 || credit == 0 ?
+                      grade < 2 && ghostGrade == -1 || credit == 0 ?
                       Icon(
                         Icons.check_rounded,
                         color: Colors.green.shade200,
                         size: 26.0,
                       ) : Text(
-                        '$grade',
+                        ghostGrade == -1 ? '$grade' : '$ghostGrade',
                         style: TextStyle(
                             color: getGradeColor(),
                             fontSize: 21.0,
