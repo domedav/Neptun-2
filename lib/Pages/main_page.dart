@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:ui';
 import 'package:flutter/material.dart';
@@ -23,6 +24,15 @@ class HomePage extends StatefulWidget{
 }
 
 class HomePageState extends State<HomePage> with TickerProviderStateMixin{
+
+  static late HomePageState _instance;
+  HomePageState(){
+    _instance = this;
+  }
+
+  static void showBlurPopup(bool b){
+    _instance.setBlurComplex(b);
+  }
 
   bool _showBlur = false;
   void setBlur(bool state){
@@ -61,6 +71,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   late final List<Widget> wednessdayCalendar = <Widget>[].toList();
   late final List<Widget> thursdayCalendar = <Widget>[].toList();
   late final List<Widget> fridayCalendar = <Widget>[].toList();
+  late final List<Widget> saturdayCalendar = <Widget>[].toList();
+  late final List<Widget> sundayCalendar = <Widget>[].toList();
 
   late final List<Widget> markbookList = <Widget>[].toList();
 
@@ -94,7 +106,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       statusBarColor: Color.fromRGBO(0x22, 0x22, 0x22, 1.0), // status bar color
     ));
 
-    calendarTabController = TabController(length: 5, vsync: this);
+    calendarTabController = TabController(length: 7, vsync: this);
     bottomnavScrollCntroller = LinkedScrollControllerGroup();
     bottomnavController = bottomnavScrollCntroller.addAndGet();
 
@@ -127,7 +139,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
     setupCalendarGreetText();
 
-    PopupWidgetHandler(homePage: this);
+    //PopupWidgetHandler(homePage: this, mode: -1);
 
     //api.InstitutesRequest.getFirstStudyweek();
 
@@ -177,13 +189,14 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   void clearCalendar(){
     setState(() {
       weeksSinceStart = calcPassedWeeks();
-      canDoCalendarPaging = false;
       calendarEntries.clear();
       mondayCalendar.clear();
       tuesdayCalendar.clear();
       wednessdayCalendar.clear();
       thursdayCalendar.clear();
       fridayCalendar.clear();
+      saturdayCalendar.clear();
+      sundayCalendar.clear();
     });
   }
 
@@ -233,48 +246,122 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   }
 
   void _setupCalendar(){
-    int i = 1;
+    int idx = 1;
     int prev = 0;
+    api.CalendarEntry? prevEntry;
     final currWeekday = DateTime.now().weekday;
     for(var item in calendarEntries){
+      if(!item.isExam){
+        continue;
+      }
       final wkday = DateTime.fromMillisecondsSinceEpoch(item.startEpoch).weekday;
       if(prev != wkday){
-        i = 1;
+        idx = 1;
         prev = wkday;
       }
       switch(wkday){
         case 1:
           mondayCalendar.add(t_table.TimetableElementWidget(
             entry: item,
-            position: i,
+            position: idx,
           ));
           break;
         case 2:
           tuesdayCalendar.add(t_table.TimetableElementWidget(
             entry: item,
-            position: i,
+            position: idx,
           ));
           break;
         case 3:
           wednessdayCalendar.add(t_table.TimetableElementWidget(
             entry: item,
-            position: i,
+            position: idx,
           ));
           break;
         case 4:
           thursdayCalendar.add(t_table.TimetableElementWidget(
             entry: item,
-            position: i,
+            position: idx,
           ));
           break;
         case 5:
           fridayCalendar.add(t_table.TimetableElementWidget(
             entry: item,
-            position: i,
+            position: idx,
+          ));
+          break;
+        case 6:
+          saturdayCalendar.add(t_table.TimetableElementWidget(
+            entry: item,
+            position: idx,
+          ));
+          break;
+        case 7:
+          sundayCalendar.add(t_table.TimetableElementWidget(
+            entry: item,
+            position: idx,
           ));
           break;
       }
-      i++;
+      idx++;
+    }
+    for(var item in calendarEntries){
+      if(item.isExam){
+        continue;
+      }
+      final wkday = DateTime.fromMillisecondsSinceEpoch(item.startEpoch).weekday;
+      if(prev != wkday){
+        idx = 1;
+        prev = wkday;
+      }
+      switch(wkday){
+        case 1:
+          mondayCalendar.add(t_table.TimetableElementWidget(
+            entry: item,
+            position: idx,
+          ));
+          break;
+        case 2:
+          tuesdayCalendar.add(t_table.TimetableElementWidget(
+            entry: item,
+            position: idx,
+          ));
+          break;
+        case 3:
+          wednessdayCalendar.add(t_table.TimetableElementWidget(
+            entry: item,
+            position: idx,
+          ));
+          break;
+        case 4:
+          thursdayCalendar.add(t_table.TimetableElementWidget(
+            entry: item,
+            position: idx,
+          ));
+          break;
+        case 5:
+          fridayCalendar.add(t_table.TimetableElementWidget(
+            entry: item,
+            position: idx,
+          ));
+          break;
+        case 6:
+          saturdayCalendar.add(t_table.TimetableElementWidget(
+            entry: item,
+            position: idx,
+          ));
+          break;
+        case 7:
+          sundayCalendar.add(t_table.TimetableElementWidget(
+            entry: item,
+            position: idx,
+          ));
+          break;
+      }
+      if(prevEntry == null || item.startEpoch != prevEntry.startEpoch){
+        prevEntry = item;
+        idx++;
+      }
     }
     if(mondayCalendar.isEmpty){
       mondayCalendar.add(const t_table.FreedayElementWidget());
@@ -291,8 +378,16 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     if(fridayCalendar.isEmpty){
       fridayCalendar.add(const t_table.FreedayElementWidget());
     }
-    calendarTabController.index = currWeekday - 1 > 4 ? 0 : currWeekday - 1;
+    if(saturdayCalendar.isEmpty){
+      saturdayCalendar.add(const t_table.FreedayElementWidget());
+    }
+    if(sundayCalendar.isEmpty){
+      sundayCalendar.add(const t_table.FreedayElementWidget());
+    }
+    calendarTabController.index = currWeekday - 1 > 6 ? 0 : currWeekday - 1;
   }
+
+  
   void _setupMarkbook(){
     //order them
     for (int i = 0; i < markbookEntries.length; i++){
@@ -454,11 +549,11 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     }
   }
 
-  Future<void> stepCalendar_Back() async{
+  Future<void> stepCalendarBack() async{
     currentWeekOffset--;
     await onCalendarRefresh();
   }
-  Future<void> stepCalendar_Forward() async{
+  Future<void> stepCalendarForward() async{
     currentWeekOffset++;
     await onCalendarRefresh();
   }
@@ -470,9 +565,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     if(!hasCachedCalendar && !storage.DataCache.getHasNetwork()){
       return;
     }
-
     // if we had a save, and the cached value is not older than a day, we can load that up
-    if(hasCachedCalendar && cacheTime != null && (DateTime.now().millisecondsSinceEpoch - DateTime.parse(cacheTime).millisecondsSinceEpoch) < const Duration(hours: 24).inMilliseconds) {
+    if(hasCachedCalendar && cacheTime != null && (DateTime.now().millisecondsSinceEpoch - DateTime.parse(cacheTime).millisecondsSinceEpoch) < const Duration(hours: 24).inMilliseconds && !storage.DataCache.getIsDemoAccount()!) {
       final len = await storage.getInt('CachedCalendarLength');
       for(int i = 0; i < len!; i++){
         final calEntry = await storage.getString('CachedCalendar_$i');
@@ -482,8 +576,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       return;
     }
     //otherwise, just fetch again
-    final isWeekend = DateTime.now().weekday == DateTime.saturday || DateTime.now().weekday == DateTime.sunday ? 1 : 0;
-    final request = await api.CalendarRequest.makeCalendarRequest(api.CalendarRequest.getCalendarOneWeekJSON(storage.DataCache.getUsername()!, storage.DataCache.getPassword()!, currentWeekOffset + isWeekend));
+    //final isWeekend = DateTime.now().weekday == DateTime.saturday || DateTime.now().weekday == DateTime.sunday ? 1 : 0;
+    final request = await api.CalendarRequest.makeCalendarRequest(api.CalendarRequest.getCalendarOneWeekJSON(storage.DataCache.getUsername()!, storage.DataCache.getPassword()!, currentWeekOffset/* + isWeekend*/));
     calendarEntries = api.CalendarRequest.getCalendarEntriesFromJSON(request);
     if(currentWeekOffset == 1) {
       storage.saveInt('CachedCalendarLength', calendarEntries.length);
@@ -607,15 +701,25 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     storage.DataCache.setHasCachedPeriods(1);
   }
 
+  Timer? _calendarTimer;
+
   Future<void> onCalendarRefresh() async{
     if(!storage.DataCache.getHasNetwork()){
       return;
     }
+    if(_calendarTimer != null){
+      _calendarTimer!.cancel();
+    }
     clearCalendar();
-    await storage.DataCache.setHasCachedCalendar(0);
-    await storage.DataCache.setHasCachedFirstWeekEpoch(0);
-    await fetchCalendar();
-    setupCalendar();
+    _calendarTimer = Timer(const Duration(milliseconds: 700), () async {
+      setState(() {
+        canDoCalendarPaging = false;
+      });
+      await storage.DataCache.setHasCachedCalendar(0);
+      await storage.DataCache.setHasCachedFirstWeekEpoch(0);
+      await fetchCalendar();
+      setupCalendar();
+    });
   }
   Future<void> onMarkbookRefresh() async{
     if(!storage.DataCache.getHasNetwork()){
@@ -654,7 +758,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
     final timepassSinceSepOne = Duration(milliseconds: (yearlessNow.millisecondsSinceEpoch - sepOne.millisecondsSinceEpoch));
     final weeksPassed = timepassSinceSepOne.inDays / 7;
-    final isWeekend = now.weekday == DateTime.saturday || now.weekday == DateTime.sunday ? 1 : 0;
+    //final isWeekend = now.weekday == DateTime.saturday || now.weekday == DateTime.sunday ? 1 : 0;
 
     /*
     // Find the most recent Monday on or before the current date
@@ -664,7 +768,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     final elapsedWeeks = (monday.difference(sepOne).inDays / 7).floor();
 
     return elapsedWeeks + currentWeekOffset - 1 + isWeekend;*/
-    return weeksPassed.floor() + currentWeekOffset - 1 + isWeekend;
+    return weeksPassed.floor() + currentWeekOffset - 1;// + isWeekend;
   }
 
   @override
@@ -676,6 +780,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     wednessdayCalendar.clear();
     thursdayCalendar.clear();
     fridayCalendar.clear();
+    saturdayCalendar.clear();
+    sundayCalendar.clear();
     markbookEntries.clear();
     markbookList.clear();
     calendarTabController.dispose();
@@ -757,7 +863,7 @@ class CalendarPageWidget extends StatelessWidget{
   const CalendarPageWidget({super.key, required this.homePage, required this.greetText});
 
   Future<void> onRefresh() async{
-    homePage.onCalendarRefresh();
+    await homePage.onCalendarRefresh();
   }
 
   @override
@@ -805,6 +911,18 @@ class CalendarPageWidget extends StatelessWidget{
                         text: "Péntek",
                       ),
                     ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: const Tab(
+                        text: "Szombat",
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: const Tab(
+                        text: "Vasárnap",
+                      ),
+                    ),
                   ],
                   isScrollable: true,
                   tabAlignment: TabAlignment.start,
@@ -837,8 +955,8 @@ class CalendarPageWidget extends StatelessWidget{
                   week: homePage.weeksSinceStart,
                   from: homePage.calendarEntries.isEmpty ? null : DateTime.fromMillisecondsSinceEpoch(homePage.calendarEntries[0].startEpoch),
                   to: homePage.calendarEntries.isEmpty ? DateTime.now() : DateTime.fromMillisecondsSinceEpoch(homePage.calendarEntries[homePage.calendarEntries.length - 1].endEpoch),
-                  onBackPressed: homePage.stepCalendar_Back,
-                  onForwardPressed: homePage.stepCalendar_Forward,
+                  onBackPressed: homePage.stepCalendarBack,
+                  onForwardPressed: homePage.stepCalendarForward,
                   canDoPaging: homePage.canDoCalendarPaging,
                 ),
               ),
@@ -992,6 +1110,64 @@ class CalendarPageWidget extends StatelessWidget{
                         ),
                       ),
                     ),
+                    RefreshIndicator(
+                      onRefresh: onRefresh,
+                      child: SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        scrollDirection: Axis.vertical,
+                        child: Container(
+                          margin: const EdgeInsets.all(15),
+                          decoration: BoxDecoration(
+                            color: homePage.saturdayCalendar.isNotEmpty ? Colors.white.withOpacity(0.03) : Colors.transparent,
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            mainAxisSize: MainAxisSize.max,
+                            children: homePage.saturdayCalendar.isNotEmpty ? homePage.saturdayCalendar : <Widget>[
+                              Center(
+                                child: SizedBox(
+                                  height: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
+                                  width: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
+                                  child: const CircularProgressIndicator(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    RefreshIndicator(
+                      onRefresh: onRefresh,
+                      child: SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        scrollDirection: Axis.vertical,
+                        child: Container(
+                          margin: const EdgeInsets.all(15),
+                          decoration: BoxDecoration(
+                            color: homePage.sundayCalendar.isNotEmpty ? Colors.white.withOpacity(0.03) : Colors.transparent,
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            mainAxisSize: MainAxisSize.max,
+                            children: homePage.sundayCalendar.isNotEmpty ? homePage.sundayCalendar : <Widget>[
+                              Center(
+                                child: SizedBox(
+                                  height: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
+                                  width: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
+                                  child: const CircularProgressIndicator(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -1004,9 +1180,9 @@ class CalendarPageWidget extends StatelessWidget{
       floatingActionButton: Visibility(
         visible: homePage.currentWeekOffset != 1 && homePage.canDoCalendarPaging,
         child: FloatingActionButton(
-          onPressed: homePage.canDoCalendarPaging ? (() {
+          onPressed: homePage.canDoCalendarPaging ? (() async {
             homePage.currentWeekOffset = 1;
-            homePage.onCalendarRefresh();
+            await homePage.onCalendarRefresh();
           }
           ) : null,
           backgroundColor: const Color.fromRGBO(0x4F, 0x69, 0x6E, 1.0),

@@ -134,7 +134,19 @@ class PeriodsElementWidget extends StatelessWidget{
           ),
         );
       default:
-        return null;
+        return const EmojiRichText(
+          text: '❓',
+          defaultStyle: TextStyle(
+            color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+            fontWeight: FontWeight.w900,
+            fontSize: 20.0,
+          ),
+          emojiStyle: TextStyle(
+              color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+              fontSize: 20.0,
+              fontFamily: "Noto Color Emoji"
+          ),
+        );
     }
   }
 

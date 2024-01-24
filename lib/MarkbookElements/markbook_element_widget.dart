@@ -11,8 +11,6 @@ class MarkbookElementWidget extends StatelessWidget{
   final int grade;
   final bool isFailed;
 
-  static double sliderValue = 1;
-
   Color getGradeColor(){
     switch (grade){
       case 5:
@@ -32,11 +30,20 @@ class MarkbookElementWidget extends StatelessWidget{
 
   const MarkbookElementWidget({super.key, required this.name, required this.credit, required this.completed, required this.grade, required this.isFailed});
 
+  void popupResult(int result){
+    if(result == -1){
+      return;
+    }
+    final grade = result + 1;
+    log('$grade');
+  }
+
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-        onPressed: grade >= 2 || completed ? null : () {
-          //PopupWidgetHandler.doPopup(context);
+        onPressed: grade >= 2 || credit == 0 ? null : () {
+          PopupWidgetHandler(mode: 0, callback: popupResult);
+          PopupWidgetHandler.doPopup(context);
         },
         style: ButtonStyle(
           enableFeedback: true,

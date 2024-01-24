@@ -92,7 +92,7 @@ class InstitutesRequest{
   static Future<int?> getFirstStudyweek() async{
     final periods = await PeriodsRequest.getPeriods();
     if(storage.DataCache.getIsDemoAccount()!){
-      return DateTime.now().millisecondsSinceEpoch;
+      return DateTime(2023, 9, 1).millisecondsSinceEpoch;
     }
     final now = DateTime.now().millisecondsSinceEpoch;
     if(periods == null){
@@ -120,7 +120,21 @@ class InstitutesRequest{
 class CalendarRequest{
   static List<CalendarEntry> getCalendarEntriesFromJSON(String json){
     if(storage.DataCache.getIsDemoAccount()!){
-      return <CalendarEntry>[CalendarEntry(DateTime(2024, 1, 14).millisecondsSinceEpoch.toString(), DateTime.now().millisecondsSinceEpoch.toString(), 'DEMO helyszín', 'DEMO név', false)];
+      final now = DateTime.now();
+      return <CalendarEntry>[
+        CalendarEntry(DateTime(now.year, now.month, 1, 0, 0, 0).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 1, 23, 23, 23).millisecondsSinceEpoch.toString(), 'DEMO helyszín 1', 'DEMO név', false),
+        CalendarEntry(DateTime(now.year, now.month, 2, 1, 1, 1).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 2, 22, 22, 22).millisecondsSinceEpoch.toString(), 'DEMO helyszín 2', 'DEMO név', false),
+        CalendarEntry(DateTime(now.year, now.month, 3, 2, 2, 2).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 3, 11, 11, 11).millisecondsSinceEpoch.toString(), 'DEMO helyszín 3', 'DEMO név', false),
+        CalendarEntry(DateTime(now.year, now.month, 4, 3, 3, 3).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 4, 10, 10, 10).millisecondsSinceEpoch.toString(), 'DEMO helyszín 4', 'DEMO név', false),
+        CalendarEntry(DateTime(now.year, now.month, 4, 3, 3, 3).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 4, 10, 10, 10).millisecondsSinceEpoch.toString(), 'DEMO helyszín 4', 'DEMO vizsga', true),
+        CalendarEntry(DateTime(now.year, now.month, 4, 3, 3, 3).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 4, 10, 10, 10).millisecondsSinceEpoch.toString(), 'DEMO helyszín 4', 'DEMO név', false),
+        CalendarEntry(DateTime(now.year, now.month, 4, 3, 3, 3).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 4, 14, 10, 10).millisecondsSinceEpoch.toString(), 'DEMO helyszín 4', 'DEMO név', false),
+        CalendarEntry(DateTime(now.year, now.month, 4, 3, 3, 3).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 4, 19, 10, 10).millisecondsSinceEpoch.toString(), 'DEMO helyszín 5', 'DEMO név', false),
+        CalendarEntry(DateTime(now.year, now.month, 5, 4, 4, 4).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 5, 9, 9, 9).millisecondsSinceEpoch.toString(), 'DEMO helyszín 5', 'DEMO név', false),
+        CalendarEntry(DateTime(now.year, now.month, 5, 6, 4, 4).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 5, 12, 9, 9).millisecondsSinceEpoch.toString(), 'DEMO helyszín 8', 'DEMO név', false),
+        CalendarEntry(DateTime(now.year, now.month, 6, 5, 5 ,5).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 6, 20, 20, 20).millisecondsSinceEpoch.toString(), 'DEMO helyszín 6', 'DEMO név', false),
+        CalendarEntry(DateTime(now.year, now.month, 7, 6, 6, 6).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 7, 6, 7, 7).millisecondsSinceEpoch.toString(), 'DEMO helyszín 7', 'DEMO név', false),
+      ];
     }
     var list = <CalendarEntry>[].toList();
     Map<String, dynamic> map = conv.json.decode(json);
@@ -206,7 +220,21 @@ class MarkbookRequest{
 
   static Future<List<Subject>?> getMarkbookSubjects() async{
     if(storage.DataCache.getIsDemoAccount()!){
-      return <Subject>[Subject(false, 30, 'DEMO tantárgy', 0, 4, 0)];
+      return <Subject>[
+        Subject(false, 1, 'DEMO tantárgy 1', 0, 4, 0),
+        Subject(false, 1, 'DEMO tantárgy 12', 0, 0, 0),
+        Subject(true, 2, 'DEMO tantárgy 2', 0, 4, 0),
+        Subject(true, 4, 'DEMO tantárgy 3', 0, 2, 0),
+        Subject(true, 1, 'DEMO tantárgy 4', 0, 1, 0),
+        Subject(true, 2, 'DEMO tantárgy 5', 0, 2, 0),
+        Subject(true, 3, 'DEMO tantárgy 6', 0, 3, 0),
+        Subject(true, 4, 'DEMO tantárgy 7', 0, 4, 0),
+        Subject(true, 5, 'DEMO tantárgy 8', 0, 5, 0),
+        Subject(true, 0, 'DEMO tantárgy 9', 0, 1, 0),
+        Subject(true, 0, 'DEMO tantárgy 10', 0, 0, 0),
+        Subject(false, 0, 'DEMO tantárgy 11', 0, 1, 0),
+        Subject(false, 10, 'DEMO szellemjegy 1', 1, 0, 0),
+      ];
     }
     List<Term> terms = await _APIRequest._getTermIDs();
     if(terms.isEmpty){
@@ -306,7 +334,14 @@ class MarkbookRequest{
 class CashinRequest{
   static Future<List<CashinEntry>> getAllCashins() async{
     if(storage.DataCache.getIsDemoAccount()!){
-      return <CashinEntry>[CashinEntry(87878, 999999999, 'DEMO befizetés', 'teljesítve')];
+      final now = DateTime.now();
+      return <CashinEntry>[
+        CashinEntry(10000, DateTime(now.year + 1, now.month).millisecondsSinceEpoch, 'DEMO befizetés 1', 'aktív'),
+        CashinEntry(70, DateTime(now.year + 1, now.month).millisecondsSinceEpoch, 'DEMO befizetés 2', 'teljesített'),
+        CashinEntry(-1, DateTime(now.year - 1, now.month).millisecondsSinceEpoch, 'DEMO befizetés 3', 'aktív'),
+        CashinEntry(-1, DateTime(now.year - 1, now.month).millisecondsSinceEpoch, 'DEMO befizetés 4', 'teljesített'),
+        CashinEntry(1000, 0, 'DEMO befizetés 5', 'aktív'),
+      ];
     }
     final username = storage.DataCache.getUsername();
     final password = storage.DataCache.getPassword();
@@ -341,7 +376,18 @@ class PeriodsRequest{
 
   static Future<List<PeriodEntry>?> getPeriods() async{
     if(storage.DataCache.getIsDemoAccount()!){
-      return <PeriodEntry>[PeriodEntry('jegybeírási időszak', DateTime.now().millisecondsSinceEpoch - 20000, DateTime.now().millisecondsSinceEpoch + 1000000, 1)];
+      final now = DateTime.now();
+      return <PeriodEntry>[
+        PeriodEntry('előzetes tárgyjelentkezés', DateTime(now.year, now.month, now.day - 2).millisecondsSinceEpoch, DateTime(now.year, now.month, now.day + 1).millisecondsSinceEpoch, 1),
+        PeriodEntry('jegybeírási időszak', DateTime(now.year, now.month, now.day - 2).millisecondsSinceEpoch, DateTime(now.year, now.month, now.day + 2).millisecondsSinceEpoch, 1),
+        PeriodEntry('bejelentkezési időszak', DateTime(now.year, now.month, now.day - 2).millisecondsSinceEpoch, DateTime(now.year, now.month, now.day +7).millisecondsSinceEpoch, 1),
+        PeriodEntry('megajánlott jegy beírási időszak', DateTime(now.year, now.month, now.day - 2).millisecondsSinceEpoch, DateTime(now.year, now.month, now.day + 14).millisecondsSinceEpoch, 1),
+        PeriodEntry('végleges tárgyjelentkezés', DateTime(now.year, now.month, now.day - 2).millisecondsSinceEpoch, DateTime(now.year, now.month + 1, now.day).millisecondsSinceEpoch, 1),
+        PeriodEntry('kurzusjelentkezési időszak', DateTime(now.year, now.month, now.day - 2).millisecondsSinceEpoch, DateTime(now.year, now.month + 2, now.day).millisecondsSinceEpoch, 2),
+        PeriodEntry('szorgalmi időszak', DateTime(now.year, now.month, now.day + 1).millisecondsSinceEpoch, DateTime(now.year, now.month + 3, now.day).millisecondsSinceEpoch, 2),
+        PeriodEntry('vizsgajelentkezési időszak', DateTime(now.year, now.month, now.day + 20).millisecondsSinceEpoch, DateTime(now.year + 1, now.month, now.day).millisecondsSinceEpoch, 3),
+        PeriodEntry('none', DateTime(now.year, now.month + 1, now.day).millisecondsSinceEpoch, DateTime(now.year + 1, now.month, now.day).millisecondsSinceEpoch, 4),
+      ];
     }
     final terms = await _APIRequest._getTermIDs();
     if(terms.isEmpty){
@@ -536,7 +582,7 @@ class PeriodEntry{
   late int partofSemester;
   late PeriodType type;
 
-  PeriodEntry(this.name, startEpoch, endEpoch, this.partofSemester){
+  PeriodEntry(this.name, int startEpoch, int endEpoch, this.partofSemester){
     final startEp = DateTime.fromMillisecondsSinceEpoch(startEpoch);
     final correctedStartEpoch = DateTime(startEp.year, startEp.month, startEp.day);
     this.startEpoch = correctedStartEpoch.millisecondsSinceEpoch;

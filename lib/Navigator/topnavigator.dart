@@ -74,7 +74,11 @@ class TopNavigatorWidget extends StatelessWidget{
                       margin: const EdgeInsets.fromLTRB(10, 0, 10, 1),
                       child: Text(
                           displayString,
-                          style: Theme.of(context).textTheme.headlineMedium
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 22.0
+                          ),
                       ),
                     ),
                     Container(
@@ -82,10 +86,10 @@ class TopNavigatorWidget extends StatelessWidget{
                       child: EmojiRichText(
                           text: smallHintText,
                           defaultStyle: const TextStyle(
-                              fontSize: 13.0
+                              fontSize: 12.0
                           ),
                           emojiStyle: const TextStyle(
-                            fontSize: 14.5,
+                            fontSize: 13.5,
                             fontFamily: "Noto Color Emoji"
                           )
                       ),

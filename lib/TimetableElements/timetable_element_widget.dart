@@ -189,7 +189,9 @@ class WeekoffseterElementWidget extends StatelessWidget{
       return;
     }
 
-    displayString = "$week. Hét\n($startMonth $startDay. - $endMonth $endDay.)";
+    displayString = "$week. Hét";
+    displayString2 = "($startMonth $startDay. - $endMonth $endDay.)";
+    renderDisplay2 = true;
   }
 
   final bool canDoPaging;
@@ -201,7 +203,9 @@ class WeekoffseterElementWidget extends StatelessWidget{
   final Callback onBackPressed;
   final Callback onForwardPressed;
 
-  late String displayString = "NULL";
+  late String displayString = "ERR";
+  late String displayString2 = "";
+  late bool renderDisplay2 = false;
 
   @override
   Widget build(BuildContext context) {
@@ -214,23 +218,41 @@ class WeekoffseterElementWidget extends StatelessWidget{
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             IconButton(
-                onPressed: week <= 1 || !canDoPaging ? null : onBackPressed,
-                icon: const Icon(Icons.arrow_back_rounded)
+              onPressed: week <= 1 || !canDoPaging ? null : onBackPressed,
+              icon: const Icon(Icons.arrow_back_rounded),
             ),
             Expanded(
-                child: Text(
-                  displayString,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 16.0,
-                  ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      displayString,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16.0,
+                      ),
+                    ),
+                    renderDisplay2 ?
+                    Text(
+                      displayString2,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(.6),
+                        fontWeight: FontWeight.w300,
+                        fontSize: 12.0,
+                      ),
+                    ) :
+                    const SizedBox(),
+                  ],
                 ),
             ),
             IconButton(
-                onPressed: week >= 52 || !canDoPaging ? null : onForwardPressed,
-                icon: const Icon(Icons.arrow_forward_rounded)
+              onPressed: week >= 52 || !canDoPaging ? null : onForwardPressed,
+              icon: const Icon(Icons.arrow_forward_rounded)
             ),
           ],
         ),

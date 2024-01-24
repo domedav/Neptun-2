@@ -17,11 +17,19 @@ class PaymentElementWidget extends StatelessWidget{
     final nowMs = DateTime.now().millisecondsSinceEpoch;
     final dueDate = DateTime.fromMillisecondsSinceEpoch(dueDateMs);
     final isNonTimed = dueDateMs <= 0;
+    final isMissed = dueDateMs < nowMs && !isNonTimed;
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      width: MediaQuery.of(context).size.width,
+      margin: const EdgeInsets.all(8),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+      decoration: isMissed ? BoxDecoration(
+        borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+        color: const Color.fromRGBO(0xBF, 0x86, 0x86, .05),
+        border: Border.all(
+          color: Colors.redAccent.withOpacity(.4),
+          width: 1
+        ),
+      ) : null,
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
@@ -40,16 +48,16 @@ class PaymentElementWidget extends StatelessWidget{
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              const EmojiRichText(
-                text: '💰',
-                defaultStyle: TextStyle(
+              EmojiRichText(
+                text: isMissed ? '🙉' : '💰',
+                defaultStyle: const TextStyle(
                   color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
                   fontWeight: FontWeight.w900,
                   fontSize: 20.0,
                 ),
                 emojiStyle: TextStyle(
-                    color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
-                    fontSize: 20.0,
+                    color: const Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                    fontSize: isMissed ? 26.1 : 20.0,
                     fontFamily: "Noto Color Emoji"
                 ),
               ),
@@ -96,11 +104,11 @@ class PaymentElementWidget extends StatelessWidget{
             ],
           ),
           !isNonTimed ? Text(
-            '(${Duration(milliseconds: dueDateMs - nowMs).inDays + 1} nap van hátra)',
+            isMissed ? '(${-(Duration(milliseconds: dueDateMs - nowMs).inDays + 1)} nappal lekésve)' : '(${Duration(milliseconds: dueDateMs - nowMs).inDays + 1} nap van hátra)',
             style: TextStyle(
               color: Colors.white.withOpacity(0.4),
               fontWeight: FontWeight.w400,
-              fontSize: 11.0,
+              fontSize: isMissed ? 14.0 : 11.0,
             ),
             textAlign: TextAlign.center,
           ) : const SizedBox(),
