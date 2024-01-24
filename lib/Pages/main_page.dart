@@ -82,7 +82,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   late final LinkedScrollControllerGroup bottomnavScrollCntroller;
   late final ScrollController bottomnavController;
 
-  bool canDoCalendarPaging = true;
+  bool canDoCalendarPaging = false;
   int weeksSinceStart = 1;
   int currentWeekOffset = 1;
   late TabController calendarTabController;
@@ -558,7 +558,6 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       paymentsList.add(Container(
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-        width: MediaQuery.of(context).size.width,
         child: const Center(
           child: EmojiRichText(
             text: '😇Nem Tartozol😇',

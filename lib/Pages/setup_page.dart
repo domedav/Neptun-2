@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -26,7 +27,7 @@ class _Page1State extends State<Page1> {
 
   bool drawNoInternet = false;
 
-  // This method is called when the widget is inserted into the tree.
+
   @override
   void initState() {
     super.initState();
@@ -45,9 +46,10 @@ class _Page1State extends State<Page1> {
 
     FlutterNativeSplash.remove();
 
-    Future.delayed(const Duration(seconds: 2),(){
+    Future.delayed(Duration.zero,()async{
+      final hasNetwork = await Connectivity().checkConnectivity() == ConnectivityResult.none;
       setState(() {
-        drawNoInternet = true;
+        drawNoInternet = hasNetwork;
       });
     });
 
