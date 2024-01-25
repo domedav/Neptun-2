@@ -410,6 +410,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   }
 
   void _fillOneCalendarElement(BuildContext context, List<Widget> w, String name, bool isLoading){
+    /*if(!isLoading && w.isEmpty){
+      return;
+    }*/
     calendarTabs.add(Container(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Tab(
