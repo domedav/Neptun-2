@@ -689,20 +689,36 @@ class Generic{
   }
 
   static String randomLoadingComment(){
-    final gen = Random().nextInt(100) % 6;
+    final gen = Random().nextInt(100) % 14;
     switch(gen){
       case 0:
-        return 'Dolgoznak azok a neptun szerverek.';
+        return 'Úgy dolgoznak a Neptun szerverek, mint a cigányok...';
       case 1:
         return 'Az SDA Informatika egy nagyon jó cég.';
       case 2:
-        return 'Légy türelmes, vizet borított egy cica a szerverekre.';
+        return 'Légy türelmes, egy patkány miatt zárlatos lett az egyik szerver.';
       case 3:
-        return 'Normális szerverek? Minek arra költeni.';
+        return 'Előbb hiszem el, hogy az Északi-sarkon is vannak pingvinek, minthogy a Neptun szervereire pénzt költöttek';
       case 4:
-        return 'Már bármelyik milleniumba betölthet.';
+        return 'Már bármelyik milleniumba betölthet...';
       case 5:
         return 'Áramszünet van az SDA Informatikánál.';
+      case 6:
+        return 'Neptun szerverei olyan megbízhatóak, bankolni is lehetne rajtuk.';
+      case 7:
+        return 'SDA jelentése: Sok Dagadt Analfabéta.\nEgy normális mobilappot nem sikerült összehoziuk.';
+      case 8:
+        return 'Fogadni merek, mire ezt elolvasod, még mindíg a Neptun szervereire vársz.';
+      case 9:
+        return '(ChatGPT)\nHa az SDA Informatika supportja egy GPS lenne, egyenesen egy tóba vezetne – irányvesztés a specialitásuk, és az problémákban való fuldoklás az erősségük.';
+      case 10:
+        return '(ChatGPT)\nAz SDA Informatika csapata olyan, mintha egy viziló lenne a pilóta egy tüzijátékkal, amivel próbálja elérni a Holdat – nem csak nevetséges, de az egészet rossz nézni.';
+      case 11:
+        return '(ChatGPT)\nAz SDA Informatika supportja olyan, mint az UFO-k – az emberek állítják, hogy létezik, de bizonyíték nincs.';
+      case 12:
+        return '(ChatGPT)\nAz SDA Informatika technológiai fejlesztései olyanok, mintha egy bohóc próbálna csúcstechnológiát kitalálni – a végeredmény kaotikus, és nem éppen az innováció csúcsa.';
+      case 13:
+        return '(ChatGPT)\nAz SDA Informatika munkakultúrája olyan, mintha egy bohóciskolában lenne az ember – kacagás és zűrzavar mindenütt, de az értékes eredmények hiányoznak.';
       default:
         return 'Neptun 2';
     }
