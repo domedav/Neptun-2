@@ -1,6 +1,7 @@
 import 'dart:convert' as conv;
 import 'dart:developer';
 import 'dart:io';
+import 'dart:math';
 import 'package:http/http.dart' as http;
 import '../storage.dart' as storage;
 
@@ -122,9 +123,9 @@ class CalendarRequest{
     if(storage.DataCache.getIsDemoAccount()!){
       final now = DateTime.now();
       return <CalendarEntry>[
-        CalendarEntry(DateTime(now.year, now.month, 1, 0, 0, 0).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 1, 23, 23, 23).millisecondsSinceEpoch.toString(), 'DEMO helyszín 1', 'DEMO név', false),
+        //CalendarEntry(DateTime(now.year, now.month, 1, 0, 0, 0).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 1, 23, 23, 23).millisecondsSinceEpoch.toString(), 'DEMO helyszín 1', 'DEMO név', false),
         CalendarEntry(DateTime(now.year, now.month, 2, 1, 1, 1).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 2, 22, 22, 22).millisecondsSinceEpoch.toString(), 'DEMO helyszín 2', 'DEMO név', false),
-        CalendarEntry(DateTime(now.year, now.month, 3, 2, 2, 2).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 3, 11, 11, 11).millisecondsSinceEpoch.toString(), 'DEMO helyszín 3', 'DEMO név', false),
+        //CalendarEntry(DateTime(now.year, now.month, 3, 2, 2, 2).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 3, 11, 11, 11).millisecondsSinceEpoch.toString(), 'DEMO helyszín 3', 'DEMO név', false),
         CalendarEntry(DateTime(now.year, now.month, 4, 3, 3, 3).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 4, 10, 10, 10).millisecondsSinceEpoch.toString(), 'DEMO helyszín 4', 'DEMO név', false),
         CalendarEntry(DateTime(now.year, now.month, 4, 3, 3, 3).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 4, 10, 10, 10).millisecondsSinceEpoch.toString(), 'DEMO helyszín 4', 'DEMO vizsga', true),
         CalendarEntry(DateTime(now.year, now.month, 4, 3, 3, 3).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 4, 10, 10, 10).millisecondsSinceEpoch.toString(), 'DEMO helyszín 4', 'DEMO név', false),
@@ -132,7 +133,7 @@ class CalendarRequest{
         CalendarEntry(DateTime(now.year, now.month, 4, 3, 3, 3).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 4, 19, 10, 10).millisecondsSinceEpoch.toString(), 'DEMO helyszín 5', 'DEMO név', false),
         CalendarEntry(DateTime(now.year, now.month, 5, 4, 4, 4).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 5, 9, 9, 9).millisecondsSinceEpoch.toString(), 'DEMO helyszín 5', 'DEMO név', false),
         CalendarEntry(DateTime(now.year, now.month, 5, 6, 4, 4).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 5, 12, 9, 9).millisecondsSinceEpoch.toString(), 'DEMO helyszín 8', 'DEMO név', false),
-        CalendarEntry(DateTime(now.year, now.month, 6, 5, 5 ,5).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 6, 20, 20, 20).millisecondsSinceEpoch.toString(), 'DEMO helyszín 6', 'DEMO név', false),
+        //CalendarEntry(DateTime(now.year, now.month, 6, 5, 5 ,5).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 6, 20, 20, 20).millisecondsSinceEpoch.toString(), 'DEMO helyszín 6', 'DEMO név', false),
         CalendarEntry(DateTime(now.year, now.month, 7, 6, 6, 6).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 7, 6, 7, 7).millisecondsSinceEpoch.toString(), 'DEMO helyszín 7', 'DEMO név', false),
       ];
     }
@@ -685,6 +686,26 @@ class Generic{
         return "December";
     }
     return "NULL";
+  }
+
+  static String randomLoadingComment(){
+    final gen = Random().nextInt(100) % 6;
+    switch(gen){
+      case 0:
+        return 'Dolgoznak azok a neptun szerverek.';
+      case 1:
+        return 'Az SDA Informatika egy nagyon jó cég.';
+      case 2:
+        return 'Légy türelmes, vizet borított egy cica a szerverekre.';
+      case 3:
+        return 'Normális szerverek? Minek arra költeni.';
+      case 4:
+        return 'Már bármelyik milleniumba betölthet.';
+      case 5:
+        return 'Áramszünet van az SDA Informatikánál.';
+      default:
+        return 'Neptun 2';
+    }
   }
 }
 

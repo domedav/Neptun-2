@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -95,6 +96,13 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
   int currentSemester = -1;
 
+  double bottomNavSwitchValue = 0.0;
+  bool bottomNavCanNavigate = true;
+  static const int maxBottomNavWidgets = 4;
+
+  double calendarWeekSwitchValue = 0.0;
+  bool calendarWeekCanNavigate = true;
+
   @override
   void initState() {
     super.initState();
@@ -106,7 +114,6 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       statusBarColor: Color.fromRGBO(0x22, 0x22, 0x22, 1.0), // status bar color
     ));
 
-    calendarTabController = TabController(length: 7, vsync: this);
     bottomnavScrollCntroller = LinkedScrollControllerGroup();
     bottomnavController = bottomnavScrollCntroller.addAndGet();
 
@@ -138,6 +145,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     weeksSinceStart = calcPassedWeeks();
 
     setupCalendarGreetText();
+
+    setupCalendarController(true, true);
 
     //PopupWidgetHandler(homePage: this, mode: -1);
 
@@ -225,6 +234,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     setState(() {
       _setupCalendar();
       canDoCalendarPaging = true;
+      setupCalendarController(false, false);
     });
   }
   void setupMarkbook(){
@@ -363,7 +373,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         idx++;
       }
     }
-    if(mondayCalendar.isEmpty){
+    /*if(mondayCalendar.isEmpty){
       mondayCalendar.add(const t_table.FreedayElementWidget());
     }
     if(tuesdayCalendar.isEmpty){
@@ -383,8 +393,95 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     }
     if(sundayCalendar.isEmpty){
       sundayCalendar.add(const t_table.FreedayElementWidget());
-    }
+    }*/
     calendarTabController.index = currWeekday - 1 > 6 ? 0 : currWeekday - 1;
+  }
+
+  List<Widget> calendarTabs = <Widget>[].toList();
+  List<Widget> calendarTabViews = <Widget>[].toList();
+
+  void setupCalendarController(bool replaceController, bool isLoading){
+    calendarTabs = <Widget>[].toList();
+    calendarTabViews = <Widget>[].toList();
+    getCalendarTabViews(context, isLoading);
+    if(replaceController) {
+      calendarTabController = TabController(length: calendarTabs.length, vsync: this);
+    }
+  }
+
+  void _fillOneCalendarElement(BuildContext context, List<Widget> w, String name, bool isLoading){
+    calendarTabs.add(Container(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      child: Tab(
+        text: name,
+      ),
+    ));
+    calendarTabViews.add(RefreshIndicator(
+      onRefresh: onCalendarRefresh,
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        scrollDirection: Axis.vertical,
+        child: Container(
+          margin: const EdgeInsets.all(15),
+          decoration: BoxDecoration(
+            color: w.isNotEmpty ? Colors.white.withOpacity(0.03) : Colors.transparent,
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisSize: MainAxisSize.max,
+            children: w.isNotEmpty ? w : isLoading ? <Widget>[
+              const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                api.Generic.randomLoadingComment(),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white.withOpacity(.2),
+                  fontWeight: FontWeight.w300,
+                  fontSize: 10
+                ),
+              )
+            ] : <Widget>[const t_table.FreedayElementWidget()],
+          ),
+        ),
+      ),
+    ));
+  }
+
+  void getCalendarTabViews(BuildContext context, bool isLoading){
+    if(true || canDoCalendarPaging) {
+      _fillOneCalendarElement(context, mondayCalendar, 'Hétfő', isLoading);
+      _fillOneCalendarElement(context, tuesdayCalendar, 'Kedd', isLoading);
+      _fillOneCalendarElement(context, wednessdayCalendar, 'Szerda', isLoading);
+      _fillOneCalendarElement(context, thursdayCalendar, 'Csütörtök', isLoading);
+      _fillOneCalendarElement(context, fridayCalendar, 'Péntek', isLoading);
+      _fillOneCalendarElement(context, saturdayCalendar, 'Szombat', isLoading);
+      _fillOneCalendarElement(context, sundayCalendar, 'Varárnap', isLoading);
+      return;
+    }
+    calendarTabs.add(Container(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      child: const Tab(
+        text: 'Betöltés...',
+      ),
+    ));
+    calendarTabViews.add(
+      const Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          SizedBox(height: 10),
+          CircularProgressIndicator(
+            color: Colors.white,
+          ),
+        ],
+      ));
   }
 
   void _mbookPopupResult(int result, int idx){
@@ -790,6 +887,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       _calendarTimer!.cancel();
     }
     clearCalendar();
+    setupCalendarController(false, true);
     _calendarTimer = Timer(const Duration(milliseconds: 700), () async {
       setState(() {
         canDoCalendarPaging = false;
@@ -905,7 +1003,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         children: [
           Visibility(
               visible: currentView == 0,
-              child: CalendarPageWidget(homePage: this, greetText: calendarGreetText)
+              child: CalendarPageWidget(homePage: this, greetText: calendarGreetText, calendarTabs: calendarTabs, calendarTabViews: calendarTabViews)
           ),
           Visibility(
               visible: currentView == 1,
@@ -939,11 +1037,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 class CalendarPageWidget extends StatelessWidget{
   final HomePageState homePage;
   final String greetText;
-  const CalendarPageWidget({super.key, required this.homePage, required this.greetText});
-
-  Future<void> onRefresh() async{
-    await homePage.onCalendarRefresh();
-  }
+  final List<Widget> calendarTabs;
+  final List<Widget> calendarTabViews;
+  const CalendarPageWidget({super.key, required this.homePage, required this.greetText, required this.calendarTabs, required this.calendarTabViews});
 
   @override
   Widget build(BuildContext context){
@@ -959,50 +1055,7 @@ class CalendarPageWidget extends StatelessWidget{
                 color: const Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
                 width: MediaQuery.of(context).size.width,
                 child: TabBar(
-                  tabs: <Widget>[
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: const Tab(
-                        text: "Hétfő",
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: const Tab(
-                        text: "Kedd",
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: const Tab(
-                        text: "Szerda",
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: const Tab(
-                        text: "Csütörtök",
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: const Tab(
-                        text: "Péntek",
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: const Tab(
-                        text: "Szombat",
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: const Tab(
-                        text: "Vasárnap",
-                      ),
-                    ),
-                  ],
+                  tabs: calendarTabs,
                   isScrollable: true,
                   tabAlignment: TabAlignment.start,
                   dividerColor: Colors.transparent,
@@ -1037,217 +1090,14 @@ class CalendarPageWidget extends StatelessWidget{
                   onBackPressed: homePage.stepCalendarBack,
                   onForwardPressed: homePage.stepCalendarForward,
                   canDoPaging: homePage.canDoCalendarPaging,
+                  homePage: homePage,
                 ),
               ),
               Expanded(
                 child: TabBarView(
                   controller: homePage.calendarTabController,
                   physics: const AlwaysScrollableScrollPhysics(),
-                  children: <Widget>[
-                    RefreshIndicator(
-                      onRefresh: onRefresh,
-                      child: SingleChildScrollView(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        scrollDirection: Axis.vertical,
-                        child: Container(
-                          margin: const EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            color: homePage.mondayCalendar.isNotEmpty ? Colors.white.withOpacity(0.03) : Colors.transparent,
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            mainAxisSize: MainAxisSize.max,
-                            children: homePage.mondayCalendar.isNotEmpty ? homePage.mondayCalendar : <Widget>[
-                              Center(
-                                child: SizedBox(
-                                  height: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
-                                  width: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
-                                  child: const CircularProgressIndicator(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    RefreshIndicator(
-                      onRefresh: onRefresh,
-                      child: SingleChildScrollView(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        scrollDirection: Axis.vertical,
-                        child: Container(
-                          margin: const EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            color: homePage.tuesdayCalendar.isNotEmpty ? Colors.white.withOpacity(0.03) : Colors.transparent,
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            mainAxisSize: MainAxisSize.max,
-                            children: homePage.tuesdayCalendar.isNotEmpty ? homePage.tuesdayCalendar : <Widget>[
-                              Center(
-                                child: SizedBox(
-                                  height: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
-                                  width: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
-                                  child: const CircularProgressIndicator(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    RefreshIndicator(
-                      onRefresh: onRefresh,
-                      child: SingleChildScrollView(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        scrollDirection: Axis.vertical,
-                        child: Container(
-                          margin: const EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            color: homePage.wednessdayCalendar.isNotEmpty ? Colors.white.withOpacity(0.03) : Colors.transparent,
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            mainAxisSize: MainAxisSize.max,
-                            children: homePage.wednessdayCalendar.isNotEmpty ? homePage.wednessdayCalendar : <Widget>[
-                              Center(
-                                child: SizedBox(
-                                  height: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
-                                  width: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
-                                  child: const CircularProgressIndicator(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    RefreshIndicator(
-                      onRefresh: onRefresh,
-                      child: SingleChildScrollView(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        scrollDirection: Axis.vertical,
-                        child: Container(
-                          margin: const EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            color: homePage.thursdayCalendar.isNotEmpty ? Colors.white.withOpacity(0.03) : Colors.transparent,
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            mainAxisSize: MainAxisSize.max,
-                            children: homePage.thursdayCalendar.isNotEmpty ? homePage.thursdayCalendar : <Widget>[
-                              Center(
-                                child: SizedBox(
-                                  height: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
-                                  width: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
-                                  child: const CircularProgressIndicator(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    RefreshIndicator(
-                      onRefresh: onRefresh,
-                      child: SingleChildScrollView(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        scrollDirection: Axis.vertical,
-                        child: Container(
-                          margin: const EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            color: homePage.fridayCalendar.isNotEmpty ? Colors.white.withOpacity(0.03) : Colors.transparent,
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            mainAxisSize: MainAxisSize.max,
-                            children: homePage.fridayCalendar.isNotEmpty ? homePage.fridayCalendar : <Widget>[
-                              Center(
-                                child: SizedBox(
-                                  height: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
-                                  width: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
-                                  child: const CircularProgressIndicator(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    RefreshIndicator(
-                      onRefresh: onRefresh,
-                      child: SingleChildScrollView(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        scrollDirection: Axis.vertical,
-                        child: Container(
-                          margin: const EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            color: homePage.saturdayCalendar.isNotEmpty ? Colors.white.withOpacity(0.03) : Colors.transparent,
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            mainAxisSize: MainAxisSize.max,
-                            children: homePage.saturdayCalendar.isNotEmpty ? homePage.saturdayCalendar : <Widget>[
-                              Center(
-                                child: SizedBox(
-                                  height: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
-                                  width: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
-                                  child: const CircularProgressIndicator(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    RefreshIndicator(
-                      onRefresh: onRefresh,
-                      child: SingleChildScrollView(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        scrollDirection: Axis.vertical,
-                        child: Container(
-                          margin: const EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            color: homePage.sundayCalendar.isNotEmpty ? Colors.white.withOpacity(0.03) : Colors.transparent,
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            mainAxisSize: MainAxisSize.max,
-                            children: homePage.sundayCalendar.isNotEmpty ? homePage.sundayCalendar : <Widget>[
-                              Center(
-                                child: SizedBox(
-                                  height: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
-                                  width: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
-                                  child: const CircularProgressIndicator(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                  children: calendarTabViews,
                 ),
               ),
               HomePageState.getSeparatorLine(context),
@@ -1368,6 +1218,16 @@ class MarkbookPageWidget extends StatelessWidget{
                                   ),
                                 ),
                               ),
+                              const SizedBox(height: 20),
+                              Text(
+                                api.Generic.randomLoadingComment(),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.white.withOpacity(.2),
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 10
+                                ),
+                              )
                             ]
                           ),
                         ),
@@ -1431,6 +1291,16 @@ class PaymentsPageWidget extends StatelessWidget{
                                     ),
                                   ),
                                 ),
+                                const SizedBox(height: 20),
+                                Text(
+                                  api.Generic.randomLoadingComment(),
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.white.withOpacity(.2),
+                                      fontWeight: FontWeight.w300,
+                                      fontSize: 10
+                                  ),
+                                )
                               ]
                           ),
                         ),
@@ -1492,6 +1362,16 @@ class PeriodsPageWidget extends StatelessWidget{
                                       ),
                                     ),
                                   ),
+                                  const SizedBox(height: 20),
+                                  Text(
+                                    api.Generic.randomLoadingComment(),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.white.withOpacity(.2),
+                                        fontWeight: FontWeight.w300,
+                                        fontSize: 10
+                                    ),
+                                  )
                                 ]
                             ),
                           ),

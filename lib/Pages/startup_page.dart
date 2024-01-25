@@ -55,14 +55,30 @@ class _SplitterState extends State<Splitter>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
-          child: SizedBox(
-            height: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.20 : MediaQuery.of(context).size.height * 0.20,
-            width: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.20 : MediaQuery.of(context).size.height * 0.20,
-            child: const CircularProgressIndicator(
-              color: Colors.white,
+        body: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Center(
+              child: SizedBox(
+                height: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.20 : MediaQuery.of(context).size.height * 0.20,
+                width: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.20 : MediaQuery.of(context).size.height * 0.20,
+                child: const CircularProgressIndicator(
+                  color: Colors.white,
+                ),
+              ),
             ),
-          ),
+            const SizedBox(height: 20),
+            Text(
+              api.Generic.randomLoadingComment(),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Colors.white.withOpacity(.2),
+                  fontWeight: FontWeight.w300,
+                  fontSize: 10
+              ),
+            )
+          ],
         )
     );
   }

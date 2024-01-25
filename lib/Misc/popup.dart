@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:neptun2/Pages/main_page.dart';
 
 import 'emojirich_text.dart';
@@ -107,6 +108,16 @@ class PopupWidget extends State<PopupWidgetState>{
     PopupWidgetHandler._instance!.pwidget = this;
   }
 
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarIconBrightness: Brightness.light,
+      systemNavigationBarColor: Color.fromRGBO(0x0C, 0x0C, 0x0C, 1.0), // navigation bar color
+      statusBarColor: Color.fromRGBO(0x1A, 0x1A, 0x1A, 1.0), // status bar color
+    ));
+  }
+
   int selectionValue = -1;
 
   List<Widget> getWidgets(int mode){
@@ -147,125 +158,119 @@ class PopupWidget extends State<PopupWidgetState>{
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(
-                  decelerationRate: ScrollDecelerationRate.fast
+                decelerationRate: ScrollDecelerationRate.fast
               ),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(
-                  decelerationRate: ScrollDecelerationRate.fast
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    IconButton(
-                      onPressed: (){
-                        if(!PopupWidgetHandler._instance!._inUse || !mounted){
-                          return;
-                        }
-                        setState(() {
-                          selectionValue = 0;
-                        });
-                      },
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                      icon: Text(
-                        '1',
-                        style: TextStyle(
-                          color: selectionValue == -1 || selectionValue == 0 ? Colors.redAccent.shade200 : Colors.redAccent.shade200.withOpacity(.4),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: (){
+                      if(!PopupWidgetHandler._instance!._inUse || !mounted){
+                        return;
+                      }
+                      setState(() {
+                        selectionValue = 0;
+                      });
+                    },
+                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                    icon: Text(
+                      '1',
+                      style: TextStyle(
+                        color: selectionValue == -1 || selectionValue == 0 ? Colors.redAccent.shade200 : Colors.redAccent.shade200.withOpacity(.4),
+                        fontSize: 30,
+                        fontWeight: selectionValue != -1 && selectionValue == 0 ? FontWeight.w800 : FontWeight.normal
+                      ),
+                    ),
+                    color: Colors.redAccent.shade200,
+                    enableFeedback: true,
+                  ),
+                  IconButton(
+                    onPressed: (){
+                      if(!PopupWidgetHandler._instance!._inUse || !mounted){
+                        return;
+                      }
+                      setState(() {
+                        selectionValue = 1;
+                      });
+                    },
+                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                    icon: Text(
+                      '2',
+                      style: TextStyle(
+                          color: selectionValue == -1 || selectionValue == 1 ? Colors.red.shade200 : Colors.red.shade200.withOpacity(.4),
                           fontSize: 30,
-                          fontWeight: selectionValue != -1 && selectionValue == 0 ? FontWeight.w800 : FontWeight.normal
-                        ),
+                          fontWeight: selectionValue != -1 && selectionValue == 1 ? FontWeight.w800 : FontWeight.normal
                       ),
-                      color: Colors.redAccent.shade200,
-                      enableFeedback: true,
                     ),
-                    IconButton(
-                      onPressed: (){
-                        if(!PopupWidgetHandler._instance!._inUse || !mounted){
-                          return;
-                        }
-                        setState(() {
-                          selectionValue = 1;
-                        });
-                      },
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                      icon: Text(
-                        '2',
-                        style: TextStyle(
-                            color: selectionValue == -1 || selectionValue == 1 ? Colors.red.shade200 : Colors.red.shade200.withOpacity(.4),
-                            fontSize: 30,
-                            fontWeight: selectionValue != -1 && selectionValue == 1 ? FontWeight.w800 : FontWeight.normal
-                        ),
+                    color: Colors.red.shade200,
+                    enableFeedback: true,
+                  ),
+                  IconButton(
+                    onPressed: (){
+                      if(!PopupWidgetHandler._instance!._inUse || !mounted){
+                        return;
+                      }
+                      setState(() {
+                        selectionValue = 2;
+                      });
+                    },
+                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                    icon: Text(
+                      '3',
+                      style: TextStyle(
+                          color: selectionValue == -1 || selectionValue == 2 ? Colors.yellow.shade200 : Colors.yellow.shade200.withOpacity(.4),
+                          fontSize: 30,
+                          fontWeight: selectionValue != -1 && selectionValue == 2 ? FontWeight.w800 : FontWeight.normal
                       ),
-                      color: Colors.red.shade200,
-                      enableFeedback: true,
                     ),
-                    IconButton(
-                      onPressed: (){
-                        if(!PopupWidgetHandler._instance!._inUse || !mounted){
-                          return;
-                        }
-                        setState(() {
-                          selectionValue = 2;
-                        });
-                      },
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                      icon: Text(
-                        '3',
-                        style: TextStyle(
-                            color: selectionValue == -1 || selectionValue == 2 ? Colors.yellow.shade200 : Colors.yellow.shade200.withOpacity(.4),
-                            fontSize: 30,
-                            fontWeight: selectionValue != -1 && selectionValue == 2 ? FontWeight.w800 : FontWeight.normal
-                        ),
+                    color: Colors.yellow.shade200,
+                    enableFeedback: true,
+                  ),
+                  IconButton(
+                    onPressed: (){
+                      if(!PopupWidgetHandler._instance!._inUse || !mounted){
+                        return;
+                      }
+                      setState(() {
+                        selectionValue = 3;
+                      });
+                    },
+                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                    icon: Text(
+                      '4',
+                      style: TextStyle(
+                          color: selectionValue == -1 || selectionValue == 3 ? Colors.lightGreen.shade200 : Colors.lightGreen.shade200.withOpacity(.4),
+                          fontSize: 30,
+                          fontWeight: selectionValue != -1 && selectionValue == 3 ? FontWeight.w800 : FontWeight.normal
                       ),
-                      color: Colors.yellow.shade200,
-                      enableFeedback: true,
                     ),
-                    IconButton(
-                      onPressed: (){
-                        if(!PopupWidgetHandler._instance!._inUse || !mounted){
-                          return;
-                        }
-                        setState(() {
-                          selectionValue = 3;
-                        });
-                      },
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                      icon: Text(
-                        '4',
-                        style: TextStyle(
-                            color: selectionValue == -1 || selectionValue == 3 ? Colors.lightGreen.shade200 : Colors.lightGreen.shade200.withOpacity(.4),
-                            fontSize: 30,
-                            fontWeight: selectionValue != -1 && selectionValue == 3 ? FontWeight.w800 : FontWeight.normal
-                        ),
+                    color: Colors.lightGreen.shade200,
+                    enableFeedback: true,
+                  ),
+                  IconButton(
+                    onPressed: (){
+                      if(!PopupWidgetHandler._instance!._inUse || !mounted){
+                        return;
+                      }
+                      setState(() {
+                        selectionValue = 4;
+                      });
+                    },
+                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                    icon: Text(
+                      '5',
+                      style: TextStyle(
+                          color: selectionValue == -1 || selectionValue == 4 ? Colors.green.shade200 : Colors.green.shade200.withOpacity(.4),
+                          fontSize: 30,
+                          fontWeight: selectionValue != -1 && selectionValue == 4 ? FontWeight.w800 : FontWeight.normal
                       ),
-                      color: Colors.lightGreen.shade200,
-                      enableFeedback: true,
                     ),
-                    IconButton(
-                      onPressed: (){
-                        if(!PopupWidgetHandler._instance!._inUse || !mounted){
-                          return;
-                        }
-                        setState(() {
-                          selectionValue = 4;
-                        });
-                      },
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                      icon: Text(
-                        '5',
-                        style: TextStyle(
-                            color: selectionValue == -1 || selectionValue == 4 ? Colors.green.shade200 : Colors.green.shade200.withOpacity(.4),
-                            fontSize: 30,
-                            fontWeight: selectionValue != -1 && selectionValue == 4 ? FontWeight.w800 : FontWeight.normal
-                        ),
-                      ),
-                      color: Colors.green.shade200,
-                      enableFeedback: true,
-                    ),
-                  ],
-                ),
+                    color: Colors.green.shade200,
+                    enableFeedback: true,
+                  ),
+                ],
               ),
             )
         );
@@ -316,17 +321,17 @@ class PopupWidget extends State<PopupWidgetState>{
             child: Container(
                 alignment: Alignment.center,
                 color: Colors.transparent,
-                child: Container(
-                  padding: const EdgeInsets.all(50),
-                  margin: const EdgeInsets.all(20),
-                  decoration: const BoxDecoration(
-                    color: Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
-                    borderRadius: BorderRadius.all(Radius.circular(40)),
-                  ),
-                  child: SingleChildScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 10),
+                    margin: const EdgeInsets.all(15),
+                    decoration: const BoxDecoration(
+                      color: Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
                     child: Column(
-                      mainAxisSize: MainAxisSize.max,
+                      mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: getWidgets(PopupWidgetHandler._instance!.mode),

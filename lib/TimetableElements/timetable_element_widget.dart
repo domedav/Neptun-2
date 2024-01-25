@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../API/api_coms.dart' as api;
 import '../Misc/emojirich_text.dart';
+import '../Pages/main_page.dart';
 
 typedef Callback = Future<void> Function();
 
@@ -177,7 +178,9 @@ class FreedayElementWidget extends StatelessWidget{
 }
 
 class WeekoffseterElementWidget extends StatelessWidget{
-  WeekoffseterElementWidget({super.key, required this.week, required this.from, required this.to, required this.onBackPressed, required this.onForwardPressed, required this.canDoPaging}){
+  final HomePageState homePage;
+
+  WeekoffseterElementWidget({super.key, required this.week, required this.from, required this.to, required this.onBackPressed, required this.onForwardPressed, required this.canDoPaging, required this.homePage}){
     final startMonth = from != null ? api.Generic.monthToText(from!.month) : "_";
     final startDay = from != null ? from!.day : "";
 
@@ -209,52 +212,91 @@ class WeekoffseterElementWidget extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            IconButton(
-              onPressed: week <= 1 || !canDoPaging ? null : onBackPressed,
-              icon: const Icon(Icons.arrow_back_rounded),
-            ),
-            Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      displayString,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16.0,
+    return GestureDetector(
+      onHorizontalDragStart: (_){
+        homePage.calendarWeekCanNavigate = true;
+        homePage.calendarWeekSwitchValue = 0.0;
+      },
+      onHorizontalDragEnd: (_){
+        homePage.calendarWeekCanNavigate = false;
+        homePage.calendarWeekSwitchValue = 0.0;
+      },
+      onHorizontalDragUpdate: (e){
+        if(!homePage.calendarWeekCanNavigate || !canDoPaging){
+          return;
+        }
+        if(homePage.calendarWeekSwitchValue < -20 && week < 52){
+          if(homePage.weeksSinceStart + 1 > 52){
+            homePage.calendarWeekCanNavigate = false;
+            homePage.calendarWeekSwitchValue = 0.0;
+            return;
+          }
+          //homePage.calendarWeekCanNavigate = false;
+          homePage.calendarWeekSwitchValue = -5.0;
+          onForwardPressed();
+          return;
+        }
+        else if(homePage.calendarWeekSwitchValue > 20 && week > 1){
+          if(homePage.weeksSinceStart - 1 < 1){
+            homePage.calendarWeekCanNavigate = false;
+            homePage.calendarWeekSwitchValue = 0.0;
+            return;
+          }
+          //homePage.calendarWeekCanNavigate = false;
+          homePage.calendarWeekSwitchValue = 5.0;
+          onBackPressed();
+          return;
+        }
+        homePage.calendarWeekSwitchValue += e.delta.dx;
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
+        color: Colors.black.withOpacity(0.01),
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              IconButton(
+                onPressed: week <= 1 || !canDoPaging ? null : onBackPressed,
+                icon: const Icon(Icons.arrow_back_rounded),
+              ),
+              Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        displayString,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16.0,
+                        ),
                       ),
-                    ),
-                    renderDisplay2 ?
-                    Text(
-                      displayString2,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(.6),
-                        fontWeight: FontWeight.w300,
-                        fontSize: 12.0,
-                      ),
-                    ) :
-                    const SizedBox(),
-                  ],
-                ),
-            ),
-            IconButton(
-              onPressed: week >= 52 || !canDoPaging ? null : onForwardPressed,
-              icon: const Icon(Icons.arrow_forward_rounded)
-            ),
-          ],
+                      renderDisplay2 ?
+                      Text(
+                        displayString2,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(.6),
+                          fontWeight: FontWeight.w300,
+                          fontSize: 12.0,
+                        ),
+                      ) :
+                      const SizedBox(),
+                    ],
+                  ),
+              ),
+              IconButton(
+                onPressed: week >= 52 || !canDoPaging ? null : onForwardPressed,
+                icon: const Icon(Icons.arrow_forward_rounded)
+              ),
+            ],
+          ),
         ),
       ),
     );

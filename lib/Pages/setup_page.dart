@@ -113,7 +113,23 @@ class _Page1State extends State<Page1> {
               child: Center(
                 child: drawNoInternet ?
                 Text("Nincs Internet...", style: Theme.of(context).textTheme.headlineLarge) :
-                SizedBox(height: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.20 : MediaQuery.of(context).size.height * 0.20, width: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.20 : MediaQuery.of(context).size.height * 0.20, child: const CircularProgressIndicator(color: Colors.white)),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      SizedBox(height: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.20 : MediaQuery.of(context).size.height * 0.20, width: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.20 : MediaQuery.of(context).size.height * 0.20, child: const CircularProgressIndicator(color: Colors.white)),
+                      const SizedBox(height: 20),
+                      Text(
+                        api.Generic.randomLoadingComment(),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Colors.white.withOpacity(.2),
+                            fontWeight: FontWeight.w300,
+                            fontSize: 10
+                        ),
+                      )
+                    ],
+                ),
               )
             ),
           ),
@@ -303,6 +319,32 @@ class _Page2State extends State<Page2>{
                   Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.80,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.house_rounded,
+                                color: Colors.white.withOpacity(.2),
+                                size: 22,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                PageDTO.Instance.Selected ?? 'NULL',
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  color: Colors.white.withOpacity(.2),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 30),
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.80,
                           child: TextField(

@@ -13,21 +13,45 @@ class BottomNavigatorWidget extends StatelessWidget {
       color: const Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
       child: Center(
         child: GestureDetector(
+          onHorizontalDragStart: (_){
+            homePage.bottomNavCanNavigate = true;
+            homePage.bottomNavSwitchValue = 0.0;
+          },
+          onHorizontalDragEnd: (_){
+            homePage.bottomNavCanNavigate = false;
+            homePage.bottomNavSwitchValue = 0.0;
+          },
+          onHorizontalDragUpdate: (e){
+            if(!homePage.bottomNavCanNavigate){
+              return;
+            }
+            if(homePage.bottomNavSwitchValue < -50){
+              homePage.bottomNavCanNavigate = false;
+              final val = homePage.currentView + 1 > HomePageState.maxBottomNavWidgets - 1 ? 0 : homePage.currentView + 1;
+              homePage.switchView(val);
+              return;
+            }
+            else if(homePage.bottomNavSwitchValue > 50){
+              homePage.bottomNavCanNavigate = false;
+              final val = homePage.currentView - 1 < 0 ? HomePageState.maxBottomNavWidgets - 1 : homePage.currentView - 1;
+              homePage.switchView(val);
+              return;
+            }
+            homePage.bottomNavSwitchValue += e.delta.dx;
+          },
           child: SingleChildScrollView(
             controller: homePage.bottomnavController,
             physics: const BouncingScrollPhysics(decelerationRate: ScrollDecelerationRate.fast),
             scrollDirection: Axis.horizontal,
-            child: SizedBox(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  _buildNavigationButton(0, Icons.calendar_month_rounded, Icons.calendar_month_outlined),
-                  _buildNavigationButton(1, Icons.backpack_rounded, Icons.backpack_outlined),
-                  _buildNavigationButton(3, Icons.timer_rounded, Icons.timer_outlined),
-                  _buildNavigationButton(2, Icons.price_change_rounded, Icons.price_change_outlined),
-                ],
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                _buildNavigationButton(0, Icons.calendar_month_rounded, Icons.calendar_month_outlined),
+                _buildNavigationButton(1, Icons.backpack_rounded, Icons.backpack_outlined),
+                _buildNavigationButton(2, Icons.price_change_rounded, Icons.price_change_outlined),
+                _buildNavigationButton(3, Icons.timer_rounded, Icons.timer_outlined),
+              ],
             ),
           ),
         ),
