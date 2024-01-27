@@ -38,4 +38,9 @@
             android:name="android.appwidget.provider"
             android:resource="@xml/time_remaining_homescreen_widget_info" />
     </application>
+    <queries>
+        <intent>
+            <action android:name="android.support.customtabs.action.CustomTabsService" />
+        </intent>
+    </queries>
 </manifest>

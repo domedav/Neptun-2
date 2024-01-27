@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../Pages/main_page.dart';
 import '../storage.dart' as storage;
 import '../Pages/startup_page.dart' as root_page;
@@ -64,8 +68,28 @@ class TopNavigatorWidget extends StatelessWidget{
                         items: <PopupMenuEntry<String>>[
                           const PopupMenuItem<String>(
                             value: 'logout',
-                            child: Text('Kijelentkezés'),
+                            child: Text(
+                              'Kijelentkezés',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700
+                              ),
+                            ),
                           ),
+                          const PopupMenuItem(
+                            value: 'donate',
+                            child: Text(
+                              'Támogatás',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w700
+                              ),
+                            ),
+                          )
                         ],
                       ).then((selectedValue) {
                         homePage.setBlurComplex(false);
@@ -76,6 +100,22 @@ class TopNavigatorWidget extends StatelessWidget{
                             context,
                             MaterialPageRoute(builder: (context) => const root_page.Splitter()),
                           );
+                        }
+                        else if(selectedValue == 'donate'){
+                          if(!Platform.isAndroid){
+                            return;
+                          }
+                          final url = Uri.parse('https://www.buymeacoffee.com/domedav');
+                          launchUrl(url).whenComplete(() {
+                            Fluttertoast.showToast(
+                              msg: '❤️',
+                              toastLength: Toast.LENGTH_SHORT,
+                              fontSize: 14,
+                              gravity: ToastGravity.SNACKBAR,
+                              backgroundColor: const Color.fromRGBO(0x1A, 0x1A, 0x1A, 1.0),
+                              textColor: Colors.white,
+                            );
+                          });
                         }
                       });
                     },

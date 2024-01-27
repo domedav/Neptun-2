@@ -692,7 +692,7 @@ class Generic{
     final gen = Random().nextInt(100) % 14;
     switch(gen){
       case 0:
-        return 'Úgy dolgoznak a Neptun szerverek, mint a cigányok...';
+        return 'Úgy dolgoznak a Neptun szerverek, mint egy átlagos államilag finanszírozott útépítés.';
       case 1:
         return 'Az SDA Informatika egy nagyon jó cég.';
       case 2:
@@ -704,7 +704,7 @@ class Generic{
       case 5:
         return 'Áramszünet van az SDA Informatikánál.';
       case 6:
-        return 'Neptun szerverei olyan megbízhatóak, bankolni is lehetne rajtuk.';
+        return 'Neptun szerverei olyan megbízhatóak, bankolni is lehet rajtuk.';
       case 7:
         return 'SDA jelentése: Sok Dagadt Analfabéta.\nEgy normális mobilappot nem sikerült összehoziuk.';
       case 8:
