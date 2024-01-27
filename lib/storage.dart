@@ -43,14 +43,10 @@ Future<List<String>?> getStringList(String key) async {
 
 class DataCache{
   static Future<void> dataWipe() async{
-    final persistentData1 = getNeedFamilyFriendlyComments()!;
-
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.clear();
     prefs.reload();
     _instance._localWipe();
-
-    setNeedFamilyFriendlyComments(persistentData1 ? 1 : 0);
   }
 
   void _localWipe(){
@@ -66,6 +62,7 @@ class DataCache{
     _hasCachedPeriods = false;
     _firstweekOfSemesterEpoch = 0;
     _isDemoAccount = false;
+    setNeedFamilyFriendlyComments(_familyFriendlyLoadingComments! ? 1 : 0);
   }
 
   static final DataCache _instance = DataCache();

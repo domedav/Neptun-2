@@ -109,12 +109,15 @@ class TopNavigatorWidget extends StatelessWidget{
                       ).then((selectedValue) {
                         homePage.setBlurComplex(false);
                         if(selectedValue == 'logout'){
-                          storage.DataCache.dataWipe();
-                          Navigator.popUntil(context, (route) => route.willHandlePopInternally);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const root_page.Splitter()),
-                          );
+                          Future.delayed(Duration.zero, ()async{
+                            await storage.DataCache.dataWipe();
+                          }).whenComplete((){
+                            Navigator.popUntil(context, (route) => route.willHandlePopInternally);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const root_page.Splitter()),
+                            );
+                          });
                           if(!Platform.isAndroid){
                             return;
                           }
