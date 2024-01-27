@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:developer';
+import 'dart:developer' as debug;
 import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
@@ -441,7 +441,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
               ),
               const SizedBox(height: 20),
               Text(
-                api.Generic.randomLoadingComment(),
+                api.Generic.randomLoadingComment(storage.DataCache.getNeedFamilyFriendlyComments()!),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white.withOpacity(.2),
@@ -882,8 +882,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
   Timer? _calendarTimer;
 
+  bool _calendarDebounce = false;
   Future<void> onCalendarRefresh() async{
-    if(!storage.DataCache.getHasNetwork()){
+    if(!storage.DataCache.getHasNetwork() || _calendarDebounce){
       return;
     }
     if(_calendarTimer != null){
@@ -892,6 +893,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     clearCalendar();
     setupCalendarController(false, true);
     _calendarTimer = Timer(const Duration(milliseconds: 700), () async {
+      _calendarDebounce = true;
       setState(() {
         canDoCalendarPaging = false;
       });
@@ -899,42 +901,63 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       await storage.DataCache.setHasCachedFirstWeekEpoch(0);
       await fetchCalendar();
       setupCalendar();
+      _calendarDebounce = false;
     });
   }
+
+  bool _markbookDebounce = false;
   Future<void> onMarkbookRefresh() async{
-    if(!storage.DataCache.getHasNetwork()){
+    if(!storage.DataCache.getHasNetwork() || _markbookDebounce){
       return;
     }
+    _markbookDebounce = true;
     clearMarkbook();
     await storage.DataCache.setHasCachedMarkbook(0);
     await fetchMarkbook();
     setupMarkbook();
+    _markbookDebounce = false;
   }
+
+  bool _paymentsDebounce = false;
   Future<void> onPaymentsRefresh() async{
-    if(!storage.DataCache.getHasNetwork()){
+    if(!storage.DataCache.getHasNetwork() || _paymentsDebounce){
       return;
     }
+    _paymentsDebounce = true;
     clearPayments();
     await storage.DataCache.setHasCachedPayments(0);
     await fetchPayments();
     setupPayments();
+    _paymentsDebounce = false;
   }
+
+  bool _periodsDebounce = false;
   Future<void> onPeriodsRefresh()async{
-    if(!storage.DataCache.getHasNetwork()){
+    if(!storage.DataCache.getHasNetwork() || _periodsDebounce){
       return;
     }
+    _periodsDebounce = true;
     clearPeriods();
     await storage.DataCache.setHasCachedPeriods(0);
     await fetchPeriods();
     setupPeriods();
+    _periodsDebounce = false;
+  }
+
+  DateTime getClosestMondayTo(DateTime time){
+    if(time.weekday == DateTime.monday){
+      return time;
+    }
+    final result = time.add(Duration(days: 8 - time.weekday));
+    return result;
   }
 
   int calcPassedWeeks() {
     final epochsemester = storage.DataCache.getFirstWeekEpoch()!;
-    final determiner = epochsemester > 0 ? DateTime.fromMillisecondsSinceEpoch(epochsemester) : null;
     final now = DateTime.now();
+    final determiner = epochsemester > 0 ? DateTime.fromMillisecondsSinceEpoch(epochsemester) : getClosestMondayTo(DateTime(now.year - (now.millisecondsSinceEpoch > DateTime(now.year, 9, 1).millisecondsSinceEpoch ? 0 : 1), 9, 1));
     final yearlessNow = DateTime(1, now.month, now.day);
-    final sepOne = DateTime(yearlessNow.year - 1, epochsemester > 0 ? determiner!.month : 9, epochsemester > 0 ? determiner!.day : 1); // first week
+    final sepOne = DateTime(yearlessNow.year - 1, determiner.month, determiner.day); // first week
 
     final timepassSinceSepOne = Duration(milliseconds: (yearlessNow.millisecondsSinceEpoch - sepOne.millisecondsSinceEpoch));
     final weeksPassed = timepassSinceSepOne.inDays / 7;
@@ -1223,7 +1246,7 @@ class MarkbookPageWidget extends StatelessWidget{
                               ),
                               const SizedBox(height: 20),
                               Text(
-                                api.Generic.randomLoadingComment(),
+                                api.Generic.randomLoadingComment(storage.DataCache.getNeedFamilyFriendlyComments()!),
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: Colors.white.withOpacity(.2),
@@ -1296,7 +1319,7 @@ class PaymentsPageWidget extends StatelessWidget{
                                 ),
                                 const SizedBox(height: 20),
                                 Text(
-                                  api.Generic.randomLoadingComment(),
+                                  api.Generic.randomLoadingComment(storage.DataCache.getNeedFamilyFriendlyComments()!),
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       color: Colors.white.withOpacity(.2),
@@ -1367,7 +1390,7 @@ class PeriodsPageWidget extends StatelessWidget{
                                   ),
                                   const SizedBox(height: 20),
                                   Text(
-                                    api.Generic.randomLoadingComment(),
+                                    api.Generic.randomLoadingComment(storage.DataCache.getNeedFamilyFriendlyComments()!),
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         color: Colors.white.withOpacity(.2),

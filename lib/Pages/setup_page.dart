@@ -120,7 +120,7 @@ class _Page1State extends State<Page1> {
                       SizedBox(height: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.20 : MediaQuery.of(context).size.height * 0.20, width: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.20 : MediaQuery.of(context).size.height * 0.20, child: const CircularProgressIndicator(color: Colors.white)),
                       const SizedBox(height: 20),
                       Text(
-                        api.Generic.randomLoadingComment(),
+                        api.Generic.randomLoadingComment(storage.DataCache.getNeedFamilyFriendlyComments()!),
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             color: Colors.white.withOpacity(.2),

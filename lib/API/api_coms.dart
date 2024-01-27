@@ -688,36 +688,53 @@ class Generic{
     return "NULL";
   }
 
-  static String randomLoadingComment(){
-    final gen = Random().nextInt(100) % 14;
+  static String randomLoadingComment(bool familyFriendlyMode){
+    if(familyFriendlyMode){
+      final gen = Random().nextInt(100) % 7;
+      switch (gen){
+        case 0:
+          return 'Elfüstölne a telefonod, ha gyorsabb lenne.';
+        case 1:
+          return 'Még mindíg jobb mint a Neptun.';
+        case 2:
+          return 'Már bármelyik milleniumba betölthet...';
+        case 3:
+          return 'Áramszünet van az SDA Informatikánál.';
+        case 4:
+          return 'Az SDA Informatika egy nagyon jó cég.';
+        case 5:
+          return 'Tudtad? A "Neptun 2" alapja csupán 1 hét alatt készen lett.';
+        case 6:
+          return 'Túl lassú? Panaszkodj az SDA Informatikának.';
+        default:
+          return 'Neptun 2';
+      }
+    }
+    final gen = Random().nextInt(100) % 12;
     switch(gen){
       case 0:
         return 'Úgy dolgoznak a Neptun szerverek, mint egy átlagos államilag finanszírozott útépítés.';
       case 1:
-        return 'Az SDA Informatika egy nagyon jó cég.';
+        return 'Megvárjuk, amíg az SDA Informatika főnöke kávéba fullad.';
       case 2:
         return 'Légy türelmes, egy patkány miatt zárlatos lett az egyik szerver.';
       case 3:
         return 'Előbb hiszem el, hogy az Északi-sarkon is vannak pingvinek, minthogy a Neptun szervereire pénzt költöttek';
       case 4:
-        return 'Már bármelyik milleniumba betölthet...';
-      case 5:
-        return 'Áramszünet van az SDA Informatikánál.';
-      case 6:
         return 'Neptun szerverei olyan megbízhatóak, bankolni is lehet rajtuk.';
-      case 7:
+      case 5:
         return 'SDA jelentése: Sok Dagadt Analfabéta.\nEgy normális mobilappot nem sikerült összehoziuk.';
-      case 8:
+      case 6:
         return 'Fogadni merek, mire ezt elolvasod, még mindíg a Neptun szervereire vársz.';
-      case 9:
+      case 7:
         return '(ChatGPT)\nHa az SDA Informatika supportja egy GPS lenne, egyenesen egy tóba vezetne – irányvesztés a specialitásuk, és az problémákban való fuldoklás az erősségük.';
-      case 10:
+      case 8:
         return '(ChatGPT)\nAz SDA Informatika csapata olyan, mintha egy viziló lenne a pilóta egy tüzijátékkal, amivel próbálja elérni a Holdat – nem csak nevetséges, de az egészet rossz nézni.';
-      case 11:
+      case 9:
         return '(ChatGPT)\nAz SDA Informatika supportja olyan, mint az UFO-k – az emberek állítják, hogy létezik, de bizonyíték nincs.';
-      case 12:
+      case 10:
         return '(ChatGPT)\nAz SDA Informatika technológiai fejlesztései olyanok, mintha egy bohóc próbálna csúcstechnológiát kitalálni – a végeredmény kaotikus, és nem éppen az innováció csúcsa.';
-      case 13:
+      case 11:
         return '(ChatGPT)\nAz SDA Informatika munkakultúrája olyan, mintha egy bohóciskolában lenne az ember – kacagás és zűrzavar mindenütt, de az értékes eredmények hiányoznak.';
       default:
         return 'Neptun 2';

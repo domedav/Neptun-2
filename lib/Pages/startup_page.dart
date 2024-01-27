@@ -70,7 +70,7 @@ class _SplitterState extends State<Splitter>{
             ),
             const SizedBox(height: 20),
             Text(
-              api.Generic.randomLoadingComment(),
+              api.Generic.randomLoadingComment(DataCache.getNeedFamilyFriendlyComments()!),
               textAlign: TextAlign.center,
               style: TextStyle(
                   color: Colors.white.withOpacity(.2),

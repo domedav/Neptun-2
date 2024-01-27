@@ -1,7 +1,9 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:neptun2/Misc/popup.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../Pages/main_page.dart';
 import '../storage.dart' as storage;
@@ -89,7 +91,20 @@ class TopNavigatorWidget extends StatelessWidget{
                                   fontWeight: FontWeight.w700
                               ),
                             ),
-                          )
+                          ),
+                          const PopupMenuDivider(height: 20),
+                          const PopupMenuItem(
+                            value: 'settings',
+                            child: Text(
+                              'Beállítások',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w700
+                              ),
+                            ),
+                          ),
                         ],
                       ).then((selectedValue) {
                         homePage.setBlurComplex(false);
@@ -99,6 +114,17 @@ class TopNavigatorWidget extends StatelessWidget{
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => const root_page.Splitter()),
+                          );
+                          if(!Platform.isAndroid){
+                            return;
+                          }
+                          Fluttertoast.showToast(
+                            msg: 'Sikeresen Kijelentkeztél!',
+                            toastLength: Toast.LENGTH_SHORT,
+                            fontSize: 14,
+                            gravity: ToastGravity.SNACKBAR,
+                            backgroundColor: const Color.fromRGBO(0x1A, 0x1A, 0x1A, 1.0),
+                            textColor: Colors.white,
                           );
                         }
                         else if(selectedValue == 'donate'){
@@ -116,6 +142,12 @@ class TopNavigatorWidget extends StatelessWidget{
                               textColor: Colors.white,
                             );
                           });
+                        }
+                        else if(selectedValue == 'settings'){
+                          PopupWidgetHandler(mode: 1, callback: (d){
+                            log('PopupComplete');
+                          });
+                          PopupWidgetHandler.doPopup(context);
                         }
                       });
                     },

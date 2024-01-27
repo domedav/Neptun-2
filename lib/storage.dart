@@ -43,10 +43,14 @@ Future<List<String>?> getStringList(String key) async {
 
 class DataCache{
   static Future<void> dataWipe() async{
+    final persistentData1 = getNeedFamilyFriendlyComments()!;
+
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.clear();
     prefs.reload();
     _instance._localWipe();
+
+    setNeedFamilyFriendlyComments(persistentData1 ? 1 : 0);
   }
 
   void _localWipe(){
@@ -78,6 +82,7 @@ class DataCache{
   late bool? _hasCachedFirstWeekEpoch = false;
   late int? _firstweekOfSemesterEpoch = 0;
   late bool? _isDemoAccount = false;
+  late bool? _familyFriendlyLoadingComments = true;
 
   static Future<void> loadData() async{return _instance._loadData();}
 
@@ -116,24 +121,31 @@ class DataCache{
 
     tmp = await getInt('IsDemoAccount');
     _isDemoAccount = tmp != null && tmp != 0;
+
+    tmp = await getInt('IsFamilyFriendlyLoading');
+    _familyFriendlyLoadingComments = tmp != null && tmp != 0;
+    if(tmp == null){
+      _familyFriendlyLoadingComments = true;  // this is the default value, not false
+    }
+
   }
 
   static String? getUsername(){return _instance._username;}
   static Future<void> setUsername(String? value) async{
     _instance._username = value;
-    saveString('Username', value.toString());
+    await saveString('Username', value.toString());
   }
 
   static String? getPassword(){return _instance._password;}
   static Future<void> setPassword(String? value) async{
     _instance._password = value;
-    saveString('Password', value.toString());
+    await saveString('Password', value.toString());
   }
 
   static String? getInstituteUrl(){return _instance._instituteUrl;}
   static Future<void> setInstituteUrl(String? value) async{
     _instance._instituteUrl = value;
-    saveString('URL', value.toString());
+    await saveString('URL', value.toString());
   }
 
   static bool getHasNetwork(){return _instance._hasNetwork;}
@@ -141,48 +153,54 @@ class DataCache{
   static bool? getHasLogin(){return _instance._hasLogin;}
   static Future<void> setHasLogin(int? value) async {
     _instance._hasLogin = value != null && value != 0;
-    saveInt('HasLogin', value ?? 0);
+    await saveInt('HasLogin', value ?? 0);
   }
 
   static bool? getHasCachedCalendar(){return _instance._hasCachedCalendar;}
   static Future<void> setHasCachedCalendar(int? value) async {
     _instance._hasCachedCalendar = value != null && value != 0;
-    saveInt('HasCachedCalendar', value ?? 0);
+    await saveInt('HasCachedCalendar', value ?? 0);
   }
 
   static bool? getHasCachedMarkbook(){return _instance._hasCachedMarkbook;}
   static Future<void> setHasCachedMarkbook(int? value) async {
     _instance._hasCachedMarkbook = value != null && value != 0;
-    saveInt('HasCachedMarkbook', value ?? 0);
+    await saveInt('HasCachedMarkbook', value ?? 0);
   }
 
   static bool? getHasCachedPayments(){return _instance._hasCachedPayments;}
   static Future<void> setHasCachedPayments(int? value) async{
     _instance._hasCachedPayments = value != null && value != 0;
-    saveInt('HasCachedPayments', value ?? 0);
+    await saveInt('HasCachedPayments', value ?? 0);
   }
 
   static bool? getHasCachedPeriods(){return _instance._hasCachedPeriods;}
   static Future<void> setHasCachedPeriods(int? value) async{
     _instance._hasCachedPeriods = value != null && value != 0;
-    saveInt('HasCachedPeriods', value ?? 0);
+    await saveInt('HasCachedPeriods', value ?? 0);
   }
 
   static bool? getHasCachedFirstWeekEpoch(){return _instance._hasCachedFirstWeekEpoch;}
   static Future<void> setHasCachedFirstWeekEpoch(int? value) async{
     _instance._hasCachedFirstWeekEpoch = value != null && value != 0;
-    saveInt('HasCachedFirstWeekEpoch', value ?? 0);
+    await saveInt('HasCachedFirstWeekEpoch', value ?? 0);
   }
 
   static int? getFirstWeekEpoch(){return _instance._firstweekOfSemesterEpoch;}
   static Future<void> setFirstWeekEpoch(int? value) async{
     _instance._firstweekOfSemesterEpoch = value ?? 0;
-    saveInt('FirstWeekOfSemesterEpoch', value ?? 0);
+    await saveInt('FirstWeekOfSemesterEpoch', value ?? 0);
   }
 
   static bool? getIsDemoAccount(){return _instance._isDemoAccount;}
   static Future<void> setIsDemoAccount(int? value) async{
     _instance._isDemoAccount = value != null && value != 0;
-    saveInt('IsDemoAccount', value ?? 0);
+    await saveInt('IsDemoAccount', value ?? 0);
+  }
+
+  static bool? getNeedFamilyFriendlyComments(){return _instance._familyFriendlyLoadingComments;}
+  static Future<void> setNeedFamilyFriendlyComments(int? value) async{
+    _instance._familyFriendlyLoadingComments = value != null && value != 0;
+    await saveInt('IsFamilyFriendlyLoading', value ?? 1);
   }
 }

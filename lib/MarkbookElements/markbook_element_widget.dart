@@ -43,7 +43,7 @@ class MarkbookElementWidget extends StatelessWidget{
     return ElevatedButton(
         onPressed: grade >= 2 || credit == 0 ? null : () {
           PopupWidgetHandler(mode: 0, callback: (r){
-            onPopupResult(r, listIndex);
+            onPopupResult(r as int, listIndex);
           });
           PopupWidgetHandler.doPopup(context);
         },

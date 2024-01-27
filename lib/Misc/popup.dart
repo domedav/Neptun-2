@@ -3,10 +3,12 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:neptun2/Pages/main_page.dart';
+import 'package:neptun2/storage.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import 'emojirich_text.dart';
 
-typedef IntCallback = void Function(int);
+typedef Callback = void Function(dynamic);
 
 class PopupWidgetHandler{
   static PopupWidgetHandler? _instance;
@@ -18,11 +20,15 @@ class PopupWidgetHandler{
   double animValue = 0.0;
 
   PopupWidget? pwidget;
+  PackageInfo? pinfo;
 
-  final IntCallback callback;
+  final Callback callback;
 
   PopupWidgetHandler({required this.mode, required this.callback}){
     _instance = this;
+    Future.delayed(Duration.zero, ()async{
+      pinfo = await PackageInfo.fromPlatform();
+    });
   }
 
   bool hasListener = false;
@@ -298,6 +304,74 @@ class PopupWidget extends State<PopupWidgetState>{
           ),
         ));
 
+        return list;
+      case 1:
+        list.add(const EmojiRichText(
+          text: "⚙ Beállítások ⚙",
+          defaultStyle: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+            fontSize: 22.0,
+          ),
+          emojiStyle: TextStyle(
+              color: Colors.white,
+              fontSize: 19.0,
+              fontFamily: "Noto Color Emoji"
+          ),
+        ));
+        list.add(const SizedBox(height: 3));
+        list.add(Container(
+          color: Colors.white.withOpacity(0.3),
+          margin: const EdgeInsets.symmetric(vertical: 10),
+          height: 2,
+        ));
+        list.add(Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(flex: 2, child: Container(
+              margin: const EdgeInsets.all(10),
+              child: const Text(
+                'Családbarát Betöltő Szövegek',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white
+                ),
+              ),
+            )),
+            Container(
+              margin: const EdgeInsets.all(10),
+              child: Switch(
+                value: DataCache.getNeedFamilyFriendlyComments()!,
+                onChanged: (b){
+                  DataCache.setNeedFamilyFriendlyComments(b ? 1 : 0);
+                  if(mounted) {setState((){});}
+                },
+                activeColor: Colors.white,
+                activeTrackColor: const Color.fromRGBO(0x4F, 0x69, 0x6E, 1.0),
+                hoverColor: Colors.white.withOpacity(.1),
+              ),
+            )
+          ],
+        ));
+        list.add(const SizedBox(height: 6));
+        final pinfo = PopupWidgetHandler._instance!.pinfo ?? PackageInfo(appName: 'neptun2', packageName: 'com.domedav.neptun2', version: '1.1.2', buildNumber: '7', buildSignature: '');
+        list.add(Container(
+          alignment: Alignment.bottomLeft,
+          margin: const EdgeInsets.all(10),
+          child: Text(
+            'v${pinfo.version} (${pinfo.buildNumber}) - Telepítve Innen: ${pinfo.installerStore ?? "Csomagtelepítő"}',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontWeight: FontWeight.w300,
+              fontSize: 9,
+              color: Colors.white.withOpacity(.3)
+            ),
+          ),
+        ));
         return list;
       default:
         return list;
