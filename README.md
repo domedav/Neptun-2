@@ -11,6 +11,9 @@ Az alkalmazás még fejlesztés alatt áll, így ez még nem tökéletes.
 Töltsd le a Play Áruházból!
 https://play.google.com/store/apps/details?id=com.domedav.neptun2
 
+## 1.1.2
+Bugfixek, Új popup fülek
+
 ## 1.1.1
 Swipe navigáció alul/felül, Seekelhető hét navigátor, Adatbetöltéskor kommentek
 
