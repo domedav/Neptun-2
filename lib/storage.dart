@@ -44,8 +44,8 @@ Future<List<String>?> getStringList(String key) async {
 class DataCache{
   static Future<void> dataWipe() async{
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.clear();
-    prefs.reload();
+    await prefs.clear();
+    await prefs.reload();
     _instance._localWipe();
   }
 
