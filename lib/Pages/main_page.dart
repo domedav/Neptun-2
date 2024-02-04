@@ -119,12 +119,14 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     bottomnavController = bottomnavScrollCntroller.addAndGet();
 
     AppNotifications.initialize();
+    Future.delayed(Duration.zero,()async{
+      await AppNotifications.cancelScheduledNotifs();
+    });
 
     Future.delayed(Duration.zero, () async {
       await fetchCalendar();
     }).then((value) async {
       if(storage.DataCache.getNeedExamNotifications()!){
-        await AppNotifications.cancelScheduledNotifs(0);
         Future.delayed(Duration.zero,()async{
           if(!storage.DataCache.getHasNetwork()){
             return;
@@ -283,34 +285,65 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       if(!item.isExam || now.millisecondsSinceEpoch > item.startEpoch){
         continue;
       }
-      _setupNotificationsForSkimmedExams(item, now);
+      await _setupNotificationsForSkimmedExams(item, now);
     }
   }
 
-  void _setupNotificationsForSkimmedExams(api.CalendarEntry item, DateTime now){
+  Future<void> _setupNotificationsForSkimmedExams(api.CalendarEntry item, DateTime now)async{
     final daysTillExam = (Duration(milliseconds: item.startEpoch) - Duration(milliseconds: now.millisecondsSinceEpoch)).inDays;
-    if(daysTillExam == 0){
-      AppNotifications.showNotification('Vizsga Emlékeztető!', '"${item.title}"-ból HOLNAP vizsgád lesz!');
-    }
-    for(int i = 1; i <= daysTillExam; i++){
-      AppNotifications.scheduleNotification('Vizsga Emlékeztető!', '"${item.title}"-ból vizsgád lesz ${daysTillExam} nap múlva!', DateTime(now.year, now.month, now.day + i, 09, 00), 0);
+    for(int i = 1; i <= daysTillExam + 1; i++){
+      if(daysTillExam <= 1){
+        await AppNotifications.scheduleNotification('Vizsga Emlékeztető!', '"${item.title}" tárgyból vizsgád lesz MA!', DateTime(now.year, now.month, now.day + i, 06, 00));
+        continue;
+      }
+      await AppNotifications.scheduleNotification('Vizsga Emlékeztető!', '"${item.title}" tárgyból vizsgád lesz $i nap múlva!', DateTime(now.year, now.month, now.day + i, 09, 00));
     }
   }
 
-  void _setupPotentialNotifications(api.CalendarEntry item){
-    // set up notifications for today
+  Future<void> _setupClassesNotifications(List<api.CalendarEntry> items)async{
+    if(!storage.DataCache.getNeedExamNotifications()!){
+      return;
+    }
+    for(var item in items){
+      // set up notifications for today
+      final now = DateTime.now();
+      if(now.millisecondsSinceEpoch < item.startEpoch && !item.isExam){ // did not pass them in time
+        await AppNotifications.scheduleNotification('Óra', '"${item.title}" órád lesz itt: "${item.location}" 10 perc múlva!', DateTime.fromMillisecondsSinceEpoch((Duration(milliseconds: item.startEpoch) - const Duration(minutes: 10)).inMilliseconds));
+        await AppNotifications.scheduleNotification('Óra', '"${item.title}" órád lesz itt: "${item.location}" 5 perc múlva!', DateTime.fromMillisecondsSinceEpoch((Duration(milliseconds: item.startEpoch) - const Duration(minutes: 5)).inMilliseconds));
+        await AppNotifications.scheduleNotification('Óra', '"${item.title}" órád van itt: "${item.location}"!', DateTime.fromMillisecondsSinceEpoch(item.startEpoch));
+      }
+    }
+  }
+
+  Future<void> _setupPaymentsNotification(List<api.CashinEntry> items)async{
+    if(!storage.DataCache.getNeedPaymentsNotifications()!){
+      return;
+    }
     final now = DateTime.now();
-    if(now.millisecondsSinceEpoch < item.startEpoch){ // did not pass them in time
-      if(item.isExam && storage.DataCache.getNeedClassNotifications()!){
-        final time = DateTime.fromMillisecondsSinceEpoch(item.startEpoch);
-        AppNotifications.showNotification('Vizsga Emlékeztető!', 'Vizsgád lesz ${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}-kor!');
+    for(var item in items){
+      if(item.dueDateMs == 0){
+        for(int i = 0; i <= 31; i++){
+          await AppNotifications.scheduleNotification('Befizetés', '${item.ammount}Ft-al lógsz. Fizesd be! (Nincs Időhatár)', DateTime(now.year, now.month, now.day + i, 11, 00));
+        }
+        continue;
       }
-      else if(storage.DataCache.getNeedExamNotifications()!){
-        //debug.log(DateTime.fromMillisecondsSinceEpoch((Duration(milliseconds: item.startEpoch) - const Duration(minutes: 10)).inMilliseconds).toString());
-        AppNotifications.scheduleNotification('Óra', '"${item.title}" órád lesz itt: "${item.location}" 10 perc múlva!', DateTime.fromMillisecondsSinceEpoch((Duration(milliseconds: item.startEpoch) - const Duration(minutes: 10)).inMilliseconds), 0);
-        AppNotifications.scheduleNotification('Óra', '"${item.title}" órád lesz itt: "${item.location}" 5 perc múlva!', DateTime.fromMillisecondsSinceEpoch((Duration(milliseconds: item.startEpoch) - const Duration(minutes: 5)).inMilliseconds), 0);
-        AppNotifications.scheduleNotification('Óra', '"${item.title}" órád van itt: "${item.location}"!', DateTime.fromMillisecondsSinceEpoch(item.startEpoch), 0);
+      final daysRemaining = (Duration(milliseconds: item.dueDateMs) - Duration(milliseconds: now.millisecondsSinceEpoch)).inDays;
+      final time = DateTime.fromMillisecondsSinceEpoch(item.dueDateMs);
+      for(int i = 0; i <= daysRemaining; i++){
+        await AppNotifications.scheduleNotification('Befizetés', '${item.ammount}Ft-al lógsz. Fizesd be: ${daysRemaining > 61 ? "(${time.year})" : ""} ${api.Generic.monthToText(time.month)} ${time.day}-ig!', DateTime(now.year, now.month, now.day + i, 11, 00));
       }
+    }
+  }
+
+  Future<void> _setupPeriodsNotification(List<api.PeriodEntry> items)async{
+    if(!storage.DataCache.getNeedPeriodsNotifications()!){
+      return;
+    }
+
+    for(var item in items){
+      final time = DateTime.fromMillisecondsSinceEpoch(item.startEpoch);
+      await AppNotifications.scheduleNotification('Időszak', '"${api.Generic.capitalizePeriodText(item.name)}" idószak lesz HOLNAP!', DateTime(time.year, time.month, time.day - 1, 11, 00));
+      await AppNotifications.scheduleNotification('Időszak', '"${api.Generic.capitalizePeriodText(item.name)}" idószak van MA!', DateTime(time.year, time.month, time.day, 06, 00));
     }
   }
 
@@ -327,9 +360,6 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       if(prev != wkday){
         idx = 1;
         prev = wkday;
-      }
-      if(thisweekCalendar && currWeekday == wkday){
-        _setupPotentialNotifications(item);
       }
       switch(wkday){
         case 1:
@@ -377,6 +407,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       }
       idx++;
     }
+
+    final List<api.CalendarEntry> _todaysEntry = <api.CalendarEntry>[].toList();
     for(var item in calendarEntries){
       if(item.isExam){
         continue;
@@ -388,7 +420,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         prevEntry = item;
       }
       if(thisweekCalendar && currWeekday == wkday){
-        _setupPotentialNotifications(item);
+        _todaysEntry.add(item);
       }
       if(idx == 2 && item.startEpoch == prevEntry!.startEpoch){
         idx--;
@@ -443,6 +475,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       }
     }
     calendarTabController.index = currWeekday - 1 > 6 ? 0 : currWeekday - 1;
+    Future.delayed(Duration.zero,()async{
+      await _setupClassesNotifications(_todaysEntry);
+    });
   }
 
   List<Widget> calendarTabs = <Widget>[].toList();
@@ -670,22 +705,24 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         }
       }
     }
-    AppNotifications.cancelScheduledNotifs(1);
+    final List<api.CashinEntry> _missedPayments = <api.CashinEntry>[].toList();
     bool isEmpty = true;
     for(var item in paymentsEntries){
       if(item.completed){
         totalMoney += item.ammount;
-          continue;
+        continue;
       }
       isEmpty = false;
       paymentsList.add(PaymentElementWidget(ammount: item.ammount, dueDateMs: item.dueDateMs, name: item.comment));
-      AppNotifications.showNotification('Befizetés', '${item.ammount}Ft-al lógsz. Nézd meg a Befizetés fület az infókért.');
-      final now = DateTime.now();
-      final dailyReminder = (Duration(milliseconds: item.dueDateMs) - Duration(milliseconds: now.millisecondsSinceEpoch)).inDays;
-      final time = DateTime.fromMillisecondsSinceEpoch(item.dueDateMs);
-      for(int i = 1; i <= dailyReminder; i++){
-        AppNotifications.scheduleNotification('Befizetés', '${item.ammount}Ft-al lógsz. Fizesd be: ${api.Generic.monthToText(time.month)} ${time.day}-ig!', DateTime(now.year, now.month, now.day + i, 11, 00), 1);
+      if(item.dueDateMs > DateTime.now().millisecondsSinceEpoch || item.dueDateMs == 0){
+        _missedPayments.add(item);
       }
+    }
+
+    if(_missedPayments.isNotEmpty){
+      Future.delayed(Duration.zero,()async{
+        await _setupPaymentsNotification(_missedPayments);
+      });
     }
 
     if(isEmpty){
@@ -724,7 +761,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     }
 
     int prevSemester = -1;
-    AppNotifications.cancelScheduledNotifs(2);
+    final List<api.PeriodEntry> _notificationPeriods = <api.PeriodEntry>[].toList();
+
     //Map<String, List<api.PeriodType>> values = Map<String, List<api.PeriodType>>.identity();
     for(var item in periodEntries){
       final starttime = DateTime.fromMillisecondsSinceEpoch(item.startEpoch);
@@ -747,7 +785,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         prevSemester = item.partofSemester;
       }
       if(!item.isActive){ // exclude today
-        AppNotifications.scheduleNotification('Időszakok', '"${item.name}" időszak lesz HOLNAP!', DateTime.fromMillisecondsSinceEpoch((Duration(milliseconds: item.startEpoch) - const Duration(days: 1) + const Duration(hours: 12)).inMilliseconds), 2);
+        _notificationPeriods.add(item);
       }
       periodList.add(priods.PeriodsElementWidget(
         displayName: api.Generic.capitalizePeriodText(item.name),
@@ -763,6 +801,12 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       if(currentSemester == -1) {
         currentSemester = item.partofSemester;
       }
+    }
+
+    if(_notificationPeriods.isNotEmpty){
+      Future.delayed(Duration.zero,()async{
+        await _setupPeriodsNotification(_notificationPeriods);
+      });
     }
   }
 

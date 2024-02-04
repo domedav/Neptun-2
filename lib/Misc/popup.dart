@@ -496,7 +496,7 @@ class PopupWidget extends State<PopupWidgetState>{
               ),
               child: IconButton(
                 onPressed: (){
-                  _showSnackbar(context, 'Ha van befizetnivalód, értesíteni fog az app, minden nap, amíg nem fizeted be. Hasznos, ha nem szeretnéd soha lekésni a határidőket.', 6);
+                  _showSnackbar(context, 'Ha van befizetnivalód, értesíteni fog az app, minden nap, amíg nem fizeted be. Hasznos, ha feledékeny vagy, vagy nem szeretnéd lekésni a határidőt.', 8);
                 },
                 icon: Icon(
                   Icons.question_mark_rounded,
@@ -545,7 +545,7 @@ class PopupWidget extends State<PopupWidgetState>{
               ),
               child: IconButton(
                 onPressed: (){
-                  _showSnackbar(context, 'Ha valamilyen új időszak lesz, értesíteni fog az app, az adott időszak előtt 1 nappal, és aznap fogsz értesítést kapni. Hasznos, ha nem akarod naptárazni az adott időszakokat. (pl: tárgyfelvételi időszak)', 8);
+                  _showSnackbar(context, 'Ha valamilyen új időszak lesz, értesíteni fog az app, az adott időszak előtt 1 nappal, és aznap fogsz értesítést kapni. Hasznos, ha nem akarsz lemaradni az adott időszakokról. (pl: tárgyfelvételi időszak)', 8);
                 },
                 icon: Icon(
                   Icons.question_mark_rounded,

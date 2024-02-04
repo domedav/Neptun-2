@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -7,7 +8,12 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 class AppNotifications{
   static final FlutterLocalNotificationsPlugin _localnotifs = FlutterLocalNotificationsPlugin();
   static Future<void> initialize()async{
+    Counter();
     if(Platform.isAndroid){
+      tz.initializeTimeZones();
+      final String timeZone = await FlutterTimezone.getLocalTimezone();
+      tz.setLocalLocation(tz.getLocation(timeZone));
+
       AndroidFlutterLocalNotificationsPlugin().requestExactAlarmsPermission();
       _localnotifs.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission();
     }
@@ -19,8 +25,9 @@ class AppNotifications{
     ));
   }
 
-  static Future<void> cancelScheduledNotifs(int id)async{
-    await _localnotifs.cancel(id);
+  static Future<void> cancelScheduledNotifs()async{
+    await _localnotifs.cancelAll();
+    Counter.reset();
   }
 
   static tz.TZDateTime _convert(int year, int month, int day, int hour, int minute){
@@ -39,15 +46,19 @@ class AppNotifications{
     return scheduleDate;
   }
 
-  static Future<void> scheduleNotification(String title, String content, DateTime time, int id) async{
+  static Future<void> scheduleNotification(String title, String content, DateTime time) async{
+    //log("$title $time");
     final details = NotificationDetails(
       android: AndroidNotificationDetails(
-          '$id',
+          '0',
           'Neptun 2 Időzített',
           channelDescription: 'Olyan értesítések csatornája, amelyeket időzítetten, azaz a nap folyamán valamikor akar az applikáció megjeleníteni neked.',
+          groupKey: 'Neptun 2 Időzített',
+          setAsGroupSummary: true,
           importance: Importance.max,
           priority: Priority.max,
-          ticker: 'Neptun 2 Időzített Értesítés'
+          ticker: 'Neptun 2 Időzített Értesítés',
+          styleInformation: BigTextStyleInformation(content, contentTitle: title)
       ),
       linux: const LinuxNotificationDetails(
         defaultActionName: 'Dismiss',
@@ -55,12 +66,8 @@ class AppNotifications{
       ),
     );
     if(Platform.isAndroid){
-      tz.initializeTimeZones();
-      final String timeZone = await FlutterTimezone.getLocalTimezone();
-      tz.setLocalLocation(tz.getLocation(timeZone));
-
       await _localnotifs.zonedSchedule(
-        id,
+        Counter.getCount(),
         title,
         content,
         _convert(time.year, time.month, time.day, time.hour, time.minute),
@@ -72,21 +79,40 @@ class AppNotifications{
     }
   }
 
-  static Future<void> showNotification(String title, String desc,) async{
-    const details = NotificationDetails(
+  static Future<void> showNotification(String title, String desc) async{
+    final details = NotificationDetails(
       android: AndroidNotificationDetails(
           '1',
           'Neptun 2 Azonnali',
           channelDescription: 'Olyan értesítések csatornája, amelyeket azonnal akar az applikáció megjeleníteni neked.',
+          groupKey: 'Neptun 2 Azonnali',
+          setAsGroupSummary: true,
           importance: Importance.max,
           priority: Priority.max,
-          ticker: 'Neptun 2 Azonnali Értesítés'
+          ticker: 'Neptun 2 Azonnali Értesítés',
+          styleInformation: BigTextStyleInformation(desc, contentTitle: title)
       ),
-      linux: LinuxNotificationDetails(
+      linux: const LinuxNotificationDetails(
         defaultActionName: 'Dismiss',
         urgency: LinuxNotificationUrgency.normal,
       ),
     );
-    _localnotifs.show(1, title, desc, details);
+    _localnotifs.show(Counter.getCount(), title, desc, details);
+  }
+}
+
+class Counter{ // using "static int counter" did not want to increment :(
+  static Counter? _instance;
+  Counter(){
+    _instance = this;
+  }
+
+  int _counter = 0;
+  static int getCount(){
+    return ++_instance!._counter;
+  }
+
+  static void reset(){
+    _instance!._counter = 0;
   }
 }
