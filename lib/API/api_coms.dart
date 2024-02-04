@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'dart:convert' as conv;
-import 'dart:developer';
+import 'dart:developer' as debug;
 import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../storage.dart' as storage;
 
@@ -18,7 +21,7 @@ class URLs{
 
 class _APIRequest{
   static Future<String> postRequest(Uri url, String requestBody) async{
-    HttpOverrides.global = NeptunCerts.getInstance();
+    HttpOverrides.global = NeptunCerts.getCerts();
 
     final client = http.Client();
     final request = http.Request('POST', url);
@@ -126,15 +129,25 @@ class CalendarRequest{
         //CalendarEntry(DateTime(now.year, now.month, 1, 0, 0, 0).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 1, 23, 23, 23).millisecondsSinceEpoch.toString(), 'DEMO helyszín 1', 'DEMO név', false),
         CalendarEntry(DateTime(now.year, now.month, 2, 1, 1, 1).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 2, 22, 22, 22).millisecondsSinceEpoch.toString(), 'DEMO helyszín 2', 'DEMO név', false),
         //CalendarEntry(DateTime(now.year, now.month, 3, 2, 2, 2).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 3, 11, 11, 11).millisecondsSinceEpoch.toString(), 'DEMO helyszín 3', 'DEMO név', false),
-        CalendarEntry(DateTime(now.year, now.month, 4, 3, 3, 3).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 4, 10, 10, 10).millisecondsSinceEpoch.toString(), 'DEMO helyszín 4', 'DEMO név', false),
-        CalendarEntry(DateTime(now.year, now.month, 4, 3, 3, 3).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 4, 10, 10, 10).millisecondsSinceEpoch.toString(), 'DEMO helyszín 4', 'DEMO vizsga', true),
+        CalendarEntry(DateTime(now.year, now.month, 3, 3, 3, 3).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 4, 10, 10, 10).millisecondsSinceEpoch.toString(), 'DEMO helyszín 4', 'DEMO név', false),
+        CalendarEntry(DateTime(now.year, now.month, 3, 3, 3, 3).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 4, 10, 10, 10).millisecondsSinceEpoch.toString(), 'DEMO helyszín 4', 'DEMO vizsga', true),
         CalendarEntry(DateTime(now.year, now.month, 4, 3, 3, 3).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 4, 10, 10, 10).millisecondsSinceEpoch.toString(), 'DEMO helyszín 4', 'DEMO név', false),
         CalendarEntry(DateTime(now.year, now.month, 4, 3, 3, 3).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 4, 14, 10, 10).millisecondsSinceEpoch.toString(), 'DEMO helyszín 4', 'DEMO név', false),
         CalendarEntry(DateTime(now.year, now.month, 4, 3, 3, 3).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 4, 19, 10, 10).millisecondsSinceEpoch.toString(), 'DEMO helyszín 5', 'DEMO név', false),
         CalendarEntry(DateTime(now.year, now.month, 5, 4, 4, 4).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 5, 9, 9, 9).millisecondsSinceEpoch.toString(), 'DEMO helyszín 5', 'DEMO név', false),
         CalendarEntry(DateTime(now.year, now.month, 5, 6, 4, 4).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 5, 12, 9, 9).millisecondsSinceEpoch.toString(), 'DEMO helyszín 8', 'DEMO név', false),
+        CalendarEntry(DateTime(now.year, now.month, 5, 8, 4, 4).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 5, 12, 9, 9).millisecondsSinceEpoch.toString(), 'DEMO helyszín 8', 'DEMO név', false),
         //CalendarEntry(DateTime(now.year, now.month, 6, 5, 5 ,5).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 6, 20, 20, 20).millisecondsSinceEpoch.toString(), 'DEMO helyszín 6', 'DEMO név', false),
         CalendarEntry(DateTime(now.year, now.month, 7, 6, 6, 6).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 7, 6, 7, 7).millisecondsSinceEpoch.toString(), 'DEMO helyszín 7', 'DEMO név', false),
+        CalendarEntry(DateTime(now.year, now.month, now.day, 3, now.hour, 3).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, now.day, now.hour + 1, 10, 10).millisecondsSinceEpoch.toString(), 'DEMO helyszín', 'DEMO Értesítés Aznap', true),
+        CalendarEntry(DateTime(now.year, now.month, now.day + 1, now.hour, 3, 3).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, now.day + 1, now.hour + 1, 10, 10).millisecondsSinceEpoch.toString(), 'DEMO helyszín', 'DEMO Értesítés 1', true),
+        CalendarEntry(DateTime(now.year, now.month, now.day + 3, now.hour, 3, 3).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, now.day + 3, now.hour + 1, 10, 10).millisecondsSinceEpoch.toString(), 'DEMO helyszín', 'DEMO Értesítés 3', true),
+        CalendarEntry(DateTime(now.year, now.month, now.day + 7, now.hour, 3, 3).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, now.day + 7, now.hour + 1, 10, 10).millisecondsSinceEpoch.toString(), 'DEMO helyszín', 'DEMO Értesítés 7', true),
+        CalendarEntry(DateTime(now.year, now.month, now.day + 14, now.hour, 3, 3).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, now.day + 14, now.hour + 1, 10, 10).millisecondsSinceEpoch.toString(), 'DEMO helyszín', 'DEMO Értesítés 14', true),
+
+        CalendarEntry(DateTime(now.year, now.month, now.day, now.hour + 1, now.minute + 11, 4).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, now.hour + 1, now.minute + 45, 9, 9).millisecondsSinceEpoch.toString(), 'DEMO helyszín 8', 'DEMO Óra', false),
+        CalendarEntry(DateTime(now.year, now.month, now.day, now.hour + 1, now.minute + 12, 4).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, now.hour + 1, now.minute + 45, 9, 9).millisecondsSinceEpoch.toString(), 'DEMO helyszín 8', 'DEMO Óra', false),
+        CalendarEntry(DateTime(now.year, now.month, now.day, now.hour + 1, now.minute + 13, 4).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, now.hour + 1, now.minute + 45, 9, 9).millisecondsSinceEpoch.toString(), 'DEMO helyszín 8', 'DEMO Óra', false),
       ];
     }
     var list = <CalendarEntry>[].toList();
@@ -620,9 +633,7 @@ class PeriodEntry{
   }
 
   void fillIsActiveStatus() {
-    final now = DateTime
-        .now()
-        .millisecondsSinceEpoch;
+    final now = DateTime.now().millisecondsSinceEpoch;
     isActive = (startEpoch < now && now < endEpoch);
 
     switch (name.toLowerCase().trim()){
@@ -688,6 +699,27 @@ class Generic{
     return "NULL";
   }
 
+  static String capitalizePeriodText(String periodName){
+    final chars = periodName.toLowerCase().trim().characters.toList();
+    String str = '';
+    int idx = 0;
+    bool setNexttoCapitalize = false;
+    for(var item in chars){
+      if(idx == 0 || setNexttoCapitalize) {
+        str += item.toUpperCase();
+        idx++;
+        setNexttoCapitalize = false;
+        continue;
+      }
+      if(item == ' '){
+        setNexttoCapitalize = true;
+      }
+      str += item;
+      idx++;
+    }
+    return str;
+  }
+
   static String randomLoadingComment(bool familyFriendlyMode){
     if(familyFriendlyMode){
       final gen = Random().nextInt(100) % 7;
@@ -743,15 +775,29 @@ class Generic{
 }
 
 class NeptunCerts extends HttpOverrides {
-  static final NeptunCerts _instance = NeptunCerts();
-  static NeptunCerts getInstance(){return _instance;}
+  static NeptunCerts? _instance;
+  static bool hasValidCertificate = true;
+
+  static NeptunCerts getCerts(){
+    if(_instance != null){
+      return _instance!;
+    }
+    return NeptunCerts();
+  }
+
+  NeptunCerts(){
+    _instance = this;
+  }
 
   @override
   HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
       ..badCertificateCallback = (X509Certificate cert, String host, int port) {
-        // accept all certs, as neptun has none
-        return true;
+        final validCertSha1 = [165, 169, 244, 23, 233, 182, 23, 197, 14, 55, 39, 250, 69, 216, 89, 8, 179, 251, 103, 19];
+        //debug.log(cert.sha1.toString());
+        //debug.log(validCertSha1.toString());
+        hasValidCertificate = cert.sha1.toString() == validCertSha1.toString(); // list comparison doesnt always work for some reason...
+        return hasValidCertificate;
       };
   }
 }

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
+import 'package:neptun2/notifications.dart';
 import 'package:neptun2/Misc/emojirich_text.dart';
 import 'package:neptun2/Misc/popup.dart';
 import 'package:neptun2/PaymentsElements/payment_element_widget.dart';
@@ -117,10 +118,21 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     bottomnavScrollCntroller = LinkedScrollControllerGroup();
     bottomnavController = bottomnavScrollCntroller.addAndGet();
 
+    AppNotifications.initialize();
+
     Future.delayed(Duration.zero, () async {
       await fetchCalendar();
-    }).then((value) {
-      setupCalendar();
+    }).then((value) async {
+      if(storage.DataCache.getNeedExamNotifications()!){
+        await AppNotifications.cancelScheduledNotifs(0);
+        Future.delayed(Duration.zero,()async{
+          if(!storage.DataCache.getHasNetwork()){
+            return;
+          }
+          await _skimForExams();
+        });
+      }
+      setupCalendar(true);
     });
 
     Future.delayed(Duration.zero, () async{
@@ -230,9 +242,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     });
   }
 
-  void setupCalendar(){
+  void setupCalendar(bool thisweekCalendar){
     setState(() {
-      _setupCalendar();
+      _setupCalendar(thisweekCalendar);
       canDoCalendarPaging = true;
       setupCalendarController(false, false);
     });
@@ -255,7 +267,54 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     });
   }
 
-  void _setupCalendar(){
+  Future<void> _skimForExams()async{
+    final allEventTo2WeeksAhead = <api.CalendarEntry>[];
+    for(int i = 0; i < 3; i++){
+      final result = await fetchCalendarToList(i);
+      allEventTo2WeeksAhead.addAll(result);
+    }
+
+    if(allEventTo2WeeksAhead.isEmpty){
+      return;
+    }
+
+    final now = DateTime.now();
+    for(var item in allEventTo2WeeksAhead){ // add notifiers for exams
+      if(!item.isExam || now.millisecondsSinceEpoch > item.startEpoch){
+        continue;
+      }
+      _setupNotificationsForSkimmedExams(item, now);
+    }
+  }
+
+  void _setupNotificationsForSkimmedExams(api.CalendarEntry item, DateTime now){
+    final daysTillExam = (Duration(milliseconds: item.startEpoch) - Duration(milliseconds: now.millisecondsSinceEpoch)).inDays;
+    if(daysTillExam == 0){
+      AppNotifications.showNotification('Vizsga Emlékeztető!', '"${item.title}"-ból HOLNAP vizsgád lesz!');
+    }
+    for(int i = 1; i <= daysTillExam; i++){
+      AppNotifications.scheduleNotification('Vizsga Emlékeztető!', '"${item.title}"-ból vizsgád lesz ${daysTillExam} nap múlva!', DateTime(now.year, now.month, now.day + i, 09, 00), 0);
+    }
+  }
+
+  void _setupPotentialNotifications(api.CalendarEntry item){
+    // set up notifications for today
+    final now = DateTime.now();
+    if(now.millisecondsSinceEpoch < item.startEpoch){ // did not pass them in time
+      if(item.isExam && storage.DataCache.getNeedClassNotifications()!){
+        final time = DateTime.fromMillisecondsSinceEpoch(item.startEpoch);
+        AppNotifications.showNotification('Vizsga Emlékeztető!', 'Vizsgád lesz ${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}-kor!');
+      }
+      else if(storage.DataCache.getNeedExamNotifications()!){
+        //debug.log(DateTime.fromMillisecondsSinceEpoch((Duration(milliseconds: item.startEpoch) - const Duration(minutes: 10)).inMilliseconds).toString());
+        AppNotifications.scheduleNotification('Óra', '"${item.title}" órád lesz itt: "${item.location}" 10 perc múlva!', DateTime.fromMillisecondsSinceEpoch((Duration(milliseconds: item.startEpoch) - const Duration(minutes: 10)).inMilliseconds), 0);
+        AppNotifications.scheduleNotification('Óra', '"${item.title}" órád lesz itt: "${item.location}" 5 perc múlva!', DateTime.fromMillisecondsSinceEpoch((Duration(milliseconds: item.startEpoch) - const Duration(minutes: 5)).inMilliseconds), 0);
+        AppNotifications.scheduleNotification('Óra', '"${item.title}" órád van itt: "${item.location}"!', DateTime.fromMillisecondsSinceEpoch(item.startEpoch), 0);
+      }
+    }
+  }
+
+  void _setupCalendar(bool thisweekCalendar){
     int idx = 1;
     int prev = 0;
     api.CalendarEntry? prevEntry;
@@ -268,6 +327,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       if(prev != wkday){
         idx = 1;
         prev = wkday;
+      }
+      if(thisweekCalendar && currWeekday == wkday){
+        _setupPotentialNotifications(item);
       }
       switch(wkday){
         case 1:
@@ -323,6 +385,13 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       if(prev != wkday){
         idx = 1;
         prev = wkday;
+        prevEntry = item;
+      }
+      if(thisweekCalendar && currWeekday == wkday){
+        _setupPotentialNotifications(item);
+      }
+      if(idx == 2 && item.startEpoch == prevEntry!.startEpoch){
+        idx--;
       }
       switch(wkday){
         case 1:
@@ -368,32 +437,11 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
           ));
           break;
       }
-      if(prevEntry == null || item.startEpoch != prevEntry.startEpoch){
+      if(idx == 1 || item.startEpoch != prevEntry!.startEpoch){
         prevEntry = item;
         idx++;
       }
     }
-    /*if(mondayCalendar.isEmpty){
-      mondayCalendar.add(const t_table.FreedayElementWidget());
-    }
-    if(tuesdayCalendar.isEmpty){
-      tuesdayCalendar.add(const t_table.FreedayElementWidget());
-    }
-    if(wednessdayCalendar.isEmpty){
-      wednessdayCalendar.add(const t_table.FreedayElementWidget());
-    }
-    if(thursdayCalendar.isEmpty){
-      thursdayCalendar.add(const t_table.FreedayElementWidget());
-    }
-    if(fridayCalendar.isEmpty){
-      fridayCalendar.add(const t_table.FreedayElementWidget());
-    }
-    if(saturdayCalendar.isEmpty){
-      saturdayCalendar.add(const t_table.FreedayElementWidget());
-    }
-    if(sundayCalendar.isEmpty){
-      sundayCalendar.add(const t_table.FreedayElementWidget());
-    }*/
     calendarTabController.index = currWeekday - 1 > 6 ? 0 : currWeekday - 1;
   }
 
@@ -457,34 +505,13 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   }
 
   void getCalendarTabViews(BuildContext context, bool isLoading){
-    if(true || canDoCalendarPaging) {
-      _fillOneCalendarElement(context, mondayCalendar, 'Hétfő', isLoading);
-      _fillOneCalendarElement(context, tuesdayCalendar, 'Kedd', isLoading);
-      _fillOneCalendarElement(context, wednessdayCalendar, 'Szerda', isLoading);
-      _fillOneCalendarElement(context, thursdayCalendar, 'Csütörtök', isLoading);
-      _fillOneCalendarElement(context, fridayCalendar, 'Péntek', isLoading);
-      _fillOneCalendarElement(context, saturdayCalendar, 'Szombat', isLoading);
-      _fillOneCalendarElement(context, sundayCalendar, 'Varárnap', isLoading);
-      return;
-    }
-    calendarTabs.add(Container(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: const Tab(
-        text: 'Betöltés...',
-      ),
-    ));
-    calendarTabViews.add(
-      const Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          SizedBox(height: 10),
-          CircularProgressIndicator(
-            color: Colors.white,
-          ),
-        ],
-      ));
+    _fillOneCalendarElement(context, mondayCalendar, 'Hétfő', isLoading);
+    _fillOneCalendarElement(context, tuesdayCalendar, 'Kedd', isLoading);
+    _fillOneCalendarElement(context, wednessdayCalendar, 'Szerda', isLoading);
+    _fillOneCalendarElement(context, thursdayCalendar, 'Csütörtök', isLoading);
+    _fillOneCalendarElement(context, fridayCalendar, 'Péntek', isLoading);
+    _fillOneCalendarElement(context, saturdayCalendar, 'Szombat', isLoading);
+    _fillOneCalendarElement(context, sundayCalendar, 'Varárnap', isLoading);
   }
 
   void _mbookPopupResult(int result, int idx){
@@ -643,7 +670,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         }
       }
     }
-
+    AppNotifications.cancelScheduledNotifs(1);
     bool isEmpty = true;
     for(var item in paymentsEntries){
       if(item.completed){
@@ -652,6 +679,13 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       }
       isEmpty = false;
       paymentsList.add(PaymentElementWidget(ammount: item.ammount, dueDateMs: item.dueDateMs, name: item.comment));
+      AppNotifications.showNotification('Befizetés', '${item.ammount}Ft-al lógsz. Nézd meg a Befizetés fület az infókért.');
+      final now = DateTime.now();
+      final dailyReminder = (Duration(milliseconds: item.dueDateMs) - Duration(milliseconds: now.millisecondsSinceEpoch)).inDays;
+      final time = DateTime.fromMillisecondsSinceEpoch(item.dueDateMs);
+      for(int i = 1; i <= dailyReminder; i++){
+        AppNotifications.scheduleNotification('Befizetés', '${item.ammount}Ft-al lógsz. Fizesd be: ${api.Generic.monthToText(time.month)} ${time.day}-ig!', DateTime(now.year, now.month, now.day + i, 11, 00), 1);
+      }
     }
 
     if(isEmpty){
@@ -690,6 +724,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     }
 
     int prevSemester = -1;
+    AppNotifications.cancelScheduledNotifs(2);
     //Map<String, List<api.PeriodType>> values = Map<String, List<api.PeriodType>>.identity();
     for(var item in periodEntries){
       final starttime = DateTime.fromMillisecondsSinceEpoch(item.startEpoch);
@@ -711,8 +746,11 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         );
         prevSemester = item.partofSemester;
       }
+      if(!item.isActive){ // exclude today
+        AppNotifications.scheduleNotification('Időszakok', '"${item.name}" időszak lesz HOLNAP!', DateTime.fromMillisecondsSinceEpoch((Duration(milliseconds: item.startEpoch) - const Duration(days: 1) + const Duration(hours: 12)).inMilliseconds), 2);
+      }
       periodList.add(priods.PeriodsElementWidget(
-        displayName: item.name,
+        displayName: api.Generic.capitalizePeriodText(item.name),
         formattedStartTime: '${api.Generic.monthToText(starttime.month)} ${starttime.day}',
         formattedStartTimeYear: '${starttime.year}',
         formattedEndTime: '${api.Generic.monthToText(endtime.month)} ${endtime.day}',
@@ -735,6 +773,12 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   Future<void> stepCalendarForward() async{
     currentWeekOffset++;
     await onCalendarRefresh();
+  }
+
+  Future<List<api.CalendarEntry>> fetchCalendarToList(int offset) async{
+    final request = await api.CalendarRequest.makeCalendarRequest(api.CalendarRequest.getCalendarOneWeekJSON(storage.DataCache.getUsername()!, storage.DataCache.getPassword()!, currentWeekOffset + offset/* + isWeekend*/));
+    final list = api.CalendarRequest.getCalendarEntriesFromJSON(request);
+    return list;
   }
 
   Future<void> fetchCalendar() async{
@@ -900,7 +944,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       await storage.DataCache.setHasCachedCalendar(0);
       await storage.DataCache.setHasCachedFirstWeekEpoch(0);
       await fetchCalendar();
-      setupCalendar();
+      setupCalendar(false);
       _calendarDebounce = false;
     });
   }
@@ -1353,6 +1397,19 @@ class PeriodsPageWidget extends StatelessWidget{
     homePage.onPeriodsRefresh();
   }
 
+  String aOrAzDeterminer(int semester){
+    switch(semester){
+      case 0:
+        return '';
+      case 1:
+        return 'Az';
+      case 5:
+        return 'Az';
+      default:
+        return 'A';
+    }
+  }
+
   @override
   Widget build(BuildContext context){
     return Scaffold(
@@ -1361,7 +1418,7 @@ class PeriodsPageWidget extends StatelessWidget{
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                topnav.TopNavigatorWidget(homePage: homePage, displayString: "Időszakok", smallHintText: "Jelenleg ${currentSemester != -1 ? "Az $currentSemester." : "Egy"} Félév Van 🗓️"),
+                topnav.TopNavigatorWidget(homePage: homePage, displayString: "Időszakok", smallHintText: "Jelenleg ${currentSemester != -1 ? "${aOrAzDeterminer(currentSemester)} $currentSemester." : "Egy"} Félév Van 🗓️"),
                 HomePageState.getSeparatorLine(context),
                 Expanded(
                     child: RefreshIndicator(

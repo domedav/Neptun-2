@@ -62,7 +62,11 @@ class DataCache{
     _hasCachedPeriods = false;
     _firstweekOfSemesterEpoch = 0;
     _isDemoAccount = false;
-    setNeedFamilyFriendlyComments(_familyFriendlyLoadingComments! ? 1 : 0);
+    setNeedFamilyFriendlyComments(_persistentSetting_familyFriendlyLoadingComments! ? 1 : 0);
+    setNeedExamNotifications(_persistentSetting_showExamNotifications! ? 1 : 0);
+    setNeedClassNotifications(_persistentSetting_showClassNotifications! ? 1 : 0);
+    setNeedClassNotifications(_persistentSetting_showPaymentsNotifications! ? 1 : 0);
+    setNeedClassNotifications(_persistentSetting_showPeriodsNotifications! ? 1 : 0);
   }
 
   static final DataCache _instance = DataCache();
@@ -79,7 +83,12 @@ class DataCache{
   late bool? _hasCachedFirstWeekEpoch = false;
   late int? _firstweekOfSemesterEpoch = 0;
   late bool? _isDemoAccount = false;
-  late bool? _familyFriendlyLoadingComments = true;
+  
+  late bool? _persistentSetting_familyFriendlyLoadingComments = true;
+  late bool? _persistentSetting_showExamNotifications = true;
+  late bool? _persistentSetting_showClassNotifications = true;
+  late bool? _persistentSetting_showPaymentsNotifications = true;
+  late bool? _persistentSetting_showPeriodsNotifications = true;
 
   static Future<void> loadData() async{return _instance._loadData();}
 
@@ -119,10 +128,34 @@ class DataCache{
     tmp = await getInt('IsDemoAccount');
     _isDemoAccount = tmp != null && tmp != 0;
 
-    tmp = await getInt('IsFamilyFriendlyLoading');
-    _familyFriendlyLoadingComments = tmp != null && tmp != 0;
+    tmp = await getInt('SETTING_IsFamilyFriendlyLoading');
+    _persistentSetting_familyFriendlyLoadingComments = tmp != null && tmp != 0;
     if(tmp == null){
-      _familyFriendlyLoadingComments = true;  // this is the default value, not false
+      _persistentSetting_familyFriendlyLoadingComments = true;  // this is the default value, not false
+    }
+
+    tmp = await getInt('SETTING_IsNeedExamNotifications');
+    _persistentSetting_showExamNotifications = tmp != null && tmp != 0;
+    if(tmp == null){
+      _persistentSetting_showExamNotifications = true;  // this is the default value, not false
+    }
+
+    tmp = await getInt('SETTING_IsNeedClassNotifications');
+    _persistentSetting_showClassNotifications = tmp != null && tmp != 0;
+    if(tmp == null){
+      _persistentSetting_showClassNotifications = true;  // this is the default value, not false
+    }
+
+    tmp = await getInt('SETTING_IsNeedPaymentsNotifications');
+    _persistentSetting_showPaymentsNotifications = tmp != null && tmp != 0;
+    if(tmp == null){
+      _persistentSetting_showPaymentsNotifications = true;  // this is the default value, not false
+    }
+
+    tmp = await getInt('SETTING_IsNeedPeriodsNotifications');
+    _persistentSetting_showPeriodsNotifications = tmp != null && tmp != 0;
+    if(tmp == null){
+      _persistentSetting_showPeriodsNotifications = true;  // this is the default value, not false
     }
 
   }
@@ -195,9 +228,33 @@ class DataCache{
     await saveInt('IsDemoAccount', value ?? 0);
   }
 
-  static bool? getNeedFamilyFriendlyComments(){return _instance._familyFriendlyLoadingComments;}
+  static bool? getNeedFamilyFriendlyComments(){return _instance._persistentSetting_familyFriendlyLoadingComments;}
   static Future<void> setNeedFamilyFriendlyComments(int? value) async{
-    _instance._familyFriendlyLoadingComments = value != null && value != 0;
-    await saveInt('IsFamilyFriendlyLoading', value ?? 1);
+    _instance._persistentSetting_familyFriendlyLoadingComments = value != null && value != 0;
+    await saveInt('SETTING_IsFamilyFriendlyLoading', value ?? 1);
+  }
+
+  static bool? getNeedExamNotifications(){return _instance._persistentSetting_showExamNotifications;}
+  static Future<void> setNeedExamNotifications(int? value) async{
+    _instance._persistentSetting_showExamNotifications = value != null && value != 0;
+    await saveInt('SETTING_IsNeedExamNotifications', value ?? 1);
+  }
+
+  static bool? getNeedClassNotifications(){return _instance._persistentSetting_showClassNotifications;}
+  static Future<void> setNeedClassNotifications(int? value) async{
+    _instance._persistentSetting_showClassNotifications = value != null && value != 0;
+    await saveInt('SETTING_IsNeedClassNotifications', value ?? 1);
+  }
+
+  static bool? getNeedPaymentsNotifications(){return _instance._persistentSetting_showPaymentsNotifications;}
+  static Future<void> setNeedPaymentsNotifications(int? value) async{
+    _instance._persistentSetting_showPaymentsNotifications = value != null && value != 0;
+    await saveInt('SETTING_IsNeedPaymentsNotifications', value ?? 1);
+  }
+
+  static bool? getNeedPeriodsNotifications(){return _instance._persistentSetting_showPeriodsNotifications;}
+  static Future<void> setNeedPeriodsNotifications(int? value) async{
+    _instance._persistentSetting_showPeriodsNotifications = value != null && value != 0;
+    await saveInt('SETTING_IsNeedPeriodsNotifications', value ?? 1);
   }
 }

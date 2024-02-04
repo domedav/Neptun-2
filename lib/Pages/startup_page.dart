@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:neptun2/API/api_coms.dart' as api;
+import '../Misc/popup.dart';
 import '../storage.dart';
 import 'main_page.dart' as main_page;
 import 'setup_page.dart' as setup_page;
@@ -57,7 +58,7 @@ class _SplitterState extends State<Splitter>{
     return Scaffold(
         body: Column(
           mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Center(
               child: SizedBox(

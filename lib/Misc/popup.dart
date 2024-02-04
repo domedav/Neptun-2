@@ -343,11 +343,224 @@ class PopupWidget extends State<PopupWidgetState>{
               ),
             )),
             Container(
+              decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(90)),
+                  color: Colors.white.withOpacity(.06)
+              ),
+              child: IconButton(
+                onPressed: (){
+                  _showSnackbar(context, 'Lecseréli a betöltő szövegeket, kevésbé családbarátra.', 4);
+                },
+                icon: Icon(
+                  Icons.question_mark_rounded,
+                  color: Colors.white.withOpacity(.4),
+                ),
+                enableFeedback: true,
+                iconSize: 24,
+              ),
+            ),
+            Container(
               margin: const EdgeInsets.all(10),
               child: Switch(
                 value: DataCache.getNeedFamilyFriendlyComments()!,
                 onChanged: (b){
                   DataCache.setNeedFamilyFriendlyComments(b ? 1 : 0);
+                  if(mounted) {setState((){});}
+                },
+                activeColor: Colors.white,
+                activeTrackColor: const Color.fromRGBO(0x4F, 0x69, 0x6E, 1.0),
+                hoverColor: Colors.white.withOpacity(.1),
+              ),
+            )
+          ],
+        ));
+        list.add(Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(flex: 2, child: Container(
+              margin: const EdgeInsets.all(10),
+              child: const Text(
+                'Vizsga Értesítők',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white
+                ),
+              ),
+            )),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(90)),
+                color: Colors.white.withOpacity(.06)
+              ),
+              child: IconButton(
+                onPressed: (){
+                  _showSnackbar(context, 'Vizsgaértesítő értesítéseket küld neked a vizsga előtti 2 hétben. Hasznos, ha szereted halogatni a tanulást, vagy szimplán feledékeny vagy.', 12);
+                },
+                icon: Icon(
+                  Icons.question_mark_rounded,
+                  color: Colors.white.withOpacity(.4),
+                ),
+                enableFeedback: true,
+                iconSize: 24,
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.all(10),
+              child: Switch(
+                value: DataCache.getNeedExamNotifications()!,
+                onChanged: (b){
+                  DataCache.setNeedExamNotifications(b ? 1 : 0);
+                  if(mounted) {setState((){});}
+                },
+                activeColor: Colors.white,
+                activeTrackColor: const Color.fromRGBO(0x4F, 0x69, 0x6E, 1.0),
+                hoverColor: Colors.white.withOpacity(.1),
+              ),
+            )
+          ],
+        ));
+        list.add(Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(flex: 2, child: Container(
+              margin: const EdgeInsets.all(10),
+              child: const Text(
+                'Órák Előtti Értesítések',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white
+                ),
+              ),
+            )),
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(90)),
+                  color: Colors.white.withOpacity(.06)
+              ),
+              child: IconButton(
+                onPressed: (){
+                  _showSnackbar(context, 'Órák kezdete előtt 10 percel; 5 percel; és a kezdetük időpontjában, küld neked értesítést, hogy ne késd le őket. Hasznos, ha tudni akarod milyen órád lesz, anélkül, hogy a telódon lecsekkolnád. (pl: Okosórád van, és értesítésként látod a kövi órádat.)', 12);
+                },
+                icon: Icon(
+                  Icons.question_mark_rounded,
+                  color: Colors.white.withOpacity(.4),
+                ),
+                enableFeedback: true,
+                iconSize: 24,
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.all(10),
+              child: Switch(
+                value: DataCache.getNeedClassNotifications()!,
+                onChanged: (b){
+                  DataCache.setNeedClassNotifications(b ? 1 : 0);
+                  if(mounted) {setState((){});}
+                },
+                activeColor: Colors.white,
+                activeTrackColor: const Color.fromRGBO(0x4F, 0x69, 0x6E, 1.0),
+                hoverColor: Colors.white.withOpacity(.1),
+              ),
+            )
+          ],
+        ));
+        list.add(Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(flex: 2, child: Container(
+              margin: const EdgeInsets.all(10),
+              child: const Text(
+                'Befizetés Értesítések',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white
+                ),
+              ),
+            )),
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(90)),
+                  color: Colors.white.withOpacity(.06)
+              ),
+              child: IconButton(
+                onPressed: (){
+                  _showSnackbar(context, 'Ha van befizetnivalód, értesíteni fog az app, minden nap, amíg nem fizeted be. Hasznos, ha nem szeretnéd soha lekésni a határidőket.', 6);
+                },
+                icon: Icon(
+                  Icons.question_mark_rounded,
+                  color: Colors.white.withOpacity(.4),
+                ),
+                enableFeedback: true,
+                iconSize: 24,
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.all(10),
+              child: Switch(
+                value: DataCache.getNeedPaymentsNotifications()!,
+                onChanged: (b){
+                  DataCache.setNeedPaymentsNotifications(b ? 1 : 0);
+                  if(mounted) {setState((){});}
+                },
+                activeColor: Colors.white,
+                activeTrackColor: const Color.fromRGBO(0x4F, 0x69, 0x6E, 1.0),
+                hoverColor: Colors.white.withOpacity(.1),
+              ),
+            )
+          ],
+        ));
+        list.add(Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(flex: 2, child: Container(
+              margin: const EdgeInsets.all(10),
+              child: const Text(
+                'Időszakok Értesítések',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white
+                ),
+              ),
+            )),
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(90)),
+                  color: Colors.white.withOpacity(.06)
+              ),
+              child: IconButton(
+                onPressed: (){
+                  _showSnackbar(context, 'Ha valamilyen új időszak lesz, értesíteni fog az app, az adott időszak előtt 1 nappal, és aznap fogsz értesítést kapni. Hasznos, ha nem akarod naptárazni az adott időszakokat. (pl: tárgyfelvételi időszak)', 8);
+                },
+                icon: Icon(
+                  Icons.question_mark_rounded,
+                  color: Colors.white.withOpacity(.4),
+                ),
+                enableFeedback: true,
+                iconSize: 24,
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.all(10),
+              child: Switch(
+                value: DataCache.getNeedPeriodsNotifications()!,
+                onChanged: (b){
+                  DataCache.setNeedPeriodsNotifications(b ? 1 : 0);
                   if(mounted) {setState((){});}
                 },
                 activeColor: Colors.white,
@@ -363,7 +576,7 @@ class PopupWidget extends State<PopupWidgetState>{
           alignment: Alignment.bottomLeft,
           margin: const EdgeInsets.all(10),
           child: Text(
-            'v${pinfo.version} (${pinfo.buildNumber}) - Telepítve Innen: ${pinfo.installerStore ?? "Csomagtelepítő"}',
+            'v${pinfo.version} (${pinfo.buildNumber}) - Telepítve Innen: ${pinfo.installerStore == 'com.android.vending' ? "Play Áruház" : "Csomagteleíptő"}',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontWeight: FontWeight.w300,
@@ -376,6 +589,41 @@ class PopupWidget extends State<PopupWidgetState>{
       default:
         return list;
     }
+  }
+
+
+  void _showSnackbar(BuildContext context, String text, int displayDurationSec){
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.question_mark_rounded,
+            size: 24,
+            color: Color.fromRGBO(0x4F, 0x69, 0x6E, 1.0),
+          ),
+          const SizedBox(width: 15),
+          Expanded(
+              child: Text(
+                text,
+                textAlign: TextAlign.start,
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400
+                ),
+              )
+          )
+        ],
+      ),
+      backgroundColor: const Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
+      dismissDirection: DismissDirection.horizontal,
+      behavior: SnackBarBehavior.floating,
+      duration: Duration(seconds: displayDurationSec),
+    ));
   }
 
   Widget getPopup(double scale){
