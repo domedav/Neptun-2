@@ -26,6 +26,7 @@ class AppNotifications{
   }
 
   static Future<void> cancelScheduledNotifs()async{
+    //log('cancle');
     await _localnotifs.cancelAll();
     Counter.reset();
   }
@@ -53,16 +54,14 @@ class AppNotifications{
           '0',
           'Neptun 2 Időzített',
           channelDescription: 'Olyan értesítések csatornája, amelyeket időzítetten, azaz a nap folyamán valamikor akar az applikáció megjeleníteni neked.',
-          groupKey: 'Neptun 2 Időzített',
-          setAsGroupSummary: true,
-          importance: Importance.max,
-          priority: Priority.max,
+          importance: Importance.high,
+          priority: Priority.high,
           ticker: 'Neptun 2 Időzített Értesítés',
           styleInformation: BigTextStyleInformation(content, contentTitle: title)
       ),
       linux: const LinuxNotificationDetails(
         defaultActionName: 'Dismiss',
-        urgency: LinuxNotificationUrgency.critical,
+        urgency: LinuxNotificationUrgency.normal,
       ),
     );
     if(Platform.isAndroid){
@@ -85,10 +84,8 @@ class AppNotifications{
           '1',
           'Neptun 2 Azonnali',
           channelDescription: 'Olyan értesítések csatornája, amelyeket azonnal akar az applikáció megjeleníteni neked.',
-          groupKey: 'Neptun 2 Azonnali',
-          setAsGroupSummary: true,
-          importance: Importance.max,
-          priority: Priority.max,
+          importance: Importance.high,
+          priority: Priority.high,
           ticker: 'Neptun 2 Azonnali Értesítés',
           styleInformation: BigTextStyleInformation(desc, contentTitle: title)
       ),

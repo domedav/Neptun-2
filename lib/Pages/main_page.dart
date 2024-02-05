@@ -119,40 +119,40 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     bottomnavController = bottomnavScrollCntroller.addAndGet();
 
     AppNotifications.initialize();
-    Future.delayed(Duration.zero,()async{
+    Future.delayed(Duration.zero,() async{
       await AppNotifications.cancelScheduledNotifs();
-    });
+    }).whenComplete((){
+      Future.delayed(Duration.zero, () async{
+        await fetchCalendar();
+      }).then((value) async {
+        if(storage.DataCache.getNeedExamNotifications()!){
+          Future.delayed(Duration.zero,() async{
+            if(!storage.DataCache.getHasNetwork()){
+              return;
+            }
+            await _skimForExams();
+          });
+        }
+        setupCalendar(true);
+      });
 
-    Future.delayed(Duration.zero, () async {
-      await fetchCalendar();
-    }).then((value) async {
-      if(storage.DataCache.getNeedExamNotifications()!){
-        Future.delayed(Duration.zero,()async{
-          if(!storage.DataCache.getHasNetwork()){
-            return;
-          }
-          await _skimForExams();
-        });
-      }
-      setupCalendar(true);
-    });
+      Future.delayed(Duration.zero, () async{
+        await fetchMarkbook();
+      }).then((value) {
+        setupMarkbook();
+      });
 
-    Future.delayed(Duration.zero, () async{
-      await fetchMarkbook();
-    }).then((value) {
-      setupMarkbook();
-    });
+      Future.delayed(Duration.zero, () async{
+        await fetchPayments();
+      }).then((value) {
+        setupPayments();
+      });
 
-    Future.delayed(Duration.zero, () async{
-      await fetchPayments();
-    }).then((value) {
-      setupPayments();
-    });
-
-    Future.delayed(Duration.zero, () async{
-      await fetchPeriods();
-    }).then((value) {
-      setupPeriods();
+      Future.delayed(Duration.zero, () async{
+        await fetchPeriods();
+      }).then((value) {
+        setupPeriods();
+      });
     });
 
 
@@ -161,18 +161,6 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     setupCalendarGreetText();
 
     setupCalendarController(true, true);
-
-    //PopupWidgetHandler(homePage: this, mode: -1);
-
-    //api.InstitutesRequest.getFirstStudyweek();
-
-    /*api.PeriodsRequest.getPeriods().then((value) {
-      for (var item in value!){
-        final startTime = DateTime.fromMillisecondsSinceEpoch(item.startEpoch);
-        final endTime = DateTime.fromMillisecondsSinceEpoch(item.endEpoch);
-        log("${item.name} - $startTime -- $endTime --- ${item.isActive}");
-      }
-    });*/
   }
 
   void setupCalendarGreetText(){
