@@ -11,8 +11,8 @@ Az alkalmazás még fejlesztés alatt áll, így ez még nem tökéletes.
 Töltsd le a Play Áruházból!
 https://play.google.com/store/apps/details?id=com.domedav.neptun2
 
-## 1.2.0 (Nem Teljesen Tesztelt!)
-Értesítések!, kisebb UI javítások
+## 1.2.0
+Értesítések, kisebb UI javítások, api-val kapcsolatos javítások
 
 ## 1.1.2
 Bugfixek, Új popup fülek, Android 5.0 (21) lett a minimum az Android 4.4 (19) helyett
