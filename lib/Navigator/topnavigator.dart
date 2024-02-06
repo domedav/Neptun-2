@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:neptun2/Misc/popup.dart';
+import 'package:neptun2/notifications.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../Pages/main_page.dart';
 import '../storage.dart' as storage;
@@ -111,6 +112,7 @@ class TopNavigatorWidget extends StatelessWidget{
                         if(selectedValue == 'logout'){
                           Future.delayed(Duration.zero, ()async{
                             await storage.DataCache.dataWipe();
+                            await AppNotifications.cancelScheduledNotifs();
                           }).whenComplete((){
                             Navigator.popUntil(context, (route) => route.willHandlePopInternally);
                             Navigator.push(

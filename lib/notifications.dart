@@ -25,10 +25,21 @@ class AppNotifications{
     ));
   }
 
+  static final List<NotificationLink> _scheduledNotifLinks = <NotificationLink>[].toList();
+
   static Future<void> cancelScheduledNotifs()async{
     //log('cancle');
     await _localnotifs.cancelAll();
     Counter.reset();
+  }
+
+  static Future<void> cancelScheduledNotifsId(int id)async{
+    for (var item in _scheduledNotifLinks){
+      if(item.id != id){
+        continue;
+      }
+      await _localnotifs.cancel(item.counter);
+    }
   }
 
   static tz.TZDateTime _convert(int year, int month, int day, int hour, int minute){
@@ -46,9 +57,9 @@ class AppNotifications{
     }
     return scheduleDate;
   }
-
-  static Future<void> scheduleNotification(String title, String content, DateTime time) async{
-    //log("$title $time");
+  
+  static Future<void> scheduleNotification(String title, String content, DateTime time, int id) async{
+    //log("$title $time $id");
     final details = NotificationDetails(
       android: AndroidNotificationDetails(
           '0',
@@ -64,9 +75,11 @@ class AppNotifications{
         urgency: LinuxNotificationUrgency.normal,
       ),
     );
+    final counter = Counter.getCount();
+    _scheduledNotifLinks.add(NotificationLink(id, counter));
     if(Platform.isAndroid){
       await _localnotifs.zonedSchedule(
-        Counter.getCount(),
+        counter,
         title,
         content,
         _convert(time.year, time.month, time.day, time.hour, time.minute),
@@ -106,10 +119,17 @@ class Counter{ // using "static int counter" did not want to increment :(
 
   int _counter = 0;
   static int getCount(){
+    //log('${_instance!._counter + 1}');
     return ++_instance!._counter;
   }
 
   static void reset(){
     _instance!._counter = 0;
   }
+}
+
+class NotificationLink{
+  final int id;
+  final int counter;
+  NotificationLink(this.id, this.counter);
 }

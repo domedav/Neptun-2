@@ -414,6 +414,12 @@ class PopupWidget extends State<PopupWidgetState>{
                 value: DataCache.getNeedExamNotifications()!,
                 onChanged: (b){
                   DataCache.setNeedExamNotifications(b ? 1 : 0);
+                  if(b){
+                    HomePageState.setupExamNotifications();
+                  }
+                  else{
+                    HomePageState.cancelExamNotifications();
+                  }
                   if(mounted) {setState((){});}
                 },
                 activeColor: Colors.white,
@@ -463,6 +469,12 @@ class PopupWidget extends State<PopupWidgetState>{
                 value: DataCache.getNeedClassNotifications()!,
                 onChanged: (b){
                   DataCache.setNeedClassNotifications(b ? 1 : 0);
+                  if(b){
+                    HomePageState.setupClassesNotifications();
+                  }
+                  else{
+                    HomePageState.cancelClassesNotifications();
+                  }
                   if(mounted) {setState((){});}
                 },
                 activeColor: Colors.white,
@@ -480,7 +492,7 @@ class PopupWidget extends State<PopupWidgetState>{
             Expanded(flex: 2, child: Container(
               margin: const EdgeInsets.all(10),
               child: const Text(
-                'Befizetés Értesítések',
+                'Befizetés Értesítők',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 14,
@@ -512,6 +524,12 @@ class PopupWidget extends State<PopupWidgetState>{
                 value: DataCache.getNeedPaymentsNotifications()!,
                 onChanged: (b){
                   DataCache.setNeedPaymentsNotifications(b ? 1 : 0);
+                  if(b){
+                    HomePageState.setupPaymentsNotifications();
+                  }
+                  else{
+                    HomePageState.cancelPaymentsNotifications();
+                  }
                   if(mounted) {setState((){});}
                 },
                 activeColor: Colors.white,
@@ -529,7 +547,7 @@ class PopupWidget extends State<PopupWidgetState>{
             Expanded(flex: 2, child: Container(
               margin: const EdgeInsets.all(10),
               child: const Text(
-                'Időszakok Értesítések',
+                'Időszak Értesítők',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 14,
@@ -561,6 +579,12 @@ class PopupWidget extends State<PopupWidgetState>{
                 value: DataCache.getNeedPeriodsNotifications()!,
                 onChanged: (b){
                   DataCache.setNeedPeriodsNotifications(b ? 1 : 0);
+                  if(b){
+                    HomePageState.setupPeriodsNotifications();
+                  }
+                  else{
+                    HomePageState.cancelPeriodsNotifications();
+                  }
                   if(mounted) {setState((){});}
                 },
                 activeColor: Colors.white,

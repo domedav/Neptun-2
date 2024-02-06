@@ -257,19 +257,35 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     });
   }
 
+  static void setupExamNotifications(){
+    Future.delayed(Duration.zero, ()async{
+      await _instance._setupExamNotifications(_instance._examNotificationList);
+    });
+  }
+
+  static void cancelExamNotifications(){
+    Future.delayed(Duration.zero, ()async{
+      await _instance._cancelExamNotifications();
+    });
+  }
+
+  final _examNotificationList = <api.CalendarEntry>[];
+  
   Future<void> _skimForExams()async{
-    final allEventTo2WeeksAhead = <api.CalendarEntry>[];
     for(int i = 0; i < 3; i++){
       final result = await fetchCalendarToList(i);
-      allEventTo2WeeksAhead.addAll(result);
+      _examNotificationList.addAll(result);
     }
 
-    if(allEventTo2WeeksAhead.isEmpty){
+    _setupExamNotifications(_examNotificationList);
+  }
+  
+  Future<void> _setupExamNotifications(List<api.CalendarEntry> items)async{
+    if(_examNotificationList.isEmpty){
       return;
     }
-
     final now = DateTime.now();
-    for(var item in allEventTo2WeeksAhead){ // add notifiers for exams
+    for(var item in items){ // add notifiers for exams
       if(!item.isExam || now.millisecondsSinceEpoch > item.startEpoch){
         continue;
       }
@@ -281,12 +297,30 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     final daysTillExam = (Duration(milliseconds: item.startEpoch) - Duration(milliseconds: now.millisecondsSinceEpoch)).inDays;
     for(int i = 1; i <= daysTillExam + 1; i++){
       if(daysTillExam <= 1){
-        await AppNotifications.scheduleNotification('Vizsga Emlékeztető!', '"${item.title}" tárgyból vizsgád lesz MA!', DateTime(now.year, now.month, now.day + i, 06, 00));
+        await AppNotifications.scheduleNotification('Vizsga Emlékeztető!', '"${item.title}" tárgyból vizsgád lesz MA!', DateTime(now.year, now.month, now.day + i, 06, 00), 0);
         continue;
       }
-      await AppNotifications.scheduleNotification('Vizsga Emlékeztető!', '"${item.title}" tárgyból vizsgád lesz $i nap múlva!', DateTime(now.year, now.month, now.day + i, 09, 00));
+      await AppNotifications.scheduleNotification('Vizsga Emlékeztető!', '"${item.title}" tárgyból vizsgád lesz $i nap múlva!', DateTime(now.year, now.month, now.day + i, 09, 00), 0);
     }
   }
+
+  Future<void> _cancelExamNotifications()async{
+    await AppNotifications.cancelScheduledNotifsId(0);
+  }
+
+  static void setupClassesNotifications(){
+    Future.delayed(Duration.zero, ()async{
+      await _instance._setupClassesNotifications(_instance._classesNotificationList);
+    });
+  }
+
+  static void cancelClassesNotifications(){
+    Future.delayed(Duration.zero, ()async{
+      await _instance._cancelClassesNotifications();
+    });
+  }
+
+  final List<api.CalendarEntry> _classesNotificationList = <api.CalendarEntry>[].toList();
 
   Future<void> _setupClassesNotifications(List<api.CalendarEntry> items)async{
     if(!storage.DataCache.getNeedExamNotifications()!){
@@ -296,43 +330,83 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       // set up notifications for today
       final now = DateTime.now();
       if(now.millisecondsSinceEpoch < item.startEpoch && !item.isExam){ // did not pass them in time
-        await AppNotifications.scheduleNotification('Óra', '"${item.title}" órád lesz itt: "${item.location}" 10 perc múlva!', DateTime.fromMillisecondsSinceEpoch((Duration(milliseconds: item.startEpoch) - const Duration(minutes: 10)).inMilliseconds));
-        await AppNotifications.scheduleNotification('Óra', '"${item.title}" órád lesz itt: "${item.location}" 5 perc múlva!', DateTime.fromMillisecondsSinceEpoch((Duration(milliseconds: item.startEpoch) - const Duration(minutes: 5)).inMilliseconds));
-        await AppNotifications.scheduleNotification('Óra', '"${item.title}" órád van itt: "${item.location}"!', DateTime.fromMillisecondsSinceEpoch(item.startEpoch));
+        await AppNotifications.scheduleNotification('Óra', '"${item.title}" órád lesz itt: "${item.location}" 10 perc múlva!', DateTime.fromMillisecondsSinceEpoch((Duration(milliseconds: item.startEpoch) - const Duration(minutes: 10)).inMilliseconds), 1);
+        await AppNotifications.scheduleNotification('Óra', '"${item.title}" órád lesz itt: "${item.location}" 5 perc múlva!', DateTime.fromMillisecondsSinceEpoch((Duration(milliseconds: item.startEpoch) - const Duration(minutes: 5)).inMilliseconds), 1);
+        await AppNotifications.scheduleNotification('Óra', '"${item.title}" órád van itt: "${item.location}"!', DateTime.fromMillisecondsSinceEpoch(item.startEpoch), 1);
       }
     }
   }
+  
+  Future<void> _cancelClassesNotifications()async{
+    await AppNotifications.cancelScheduledNotifsId(1);
+  }
+
+  static void setupPaymentsNotifications(){
+    Future.delayed(Duration.zero, ()async{
+      await _instance._setupPaymentsNotification(_instance._paymentsNotificationList);
+    });
+  }
+
+  static void cancelPaymentsNotifications(){
+    Future.delayed(Duration.zero, ()async{
+      await _instance._cancelPaymentsNotifications();
+    });
+  }
+
+  final List<api.CashinEntry> _paymentsNotificationList = <api.CashinEntry>[].toList();
 
   Future<void> _setupPaymentsNotification(List<api.CashinEntry> items)async{
-    if(!storage.DataCache.getNeedPaymentsNotifications()!){
+    if(!storage.DataCache.getNeedPaymentsNotifications()! || _paymentsNotificationList.isEmpty){
       return;
     }
     final now = DateTime.now();
     for(var item in items){
       if(item.dueDateMs == 0){
         for(int i = 0; i <= 31; i++){
-          await AppNotifications.scheduleNotification('Befizetés', '${item.ammount}Ft-al lógsz. Fizesd be! (Nincs Időhatár)', DateTime(now.year, now.month, now.day + i, 11, 00));
+          await AppNotifications.scheduleNotification('Befizetés', '${item.ammount}Ft-al lógsz. Fizesd be! (Nincs Időhatár)', DateTime(now.year, now.month, now.day + i, 11, 00),2 );
         }
         continue;
       }
       final daysRemaining = (Duration(milliseconds: item.dueDateMs) - Duration(milliseconds: now.millisecondsSinceEpoch)).inDays;
       final time = DateTime.fromMillisecondsSinceEpoch(item.dueDateMs);
       for(int i = 0; i <= daysRemaining; i++){
-        await AppNotifications.scheduleNotification('Befizetés', '${item.ammount}Ft-al lógsz. Fizesd be: ${daysRemaining > 61 ? "(${time.year})" : ""} ${api.Generic.monthToText(time.month)} ${time.day}-ig!', DateTime(now.year, now.month, now.day + i, 11, 00));
+        await AppNotifications.scheduleNotification('Befizetés', '${item.ammount}Ft-al lógsz. Fizesd be: ${daysRemaining > 61 ? "(${time.year})" : ""} ${api.Generic.monthToText(time.month)} ${time.day}-ig!', DateTime(now.year, now.month, now.day + i, 11, 00), 2);
       }
     }
   }
 
+  Future<void> _cancelPaymentsNotifications()async{
+    await AppNotifications.cancelScheduledNotifsId(2);
+  }
+  
+  static void setupPeriodsNotifications(){
+    Future.delayed(Duration.zero, ()async{
+      await _instance._setupPeriodsNotification(_instance._periodsNotificationList);
+    });
+  }
+
+  static void cancelPeriodsNotifications(){
+    Future.delayed(Duration.zero, ()async{
+      await _instance._cancelPeriodsNotifications();
+    });
+  }
+
+  final List<api.PeriodEntry> _periodsNotificationList = <api.PeriodEntry>[].toList();
+  
   Future<void> _setupPeriodsNotification(List<api.PeriodEntry> items)async{
-    if(!storage.DataCache.getNeedPeriodsNotifications()!){
+    if(!storage.DataCache.getNeedPeriodsNotifications()! || _periodsNotificationList.isEmpty){
       return;
     }
 
     for(var item in items){
       final time = DateTime.fromMillisecondsSinceEpoch(item.startEpoch);
-      await AppNotifications.scheduleNotification('Időszak', '"${api.Generic.capitalizePeriodText(item.name)}" idószak lesz HOLNAP!', DateTime(time.year, time.month, time.day - 1, 11, 00));
-      await AppNotifications.scheduleNotification('Időszak', '"${api.Generic.capitalizePeriodText(item.name)}" idószak van MA!', DateTime(time.year, time.month, time.day, 06, 00));
+      await AppNotifications.scheduleNotification('Időszak', '"${api.Generic.capitalizePeriodText(item.name)}" idószak lesz HOLNAP!', DateTime(time.year, time.month, time.day - 1, 11, 00), 3);
+      await AppNotifications.scheduleNotification('Időszak', '"${api.Generic.capitalizePeriodText(item.name)}" idószak van MA!', DateTime(time.year, time.month, time.day, 06, 00), 3);
     }
+  }
+
+  Future<void> _cancelPeriodsNotifications()async{
+    await AppNotifications.cancelScheduledNotifsId(3);
   }
 
   void _setupCalendar(bool thisweekCalendar){
@@ -396,7 +470,6 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       idx++;
     }
 
-    final List<api.CalendarEntry> _todaysEntry = <api.CalendarEntry>[].toList();
     for(var item in calendarEntries){
       if(item.isExam){
         continue;
@@ -408,7 +481,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         prevEntry = item;
       }
       if(thisweekCalendar && currWeekday == wkday){
-        _todaysEntry.add(item);
+        _classesNotificationList.add(item);
       }
       if(idx == 2 && item.startEpoch == prevEntry!.startEpoch){
         idx--;
@@ -464,7 +537,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     }
     calendarTabController.index = currWeekday - 1 > 6 ? 0 : currWeekday - 1;
     Future.delayed(Duration.zero,()async{
-      await _setupClassesNotifications(_todaysEntry);
+      await _setupClassesNotifications(_classesNotificationList);
     });
   }
 
@@ -576,6 +649,30 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   }
   
   void _setupMarkbook(){
+    if(markbookEntries.isEmpty){
+      totalCredits = 0;
+      totalAvg = 5;
+      markbookList.add(Container(
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        child: const Center(
+          child: EmojiRichText(
+            text: '🤪Nincs Tantárgyad🤪',
+            defaultStyle: TextStyle(
+              color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+              fontWeight: FontWeight.w900,
+              fontSize: 26.0,
+            ),
+            emojiStyle: TextStyle(
+                color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                fontSize: 26.0,
+                fontFamily: "Noto Color Emoji"
+            ),
+          ),
+        ),
+      ));
+    }
+
     //order them
     for (int i = 0; i < markbookEntries.length; i++){
       for (int j = i; j < markbookEntries.length; j++){
@@ -645,6 +742,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   }
 
   void _markbookCalcAvg(){
+    if(markbookEntries.isEmpty){
+      return;
+    }
     var currCredits = 0;
     for(var item in markbookEntries){
       if (!item.completed) {
@@ -659,6 +759,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   }
 
   void _markbookCalcGhostAvg(){
+    if(markbookEntries.isEmpty){
+      return;
+    }
     var currCredits = 0;
     totalAvg = 0;
     for(var item in markbookList){
@@ -693,7 +796,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         }
       }
     }
-    final List<api.CashinEntry> _missedPayments = <api.CashinEntry>[].toList();
+
     bool isEmpty = true;
     for(var item in paymentsEntries){
       if(item.completed){
@@ -703,13 +806,13 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       isEmpty = false;
       paymentsList.add(PaymentElementWidget(ammount: item.ammount, dueDateMs: item.dueDateMs, name: item.comment));
       if(item.dueDateMs > DateTime.now().millisecondsSinceEpoch || item.dueDateMs == 0){
-        _missedPayments.add(item);
+        _paymentsNotificationList.add(item);
       }
     }
 
-    if(_missedPayments.isNotEmpty){
+    if(_paymentsNotificationList.isNotEmpty){
       Future.delayed(Duration.zero,()async{
-        await _setupPaymentsNotification(_missedPayments);
+        await _setupPaymentsNotification(_paymentsNotificationList);
       });
     }
 
@@ -749,7 +852,6 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     }
 
     int prevSemester = -1;
-    final List<api.PeriodEntry> _notificationPeriods = <api.PeriodEntry>[].toList();
 
     //Map<String, List<api.PeriodType>> values = Map<String, List<api.PeriodType>>.identity();
     for(var item in periodEntries){
@@ -773,7 +875,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         prevSemester = item.partofSemester;
       }
       if(!item.isActive){ // exclude today
-        _notificationPeriods.add(item);
+        _periodsNotificationList.add(item);
       }
       periodList.add(priods.PeriodsElementWidget(
         displayName: api.Generic.capitalizePeriodText(item.name),
@@ -791,10 +893,32 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       }
     }
 
-    if(_notificationPeriods.isNotEmpty){
+    if(_periodsNotificationList.isNotEmpty){
       Future.delayed(Duration.zero,()async{
-        await _setupPeriodsNotification(_notificationPeriods);
+        await _setupPeriodsNotification(_periodsNotificationList);
       });
+    }
+
+    if(periodEntries.isEmpty){
+      periodList.add(Container(
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        child: const Center(
+          child: EmojiRichText(
+            text: '🤩Szünet Van!🤩',
+            defaultStyle: TextStyle(
+              color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+              fontWeight: FontWeight.w900,
+              fontSize: 26.0,
+            ),
+            emojiStyle: TextStyle(
+                color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                fontSize: 26.0,
+                fontFamily: "Noto Color Emoji"
+            ),
+          ),
+        ),
+      ));
     }
   }
 
@@ -870,6 +994,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     //otherwise, just fetch again
     final request = await api.MarkbookRequest.getMarkbookSubjects();
     if(request != null && request.isEmpty){
+      markbookEntries = [];
       return;
     }
     markbookEntries = request!;

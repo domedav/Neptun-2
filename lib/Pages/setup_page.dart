@@ -398,6 +398,40 @@ class _Page2State extends State<Page2>{
     });
   }
 
+  void _showSnackbar(BuildContext context, String text, int displayDurationSec){
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.question_mark_rounded,
+            size: 24,
+            color: Color.fromRGBO(0x4F, 0x69, 0x6E, 1.0),
+          ),
+          const SizedBox(width: 15),
+          Expanded(
+              child: Text(
+                text,
+                textAlign: TextAlign.start,
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400
+                ),
+              )
+          )
+        ],
+      ),
+      backgroundColor: const Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
+      dismissDirection: DismissDirection.horizontal,
+      behavior: SnackBarBehavior.floating,
+      duration: Duration(seconds: displayDurationSec),
+    ));
+  }
+
   double _horizontalDrag = 0;
   bool _dragDebounce = false;
 
@@ -483,13 +517,15 @@ class _Page2State extends State<Page2>{
                                         size: 22,
                                       ),
                                       const SizedBox(width: 4),
-                                      Text(
-                                        PageDTO.Instance.Selected ?? 'NULL',
-                                        textAlign: TextAlign.start,
-                                        style: TextStyle(
-                                            color: Colors.white.withOpacity(.2),
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600
+                                      Flexible(
+                                        child: Text(
+                                          PageDTO.Instance.Selected ?? 'NULL',
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                              color: Colors.white.withOpacity(.2),
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600
+                                          ),
                                         ),
                                       )
                                     ],
@@ -565,6 +601,46 @@ class _Page2State extends State<Page2>{
                                         fontSize: 12
                                     ),
                                   ),
+                                ),
+                                const SizedBox(height: 45),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Flexible(
+                                      child: Container(
+                                        margin: const EdgeInsets.all(15),
+                                        child: Text(
+                                          'Ha van 2 lépcsős azonosítás van a fiókodon, nem fogsz tudni bejelenzkezni!',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.white.withOpacity(.6)
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      margin: const EdgeInsets.all(15),
+                                      decoration: BoxDecoration(
+                                          borderRadius: const BorderRadius.all(Radius.circular(90)),
+                                          color: Colors.white.withOpacity(.06)
+                                      ),
+                                      child: IconButton(
+                                        onPressed: (){
+                                          _showSnackbar(context, 'A Neptun2 a régi Neptun mobilapp API-jait használja, amiben nem volt 2 lépcsős azonosítás. Így, ha a fiókod 2 lépcsős azonosítással van védve, a Neptun2 nem fogja tudni értelmezni ezt.\nViszont ha kikapcsolod, hiba nélkül tudod használni a Neptun2-t.\nKikapcsolni a "Saját Adatok/Beállítások"-ban tudod.', 18);
+                                        },
+                                        icon: Icon(
+                                          Icons.question_mark_rounded,
+                                          color: Colors.white.withOpacity(.4),
+                                        ),
+                                        enableFeedback: true,
+                                        iconSize: 24,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ]
                           ),
