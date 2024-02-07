@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:neptun2/Misc/custom_snackbar.dart';
 import 'package:neptun2/Pages/main_page.dart';
 import 'package:neptun2/storage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -98,7 +99,12 @@ class PopupWidgetHandler{
       //_instance!.homePage.setBlurComplex(false);
       HomePageState.showBlurPopup(false);
     });
+
+    _instance!.pwidget!.setState(() {
+      _instance!.pwidget!._shouldShowSnackbar = false;
+    });
   }
+
 }
 
 class PopupWidgetState extends StatefulWidget{
@@ -349,7 +355,7 @@ class PopupWidget extends State<PopupWidgetState>{
               ),
               child: IconButton(
                 onPressed: (){
-                  _showSnackbar(context, 'Lecseréli a betöltő szövegeket, kevésbé családbarátra.', 4);
+                  _showSnackbar('Lecseréli a betöltő szövegeket, kevésbé családbarátra.', 4);
                 },
                 icon: Icon(
                   Icons.question_mark_rounded,
@@ -398,7 +404,7 @@ class PopupWidget extends State<PopupWidgetState>{
               ),
               child: IconButton(
                 onPressed: (){
-                  _showSnackbar(context, 'Vizsgaértesítő értesítéseket küld neked a vizsga előtti 2 hétben. Hasznos, ha szereted halogatni a tanulást, vagy szimplán feledékeny vagy.', 12);
+                  _showSnackbar('Vizsgaértesítő értesítéseket küld neked a vizsga előtti 2 hétben. Hasznos, ha szereted halogatni a tanulást, vagy szimplán feledékeny vagy.', 12);
                 },
                 icon: Icon(
                   Icons.question_mark_rounded,
@@ -453,7 +459,7 @@ class PopupWidget extends State<PopupWidgetState>{
               ),
               child: IconButton(
                 onPressed: (){
-                  _showSnackbar(context, 'Órák kezdete előtt 10 percel; 5 percel; és a kezdetük időpontjában, küld neked értesítést, hogy ne késd le őket. Hasznos, ha tudni akarod milyen órád lesz, anélkül, hogy a telódon lecsekkolnád. (pl: Okosórád van, és értesítésként látod a kövi órádat.)', 12);
+                  _showSnackbar('Órák kezdete előtt 10 percel; 5 percel; és a kezdetük időpontjában, küld neked értesítést, hogy ne késd le őket. Hasznos, ha tudni akarod milyen órád lesz, anélkül, hogy a telódon lecsekkolnád. (pl: Okosórád van, és értesítésként látod a kövi órádat.)', 12);
                 },
                 icon: Icon(
                   Icons.question_mark_rounded,
@@ -508,7 +514,7 @@ class PopupWidget extends State<PopupWidgetState>{
               ),
               child: IconButton(
                 onPressed: (){
-                  _showSnackbar(context, 'Ha van befizetnivalód, értesíteni fog az app, minden nap, amíg nem fizeted be. Hasznos, ha feledékeny vagy, vagy nem szeretnéd lekésni a határidőt.', 8);
+                  _showSnackbar('Ha van befizetnivalód, értesíteni fog az app, minden nap, amíg nem fizeted be. Hasznos, ha feledékeny vagy, vagy nem szeretnéd lekésni a határidőt.', 8);
                 },
                 icon: Icon(
                   Icons.question_mark_rounded,
@@ -563,7 +569,7 @@ class PopupWidget extends State<PopupWidgetState>{
               ),
               child: IconButton(
                 onPressed: (){
-                  _showSnackbar(context, 'Ha valamilyen új időszak lesz, értesíteni fog az app, az adott időszak előtt 1 nappal, és aznap fogsz értesítést kapni. Hasznos, ha nem akarsz lemaradni az adott időszakokról. (pl: tárgyfelvételi időszak)', 8);
+                  _showSnackbar('Ha valamilyen új időszak lesz, értesíteni fog az app, az adott időszak előtt 1 nappal, és aznap fogsz értesítést kapni. Hasznos, ha nem akarsz lemaradni az adott időszakokról. (pl: tárgyfelvételi időszak)', 8);
                 },
                 icon: Icon(
                   Icons.question_mark_rounded,
@@ -615,40 +621,23 @@ class PopupWidget extends State<PopupWidgetState>{
     }
   }
 
+  String _snackbarMessage = "";
+  Duration _displayDuration = Duration.zero;
+  bool _shouldShowSnackbar = false;
 
-  void _showSnackbar(BuildContext context, String text, int displayDurationSec){
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Icon(
-            Icons.question_mark_rounded,
-            size: 24,
-            color: Color.fromRGBO(0x4F, 0x69, 0x6E, 1.0),
-          ),
-          const SizedBox(width: 15),
-          Expanded(
-              child: Text(
-                text,
-                textAlign: TextAlign.start,
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400
-                ),
-              )
-          )
-        ],
-      ),
-      backgroundColor: const Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
-      dismissDirection: DismissDirection.horizontal,
-      behavior: SnackBarBehavior.floating,
-      duration: Duration(seconds: displayDurationSec),
-    ));
+  void _showSnackbar(String text, int displayDurationSec){
+    if(!mounted){
+      return;
+    }
+    setState(() {
+      _shouldShowSnackbar = true;
+      _displayDuration = Duration(seconds: displayDurationSec);
+      _snackbarMessage = text;
+      _snackbarDelta = 0;
+    });
   }
+
+  double _snackbarDelta = 0;
 
   Widget getPopup(double scale){
     return Transform.scale(
@@ -664,26 +653,47 @@ class PopupWidget extends State<PopupWidgetState>{
             onPopInvoked: (_) {
               PopupWidgetHandler.closePopup(false);
             },
-            child: Container(
-                alignment: Alignment.center,
-                color: Colors.transparent,
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 10),
-                    margin: const EdgeInsets.all(15),
-                    decoration: const BoxDecoration(
-                      color: Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: getWidgets(PopupWidgetHandler._instance!.mode),
-                    ),
+            child: Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                Container(
+                    alignment: Alignment.center,
+                    color: Colors.transparent,
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 10),
+                        margin: const EdgeInsets.all(15),
+                        decoration: const BoxDecoration(
+                          color: Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: getWidgets(PopupWidgetHandler._instance!.mode),
+                        ),
+                      ),
+                    )
+                ),
+                Visibility(
+                  visible: _shouldShowSnackbar,
+                  child: AppSnackbar(text: _snackbarMessage, displayDuration: _displayDuration, dragAmmount: _snackbarDelta, changer: (deltaChange, isHolding){
+                    if(!mounted){
+                      return;
+                    }
+                    AppSnackbar.cancelTimer();
+                    setState(() {
+                      if(!isHolding && (_snackbarDelta < 0 ? -_snackbarDelta : _snackbarDelta) >= 100){
+                        _shouldShowSnackbar = false;
+                      }
+                      _snackbarDelta = deltaChange;
+                    });
+                  }, state: _shouldShowSnackbar,
                   ),
                 )
+              ],
             ),
           ),
         ),
