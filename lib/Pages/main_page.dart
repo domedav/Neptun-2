@@ -924,10 +924,12 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
   Future<void> stepCalendarBack() async{
     currentWeekOffset--;
+    HapticFeedback.lightImpact();
     await onCalendarRefresh();
   }
   Future<void> stepCalendarForward() async{
     currentWeekOffset++;
+    HapticFeedback.lightImpact();
     await onCalendarRefresh();
   }
 
@@ -1243,6 +1245,13 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
           Visibility(
             visible: currentView == 3,
             child: PeriodsPageWidget(homePage: this, currentSemester: currentSemester),
+          ),
+          GestureDetector(
+            onLongPress: (){
+              HapticFeedback.lightImpact();
+              final val = currentView + 1 > HomePageState.maxBottomNavWidgets - 1 ? 0 : currentView + 1;
+              switchView(val);
+            },
           ),
           Visibility(
             visible: _showBlur,

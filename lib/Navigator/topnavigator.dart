@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:neptun2/Misc/popup.dart';
 import 'package:neptun2/notifications.dart';
@@ -39,12 +40,14 @@ class TopNavigatorWidget extends StatelessWidget{
             homePage.bottomNavCanNavigate = false;
             final val = homePage.currentView + 1 > HomePageState.maxBottomNavWidgets - 1 ? 0 : homePage.currentView + 1;
             homePage.switchView(val);
+            HapticFeedback.lightImpact();
             return;
           }
           else if(homePage.bottomNavSwitchValue > 50){
             homePage.bottomNavCanNavigate = false;
             final val = homePage.currentView - 1 < 0 ? HomePageState.maxBottomNavWidgets - 1 : homePage.currentView - 1;
             homePage.switchView(val);
+            HapticFeedback.lightImpact();
             return;
           }
           homePage.bottomNavSwitchValue += e.delta.dx;
@@ -65,6 +68,7 @@ class TopNavigatorWidget extends StatelessWidget{
                   child: IconButton(
                     onPressed: (){
                       homePage.setBlurComplex(true);
+                      HapticFeedback.lightImpact();
                       showMenu(
                         context: context,
                         position: RelativeRect.fromDirectional(textDirection: TextDirection.ltr, start: 25, top: 30 + MediaQuery.of(context).padding.top, end: 100, bottom: 100),
@@ -150,7 +154,7 @@ class TopNavigatorWidget extends StatelessWidget{
                         }
                         else if(selectedValue == 'settings'){
                           PopupWidgetHandler(mode: 1, callback: (d){
-                            log('PopupComplete');
+                            //log('PopupComplete');
                           });
                           PopupWidgetHandler.doPopup(context);
                         }

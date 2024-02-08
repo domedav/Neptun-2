@@ -209,6 +209,7 @@ class _Page1State extends State<Page1> {
               return;
             }
 
+            HapticFeedback.lightImpact();
             goToPage2();
           }
         },
@@ -226,8 +227,9 @@ class _Page1State extends State<Page1> {
                   height: MediaQuery.of(context).size.height + 0.001,
                   child: Center(
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
+                        const SizedBox(height: 40),
                         Text(
                           'Válaszd ki az iskoládat!',
                           textAlign: TextAlign.center,
@@ -337,8 +339,11 @@ class _Page1State extends State<Page1> {
                                   keyboardType: TextInputType.url,
                                   decoration: const InputDecoration(
                                       suffixIcon: Icon(Icons.link_rounded),
-                                      hintText: 'Másold ide az iskolád neptun URL-jét...',
-                                      border: null
+                                      hintText: 'Iskolád neptun URL-je...',
+                                      hintStyle: TextStyle(
+                                        fontSize: 12,
+                                      ),
+                                      border: null,
                                   ),
                                   enableSuggestions: false,
                                   autocorrect: false,
@@ -359,7 +364,7 @@ class _Page1State extends State<Page1> {
                                       return;
                                     }
                                     _warnTimer = Timer(const Duration(seconds: 2),(){
-                                      _showSnackbar('Ez nem egy jó neptun URL!\nValami ilyesmit másolj ide:\nhttps://neptun-ws01.uni-pannon.hu/hallgato/login.aspx\nCsak a te saját iskolád neptun URL-je legyen.', 18);
+                                      _showSnackbar('Ez nem egy jó neptun URL!\nValami ilyesmit másolj ide:\nhttps://neptun-ws01.uni-pannon.hu/hallgato/login.aspx', 18);
                                     });
                                   },
                                 ),
@@ -368,6 +373,7 @@ class _Page1State extends State<Page1> {
                         ),
                         ElevatedButton(
                           onPressed: _canProceed ? () {
+                              HapticFeedback.lightImpact();
                               goToPage2();
                             } : null,
                             style: ButtonStyle(
@@ -386,58 +392,58 @@ class _Page1State extends State<Page1> {
                             ],
                           )
                         ),
+                        Container(
+                            margin: const EdgeInsets.all(20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Flexible(
+                                  child: EmojiRichText(
+                                    text: 'Probléma van az appal?\nÍrd meg nekünk 👉',
+                                    defaultStyle: TextStyle(
+                                      color: Colors.white.withOpacity(.6),
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 14.0,
+                                    ),
+                                    emojiStyle: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14.0,
+                                        fontFamily: "Noto Color Emoji"
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 20),
+                                Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.white.withOpacity(.06),
+                                      borderRadius: const BorderRadius.all(Radius.circular(90))
+                                  ),
+                                  child: IconButton(
+                                    onPressed: (){
+                                      if(!Platform.isAndroid){
+                                        return;
+                                      }
+
+                                      final url = Uri.parse('https://github.com/domedav/Neptun-2/issues/new/choose');
+                                      launchUrl(url);
+                                    },
+                                    icon: Icon(
+                                      Icons.feed_rounded,
+                                      color: Colors.white.withOpacity(.4),
+                                      size: 32,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            )
+                        ),
                       ],
                     ),
                   ),
                 ),
               ),
-            ),
-            Container(
-                margin: const EdgeInsets.all(20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Flexible(
-                      child: EmojiRichText(
-                        text: 'Probléma van az appal? Írd meg nekünk 👉',
-                        defaultStyle: TextStyle(
-                          color: Colors.white.withOpacity(.6),
-                          fontWeight: FontWeight.w700,
-                          fontSize: 14.0,
-                        ),
-                        emojiStyle: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 14.0,
-                            fontFamily: "Noto Color Emoji"
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 20),
-                    Container(
-                      decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(.06),
-                          borderRadius: const BorderRadius.all(Radius.circular(90))
-                      ),
-                      child: IconButton(
-                        onPressed: (){
-                          if(!Platform.isAndroid){
-                            return;
-                          }
-
-                          final url = Uri.parse('https://github.com/domedav/Neptun-2/issues/new/choose');
-                          launchUrl(url);
-                        },
-                        icon: Icon(
-                          Icons.feed_rounded,
-                          color: Colors.white.withOpacity(.4),
-                          size: 32,
-                        ),
-                      ),
-                    )
-                  ],
-                )
             ),
             Visibility(
               visible: _shouldShowSnackbar,
@@ -447,7 +453,7 @@ class _Page1State extends State<Page1> {
                 }
                 AppSnackbar.cancelTimer();
                 setState(() {
-                  if(!isHolding && (_snackbarDelta < 0 ? -_snackbarDelta : _snackbarDelta) >= 100){
+                  if(!isHolding && (_snackbarDelta < 0 ? -_snackbarDelta : _snackbarDelta) >= 50){
                     _shouldShowSnackbar = false;
                   }
                   _snackbarDelta = deltaChange;
@@ -624,6 +630,7 @@ class _Page2State extends State<Page2>{
               return;
             }
 
+            HapticFeedback.lightImpact();
             goToPage1();
           }
           else if(_horizontalDrag <= -50 && !_dragDebounce){
@@ -659,8 +666,9 @@ class _Page2State extends State<Page2>{
                     height: MediaQuery.of(context).size.height + 0.001,
                     child: Center(
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
+                          const SizedBox(height: 40),
                           Text(
                             'Jelentkezz be!',
                             textAlign: TextAlign.center,
@@ -819,6 +827,7 @@ class _Page2State extends State<Page2>{
                                 children: <Widget>[
                                   ElevatedButton(
                                       onPressed: _canGoBack ? () {
+                                        HapticFeedback.lightImpact();
                                         goToPage1();
                                       } : null,
                                       style: ButtonStyle(
@@ -840,6 +849,7 @@ class _Page2State extends State<Page2>{
                                   const SizedBox(width: 40),
                                   ElevatedButton(
                                       onPressed: _canProceed ? () {
+                                        HapticFeedback.lightImpact();
                                         finishLogin();
                                       } : null,
                                       style: ButtonStyle(
@@ -861,58 +871,58 @@ class _Page2State extends State<Page2>{
                                 ]
                             ),
                           ),
+                          Container(
+                              margin: const EdgeInsets.all(20),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Flexible(
+                                    child: EmojiRichText(
+                                      text: 'Probléma van az appal?\nÍrd meg nekünk 👉',
+                                      defaultStyle: TextStyle(
+                                        color: Colors.white.withOpacity(.6),
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 14.0,
+                                      ),
+                                      emojiStyle: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14.0,
+                                          fontFamily: "Noto Color Emoji"
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 20),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.white.withOpacity(.06),
+                                        borderRadius: const BorderRadius.all(Radius.circular(90))
+                                    ),
+                                    child: IconButton(
+                                      onPressed: (){
+                                        if(!Platform.isAndroid){
+                                          return;
+                                        }
+
+                                        final url = Uri.parse('https://github.com/domedav/Neptun-2/issues/new/choose');
+                                        launchUrl(url);
+                                      },
+                                      icon: Icon(
+                                        Icons.feed_rounded,
+                                        color: Colors.white.withOpacity(.4),
+                                        size: 32,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              )
+                          ),
                         ],
                       ),
                     ),
                   ),
                 ),
-              ),
-              Container(
-                  margin: const EdgeInsets.all(20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Flexible(
-                        child: EmojiRichText(
-                          text: 'Probléma van az appal? Írd meg nekünk 👉',
-                          defaultStyle: TextStyle(
-                            color: Colors.white.withOpacity(.6),
-                            fontWeight: FontWeight.w700,
-                            fontSize: 14.0,
-                          ),
-                          emojiStyle: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 14.0,
-                              fontFamily: "Noto Color Emoji"
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 20),
-                      Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(.06),
-                            borderRadius: const BorderRadius.all(Radius.circular(90))
-                        ),
-                        child: IconButton(
-                          onPressed: (){
-                            if(!Platform.isAndroid){
-                              return;
-                            }
-
-                            final url = Uri.parse('https://github.com/domedav/Neptun-2/issues/new/choose');
-                            launchUrl(url);
-                          },
-                          icon: Icon(
-                            Icons.feed_rounded,
-                            color: Colors.white.withOpacity(.4),
-                            size: 32,
-                          ),
-                        ),
-                      )
-                    ],
-                  )
               ),
               Visibility(
                 visible: _shouldShowSnackbar,
@@ -922,7 +932,7 @@ class _Page2State extends State<Page2>{
                   }
                   AppSnackbar.cancelTimer();
                   setState(() {
-                    if(!isHolding && (_snackbarDelta < 0 ? -_snackbarDelta : _snackbarDelta) >= 100){
+                    if(!isHolding && (_snackbarDelta < 0 ? -_snackbarDelta : _snackbarDelta) >= 50){
                       _shouldShowSnackbar = false;
                     }
                     _snackbarDelta = deltaChange;

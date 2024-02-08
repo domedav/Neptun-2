@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../Pages/main_page.dart';
 
 class BottomNavigatorWidget extends StatelessWidget {
@@ -29,12 +30,14 @@ class BottomNavigatorWidget extends StatelessWidget {
               homePage.bottomNavCanNavigate = false;
               final val = homePage.currentView + 1 > HomePageState.maxBottomNavWidgets - 1 ? 0 : homePage.currentView + 1;
               homePage.switchView(val);
+              HapticFeedback.lightImpact();
               return;
             }
             else if(homePage.bottomNavSwitchValue > 50){
               homePage.bottomNavCanNavigate = false;
               final val = homePage.currentView - 1 < 0 ? HomePageState.maxBottomNavWidgets - 1 : homePage.currentView - 1;
               homePage.switchView(val);
+              HapticFeedback.lightImpact();
               return;
             }
             homePage.bottomNavSwitchValue += e.delta.dx;
@@ -78,6 +81,7 @@ class BottomNavigatorWidget extends StatelessWidget {
     return GestureDetector(
       onTap: (){
         homePage.switchView(index);
+        HapticFeedback.lightImpact();
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),

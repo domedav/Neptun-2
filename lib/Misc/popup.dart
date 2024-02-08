@@ -684,7 +684,7 @@ class PopupWidget extends State<PopupWidgetState>{
                     }
                     AppSnackbar.cancelTimer();
                     setState(() {
-                      if(!isHolding && (_snackbarDelta < 0 ? -_snackbarDelta : _snackbarDelta) >= 100){
+                      if(!isHolding && (_snackbarDelta < 0 ? -_snackbarDelta : _snackbarDelta) >= 50){
                         _shouldShowSnackbar = false;
                       }
                       _snackbarDelta = deltaChange;
