@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer' as debug;
+import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
@@ -10,6 +11,8 @@ import 'package:neptun2/notifications.dart';
 import 'package:neptun2/Misc/emojirich_text.dart';
 import 'package:neptun2/Misc/popup.dart';
 import 'package:neptun2/PaymentsElements/payment_element_widget.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../API/api_coms.dart' as api;
 import '../storage.dart' as storage;
 import '../TimetableElements/timetable_element_widget.dart' as t_table;
@@ -161,6 +164,46 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     setupCalendarGreetText();
 
     setupCalendarController(true, true);
+
+    if(storage.DataCache.getAnalyticsFirstAppOpenTime()! == 0){
+      storage.DataCache.setAnalyticsFirstAppOpenTime(DateTime.now().millisecondsSinceEpoch);
+    }
+
+    Future.delayed(const Duration(seconds: 2), ()async{
+      final pinfo = await PackageInfo.fromPlatform();
+      if(pinfo.installerStore != 'com.android.vending'){ // cant rate
+        return;
+      }
+
+      /*await storage.DataCache.setAnalyticsRateNudgedAmount(0);
+      await storage.DataCache.setAnalyticsHasRatedApp(0);
+      await storage.DataCache.setAnalyticsNextRatePopupTime(0);*/
+
+      if(storage.DataCache.getAnalyticsNextRatePopupTime()! == 0){
+        final appUsedDays = Duration(milliseconds: DateTime.now().millisecondsSinceEpoch - storage.DataCache.getAnalyticsFirstAppOpenTime()!).inDays;
+        await storage.DataCache.setAnalyticsNextRatePopupTime(DateTime.now().add(Duration(days: 2 + (appUsedDays > 30 ? 10 : appUsedDays / 3).round())).millisecondsSinceEpoch);
+      }
+
+      if(storage.DataCache.getAnalyticsHasRatedApp()! || DateTime.now().millisecondsSinceEpoch < storage.DataCache.getAnalyticsNextRatePopupTime()! || storage.DataCache.getAnalyticsRateNudgedAmount()! >= 5){
+        return;
+      }
+
+      final appUsedDays = Duration(milliseconds: DateTime.now().millisecondsSinceEpoch - storage.DataCache.getAnalyticsFirstAppOpenTime()!).inDays;
+      await storage.DataCache.setAnalyticsNextRatePopupTime(DateTime.now().add(Duration(days: 2 + (appUsedDays > 30 ? 10 : appUsedDays / 3).round())).millisecondsSinceEpoch);
+
+      final nudge = storage.DataCache.getAnalyticsRateNudgedAmount()!;
+      await storage.DataCache.setAnalyticsRateNudgedAmount(nudge + 1);
+
+      PopupWidgetHandler(mode: 2, callback: (_)async{
+        //only called, when the button is pressed
+        if(!Platform.isAndroid){
+          return;
+        }
+        launchUrl(Uri.parse('market://details?id=com.domedav.neptun2'), mode: LaunchMode.externalNonBrowserApplication);
+        await storage.DataCache.setAnalyticsHasRatedApp(1);
+      });
+      PopupWidgetHandler.doPopup(context);
+    });
   }
 
   void setupCalendarGreetText(){

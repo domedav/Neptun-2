@@ -67,6 +67,10 @@ class DataCache{
     setNeedClassNotifications(_persistentSetting_showClassNotifications! ? 1 : 0);
     setNeedClassNotifications(_persistentSetting_showPaymentsNotifications! ? 1 : 0);
     setNeedClassNotifications(_persistentSetting_showPeriodsNotifications! ? 1 : 0);
+    setAnalyticsFirstAppOpenTime(_persistentAnalytics_firstAppOpenTimeMs!);
+    setAnalyticsNextRatePopupTime(_persistentAnalytics_nextRatePopupShowMs!);
+    setAnalyticsRateNudgedAmount(_persistentAnalytics_userRateNudgedAmount!);
+    setAnalyticsHasRatedApp(_persistentAnalytics_hasRatedApp! ? 1 : 0);
   }
 
   static final DataCache _instance = DataCache();
@@ -89,6 +93,11 @@ class DataCache{
   late bool? _persistentSetting_showClassNotifications = true;
   late bool? _persistentSetting_showPaymentsNotifications = true;
   late bool? _persistentSetting_showPeriodsNotifications = true;
+
+  late int? _persistentAnalytics_firstAppOpenTimeMs = 0;
+  late int? _persistentAnalytics_nextRatePopupShowMs = 0;
+  late int? _persistentAnalytics_userRateNudgedAmount = 0;
+  late bool? _persistentAnalytics_hasRatedApp = false;
 
   static Future<void> loadData() async{return _instance._loadData();}
 
@@ -158,6 +167,17 @@ class DataCache{
       _persistentSetting_showPeriodsNotifications = true;  // this is the default value, not false
     }
 
+    tmp = await getInt('ANALYTICS_FirstAppOpenTime');
+    _persistentAnalytics_firstAppOpenTimeMs = tmp ?? 0;
+
+    tmp = await getInt('ANALYTICS_NextRatePopupTime');
+    _persistentAnalytics_nextRatePopupShowMs = tmp ?? 0;
+
+    tmp = await getInt('ANALYTICS_RateNudgeAmount');
+    _persistentAnalytics_userRateNudgedAmount = tmp ?? 0;
+
+    tmp = await getInt('ANALYTICS_HasRatedApp');
+    _persistentAnalytics_hasRatedApp = tmp != null && tmp != 0;
   }
 
   static String? getUsername(){return _instance._username;}
@@ -256,5 +276,29 @@ class DataCache{
   static Future<void> setNeedPeriodsNotifications(int? value) async{
     _instance._persistentSetting_showPeriodsNotifications = value != null && value != 0;
     await saveInt('SETTING_IsNeedPeriodsNotifications', value ?? 1);
+  }
+
+  static int? getAnalyticsFirstAppOpenTime(){return _instance._persistentAnalytics_firstAppOpenTimeMs;}
+  static Future<void> setAnalyticsFirstAppOpenTime(int? value) async{
+    _instance._persistentAnalytics_firstAppOpenTimeMs = value ?? 0;
+    await saveInt('ANALYTICS_FirstAppOpenTime', value ?? 0);
+  }
+
+  static int? getAnalyticsNextRatePopupTime(){return _instance._persistentAnalytics_nextRatePopupShowMs;}
+  static Future<void> setAnalyticsNextRatePopupTime(int? value) async{
+    _instance._persistentAnalytics_nextRatePopupShowMs = value ?? 0;
+    await saveInt('ANALYTICS_NextRatePopupTime', value ?? 0);
+  }
+
+  static int? getAnalyticsRateNudgedAmount(){return _instance._persistentAnalytics_userRateNudgedAmount;}
+  static Future<void> setAnalyticsRateNudgedAmount(int? value) async{
+    _instance._persistentAnalytics_userRateNudgedAmount = value ?? 0;
+    await saveInt('ANALYTICS_RateNudgeAmount', value ?? 0);
+  }
+
+  static bool? getAnalyticsHasRatedApp(){return _instance._persistentAnalytics_hasRatedApp;}
+  static Future<void> setAnalyticsHasRatedApp(int? value) async{
+    _instance._persistentAnalytics_hasRatedApp = value != null && value != 0;
+    await saveInt('ANALYTICS_HasRatedApp', value ?? 0);
   }
 }

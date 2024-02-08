@@ -616,6 +616,60 @@ class PopupWidget extends State<PopupWidgetState>{
           ),
         ));
         return list;
+
+      case 2:
+        list.add(const EmojiRichText(
+          text: "⭐ Értékeld Az Appot! ⭐",
+          defaultStyle: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+            fontSize: 22.0,
+          ),
+          emojiStyle: TextStyle(
+              color: Colors.white,
+              fontSize: 19.0,
+              fontFamily: "Noto Color Emoji"
+          ),
+        ));
+        list.add(const SizedBox(height: 3));
+        list.add(Container(
+          color: Colors.white.withOpacity(0.3),
+          margin: const EdgeInsets.symmetric(vertical: 10),
+          height: 2,
+        ));
+        list.add(const Text(
+          'Tetszik az app? Esetleg nem? Értékeld a Play Áruházba!\n10 másodpercet vesz igénybe, és ezzel információt nyújtassz mind nekünk, mind másoknak.',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 14,
+            fontWeight: FontWeight.w400
+          ),
+        ));
+        list.add(const SizedBox(height: 20));
+        list.add(FilledButton(
+          onPressed: (){
+            if(!PopupWidgetHandler._instance!._inUse || !mounted){
+              return;
+            }
+            PopupWidgetHandler._instance!.callback(null);
+            PopupWidgetHandler.closePopup(true);
+          },
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),
+          ),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 15),
+            child: const Text('Mehet',
+              style: TextStyle(
+                color: Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0),
+                fontWeight: FontWeight.w900,
+                fontSize: 18.0,
+              ),
+            ),
+          ),
+        ));
+        return list;
       default:
         return list;
     }
