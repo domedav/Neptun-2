@@ -1,12 +1,16 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../API/api_coms.dart' as api;
+import '../Misc/custom_snackbar.dart';
+import '../Misc/emojirich_text.dart';
 import '../storage.dart' as storage;
 import '../storage.dart';
 import 'main_page.dart' as main_page;
@@ -15,7 +19,7 @@ class Page1 extends StatefulWidget {
   Page1({super.key, required this.fetchData});
 
   final bool fetchData;
-  final PageDTO DTO = PageDTO(null, null, null, null);
+  final PageDTO DTO = PageDTO(null, null, null, null, null, false);
 
   @override
   State<Page1> createState() => _Page1State();
@@ -103,16 +107,48 @@ class _Page1State extends State<Page1> {
   }
 
   void goToPage2(){
+    setState(() {
+      _shouldShowSnackbar = false;
+    });
     PageDTO.Instance.Institutes = _institutes;
     PageDTO.Instance.Selected = _selectedValue;
+
+    RegExp regex = RegExp(r'/hallgato/login\.aspx');
+    var correctedURL = _rawNeptunURL.trim();
+    if(correctedURL.contains(regex)){
+      PageDTO.Instance.ValidatedURL = correctedURL.contains(regex);
+      correctedURL = correctedURL.replaceAll(regex, '/hallgato/MobileService.svc');
+      PageDTO.Instance.CustomURL = correctedURL;
+    }
+
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const Page2()),
     );
   }
 
+  String _snackbarMessage = "";
+  Duration _displayDuration = Duration.zero;
+  bool _shouldShowSnackbar = false;
+  double _snackbarDelta = 0;
+
+  void _showSnackbar(String text, int displayDurationSec){
+    if(!mounted){
+      return;
+    }
+    setState(() {
+      _shouldShowSnackbar = true;
+      _displayDuration = Duration(seconds: displayDurationSec);
+      _snackbarMessage = text;
+      _snackbarDelta = 0;
+    });
+  }
+
   double _horizontalDrag = 0;
   bool _dragDebounce = false;
+
+  String _rawNeptunURL = "";
+  Timer? _warnTimer;
 
   @override
   Widget build(BuildContext context) {
@@ -176,109 +212,250 @@ class _Page1State extends State<Page1> {
             goToPage2();
           }
         },
-        child: Container(
-          color: const Color.fromRGBO(0x17, 0x17, 0x17, 1.0),
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(
-              decelerationRate: ScrollDecelerationRate.fast
-            ),
-            scrollDirection: Axis.vertical,
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height + 0.001,
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Text(
-                      'Válaszd ki az iskoládat!',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.headlineLarge,
-                    ),
-                    Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.77,
-                            child: TextField(
-                              decoration: const InputDecoration(
-                                suffixIcon: Icon(Icons.search_rounded),
-                                hintText: 'Keresés...',
-                                border: null
-                              ),
-                              enableSuggestions: false,
-                              autocorrect: false,
-                              onChanged: (value) {
-                                setState(() {
-                                  _filteredValues.clear();
-                                  for(var item in _institutes){
-                                    if(item.Name.toLowerCase().contains(value.toLowerCase())){
-                                      _filteredValues.add(item.Name);
-                                    }
-                                  }
-                                  if(_filteredValues.isNotEmpty) {
-                                    _selectedValue = _filteredValues[0];
-                                    _canProceed = true;
-                                  } else{
-                                    _filteredValues.add("Nincs Találat...");
-                                    _selectedValue = _filteredValues[0];
-                                    _canProceed = false;
-                                  }
-                                });
-                              },
-                            ),
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.80,  // only take up 80% of the screen
-                            child: DropdownButtonFormField<String>(
-                                borderRadius: BorderRadius.circular(16),
-                                menuMaxHeight: MediaQuery.of(context).size.height * 0.60,
-                                isExpanded: true,
-                                itemHeight: null,
-                                value: _selectedValue, // The currently selected value.
-                                padding: const EdgeInsets.all(8.0),
-                                items: _filteredValues.map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(
-                                          value,
-                                          style: Theme.of(context).textTheme.labelLarge,
-                                          overflow: TextOverflow.ellipsis,
-                                      )
-                                  );
-                                }).toList(),
-                                onChanged: (String? value) {
-                                  setState(() {
-                                    _selectedValue = value!;
-                                  });
-                                }),
-                            )
-                      ]
-                    ),
-                    ElevatedButton(
-                      onPressed: _canProceed ? () {
-                          goToPage2();
-                        } : null,
-                        style: ButtonStyle(
-                          backgroundColor: _canProceed ? MaterialStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)) : MaterialStateProperty.all(const Color.fromRGBO(0x1C, 0x25, 0x26, 1.0)),
-                          padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
+        child: Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            Container(
+              color: const Color.fromRGBO(0x17, 0x17, 0x17, 1.0),
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(
+                  decelerationRate: ScrollDecelerationRate.fast
+                ),
+                scrollDirection: Axis.vertical,
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height + 0.001,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Text(
+                          'Válaszd ki az iskoládat!',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.headlineLarge,
                         ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'Tovább',
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                          const Icon(Icons.arrow_forward_rounded, color: Colors.white)
-                        ],
-                      )
+                        Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.77,
+                                child: TextField(
+                                  decoration: const InputDecoration(
+                                    suffixIcon: Icon(Icons.search_rounded),
+                                    hintText: 'Keresés...',
+                                    border: null
+                                  ),
+                                  enableSuggestions: false,
+                                  autocorrect: false,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _filteredValues.clear();
+                                      for(var item in _institutes){
+                                        if(item.Name.toLowerCase().contains(value.toLowerCase())){
+                                          _filteredValues.add(item.Name);
+                                        }
+                                      }
+                                      if(_filteredValues.isNotEmpty) {
+                                        _selectedValue = _filteredValues[0];
+                                        _canProceed = true;
+                                      } else{
+                                        _filteredValues.add("Nincs Találat...");
+                                        _selectedValue = _filteredValues[0];
+                                        _canProceed = false;
+                                      }
+                                    });
+                                  },
+                                ),
+                              ),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.80,  // only take up 80% of the screen
+                                child: DropdownButtonFormField<String>(
+                                    borderRadius: BorderRadius.circular(16),
+                                    menuMaxHeight: MediaQuery.of(context).size.height * 0.60,
+                                    isExpanded: true,
+                                    itemHeight: null,
+                                    value: _selectedValue, // The currently selected value.
+                                    padding: const EdgeInsets.all(8.0),
+                                    items: _filteredValues.map<DropdownMenuItem<String>>((String value) {
+                                      return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(
+                                              value,
+                                              style: Theme.of(context).textTheme.labelLarge,
+                                              overflow: TextOverflow.ellipsis,
+                                          )
+                                      );
+                                    }).toList(),
+                                    onChanged: (String? value) {
+                                      setState(() {
+                                        _selectedValue = value!;
+                                      });
+                                    }),
+                                ),
+                              const SizedBox(height: 35),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Flexible(
+                                    child: Container(
+                                      margin: const EdgeInsets.all(15),
+                                      child: Text(
+                                        'Nem találod az iskolád a listában?',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.white.withOpacity(.6)
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.all(15),
+                                    decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.all(Radius.circular(90)),
+                                        color: Colors.white.withOpacity(.06)
+                                    ),
+                                    child: IconButton(
+                                      onPressed: (){
+                                        _showSnackbar('A Neptun2 a központi adatok alapján listázza az iskolákat, ami 10 éve nem volt frissítve, így előfordulhat, hogy egyes iskolák nincsenek benne.\nMenj az iskolád neptun oldalára, és másold be az URL-t.\n\nPl: https://neptun-ws01.uni-pannon.hu/hallgato/login.aspx', 18);
+                                      },
+                                      icon: Icon(
+                                        Icons.question_mark_rounded,
+                                        color: Colors.white.withOpacity(.4),
+                                      ),
+                                      enableFeedback: true,
+                                      iconSize: 24,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.77,
+                                child: TextField(
+                                  keyboardType: TextInputType.url,
+                                  decoration: const InputDecoration(
+                                      suffixIcon: Icon(Icons.link_rounded),
+                                      hintText: 'Másold ide az iskolád neptun URL-jét...',
+                                      border: null
+                                  ),
+                                  enableSuggestions: false,
+                                  autocorrect: false,
+                                  onChanged: (value) {
+                                    _rawNeptunURL = value.trim();
+                                    if(_warnTimer != null){
+                                      _warnTimer!.cancel();
+                                    }
+                                    RegExp regex = RegExp(r'/hallgato/login\.aspx');
+                                    PageDTO.Instance.ValidatedURL = _rawNeptunURL.contains(regex);
+                                    if(_rawNeptunURL.isEmpty){
+                                      return;
+                                    }
+                                    if(_rawNeptunURL.contains(regex)){
+                                      setState(() {
+                                        _canProceed = true;
+                                      });
+                                      return;
+                                    }
+                                    _warnTimer = Timer(const Duration(seconds: 2),(){
+                                      _showSnackbar('Ez nem egy jó neptun URL!\nValami ilyesmit másolj ide:\nhttps://neptun-ws01.uni-pannon.hu/hallgato/login.aspx\nCsak a te saját iskolád neptun URL-je legyen.', 18);
+                                    });
+                                  },
+                                ),
+                              ),
+                          ]
+                        ),
+                        ElevatedButton(
+                          onPressed: _canProceed ? () {
+                              goToPage2();
+                            } : null,
+                            style: ButtonStyle(
+                              backgroundColor: _canProceed ? MaterialStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)) : MaterialStateProperty.all(const Color.fromRGBO(0x1C, 0x25, 0x26, 1.0)),
+                              padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
+                            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'Tovább',
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                              const Icon(Icons.arrow_forward_rounded, color: Colors.white)
+                            ],
+                          )
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),
-          ),
+            Container(
+                margin: const EdgeInsets.all(20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Flexible(
+                      child: EmojiRichText(
+                        text: 'Probléma van az appal? Írd meg nekünk 👉',
+                        defaultStyle: TextStyle(
+                          color: Colors.white.withOpacity(.6),
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14.0,
+                        ),
+                        emojiStyle: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14.0,
+                            fontFamily: "Noto Color Emoji"
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    Container(
+                      decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(.06),
+                          borderRadius: const BorderRadius.all(Radius.circular(90))
+                      ),
+                      child: IconButton(
+                        onPressed: (){
+                          if(!Platform.isAndroid){
+                            return;
+                          }
+
+                          final url = Uri.parse('https://github.com/domedav/Neptun-2/issues/new/choose');
+                          launchUrl(url);
+                        },
+                        icon: Icon(
+                          Icons.feed_rounded,
+                          color: Colors.white.withOpacity(.4),
+                          size: 32,
+                        ),
+                      ),
+                    )
+                  ],
+                )
+            ),
+            Visibility(
+              visible: _shouldShowSnackbar,
+              child: AppSnackbar(text: _snackbarMessage, displayDuration: _displayDuration, dragAmmount: _snackbarDelta, changer: (deltaChange, isHolding){
+                if(!mounted){
+                  return;
+                }
+                AppSnackbar.cancelTimer();
+                setState(() {
+                  if(!isHolding && (_snackbarDelta < 0 ? -_snackbarDelta : _snackbarDelta) >= 100){
+                    _shouldShowSnackbar = false;
+                  }
+                  _snackbarDelta = deltaChange;
+                });
+              }, state: _shouldShowSnackbar,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -355,6 +532,10 @@ class _Page2State extends State<Page2>{
       }
     }
 
+    if(PageDTO.Instance.CustomURL != null && PageDTO.Instance.CustomURL!.isNotEmpty){
+      selected = api.Institute('URL', PageDTO.Instance.CustomURL!);
+    }
+
     setState(() {
       _canProceed = false;
       _canGoBack = false;
@@ -398,38 +579,21 @@ class _Page2State extends State<Page2>{
     });
   }
 
-  void _showSnackbar(BuildContext context, String text, int displayDurationSec){
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Icon(
-            Icons.question_mark_rounded,
-            size: 24,
-            color: Color.fromRGBO(0x4F, 0x69, 0x6E, 1.0),
-          ),
-          const SizedBox(width: 15),
-          Expanded(
-              child: Text(
-                text,
-                textAlign: TextAlign.start,
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400
-                ),
-              )
-          )
-        ],
-      ),
-      backgroundColor: const Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
-      dismissDirection: DismissDirection.horizontal,
-      behavior: SnackBarBehavior.floating,
-      duration: Duration(seconds: displayDurationSec),
-    ));
+  String _snackbarMessage = "";
+  Duration _displayDuration = Duration.zero;
+  bool _shouldShowSnackbar = false;
+  double _snackbarDelta = 0;
+
+  void _showSnackbar(String text, int displayDurationSec){
+    if(!mounted){
+      return;
+    }
+    setState(() {
+      _shouldShowSnackbar = true;
+      _displayDuration = Duration(seconds: displayDurationSec);
+      _snackbarMessage = text;
+      _snackbarDelta = 0;
+    });
   }
 
   double _horizontalDrag = 0;
@@ -482,6 +646,7 @@ class _Page2State extends State<Page2>{
           },
           canPop: false,
           child: Stack(
+            alignment: Alignment.bottomCenter,
             children: [
               Container(
                 color: const Color.fromRGBO(0x17, 0x17, 0x17, 1.0),
@@ -519,7 +684,7 @@ class _Page2State extends State<Page2>{
                                       const SizedBox(width: 4),
                                       Flexible(
                                         child: Text(
-                                          PageDTO.Instance.Selected ?? 'NULL',
+                                          PageDTO.Instance.ValidatedURL ? PageDTO.Instance.CustomURL!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '') : (PageDTO.Instance.Selected ?? 'HIBA! Lépj egyet vissza!'),
                                           textAlign: TextAlign.start,
                                           style: TextStyle(
                                               color: Colors.white.withOpacity(.2),
@@ -630,7 +795,7 @@ class _Page2State extends State<Page2>{
                                       ),
                                       child: IconButton(
                                         onPressed: (){
-                                          _showSnackbar(context, 'A Neptun2 a régi Neptun mobilapp API-jait használja, amiben nem volt 2 lépcsős azonosítás. Így, ha a fiókod 2 lépcsős azonosítással van védve, a Neptun2 nem fogja tudni értelmezni ezt.\nViszont ha kikapcsolod, hiba nélkül tudod használni a Neptun2-t.\nKikapcsolni a "Saját Adatok/Beállítások"-ban tudod.', 18);
+                                          _showSnackbar('A Neptun2 a régi Neptun mobilapp API-jait használja, amiben nem volt 2 lépcsős azonosítás. Így, ha a fiókod 2 lépcsős azonosítással van védve, a Neptun2 nem fogja tudni értelmezni ezt.\nViszont ha kikapcsolod, hiba nélkül tudod használni a Neptun2-t.\nKikapcsolni a Neptunban, a "Saját Adatok/Beállítások"-ban tudod.', 18);
                                         },
                                         icon: Icon(
                                           Icons.question_mark_rounded,
@@ -702,6 +867,69 @@ class _Page2State extends State<Page2>{
                   ),
                 ),
               ),
+              Container(
+                  margin: const EdgeInsets.all(20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Flexible(
+                        child: EmojiRichText(
+                          text: 'Probléma van az appal? Írd meg nekünk 👉',
+                          defaultStyle: TextStyle(
+                            color: Colors.white.withOpacity(.6),
+                            fontWeight: FontWeight.w700,
+                            fontSize: 14.0,
+                          ),
+                          emojiStyle: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 14.0,
+                              fontFamily: "Noto Color Emoji"
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 20),
+                      Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(.06),
+                            borderRadius: const BorderRadius.all(Radius.circular(90))
+                        ),
+                        child: IconButton(
+                          onPressed: (){
+                            if(!Platform.isAndroid){
+                              return;
+                            }
+
+                            final url = Uri.parse('https://github.com/domedav/Neptun-2/issues/new/choose');
+                            launchUrl(url);
+                          },
+                          icon: Icon(
+                            Icons.feed_rounded,
+                            color: Colors.white.withOpacity(.4),
+                            size: 32,
+                          ),
+                        ),
+                      )
+                    ],
+                  )
+              ),
+              Visibility(
+                visible: _shouldShowSnackbar,
+                child: AppSnackbar(text: _snackbarMessage, displayDuration: _displayDuration, dragAmmount: _snackbarDelta, changer: (deltaChange, isHolding){
+                  if(!mounted){
+                    return;
+                  }
+                  AppSnackbar.cancelTimer();
+                  setState(() {
+                    if(!isHolding && (_snackbarDelta < 0 ? -_snackbarDelta : _snackbarDelta) >= 100){
+                      _shouldShowSnackbar = false;
+                    }
+                    _snackbarDelta = deltaChange;
+                  });
+                }, state: _shouldShowSnackbar,
+                ),
+              ),
               Visibility(
                 visible: _isLoading,
                 child: Positioned.fill(
@@ -769,18 +997,21 @@ class _Page2State extends State<Page2>{
   }
 }
 
-//Data transfer object between the Pages
 class PageDTO{
   static late PageDTO Instance;
   late List<api.Institute>? Institutes;
   late String? Selected;
   late String? Username;
   late String? Password;
-  PageDTO(List<api.Institute>? institutes, String? selected, String? username, String? password){
+  late String? CustomURL;
+  late bool ValidatedURL;
+  PageDTO(List<api.Institute>? institutes, String? selected, String? username, String? password, String? customURL, bool validatedURL){
     Instance = this;
     Institutes = institutes;
     Selected = selected;
     Username = username;
     Password = password;
+    CustomURL = customURL;
+    ValidatedURL = validatedURL;
   }
 }

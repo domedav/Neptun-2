@@ -257,23 +257,27 @@ class PeriodsElementWidget extends StatelessWidget{
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Text(
-                      'Kezdődik: ',
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.6),
-                        fontWeight: FontWeight.normal,
-                        fontSize: 14.0,
+                    Flexible(
+                      child: Text(
+                        'Kezdődik: ',
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.6),
+                          fontWeight: FontWeight.normal,
+                          fontSize: 14.0,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
                     ),
-                    Text(
-                      '$formattedStartTimeYear $formattedStartTime',
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.6),
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14.0,
+                    Flexible(
+                      child: Text(
+                        '$formattedStartTimeYear $formattedStartTime',
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.6),
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14.0,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),

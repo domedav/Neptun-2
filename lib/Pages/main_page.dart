@@ -886,7 +886,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         isActive: item.isActive,
         periodType: item.type,
         startTime: item.startEpoch,
-        endTime: item.endEpoch,
+        endTime: (DateTime.fromMillisecondsSinceEpoch(item.endEpoch).add(const Duration(days: 1)).millisecondsSinceEpoch), // utolsó nap is beleszámít
       ));
       if(currentSemester == -1) {
         currentSemester = item.partofSemester;

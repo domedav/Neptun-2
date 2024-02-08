@@ -624,6 +624,7 @@ class PopupWidget extends State<PopupWidgetState>{
   String _snackbarMessage = "";
   Duration _displayDuration = Duration.zero;
   bool _shouldShowSnackbar = false;
+  double _snackbarDelta = 0;
 
   void _showSnackbar(String text, int displayDurationSec){
     if(!mounted){
@@ -636,8 +637,6 @@ class PopupWidget extends State<PopupWidgetState>{
       _snackbarDelta = 0;
     });
   }
-
-  double _snackbarDelta = 0;
 
   Widget getPopup(double scale){
     return Transform.scale(
