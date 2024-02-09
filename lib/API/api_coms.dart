@@ -351,11 +351,11 @@ class CashinRequest{
     if(storage.DataCache.getIsDemoAccount()!){
       final now = DateTime.now();
       return <CashinEntry>[
-        CashinEntry(10000, DateTime(now.year + 1, now.month).millisecondsSinceEpoch, 'DEMO befizetés 1', 'aktív'),
-        CashinEntry(70, DateTime(now.year + 1, now.month).millisecondsSinceEpoch, 'DEMO befizetés 2', 'teljesített'),
-        CashinEntry(-1, DateTime(now.year - 1, now.month).millisecondsSinceEpoch, 'DEMO befizetés 3', 'aktív'),
-        CashinEntry(-1, DateTime(now.year - 1, now.month).millisecondsSinceEpoch, 'DEMO befizetés 4', 'teljesített'),
-        CashinEntry(1000, 0, 'DEMO befizetés 5', 'aktív'),
+        CashinEntry(10000, DateTime(now.year + 1, now.month).millisecondsSinceEpoch, 'DEMO befizetés 1', 1, 'aktív'),
+        CashinEntry(70, DateTime(now.year + 1, now.month).millisecondsSinceEpoch, 'DEMO befizetés 2', 1, 'teljesített'),
+        CashinEntry(-1, DateTime(now.year - 1, now.month).millisecondsSinceEpoch, 'DEMO befizetés 3', 0, 'aktív'),
+        CashinEntry(-1, DateTime(now.year - 1, now.month).millisecondsSinceEpoch, 'DEMO befizetés 4', 0, 'teljesített'),
+        CashinEntry(1000, 0, 'DEMO befizetés 5', 0, 'aktív'),
       ];
     }
     final username = storage.DataCache.getUsername();
@@ -371,7 +371,7 @@ class CashinRequest{
   
   static List<CashinEntry> _jsonToCashinEntry(String json){
     if(storage.DataCache.getIsDemoAccount()!){
-      return <CashinEntry>[CashinEntry(87878, 999999999, 'DEMO befizetés', 'teljesítve')];
+      return <CashinEntry>[CashinEntry(87878, 999999999, 'DEMO befizetés', 0, 'teljesítve')];
     }
     List<CashinEntry> ls = List.empty(growable: true);
     final List<dynamic> cashins = conv.json.decode(json)['CashinDataRows'];
@@ -380,6 +380,7 @@ class CashinRequest{
           cashin['amount'],
           int.parse(cashin['deadline'] == null ? '0' : cashin['deadline'].toString().replaceAll('/Date(', '').replaceAll(')/', '')),
           cashin['appellation'],
+          cashin['ID'],
           cashin['status_name']
       ));
     }
@@ -548,12 +549,13 @@ class CalendarEntry{
 }
 
 class CashinEntry{
+  late int ID;
   late int ammount;
   late int dueDateMs;
   late String comment;
   late bool completed = false;
 
-  CashinEntry(this.ammount, this.dueDateMs, this.comment, String completed){
+  CashinEntry(this.ammount, this.dueDateMs, this.comment, this.ID, String completed){
     if(completed.toLowerCase() == 'teljesített'){
       this.completed = true;
     }
@@ -561,18 +563,19 @@ class CashinEntry{
 
   @override
   String toString() {
-    return '$ammount\n$dueDateMs\n$comment\n$completed';
+    return '$ammount\n$dueDateMs\n$comment\n$completed\n$ID';
   }
 
   CashinEntry fillWithExisting(String existing){
     var data = existing.split('\n');
-    if(data.isEmpty || data.length < 4){
+    if(data.isEmpty || data.length < 5){
       return this;
     }
     ammount = int.parse(data[0]);
     dueDateMs = int.parse(data[1]);
     comment = data[2];
     completed = bool.parse(data[3]);
+    ID = int.parse(data[4]);
     return this;
   }
 }
@@ -602,7 +605,7 @@ class PeriodEntry{
     final correctedStartEpoch = DateTime(startEp.year, startEp.month, startEp.day);
     this.startEpoch = correctedStartEpoch.millisecondsSinceEpoch;
 
-    final endEp = DateTime.fromMillisecondsSinceEpoch(endEpoch);
+    final endEp = DateTime.fromMillisecondsSinceEpoch(endEpoch).add(const Duration(days: 1)); // last day counts too
     final correctedEndEpoch = DateTime(endEp.year, endEp.month, endEp.day);
     this.endEpoch = correctedEndEpoch.millisecondsSinceEpoch;
 

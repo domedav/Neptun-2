@@ -7,10 +7,11 @@ import 'package:neptun2/API/api_coms.dart';
 import '../Misc/emojirich_text.dart';
 
 class PaymentElementWidget extends StatelessWidget{
+  final int ID;
   final int ammount;
   final int dueDateMs;
   final String name;
-  const PaymentElementWidget({super.key, required this.ammount, required this.dueDateMs, required this.name});
+  const PaymentElementWidget({super.key, required this.ammount, required this.dueDateMs, required this.name, required this.ID});
 
   @override
   Widget build(BuildContext context) {
