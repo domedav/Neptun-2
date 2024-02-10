@@ -4,12 +4,25 @@ Egy csere alkalmazás, az elhagyatott neptun mobilapp helyett. 📱
 
 Televan mindennel ami csak kellhet az egyetemi évek során, így nemkell a webes neptunt sem használni! 🥳
 
+Mivel nyújt többet mint a sima neptun?
+
+• Szellemjegyek 👻 Könnyebben megy majd az átlagszámítás!
+
+• Értesítések 🫨 Nem maradsz le semmiről sem!
+
+• Átlátható Órarend 📆 Mindíg tudod majd aznap milyen órád lesz 0 koppintásra!
+
+• Egy Modern UI.
+
 **Ha van valami ötleted, vagy simán csak egy hibát akarsz bejelenteni, a hibabejelentés fülnél tedd meg.**
 
-Az alkalmazás még fejlesztés alatt áll, így ez még nem tökéletes.
+Az alkalmazás még fejlesztés alatt áll, így ez még nem tökéletes. ⚠️
 
 Töltsd le a Play Áruházból!
 https://play.google.com/store/apps/details?id=com.domedav.neptun2
+
+## 1.2.3
+Hibajavítások
 
 ## 1.2.2
 Haptika, URL bejelentkezés, app értékelés popup
