@@ -47,7 +47,7 @@ static void my_application_activate(GApplication* application) {
     gtk_window_set_title(window, "Neptun 2");
   }
 
-  gtk_window_set_default_size(window, 640, 1080);
+  gtk_window_set_default_size(window, 560, 1080);
   gtk_widget_show(GTK_WIDGET(window));
 
   g_autoptr(FlDartProject) project = fl_dart_project_new();

@@ -924,7 +924,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         displayName: api.Generic.capitalizePeriodText(item.name),
         formattedStartTime: '${api.Generic.monthToText(starttime.month)} ${starttime.day}',
         formattedStartTimeYear: '${starttime.year}',
-        formattedEndTime: '${api.Generic.monthToText(endtime.month)} ${endtime.day - 1}',
+        formattedEndTime: '${api.Generic.monthToText(endtime.month)} ${endtime.day}',
         formattedEndTimeYear: '${endtime.year}',
         isActive: item.isActive,
         periodType: item.type,
