@@ -127,6 +127,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     }).whenComplete((){
       Future.delayed(Duration.zero, () async{
         await fetchCalendar();
+        weeksSinceStart = calcPassedWeeks();
       }).then((value) async {
         if(storage.DataCache.getNeedExamNotifications()!){
           Future.delayed(Duration.zero,() async{
@@ -157,9 +158,6 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         setupPeriods();
       });
     });
-
-
-    weeksSinceStart = calcPassedWeeks();
 
     setupCalendarGreetText();
 
@@ -1217,7 +1215,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     final elapsedWeeks = (monday.difference(sepOne).inDays / 7).floor();
 
     return elapsedWeeks + currentWeekOffset - 1 + isWeekend;*/
-    return weeksPassed.floor() + currentWeekOffset - 1;// + isWeekend;
+    return (weeksPassed.floor() + currentWeekOffset) % 52;// + isWeekend;
   }
 
   @override

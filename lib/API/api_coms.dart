@@ -106,9 +106,10 @@ class InstitutesRequest{
     PeriodEntry? period;
 
     for (var item in periods){
-      if(item.name.toLowerCase().contains('jegybeírási időszak')){
+      if(item.name.toLowerCase().contains('szorgalmi időszak')){
         if(item.startEpoch <= now){
           period = item;
+          break;
         }
       }
     }
@@ -116,7 +117,7 @@ class InstitutesRequest{
       return null;
     }
 
-    //final startDate = DateTime.fromMillisecondsSinceEpoch(period!.startEpoch);
+    final startDate = DateTime.fromMillisecondsSinceEpoch(period.startEpoch);
     return period.startEpoch;
   }
 }
