@@ -3,6 +3,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
+import 'emojirich_text.dart';
+
 typedef ChangeCallback = void Function(double, bool);
 
 class AppSnackbar extends StatelessWidget{
@@ -76,15 +78,19 @@ class AppSnackbar extends StatelessWidget{
               ),
               const SizedBox(width: 15),
               Expanded(
-                  child: Text(
-                    text,
-                    textAlign: TextAlign.start,
-                    style: const TextStyle(
+                  child: EmojiRichText(
+                    text: text,
+                    defaultStyle: const TextStyle(
                         color: Colors.white,
                         fontSize: 14,
                         fontWeight: FontWeight.w400
                     ),
-                  )
+                    emojiStyle: const TextStyle(
+                        color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                        fontSize: 14.0,
+                        fontFamily: "Noto Color Emoji"
+                    ),
+                  ),
               )
             ],
           ),

@@ -48,7 +48,7 @@ class _SplitterState extends State<Splitter>{
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => setup_page.Page1(fetchData: true)),
+            builder: (context) => setup_page.SetupPageLoginTypeSelection()),
       );
     });
   }

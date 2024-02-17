@@ -648,7 +648,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     _fillOneCalendarElement(context, thursdayCalendar, 'Csütörtök', isLoading);
     _fillOneCalendarElement(context, fridayCalendar, 'Péntek', isLoading);
     _fillOneCalendarElement(context, saturdayCalendar, 'Szombat', isLoading);
-    _fillOneCalendarElement(context, sundayCalendar, 'Varárnap', isLoading);
+    _fillOneCalendarElement(context, sundayCalendar, 'Vasárnap', isLoading);
   }
 
   void _mbookPopupResult(int result, int idx){
@@ -1468,7 +1468,7 @@ class MarkbookPageWidget extends StatelessWidget{
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              topnav.TopNavigatorWidget(homePage: homePage, displayString: "Tantárgyak", smallHintText: "Össz Kredited: $totalCredits🎖️\nÁtlagod: ${totalAvg.toStringAsFixed(2)} ${reactionForAvg(totalAvg)}"),
+              topnav.TopNavigatorWidget(homePage: homePage, displayString: "Tantárgyak", smallHintText: "Össz Kredited: $totalCredits🎖️\nÁtlagod: ${totalAvg.isNaN ? "0.00" : totalAvg.toStringAsFixed(2)} ${reactionForAvg(totalAvg)}"),
               HomePageState.getSeparatorLine(context),
               Expanded(
                   child: RefreshIndicator(

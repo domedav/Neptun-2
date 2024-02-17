@@ -117,7 +117,7 @@ class InstitutesRequest{
       return null;
     }
 
-    final startDate = DateTime.fromMillisecondsSinceEpoch(period.startEpoch);
+    //final startDate = DateTime.fromMillisecondsSinceEpoch(period.startEpoch);
     return period.startEpoch;
   }
 }
@@ -191,7 +191,7 @@ class CalendarRequest{
     }
     previousMonday = DateTime(previousMonday.year, previousMonday.month, previousMonday.day, 0, 0);
 
-    DateTime nextFriday = previousMonday.add(const Duration(days: 5, hours: 23, minutes: 59));
+    DateTime nextFriday = previousMonday.add(const Duration(days: 6, hours: 23, minutes: 59));
     if (nextFriday.weekday == 7) {
       nextFriday = nextFriday.subtract(const Duration(days: 7));
     }
@@ -733,7 +733,7 @@ class Generic{
         case 1:
           return 'Még mindíg jobb mint a Neptun.';
         case 2:
-          return 'Már bármelyik milleniumba betölthet...';
+          return 'Már bármelyik milleniumban betölthet...';
         case 3:
           return 'Áramszünet van az SDA Informatikánál.';
         case 4:

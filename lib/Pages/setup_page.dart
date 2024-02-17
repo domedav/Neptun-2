@@ -1,6 +1,7 @@
 import 'dart:async';
-import 'dart:developer';
+import 'dart:developer' as debug;
 import 'dart:io';
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -14,6 +15,1096 @@ import '../Misc/emojirich_text.dart';
 import '../storage.dart' as storage;
 import '../storage.dart';
 import 'main_page.dart' as main_page;
+
+class SetupPageLoginTypeSelection extends StatefulWidget{
+  const SetupPageLoginTypeSelection({super.key});
+  @override
+  State<StatefulWidget> createState() => _SetupPageLoginTypeSelectionState();
+}
+class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelection>{
+  bool _obtainFreshData = true;
+
+  void changeFreshDataVal(bool val) => _obtainFreshData = val;
+
+  @override
+  void initState() {
+    super.initState();
+
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarIconBrightness: Brightness.light,
+      systemNavigationBarColor: Color.fromRGBO(0x17, 0x17, 0x17, 1.0), // navigation bar color
+      statusBarColor: Color.fromRGBO(0x17, 0x17, 0x17, 1.0), // status bar color
+    ));
+
+    FlutterNativeSplash.remove();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Container(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 40),
+                const Text(
+                  'Válassz Bejelentkezési Módot',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white
+                  ),
+                ),
+                const SizedBox(height: 60),
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => SetupPageInstitudeSelection(fetchData: _obtainFreshData, callback: changeFreshDataVal)));
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(20),
+                        margin: const EdgeInsets.all(10),
+                        width: MediaQuery.of(context).size.width / 3,
+                        decoration: BoxDecoration(
+                          color: const Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
+                          borderRadius: const BorderRadius.all(Radius.circular(30)),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(.3),
+                            width: 1
+                          )
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'Intézmény Választás',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            const Icon(
+                              Icons.list_alt_rounded,
+                              color: Colors.white,
+                              size: 40,
+                            ),
+                            const SizedBox(height: 30),
+                            Text(
+                              'Ez a legkényelmesebb opció.\nEgy szimpla lista, amiben megtudod keresni az egyetemedet.\nViszont nem minden egyetem található meg itt!',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.white.withOpacity(.6),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => SetupPageURLInput()));
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(20),
+                        margin: const EdgeInsets.all(10),
+                        width: MediaQuery.of(context).size.width / 3,
+                        decoration: BoxDecoration(
+                            color: const Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
+                            borderRadius: const BorderRadius.all(Radius.circular(30)),
+                            border: Border.all(
+                                color: Colors.white.withOpacity(.3),
+                                width: 1
+                            )
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'Neptun URL',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            const Icon(
+                              Icons.link_rounded,
+                              color: Colors.white,
+                              size: 40,
+                            ),
+                            const SizedBox(height: 30),
+                            Text(
+                              'Ha nincs az egyetemed a listában, akkor az egyetemed neptun URL-jét használva is betudsz lépni.\nNem a legkényelmesebb, és nem minden egyetemmel működik!',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.white.withOpacity(.6),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 60),
+                Container(
+                    margin: const EdgeInsets.all(20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Flexible(
+                          child: EmojiRichText(
+                            text: 'Probléma van az appal?\nÍrd meg nekem! 👉',
+                            defaultStyle: TextStyle(
+                              color: Colors.white.withOpacity(.6),
+                              fontWeight: FontWeight.w700,
+                              fontSize: 14.0,
+                            ),
+                            emojiStyle: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 14.0,
+                                fontFamily: "Noto Color Emoji"
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 20),
+                        Container(
+                          decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(.06),
+                              borderRadius: const BorderRadius.all(Radius.circular(90))
+                          ),
+                          child: IconButton(
+                            onPressed: (){
+                              if(!Platform.isAndroid){
+                                return;
+                              }
+
+                              final url = Uri.parse('https://github.com/domedav/Neptun-2/issues/new/choose');
+                              launchUrl(url);
+                            },
+                            icon: Icon(
+                              Icons.feed_rounded,
+                              color: Colors.white.withOpacity(.4),
+                              size: 32,
+                            ),
+                          ),
+                        )
+                      ],
+                    )
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SetupPageInstitudeSelection extends StatefulWidget{
+  SetupPageInstitudeSelection({super.key, required this.fetchData, required this.callback});
+  final bool fetchData;
+  final Function(bool) callback;
+  final PageDTO DTO = PageDTO(null, null, null, null, null, false).getInstance();
+
+  @override
+  State<StatefulWidget> createState() => _SetupPageInstitudeSelectionState();
+}
+class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelection>{
+  int _hasData = 0;
+  bool _drawNoInternet = false;
+
+  final List<String> _filteredValues = [];
+  late List<api.Institute> _institutes = [];
+  String _selectedValue = "Betöltés...";
+
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarIconBrightness: Brightness.light,
+      systemNavigationBarColor: Color.fromRGBO(0x17, 0x17, 0x17, 1.0), // navigation bar color
+      statusBarColor: Color.fromRGBO(0x17, 0x17, 0x17, 1.0), // status bar color
+    ));
+
+    fetchDataFromStorage();
+
+    if(storage.DataCache.getHasNetwork()){
+      _hasData++;
+    }
+
+    FlutterNativeSplash.remove();
+
+    Future.delayed(Duration.zero,()async{
+      final hasNetwork = await Connectivity().checkConnectivity() == ConnectivityResult.none;
+      setState(() {
+        _drawNoInternet = hasNetwork;
+      });
+    });
+
+    if(widget.fetchData) {
+      if(!storage.DataCache.getHasNetwork()){
+        return;
+      }
+      api.InstitutesRequest.fetchInstitudesJSON().then((value) {
+        setState(() {
+          widget.DTO.Institutes = api.InstitutesRequest.getDataFromInstitudesJSON(value);
+
+          for(var item in widget.DTO.Institutes!){
+            _filteredValues.add(item.Name);
+          }
+
+          _selectedValue = _filteredValues[Random().nextInt(1000) % _filteredValues.length];
+          widget.DTO.Selected = _selectedValue;
+          _hasData++;
+        });
+
+        widget.callback(false);
+      });
+    }
+    else{
+      setState(() {
+        _drawNoInternet = false;
+        _institutes = widget.DTO.Institutes!;
+
+        for(var item in _institutes){
+          _filteredValues.add(item.Name);
+        }
+
+        _selectedValue = _filteredValues[Random().nextInt(999) % _filteredValues.length];
+
+        _hasData++;
+      });
+    }
+  }
+  
+  Future<void> fetchDataFromStorage() async {
+    PageDTO.Instance.Username = storage.DataCache.getUsername() ?? "";
+    PageDTO.Instance.Password = storage.DataCache.getPassword() ?? "";
+  }
+
+  String _snackbarMessage = "";
+  Duration _displayDuration = Duration.zero;
+  bool _shouldShowSnackbar = false;
+  double _snackbarDelta = 0;
+
+  void _showSnackbar(String text, int displayDurationSec){
+    if(!mounted){
+      return;
+    }
+    setState(() {
+      _shouldShowSnackbar = true;
+      _displayDuration = Duration(seconds: displayDurationSec);
+      _snackbarMessage = text;
+      _snackbarDelta = 0;
+    });
+  }
+  
+  double _horizontalDrag = 0;
+  bool _dragDebounce = false;
+  bool _canProceed = true;
+
+  final GlobalKey _dropdownSelectionGK = GlobalKey();
+
+  @override
+  Widget build(BuildContext context) {
+    return (_hasData < 2) ? Scaffold(
+      body: GestureDetector(
+        onHorizontalDragStart: (_){
+          _horizontalDrag = 0;
+          _dragDebounce = false;
+        },
+        onHorizontalDragEnd: (_){
+          _horizontalDrag = 0;
+          _dragDebounce = false;
+        },
+        onHorizontalDragUpdate: (e){
+          _horizontalDrag += e.delta.dx;
+          if(_horizontalDrag >= 25 && !_dragDebounce){
+            _horizontalDrag = 0;
+            _dragDebounce = true;
+
+            HapticFeedback.lightImpact();
+            Navigator.pop(context);
+          }
+        },
+        child: Container(
+          margin: const EdgeInsets.all(20),
+          child: Center(
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: _drawNoInternet ?
+              const Text(
+                "Nincs Internet...",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 38
+                ),
+              ) :
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  const Text(
+                    "Betöltés...",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 24
+                    ),
+                  ),
+                  const SizedBox(height: 50),
+                  const CircularProgressIndicator(color: Colors.white),
+                  const SizedBox(height: 20),
+                  Text(
+                    api.Generic.randomLoadingComment(storage.DataCache.getNeedFamilyFriendlyComments()!),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: Colors.white.withOpacity(.2),
+                        fontWeight: FontWeight.w300,
+                        fontSize: 10
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    ) : Scaffold(
+        body: GestureDetector(
+          onHorizontalDragStart: (_){
+            _horizontalDrag = 0;
+            _dragDebounce = false;
+          },
+          onHorizontalDragEnd: (_){
+            _horizontalDrag = 0;
+            _dragDebounce = false;
+          },
+          onHorizontalDragUpdate: (e){
+            _horizontalDrag += e.delta.dx;
+            if(_horizontalDrag <= -25 && !_dragDebounce){
+              _horizontalDrag = 0;
+              _dragDebounce = true;
+
+              if(!_canProceed){
+                _showSnackbar('Válassz ki egy érvényes egyetemet! 😡', 5);
+                return;
+              }
+
+              HapticFeedback.lightImpact();
+              debug.log('TODO');
+            }
+            else if(_horizontalDrag >= 25 && !_dragDebounce){
+              _horizontalDrag = 0;
+              _dragDebounce = true;
+
+              HapticFeedback.lightImpact();
+              Navigator.pop(context);
+            }
+          },
+          child: Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              Center(
+                child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 40),
+                      const Text(
+                        'Válassz Intézményt',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white
+                        ),
+                      ),
+                      const SizedBox(height: 60),
+                      Container(
+                        margin: const EdgeInsets.all(20),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: TextField(
+                                decoration: const InputDecoration(
+                                  suffixIcon: Icon(Icons.search_rounded),
+                                  hintText: 'Keresés...',
+                                ),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _filteredValues.clear();
+                                    for(var item in _institutes){
+                                      if(item.Name.toLowerCase().contains(value.toLowerCase())){
+                                        _filteredValues.add(item.Name);
+                                      }
+                                    }
+                                    if(_filteredValues.isNotEmpty) {
+                                      _selectedValue = _filteredValues[0];
+                                      _canProceed = true;
+                                    } else{
+                                      _filteredValues.add("Nincs Találat...");
+                                      _selectedValue = _filteredValues[0];
+                                      _canProceed = false;
+                                    }
+                                  });
+                                },
+                              ),
+                            ),
+                            DropdownButtonFormField<String>(
+                              key: _dropdownSelectionGK,
+                              borderRadius: BorderRadius.circular(16),
+                              value: _selectedValue, // The currently selected value.
+                              padding: const EdgeInsets.all(8),
+                              icon: const Icon(Icons.arrow_drop_down_rounded),
+                              items: _filteredValues.map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(
+                                      value,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    )
+                                );
+                              }).toList(),
+                              selectedItemBuilder: (context){
+                                return _filteredValues.map<Widget>((String value){
+                                  return SizedBox(
+                                    width: _dropdownSelectionGK.currentContext?.findRenderObject() == null ? MediaQuery.of(context).size.width / 1.5 : (_dropdownSelectionGK.currentContext?.findRenderObject() as RenderBox).size.width - 50,
+                                    child: Text(
+                                      value,
+                                      textAlign: TextAlign.start,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600
+                                      ),
+                                    ),
+                                  );
+                                }).toList();
+                              },
+                              onChanged: (String? value) {
+                                setState(() {
+                                  _selectedValue = value!;
+                                });
+                              }
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 35),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: Container(
+                              margin: const EdgeInsets.all(15),
+                              child: Text(
+                                'Nem találod az iskolád a listában?',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white.withOpacity(.6)
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.all(15),
+                            decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.all(Radius.circular(90)),
+                                color: Colors.white.withOpacity(.06)
+                            ),
+                            child: IconButton(
+                              onPressed: (){
+                                _showSnackbar('A Neptun2 a központi adatok alapján listázza az iskolákat, így előfordulhat, hogy egyes iskolák nincsenek benne. 🙄\nJelentkezz be URL használatával. 😉', 12);
+                              },
+                              icon: Icon(
+                                Icons.question_mark_rounded,
+                                color: Colors.white.withOpacity(.4),
+                              ),
+                              enableFeedback: true,
+                              iconSize: 24,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 50),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            ElevatedButton(
+                                onPressed: (){
+                                  HapticFeedback.lightImpact();
+                                  Navigator.pop(context);
+                                },
+                                style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)),
+                                    padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.arrow_back_ios_rounded,
+                                      color: Colors.white.withOpacity(.6),
+                                    ),
+                                    const Text(
+                                      'Vissza',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 12,
+                                        color: Colors.white
+                                      ),
+                                    )
+                                  ],
+                                )
+                            ),
+                            SizedBox(width: MediaQuery.of(context).size.width / 10),
+                            ElevatedButton(
+                                onPressed: _canProceed ? (){
+                                  HapticFeedback.lightImpact();
+                                  debug.log('TODO');
+                                } : (){
+                                  _showSnackbar('Válassz ki egy érvényes egyetemet! 😡', 5);
+                                },
+                                style: ButtonStyle(
+                                    backgroundColor: _canProceed ? MaterialStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)) : MaterialStateProperty.all(const Color.fromRGBO(0x1B, 0x24, 0x25, 1.0)),
+                                    padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Text(
+                                      'Tovább',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 12,
+                                          color: Colors.white
+                                      ),
+                                    ),
+                                    Icon(
+                                      Icons.arrow_forward_ios_rounded,
+                                      color: Colors.white.withOpacity(.6),
+                                    ),
+                                  ],
+                                )
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Visibility(
+              visible: _shouldShowSnackbar,
+              child: AppSnackbar(text: _snackbarMessage, displayDuration: _displayDuration, dragAmmount: _snackbarDelta, changer: (deltaChange, isHolding){
+                if(!mounted){
+                  return;
+                }
+                AppSnackbar.cancelTimer();
+                setState(() {
+                  if(!isHolding && (_snackbarDelta < 0 ? -_snackbarDelta : _snackbarDelta) >= 50){
+                    _shouldShowSnackbar = false;
+                  }
+                  _snackbarDelta = deltaChange;
+                });
+              }, state: _shouldShowSnackbar,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SetupPageURLInput extends StatefulWidget{
+  SetupPageURLInput({super.key});
+  final PageDTO DTO = PageDTO(null, null, null, null, null, false).getInstance();
+  @override
+  State<StatefulWidget> createState() => _SetupPageURLInputState();
+}
+class _SetupPageURLInputState extends State<SetupPageURLInput>{
+
+  bool _canProceed = false;
+
+  void proceedToLogin(){
+    if(!_canProceed){
+      return;
+    }
+
+    widget.DTO.CustomURL = "";
+
+    Navigator.push(context, MaterialPageRoute(builder: (context) => SetupPageLogin()));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarIconBrightness: Brightness.light,
+      systemNavigationBarColor: Color.fromRGBO(0x17, 0x17, 0x17, 1.0), // navigation bar color
+      statusBarColor: Color.fromRGBO(0x17, 0x17, 0x17, 1.0), // status bar color
+    ));
+
+    FlutterNativeSplash.remove();
+  }
+
+  String _snackbarMessage = "";
+  Duration _displayDuration = Duration.zero;
+  bool _shouldShowSnackbar = false;
+  double _snackbarDelta = 0;
+
+  void _showSnackbar(String text, int displayDurationSec){
+    if(!mounted){
+      return;
+    }
+    setState(() {
+      _shouldShowSnackbar = true;
+      _displayDuration = Duration(seconds: displayDurationSec);
+      _snackbarMessage = text;
+      _snackbarDelta = 0;
+    });
+  }
+
+  double _horizontalDrag = 0;
+  bool _dragDebounce = false;
+  String _rawNeptunURL = "";
+  Timer? _warnTimer;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: GestureDetector(
+        onHorizontalDragStart: (_){
+          _horizontalDrag = 0;
+          _dragDebounce = false;
+        },
+        onHorizontalDragEnd: (_){
+          _horizontalDrag = 0;
+          _dragDebounce = false;
+        },
+        onHorizontalDragUpdate: (e){
+          _horizontalDrag += e.delta.dx;
+          if(_horizontalDrag <= -25 && !_dragDebounce){
+            _horizontalDrag = 0;
+            _dragDebounce = true;
+
+            if(!_canProceed){
+              _showSnackbar('Írj be egy érvényes neptun URL-t! 😡', 5);
+              return;
+            }
+
+            HapticFeedback.lightImpact();
+            proceedToLogin();
+          }
+          else if(_horizontalDrag >= 25 && !_dragDebounce){
+            _horizontalDrag = 0;
+            _dragDebounce = true;
+
+            HapticFeedback.lightImpact();
+            Navigator.pop(context);
+          }
+        },
+        child: Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            Center(
+                child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 40),
+                      const Text(
+                        'Belépés URL-el',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white
+                        ),
+                      ),
+                      const SizedBox(height: 60),
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: TextField(
+                            keyboardType: TextInputType.url,
+                            decoration: const InputDecoration(
+                              suffixIcon: Icon(Icons.link_rounded),
+                              hintText: 'Egyetem neptun URL-je...',
+                              hintStyle: TextStyle(
+                                fontSize: 14,
+                              ),
+                              border: null,
+                            ),
+                            enableSuggestions: false,
+                            autocorrect: false,
+                            onChanged: (value) {
+                              setState(() {
+                                _canProceed = false;
+                                widget.DTO.ValidatedURL = false;
+                              });
+                              _rawNeptunURL = value.trim();
+                              if(_warnTimer != null){
+                                _warnTimer!.cancel();
+                              }
+                              RegExp regex = RegExp(r'/hallgato/login\.aspx');
+                              PageDTO.Instance.ValidatedURL = _rawNeptunURL.contains(regex);
+                              if(_rawNeptunURL.isEmpty){
+                                return;
+                              }
+                              if(_rawNeptunURL.contains(regex)){
+                                setState(() {
+                                  _canProceed = true;
+                                  widget.DTO.ValidatedURL = true;
+                                });
+                                return;
+                              }
+                              _warnTimer = Timer(const Duration(seconds: 2),(){
+                                _showSnackbar('Ez nem egy jó neptun URL! 😡\n\nValami ilyesmit másolj ide:\nhttps://neptun-ws01.uni-pannon.hu/hallgato/login.aspx 🤫', 18);
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 50),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            ElevatedButton(
+                                onPressed: (){
+                                  HapticFeedback.lightImpact();
+                                  Navigator.pop(context);
+                                },
+                                style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)),
+                                    padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.arrow_back_ios_rounded,
+                                      color: Colors.white.withOpacity(.6),
+                                    ),
+                                    const Text(
+                                      'Vissza',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 12,
+                                          color: Colors.white
+                                      ),
+                                    )
+                                  ],
+                                )
+                            ),
+                            SizedBox(width: MediaQuery.of(context).size.width / 10),
+                            ElevatedButton(
+                                onPressed: _canProceed ? (){
+                                  HapticFeedback.lightImpact();
+                                  proceedToLogin();
+                                } : (){
+                                  _showSnackbar('Írj be egy érvényes neptun URL-t! 😡', 5);
+                                },
+                                style: ButtonStyle(
+                                    backgroundColor: _canProceed ? MaterialStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)) : MaterialStateProperty.all(const Color.fromRGBO(0x1B, 0x24, 0x25, 1.0)),
+                                    padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Text(
+                                      'Tovább',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 12,
+                                          color: Colors.white
+                                      ),
+                                    ),
+                                    Icon(
+                                      Icons.arrow_forward_ios_rounded,
+                                      color: Colors.white.withOpacity(.6),
+                                    ),
+                                  ],
+                                )
+                            )
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 60),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: Container(
+                              margin: const EdgeInsets.all(15),
+                              child: Text(
+                                'Hol találom meg az URL-t?',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white.withOpacity(.6)
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.all(15),
+                            decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.all(Radius.circular(90)),
+                                color: Colors.white.withOpacity(.06)
+                            ),
+                            child: IconButton(
+                              onPressed: (){
+                                _showSnackbar('Keresd meg weben az egyetemed neptun weboldalát, és másold be ide a fenti linket. 🔗\n\nPl: https://neptun-ws01.uni-pannon.hu/hallgato/login.aspx 🤫', 18);
+                              },
+                              icon: Icon(
+                                Icons.question_mark_rounded,
+                                color: Colors.white.withOpacity(.4),
+                              ),
+                              enableFeedback: true,
+                              iconSize: 24,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                )
+              ),
+            ),
+            Visibility(
+              visible: _shouldShowSnackbar,
+              child: AppSnackbar(text: _snackbarMessage, displayDuration: _displayDuration, dragAmmount: _snackbarDelta, changer: (deltaChange, isHolding){
+                if(!mounted){
+                  return;
+                }
+                AppSnackbar.cancelTimer();
+                setState(() {
+                  if(!isHolding && (_snackbarDelta < 0 ? -_snackbarDelta : _snackbarDelta) >= 50){
+                    _shouldShowSnackbar = false;
+                  }
+                  _snackbarDelta = deltaChange;
+                });
+              }, state: _shouldShowSnackbar,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+}
+
+class SetupPageLogin extends StatefulWidget{
+  SetupPageLogin({super.key});
+  final PageDTO DTO = PageDTO(null, null, null, null, null, false).getInstance();
+  @override
+  State<StatefulWidget> createState() => _SetupPageLoginState();
+}
+class _SetupPageLoginState extends State<SetupPageLogin>{
+
+  bool _canProceed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarIconBrightness: Brightness.light,
+      systemNavigationBarColor: Color.fromRGBO(0x17, 0x17, 0x17, 1.0), // navigation bar color
+      statusBarColor: Color.fromRGBO(0x17, 0x17, 0x17, 1.0), // status bar color
+    ));
+
+    FlutterNativeSplash.remove();
+  }
+
+  String _snackbarMessage = "";
+  Duration _displayDuration = Duration.zero;
+  bool _shouldShowSnackbar = false;
+  double _snackbarDelta = 0;
+
+  void _showSnackbar(String text, int displayDurationSec){
+    if(!mounted){
+      return;
+    }
+    setState(() {
+      _shouldShowSnackbar = true;
+      _displayDuration = Duration(seconds: displayDurationSec);
+      _snackbarMessage = text;
+      _snackbarDelta = 0;
+    });
+  }
+
+  double _horizontalDrag = 0;
+  bool _dragDebounce = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: GestureDetector(
+        onHorizontalDragStart: (_){
+          _horizontalDrag = 0;
+          _dragDebounce = false;
+        },
+        onHorizontalDragEnd: (_){
+          _horizontalDrag = 0;
+          _dragDebounce = false;
+        },
+        onHorizontalDragUpdate: (e){
+          _horizontalDrag += e.delta.dx;
+          if(_horizontalDrag <= -25 && !_dragDebounce){
+            _horizontalDrag = 0;
+            _dragDebounce = true;
+
+            if(!_canProceed){
+              _showSnackbar('Írj be egy érvényes neptun URL-t! 😡', 5);
+              return;
+            }
+
+            HapticFeedback.lightImpact();
+
+            debug.log('TODO');
+          }
+          else if(_horizontalDrag >= 25 && !_dragDebounce){
+            _horizontalDrag = 0;
+            _dragDebounce = true;
+
+            HapticFeedback.lightImpact();
+            Navigator.pop(context);
+          }
+        },
+        child: Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            Center(
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 40),
+                      const Text(
+                        'Jelentkezz be',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Visibility(
+              visible: _shouldShowSnackbar,
+              child: AppSnackbar(text: _snackbarMessage, displayDuration: _displayDuration, dragAmmount: _snackbarDelta, changer: (deltaChange, isHolding){
+                if(!mounted){
+                  return;
+                }
+                AppSnackbar.cancelTimer();
+                setState(() {
+                  if(!isHolding && (_snackbarDelta < 0 ? -_snackbarDelta : _snackbarDelta) >= 50){
+                    _shouldShowSnackbar = false;
+                  }
+                  _snackbarDelta = deltaChange;
+                });
+              }, state: _shouldShowSnackbar,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+}
 
 class Page1 extends StatefulWidget {
   Page1({super.key, required this.fetchData});
@@ -1008,6 +2099,7 @@ class _Page2State extends State<Page2>{
 }
 
 class PageDTO{
+  static late bool hasInstance = false;
   static late PageDTO Instance;
   late List<api.Institute>? Institutes;
   late String? Selected;
@@ -1016,6 +2108,10 @@ class PageDTO{
   late String? CustomURL;
   late bool ValidatedURL;
   PageDTO(List<api.Institute>? institutes, String? selected, String? username, String? password, String? customURL, bool validatedURL){
+    if(hasInstance){
+      return;
+    }
+    hasInstance = true;
     Instance = this;
     Institutes = institutes;
     Selected = selected;
@@ -1024,4 +2120,6 @@ class PageDTO{
     CustomURL = customURL;
     ValidatedURL = validatedURL;
   }
+
+  PageDTO getInstance() => Instance;
 }
