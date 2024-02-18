@@ -1326,7 +1326,7 @@ class CalendarPageWidget extends StatelessWidget{
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              topnav.TopNavigatorWidget(homePage: homePage, displayString: "Órarend", smallHintText: greetText, loggedInUsername: storage.DataCache.getUsername()!),
+              topnav.TopNavigatorWidget(homePage: homePage, displayString: "Órarend", smallHintText: greetText, loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
               Container(
                 padding: const EdgeInsets.fromLTRB(0, 0, 0, 6),
                 color: const Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
@@ -1468,7 +1468,7 @@ class MarkbookPageWidget extends StatelessWidget{
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              topnav.TopNavigatorWidget(homePage: homePage, displayString: "Tantárgyak", smallHintText: "Össz Kredited: $totalCredits🎖️\nÁtlagod: ${totalAvg.isNaN ? "Nincs jegyed" : totalAvg.toStringAsFixed(2)} ${reactionForAvg(totalAvg)}", loggedInUsername: storage.DataCache.getUsername()!),
+              topnav.TopNavigatorWidget(homePage: homePage, displayString: "Tantárgyak", smallHintText: "Össz kredited: $totalCredits🎖️\nÁtlagod: ${totalAvg.isNaN ? "nincs jegyed" : totalAvg.toStringAsFixed(2)} ${reactionForAvg(totalAvg)}", loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
               HomePageState.getSeparatorLine(context),
               Expanded(
                   child: RefreshIndicator(
@@ -1540,7 +1540,7 @@ class PaymentsPageWidget extends StatelessWidget{
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               //topnav.TopNavigatorWidget(homePage: homePage, displayString: "Befizetendők", smallHintText: "$totalMoney Ft Van A Számládon 💸"),
-              topnav.TopNavigatorWidget(homePage: homePage, displayString: "Befizetendők", smallHintText: "${totalMoney}Ft-ot Költöttél Az Egyetemre 💸", loggedInUsername: storage.DataCache.getUsername()!),
+              topnav.TopNavigatorWidget(homePage: homePage, displayString: "Befizetendők", smallHintText: "${totalMoney}Ft-ot költöttél az egyetemre 💸", loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
               HomePageState.getSeparatorLine(context),
               Expanded(
                   child: RefreshIndicator(
@@ -1609,9 +1609,9 @@ class PeriodsPageWidget extends StatelessWidget{
       case 0:
         return '';
       case 1:
-        return 'Az';
+        return 'az';
       case 5:
-        return 'Az';
+        return 'az';
       default:
         return 'A';
     }
@@ -1625,7 +1625,7 @@ class PeriodsPageWidget extends StatelessWidget{
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                topnav.TopNavigatorWidget(homePage: homePage, displayString: "Időszakok", smallHintText: "Jelenleg ${currentSemester != -1 ? "${aOrAzDeterminer(currentSemester)} $currentSemester." : "Egy"} Félév Van 🗓️", loggedInUsername: storage.DataCache.getUsername()!),
+                topnav.TopNavigatorWidget(homePage: homePage, displayString: "Időszakok", smallHintText: "Jelenleg ${currentSemester != -1 ? "${aOrAzDeterminer(currentSemester)} $currentSemester." : "gondolkodunk mi is van..."} ${currentSemester != -1 ? 'félév van' : ''} 🗓️", loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
                 HomePageState.getSeparatorLine(context),
                 Expanded(
                     child: RefreshIndicator(

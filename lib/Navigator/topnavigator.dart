@@ -18,7 +18,8 @@ class TopNavigatorWidget extends StatelessWidget{
   final String smallHintText;
 
   final String loggedInUsername;
-  const TopNavigatorWidget({super.key, required this.homePage, required this.displayString, required this.smallHintText, required this.loggedInUsername});
+  final String loggedInURL;
+  const TopNavigatorWidget({super.key, required this.homePage, required this.displayString, required this.smallHintText, required this.loggedInUsername, required this.loggedInURL});
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +97,7 @@ class TopNavigatorWidget extends StatelessWidget{
                             value: 'null',
                             enabled: false,
                             child: EmojiRichText(
-                              text: 'Ide vagy bejelentkezve: 🔗\nURL',
+                              text: 'Ide vagy bejelentkezve: 🔗\n${loggedInURL}',
                               defaultStyle: const TextStyle(
                                 color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1),
                                 fontWeight: FontWeight.w700,
@@ -130,7 +131,7 @@ class TopNavigatorWidget extends StatelessWidget{
                           const PopupMenuItem(
                             value: 'donate',
                             child: EmojiRichText(
-                              text: '🤗 Köszönöm, ha támogatsz!',
+                              text: '🎁 Köszönöm, ha támogatsz!',
                               defaultStyle: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w400,

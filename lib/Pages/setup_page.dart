@@ -236,7 +236,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
 }
 
 class SetupPageInstitudeSelection extends StatefulWidget{
-  SetupPageInstitudeSelection({super.key, required this.fetchData, required this.callback});
+  const SetupPageInstitudeSelection({super.key, required this.fetchData, required this.callback});
   final bool fetchData;
   final Function(bool) callback;
 
@@ -698,7 +698,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
 }
 
 class SetupPageURLInput extends StatefulWidget{
-  SetupPageURLInput({super.key});
+  const SetupPageURLInput({super.key});
   @override
   State<StatefulWidget> createState() => _SetupPageURLInputState();
 }
@@ -996,7 +996,7 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
 }
 
 class SetupPageLogin extends StatefulWidget{
-  SetupPageLogin({super.key});
+  const SetupPageLogin({super.key});
   @override
   State<StatefulWidget> createState() => _SetupPageLoginState();
 }
@@ -1081,10 +1081,10 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
       });
     });
 
-    api.InstitutesRequest.validateLoginCredentials(selected, _username, _password).then((value)
+    api.InstitutesRequest.validateLoginCredentials(selected, _username.toUpperCase(), _password).then((value)
     {
       if(value){ // logged in
-        storage.DataCache.setUsername(_username);
+        storage.DataCache.setUsername(_username.toUpperCase());
         storage.DataCache.setPassword(_password);
         storage.DataCache.setInstituteUrl(selected.URL);
         storage.DataCache.setHasLogin(1);
@@ -1204,7 +1204,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                           const SizedBox(width: 4),
                           Flexible(
                             child: Text(
-                              PageDTO.validatedURL ? PageDTO.customURL!.replaceAll(RegExp(r'/hallgato/login\.aspx'), '') : (PageDTO.selected ?? 'HIBA! Lépj egyet vissza!'),
+                              PageDTO.validatedURL ? PageDTO.customURL!.replaceAll(RegExp(r'/hallgato/login\.aspx'), '').replaceAll(RegExp(r'/hallgato/MobileService\.svc'), "").replaceAll("https://", '') : (PageDTO.selected ?? 'HIBA! Lépj egyet vissza!'),
                               textAlign: TextAlign.start,
                               style: TextStyle(
                                   color: Colors.white.withOpacity(.2),
