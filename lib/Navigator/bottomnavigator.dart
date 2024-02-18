@@ -11,7 +11,10 @@ class BottomNavigatorWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      color: const Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
+      decoration: const BoxDecoration(
+        color: Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+      ),
       child: Center(
         child: GestureDetector(
           onHorizontalDragStart: (_){
@@ -42,20 +45,36 @@ class BottomNavigatorWidget extends StatelessWidget {
             }
             homePage.bottomNavSwitchValue += e.delta.dx;
           },
-          child: SingleChildScrollView(
-            controller: homePage.bottomnavController,
-            physics: const BouncingScrollPhysics(decelerationRate: ScrollDecelerationRate.fast),
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                _buildNavigationButton(0, Icons.calendar_month_rounded, Icons.calendar_month_outlined),
-                _buildNavigationButton(1, Icons.backpack_rounded, Icons.backpack_outlined),
-                _buildNavigationButton(2, Icons.price_change_rounded, Icons.price_change_outlined),
-                _buildNavigationButton(3, Icons.timer_rounded, Icons.timer_outlined),
-              ],
-            ),
+          child: Column(
+            children: [
+              const SizedBox(height: 5),
+              Text(
+                _getNameOfMenu(homePage.currentView),
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                    color: Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0),
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14.0
+                ),
+              ),
+              const SizedBox(height: 5),
+              SingleChildScrollView(
+                controller: homePage.bottomnavController,
+                physics: const BouncingScrollPhysics(decelerationRate: ScrollDecelerationRate.fast),
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    _buildNavigationButton(0, Icons.calendar_month_rounded, Icons.calendar_month_outlined),
+                    _buildNavigationButton(1, Icons.backpack_rounded, Icons.backpack_outlined),
+                    _buildNavigationButton(2, Icons.price_change_rounded, Icons.price_change_outlined),
+                    _buildNavigationButton(3, Icons.timer_rounded, Icons.timer_outlined),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+            ],
           ),
         ),
       ),
@@ -85,13 +104,17 @@ class BottomNavigatorWidget extends StatelessWidget {
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
-        width: 90,
+        width: 65,
         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
         decoration: BoxDecoration(
           color: homePage.currentView == index
               ? const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.15)
               : const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05),
-          borderRadius: const BorderRadius.all(Radius.circular(20))
+          borderRadius: const BorderRadius.all(Radius.circular(20)),
+          border: Border.all(
+            width: 1,
+            color: homePage.currentView == index ? const Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0) : const Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0).withOpacity(0),
+          )
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -116,18 +139,12 @@ class BottomNavigatorWidget extends StatelessWidget {
             ),*/
             Icon(
               homePage.currentView == index ? filledIcon : outlinedIcon,
-              color: homePage.currentView == index ? const Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0) : const Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
-              size: 28,
+              color: homePage.currentView == index ?
+                const Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0) :
+                const Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0).withOpacity(.3),
+              size: 32,
             ),
-            Text(
-              _getNameOfMenu(index),
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white.withOpacity(homePage.currentView == index ? .6 : .4),
-                fontWeight: FontWeight.w300,
-                fontSize: 8.0
-              ),
-            ),
+            const SizedBox(height: 5),
           ],
         ),
       ),

@@ -16,7 +16,9 @@ class TopNavigatorWidget extends StatelessWidget{
   final HomePageState homePage;
   final String displayString;
   final String smallHintText;
-  const TopNavigatorWidget({super.key, required this.homePage, required this.displayString, required this.smallHintText});
+
+  final String loggedInUsername;
+  const TopNavigatorWidget({super.key, required this.homePage, required this.displayString, required this.smallHintText, required this.loggedInUsername});
 
   @override
   Widget build(BuildContext context) {
@@ -73,40 +75,87 @@ class TopNavigatorWidget extends StatelessWidget{
                         context: context,
                         position: RelativeRect.fromDirectional(textDirection: TextDirection.ltr, start: 25, top: 30 + MediaQuery.of(context).padding.top, end: 100, bottom: 100),
                         items: <PopupMenuEntry<String>>[
-                          const PopupMenuItem<String>(
-                            value: 'logout',
-                            child: Text(
-                              'Kijelentkezés',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w700
+                          PopupMenuItem(
+                            value: 'null',
+                            enabled: false,
+                            child: EmojiRichText(
+                              text: 'Szia ${loggedInUsername}! 👋',
+                              defaultStyle: const TextStyle(
+                                color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                                fontWeight: FontWeight.w700,
+                                fontSize: 16.0,
+                              ),
+                              emojiStyle: const TextStyle(
+                                  color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                                  fontSize: 23.0,
+                                  fontFamily: "Noto Color Emoji"
                               ),
                             ),
                           ),
-                          const PopupMenuItem(
-                            value: 'donate',
-                            child: Text(
-                              'Támogatás',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w700
+                          PopupMenuItem(
+                            value: 'null',
+                            enabled: false,
+                            child: EmojiRichText(
+                              text: 'Ide vagy bejelentkezve: 🔗\nURL',
+                              defaultStyle: const TextStyle(
+                                color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1),
+                                fontWeight: FontWeight.w700,
+                                fontSize: 12.0,
+                              ),
+                              emojiStyle: const TextStyle(
+                                  color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1),
+                                  fontSize: 12.0,
+                                  fontFamily: "Noto Color Emoji"
                               ),
                             ),
                           ),
                           const PopupMenuDivider(height: 20),
                           const PopupMenuItem(
                             value: 'settings',
-                            child: Text(
-                              'Beállítások',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w700
+                            child: EmojiRichText(
+                              text: '⚙ Beállítások',
+                              defaultStyle: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 13.0,
+                              ),
+                              emojiStyle: const TextStyle(
+                                  color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1),
+                                  fontSize: 13.0,
+                                  fontFamily: "Noto Color Emoji"
+                              ),
+                            ),
+                          ),
+                          const PopupMenuDivider(height: 20),
+                          const PopupMenuItem(
+                            value: 'donate',
+                            child: EmojiRichText(
+                              text: '🤗 Köszönöm, ha támogatsz!',
+                              defaultStyle: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 13.0,
+                              ),
+                              emojiStyle: const TextStyle(
+                                  color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1),
+                                  fontSize: 13.0,
+                                  fontFamily: "Noto Color Emoji"
+                              ),
+                            ),
+                          ),
+                          const PopupMenuItem<String>(
+                            value: 'logout',
+                            child: EmojiRichText(
+                              text:  '🚪 Kijelentkezés',
+                              defaultStyle: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 13.0,
+                              ),
+                              emojiStyle: const TextStyle(
+                                  color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1),
+                                  fontSize: 13.0,
+                                  fontFamily: "Noto Color Emoji"
                               ),
                             ),
                           ),
@@ -183,7 +232,7 @@ class TopNavigatorWidget extends StatelessWidget{
                         child: Text(
                             displayString,
                             style: const TextStyle(
-                              color: Colors.white,
+                              color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
                               fontWeight: FontWeight.w600,
                               fontSize: 22.0
                             ),

@@ -54,16 +54,16 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
               children: [
                 const SizedBox(height: 40),
                 const Text(
-                  'Válassz Bejelentkezési Módot',
+                  'Válassz bejelentkezési módot',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 28,
+                    fontSize: 24,
                     fontWeight: FontWeight.w700,
                     color: Colors.white
                   ),
                 ),
-                const SizedBox(height: 60),
-                Row(
+                const SizedBox(height: 50),
+                Column(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -75,7 +75,6 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                       child: Container(
                         padding: const EdgeInsets.all(20),
                         margin: const EdgeInsets.all(10),
-                        width: MediaQuery.of(context).size.width / 3,
                         decoration: BoxDecoration(
                           color: const Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
                           borderRadius: const BorderRadius.all(Radius.circular(30)),
@@ -88,24 +87,30 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            const Text(
-                              'Intézmény Választás',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600
-                              ),
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Icon(
+                                  Icons.list_rounded,
+                                  color: Colors.white,
+                                  size: 40,
+                                ),
+                                Text(
+                                  'Intézmény Választás',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 10),
-                            const Icon(
-                              Icons.list_alt_rounded,
-                              color: Colors.white,
-                              size: 40,
-                            ),
-                            const SizedBox(height: 30),
+                            const SizedBox(height: 20),
                             Text(
-                              'Ez a legkényelmesebb opció.\nEgy szimpla lista, amiben megtudod keresni az egyetemedet.\nViszont nem minden egyetem található meg itt!',
+                              'Ez a legkényelmesebb opció. Egy szimpla lista, amiben meg tudod keresni az egyetemedet, viszont nem minden intézmény található meg a listában!',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Colors.white.withOpacity(.6),
@@ -124,7 +129,6 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                       child: Container(
                         padding: const EdgeInsets.all(20),
                         margin: const EdgeInsets.all(10),
-                        width: MediaQuery.of(context).size.width / 3,
                         decoration: BoxDecoration(
                             color: const Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
                             borderRadius: const BorderRadius.all(Radius.circular(30)),
@@ -137,24 +141,30 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            const Text(
-                              'Neptun URL',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Icon(
+                                  Icons.link_rounded,
                                   color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600
-                              ),
+                                  size: 40,
+                                ),
+                                Text(
+                                  'Neptun URL',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 10),
-                            const Icon(
-                              Icons.link_rounded,
-                              color: Colors.white,
-                              size: 40,
-                            ),
-                            const SizedBox(height: 30),
+                            const SizedBox(height: 20),
                             Text(
-                              'Ha nincs az egyetemed a listában, akkor az egyetemed neptun URL-jét használva is betudsz lépni.\nNem a legkényelmesebb, és nem minden egyetemmel működik!',
+                              'Ha nincs az iskolád a listában, akkor az egyetemed neptun URL-jét használva is be tudsz lépni. Nem a legkényelmesebb és nem minden egyetemmel működik!',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Colors.white.withOpacity(.6),
@@ -168,7 +178,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                     )
                   ],
                 ),
-                const SizedBox(height: 60),
+                const SizedBox(height: 50),
                 Container(
                     margin: const EdgeInsets.all(20),
                     child: Row(
@@ -229,12 +239,23 @@ class SetupPageInstitudeSelection extends StatefulWidget{
   SetupPageInstitudeSelection({super.key, required this.fetchData, required this.callback});
   final bool fetchData;
   final Function(bool) callback;
-  final PageDTO DTO = PageDTO(null, null, null, null, null, false).getInstance();
 
   @override
   State<StatefulWidget> createState() => _SetupPageInstitudeSelectionState();
 }
 class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelection>{
+
+  void proceedToLogin(){
+    if(!_canProceed){
+      return;
+    }
+
+    PageDTO.validatedURL = false;
+    PageDTO.selected = _selectedValue;
+
+    Navigator.push(context, MaterialPageRoute(builder: (context) => SetupPageLogin()));
+  }
+
   int _hasData = 0;
   bool _drawNoInternet = false;
 
@@ -272,14 +293,13 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
       }
       api.InstitutesRequest.fetchInstitudesJSON().then((value) {
         setState(() {
-          widget.DTO.Institutes = api.InstitutesRequest.getDataFromInstitudesJSON(value);
+          PageDTO.institutes = api.InstitutesRequest.getDataFromInstitudesJSON(value);
 
-          for(var item in widget.DTO.Institutes!){
+          for(var item in PageDTO.institutes!){
             _filteredValues.add(item.Name);
           }
 
           _selectedValue = _filteredValues[Random().nextInt(1000) % _filteredValues.length];
-          widget.DTO.Selected = _selectedValue;
           _hasData++;
         });
 
@@ -289,13 +309,13 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
     else{
       setState(() {
         _drawNoInternet = false;
-        _institutes = widget.DTO.Institutes!;
+        _institutes = PageDTO.institutes!;
 
         for(var item in _institutes){
           _filteredValues.add(item.Name);
         }
 
-        _selectedValue = _filteredValues[Random().nextInt(999) % _filteredValues.length];
+        _selectedValue = _filteredValues[Random().nextInt(_filteredValues.length)];
 
         _hasData++;
       });
@@ -303,8 +323,8 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
   }
   
   Future<void> fetchDataFromStorage() async {
-    PageDTO.Instance.Username = storage.DataCache.getUsername() ?? "";
-    PageDTO.Instance.Password = storage.DataCache.getPassword() ?? "";
+    PageDTO.username = storage.DataCache.getUsername() ?? "";
+    PageDTO.password = storage.DataCache.getPassword() ?? "";
   }
 
   String _snackbarMessage = "";
@@ -420,7 +440,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
               }
 
               HapticFeedback.lightImpact();
-              debug.log('TODO');
+              proceedToLogin();
             }
             else if(_horizontalDrag >= 25 && !_dragDebounce){
               _horizontalDrag = 0;
@@ -445,7 +465,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                     children: [
                       const SizedBox(height: 40),
                       const Text(
-                        'Válassz Intézményt',
+                        'Válassz intézményt',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 28,
@@ -562,7 +582,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                             ),
                             child: IconButton(
                               onPressed: (){
-                                _showSnackbar('A Neptun2 a központi adatok alapján listázza az iskolákat, így előfordulhat, hogy egyes iskolák nincsenek benne. 🙄\nJelentkezz be URL használatával. 😉', 12);
+                                _showSnackbar('A Neptun2 a központi adatok alapján listázza az iskolákat, így előfordulhat, hogy egyes iskolák nincsenek benne. Jelentkezz be URL használatával. 😉', 12);
                               },
                               icon: Icon(
                                 Icons.question_mark_rounded,
@@ -617,7 +637,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                             ElevatedButton(
                                 onPressed: _canProceed ? (){
                                   HapticFeedback.lightImpact();
-                                  debug.log('TODO');
+                                  proceedToLogin();
                                 } : (){
                                   _showSnackbar('Válassz ki egy érvényes egyetemet! 😡', 5);
                                 },
@@ -679,7 +699,6 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
 
 class SetupPageURLInput extends StatefulWidget{
   SetupPageURLInput({super.key});
-  final PageDTO DTO = PageDTO(null, null, null, null, null, false).getInstance();
   @override
   State<StatefulWidget> createState() => _SetupPageURLInputState();
 }
@@ -692,7 +711,7 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
       return;
     }
 
-    widget.DTO.CustomURL = "";
+    PageDTO.customURL = _rawNeptunURL;
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => SetupPageLogin()));
   }
@@ -808,21 +827,21 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                             onChanged: (value) {
                               setState(() {
                                 _canProceed = false;
-                                widget.DTO.ValidatedURL = false;
+                                PageDTO.validatedURL = false;
                               });
                               _rawNeptunURL = value.trim();
                               if(_warnTimer != null){
                                 _warnTimer!.cancel();
                               }
                               RegExp regex = RegExp(r'/hallgato/login\.aspx');
-                              PageDTO.Instance.ValidatedURL = _rawNeptunURL.contains(regex);
+                              PageDTO.validatedURL = _rawNeptunURL.contains(regex);
                               if(_rawNeptunURL.isEmpty){
                                 return;
                               }
                               if(_rawNeptunURL.contains(regex)){
                                 setState(() {
                                   _canProceed = true;
-                                  widget.DTO.ValidatedURL = true;
+                                  PageDTO.validatedURL = true;
                                 });
                                 return;
                               }
@@ -936,7 +955,7 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                             ),
                             child: IconButton(
                               onPressed: (){
-                                _showSnackbar('Keresd meg weben az egyetemed neptun weboldalát, és másold be ide a fenti linket. 🔗\n\nPl: https://neptun-ws01.uni-pannon.hu/hallgato/login.aspx 🤫', 18);
+                                _showSnackbar('Keresd meg weben az egyetemed neptun weboldalát és másold be ide a fenti linket. 🔗\n\nPld: https://neptun-ws01.uni-pannon.hu/hallgato/login.aspx', 18);
                               },
                               icon: Icon(
                                 Icons.question_mark_rounded,
@@ -974,18 +993,30 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
       ),
     );
   }
-
 }
 
 class SetupPageLogin extends StatefulWidget{
   SetupPageLogin({super.key});
-  final PageDTO DTO = PageDTO(null, null, null, null, null, false).getInstance();
   @override
   State<StatefulWidget> createState() => _SetupPageLoginState();
 }
 class _SetupPageLoginState extends State<SetupPageLogin>{
 
+  String _username = '';
+  String _password = '';
+
+  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
+  bool _obscureText = true;
   bool _canProceed = false;
+  bool _canGoBack = true;
+
+  bool _isLoading = false;
+
+  bool _paintRed = false;
+
+  Timer? _loadingTimer;
 
   @override
   void initState() {
@@ -997,6 +1028,89 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
     ));
 
     FlutterNativeSplash.remove();
+
+    _username = PageDTO.username ?? "";
+    _password = PageDTO.password ?? "";
+
+    _usernameController = TextEditingController(text: _username);
+    _passwordController = TextEditingController(text: _password);
+
+    _canProceed = _password.isNotEmpty && _username.isNotEmpty;
+  }
+
+  bool _showNeptunServerError = false;
+
+  void finishLogin(){
+    api.Institute selected = api.Institute('ERROR', '');
+    if(PageDTO.validatedURL){
+      if(PageDTO.customURL != null && PageDTO.customURL!.isNotEmpty){
+        RegExp regex = RegExp(r'/hallgato/login\.aspx');
+        var correctedURL = PageDTO.customURL!.trim();
+        if(correctedURL.contains(regex)){
+          correctedURL = correctedURL.replaceAll(regex, '/hallgato/MobileService.svc');
+          PageDTO.customURL = correctedURL;
+        }
+
+        selected = api.Institute('URL', PageDTO.customURL!);
+      }
+    }
+    else{
+      for(var item in PageDTO.institutes!){
+        if(item.Name == PageDTO.selected!){
+          selected = item;
+          break;
+        }
+      }
+    }
+
+    setState(() {
+      _canProceed = false;
+      _canGoBack = false;
+      _isLoading = true;
+      _showNeptunServerError = false;
+    });
+
+    _loadingTimer?.cancel();
+
+    _loadingTimer = Timer(const Duration(seconds: 7), (){
+      if(!_isLoading || !mounted){
+        return;
+      }
+      setState(() {
+        _showNeptunServerError = true;
+      });
+    });
+
+    api.InstitutesRequest.validateLoginCredentials(selected, _username, _password).then((value)
+    {
+      if(value){ // logged in
+        storage.DataCache.setUsername(_username);
+        storage.DataCache.setPassword(_password);
+        storage.DataCache.setInstituteUrl(selected.URL);
+        storage.DataCache.setHasLogin(1);
+        // proceed logic
+        Navigator.popUntil(context, (route) => route.willHandlePopInternally);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const main_page.HomePage()),
+        );
+        return;
+      }
+      setState(() {
+        _paintRed = true;
+        _canProceed = true;
+        _canGoBack = true;
+        _isLoading = false;
+        _showNeptunServerError = false;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
   String _snackbarMessage = "";
@@ -1043,8 +1157,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
             }
 
             HapticFeedback.lightImpact();
-
-            debug.log('TODO');
+            finishLogin();
           }
           else if(_horizontalDrag >= 25 && !_dragDebounce){
             _horizontalDrag = 0;
@@ -1077,6 +1190,217 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                             color: Colors.white
                         ),
                       ),
+                      const SizedBox(height: 60),
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.house_rounded,
+                            color: Colors.white.withOpacity(.2),
+                            size: 22,
+                          ),
+                          const SizedBox(width: 4),
+                          Flexible(
+                            child: Text(
+                              PageDTO.validatedURL ? PageDTO.customURL!.replaceAll(RegExp(r'/hallgato/login\.aspx'), '') : (PageDTO.selected ?? 'HIBA! Lépj egyet vissza!'),
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                  color: Colors.white.withOpacity(.2),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            TextField(
+                              decoration: InputDecoration(
+                                  suffixIcon: Icon(
+                                      Icons.person_2_rounded,
+                                      color: _paintRed ? Colors.red : Colors.white),
+                                  hintText: 'Neptun Kód...',
+                                  border: null
+                              ),
+                              controller: _usernameController,
+                              enableSuggestions: false,
+                              autocorrect: false,
+                              style: TextStyle(
+                                  color: _paintRed ? const Color.fromRGBO(0xFF, 0xB0, 0xB0, 1.0) : Colors.white
+                              ),
+                              onChanged: (value) {
+                                _username = value;
+                                setState(() {
+                                  _canProceed = _password.isNotEmpty && _username.isNotEmpty;
+                                  _paintRed = false;
+                                });
+                              },
+                            ),
+                            TextField(
+                              decoration: InputDecoration(
+                                  suffixIcon: IconButton(
+                                      icon: Icon(
+                                          _obscureText ? Icons.visibility_rounded : Icons.visibility_off_rounded,
+                                          color: _paintRed ? Colors.red : Colors.white),
+                                      onPressed: () {
+                                        setState(() {
+                                          _obscureText = !_obscureText; // Toggle the password visibility
+                                        });
+                                      }),
+                                  hintText: 'Jelszó...',
+                                  border: null
+                              ),
+                              controller: _passwordController,
+                              obscureText: _obscureText,
+                              enableSuggestions: false,
+                              autocorrect: false,
+                              style: TextStyle(
+                                  color: _paintRed ? const Color.fromRGBO(0xFF, 0xB0, 0xB0, 1.0) : Colors.white
+                              ),
+                              onChanged: (value) {
+                                _password = value;
+                                setState(() {
+                                  _canProceed = _password.isNotEmpty && _username.isNotEmpty;
+                                  _paintRed = false;
+                                });
+                              },
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              _paintRed ? "Hibás felhasználónév vagy jelszó!" : "",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: _paintRed ? Colors.red : Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12
+                              ),
+                            ),
+                            const SizedBox(height: 45),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Flexible(
+                                  child: Container(
+                                    margin: const EdgeInsets.all(15),
+                                    child: Text(
+                                      'Ha két lépcsős azonosítás van a fiókodon, nem fogsz tudni bejelenzkezni!',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.white.withOpacity(.6)
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.all(15),
+                                  decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(Radius.circular(90)),
+                                      color: Colors.white.withOpacity(.06)
+                                  ),
+                                  child: IconButton(
+                                    onPressed: (){
+                                      _showSnackbar('❌ A Neptun2 a régi Neptun mobilapp API-jait használja, amiben nem volt 2 lépcsős azonosítás. Így, ha a fiókod 2 lépcsős azonosítással van védve, a Neptun2 nem fogja tudni értelmezni ezt.\n\n🤓 Viszont, ha kikapcsolod, hiba nélkül tudod használni a Neptun2-t.\nKikapcsolni a Neptunban, a "Saját Adatok/Beállítások"-ban tudod.', 18);
+                                    },
+                                    icon: Icon(
+                                      Icons.question_mark_rounded,
+                                      color: Colors.white.withOpacity(.4),
+                                    ),
+                                    enableFeedback: true,
+                                    iconSize: 24,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 50),
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  ElevatedButton(
+                                      onPressed: (){
+                                        HapticFeedback.lightImpact();
+                                        Navigator.pop(context);
+                                      },
+                                      style: ButtonStyle(
+                                          backgroundColor: MaterialStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)),
+                                          padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            Icons.arrow_back_ios_rounded,
+                                            color: Colors.white.withOpacity(.6),
+                                          ),
+                                          const Text(
+                                            'Vissza',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 12,
+                                                color: Colors.white
+                                            ),
+                                          )
+                                        ],
+                                      )
+                                  ),
+                                  SizedBox(width: MediaQuery.of(context).size.width / 11),
+                                  ElevatedButton(
+                                      onPressed: _canProceed ? (){
+                                        HapticFeedback.lightImpact();
+                                        finishLogin();
+                                      } : (){
+                                        _showSnackbar('Érvényes adatokat adj meg! 😡', 5);
+                                      },
+                                      style: ButtonStyle(
+                                          backgroundColor: _canProceed ? MaterialStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)) : MaterialStateProperty.all(const Color.fromRGBO(0x1B, 0x24, 0x25, 1.0)),
+                                          padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Text(
+                                            'Belépés',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 12,
+                                                color: Colors.white
+                                            ),
+                                          ),
+                                          Icon(
+                                            Icons.arrow_forward_ios_rounded,
+                                            color: Colors.white.withOpacity(.6),
+                                          ),
+                                        ],
+                                      )
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
                     ],
                   ),
                 ),
@@ -1098,6 +1422,65 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
               }, state: _shouldShowSnackbar,
               ),
             ),
+            Visibility(
+              visible: _isLoading,
+              child: Positioned.fill(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: Container(
+                      color: Colors.black.withOpacity(0.4),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            'Bejelentkezés...',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w800,
+                                fontSize: 26
+                            ),
+                          ),
+                          const SizedBox(height: 60),
+                          Center(
+                            child: SizedBox(
+                              height: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
+                              width: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
+                              child: const CircularProgressIndicator(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            api.Generic.randomLoadingComment(DataCache.getNeedFamilyFriendlyComments()!),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Colors.white.withOpacity(.6),
+                                fontWeight: FontWeight.w300,
+                                fontSize: 10
+                            ),
+                          ),
+                          const SizedBox(height: 60),
+                          Visibility(
+                            visible: _showNeptunServerError,
+                            child: Text(
+                              'Neptun szervereivel lehet problémák vannak...',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.white.withOpacity(.3),
+                                  fontWeight: FontWeight.w300,
+                                  fontSize: 14
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -1105,7 +1488,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
   }
 
 }
-
+/*
 class Page1 extends StatefulWidget {
   Page1({super.key, required this.fetchData});
 
@@ -2097,29 +2480,12 @@ class _Page2State extends State<Page2>{
     );
   }
 }
-
+*/
 class PageDTO{
-  static late bool hasInstance = false;
-  static late PageDTO Instance;
-  late List<api.Institute>? Institutes;
-  late String? Selected;
-  late String? Username;
-  late String? Password;
-  late String? CustomURL;
-  late bool ValidatedURL;
-  PageDTO(List<api.Institute>? institutes, String? selected, String? username, String? password, String? customURL, bool validatedURL){
-    if(hasInstance){
-      return;
-    }
-    hasInstance = true;
-    Instance = this;
-    Institutes = institutes;
-    Selected = selected;
-    Username = username;
-    Password = password;
-    CustomURL = customURL;
-    ValidatedURL = validatedURL;
-  }
-
-  PageDTO getInstance() => Instance;
+  static List<api.Institute>? institutes;
+  static String? selected;
+  static String? username;
+  static String? password;
+  static String? customURL;
+  static bool validatedURL = false;
 }

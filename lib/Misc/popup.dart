@@ -339,7 +339,7 @@ class PopupWidget extends State<PopupWidgetState>{
             Expanded(flex: 2, child: Container(
               margin: const EdgeInsets.all(10),
               child: const Text(
-                'Családbarát Betöltő Szövegek',
+                'Nem szókimondó betöltőszövegek',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14,
@@ -355,7 +355,7 @@ class PopupWidget extends State<PopupWidgetState>{
               ),
               child: IconButton(
                 onPressed: (){
-                  _showSnackbar('Lecseréli a betöltő szövegeket, kevésbé családbarátra.', 4);
+                  _showSnackbar('Ha kikapcsolod, lecseréli a betöltő szövegeket szókimondóra.', 8);
                 },
                 icon: Icon(
                   Icons.question_mark_rounded,
@@ -388,7 +388,7 @@ class PopupWidget extends State<PopupWidgetState>{
             Expanded(flex: 2, child: Container(
               margin: const EdgeInsets.all(10),
               child: const Text(
-                'Vizsga Értesítők',
+                'Vizsga értesítők',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 14,
@@ -443,7 +443,7 @@ class PopupWidget extends State<PopupWidgetState>{
             Expanded(flex: 2, child: Container(
               margin: const EdgeInsets.all(10),
               child: const Text(
-                'Órák Előtti Értesítések',
+                'Órák előtti értesítések',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 14,
@@ -498,7 +498,7 @@ class PopupWidget extends State<PopupWidgetState>{
             Expanded(flex: 2, child: Container(
               margin: const EdgeInsets.all(10),
               child: const Text(
-                'Befizetés Értesítők',
+                'Befizetés értesítők',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 14,
@@ -553,7 +553,7 @@ class PopupWidget extends State<PopupWidgetState>{
             Expanded(flex: 2, child: Container(
               margin: const EdgeInsets.all(10),
               child: const Text(
-                'Időszak Értesítők',
+                'Időszak értesítők',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 14,
@@ -606,7 +606,7 @@ class PopupWidget extends State<PopupWidgetState>{
           alignment: Alignment.bottomLeft,
           margin: const EdgeInsets.all(10),
           child: Text(
-            'v${pinfo.version} (${pinfo.buildNumber}) - Telepítve Innen: ${pinfo.installerStore == 'com.android.vending' ? "Play Áruház" : "Csomagteleíptő"}',
+            'v${pinfo.version} (${pinfo.buildNumber}) - Telepítve innen: ${pinfo.installerStore == 'com.android.vending' ? "Play Áruház" : "Csomagteleíptő"}',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontWeight: FontWeight.w300,

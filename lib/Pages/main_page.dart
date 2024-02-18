@@ -208,32 +208,32 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     final currentTimeHour = DateTime.now().hour;
     if(currentTimeHour > 1 && currentTimeHour <= 6){
       setState(() {
-        calendarGreetText = "Szép Hajnalt 🥛";
+        calendarGreetText = "Boldog hajnalt! 🍼";
       });
     }
     else if(currentTimeHour > 6 && currentTimeHour <= 9){
       setState(() {
-        calendarGreetText = "Jó Reggelt ☕";
+        calendarGreetText = "Jó reggelt! ☕";
       });
     }
     else if(currentTimeHour > 9 && currentTimeHour <= 13){
       setState(() {
-        calendarGreetText = "Szép Napot 🍷";
+        calendarGreetText = "Szép napot! 🍷";
       });
     }
     else if(currentTimeHour > 13 && currentTimeHour <= 17){
       setState(() {
-        calendarGreetText = "Jó Délutánt 🥂";
+        calendarGreetText = "Kellemes délutánt! 🥂";
       });
     }
     else if(currentTimeHour > 17 && currentTimeHour <= 21){
       setState(() {
-        calendarGreetText = "Szép Estét 🍻";
+        calendarGreetText = "Szép estét! 🍻";
       });
     }
     else if(currentTimeHour > 21 || currentTimeHour <= 1){
       setState(() {
-        calendarGreetText = "Jó Éjszakát 🍹";
+        calendarGreetText = "Jó éjszakát! 🍹";
       });
     }
   }
@@ -338,10 +338,10 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     final daysTillExam = (Duration(milliseconds: item.startEpoch) - Duration(milliseconds: now.millisecondsSinceEpoch)).inDays;
     for(int i = 1; i <= daysTillExam + 1; i++){
       if(daysTillExam <= 1){
-        await AppNotifications.scheduleNotification('Vizsga Emlékeztető!', '"${item.title}" tárgyból vizsgád lesz MA!', DateTime(now.year, now.month, now.day + i, 06, 00), 0);
+        await AppNotifications.scheduleNotification('Vizsga emlékeztető!', '"${item.title}" tárgyból vizsgád lesz MA!', DateTime(now.year, now.month, now.day + i, 06, 00), 0);
         continue;
       }
-      await AppNotifications.scheduleNotification('Vizsga Emlékeztető!', '"${item.title}" tárgyból vizsgád lesz $i nap múlva!', DateTime(now.year, now.month, now.day + i, 09, 00), 0);
+      await AppNotifications.scheduleNotification('Vizsga emlékeztető!', '"${item.title}" tárgyból vizsgád lesz $i nap múlva!', DateTime(now.year, now.month, now.day + i, 09, 00), 0);
     }
   }
 
@@ -404,7 +404,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     for(var item in items){
       if(item.dueDateMs == 0){
         for(int i = 0; i <= 31; i++){
-          await AppNotifications.scheduleNotification('Befizetés', '${item.ammount}Ft-al lógsz. Fizesd be! (Nincs Időhatár)', DateTime(now.year, now.month, now.day + i, 11, 00),2 );
+          await AppNotifications.scheduleNotification('Befizetés', '${item.ammount}Ft-al lógsz. Fizesd be! (Nincs határidő)', DateTime(now.year, now.month, now.day + i, 11, 00),2 );
         }
         continue;
       }
@@ -441,8 +441,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
     for(var item in items){
       final time = DateTime.fromMillisecondsSinceEpoch(item.startEpoch);
-      await AppNotifications.scheduleNotification('Időszak', '"${api.Generic.capitalizePeriodText(item.name)}" idószak lesz HOLNAP!', DateTime(time.year, time.month, time.day - 1, 11, 00), 3);
-      await AppNotifications.scheduleNotification('Időszak', '"${api.Generic.capitalizePeriodText(item.name)}" idószak van MA!', DateTime(time.year, time.month, time.day, 06, 00), 3);
+      await AppNotifications.scheduleNotification('Időszak', '"${api.Generic.capitalizePeriodText(item.name)}" időszak lesz HOLNAP!', DateTime(time.year, time.month, time.day - 1, 11, 00), 3);
+      await AppNotifications.scheduleNotification('Időszak', '"${api.Generic.capitalizePeriodText(item.name)}" időszak van MA!', DateTime(time.year, time.month, time.day, 06, 00), 3);
     }
   }
 
@@ -1205,7 +1205,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
     final timepassSinceSepOne = Duration(milliseconds: (yearlessNow.millisecondsSinceEpoch - sepOne.millisecondsSinceEpoch));
     final weeksPassed = timepassSinceSepOne.inDays / 7;
-    //final isWeekend = now.weekday == DateTime.saturday || now.weekday == DateTime.sunday ? 1 : 0;
+    final isWeekend = now.weekday == DateTime.saturday || now.weekday == DateTime.sunday ? 1 : 0;
 
     /*
     // Find the most recent Monday on or before the current date
@@ -1215,7 +1215,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     final elapsedWeeks = (monday.difference(sepOne).inDays / 7).floor();
 
     return elapsedWeeks + currentWeekOffset - 1 + isWeekend;*/
-    return (weeksPassed.floor() + currentWeekOffset) % 52;// + isWeekend;
+    return (weeksPassed.floor() + currentWeekOffset) % 52 - isWeekend;// + isWeekend;
   }
 
   @override
@@ -1240,17 +1240,17 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
   static Container getSeparatorLine(BuildContext context){
     return Container(
-      width: MediaQuery.of(context).size.width,
+      width: MediaQuery.of(context).size.width / 1.2,
       height: 1,
       decoration: BoxDecoration(
         gradient: LinearGradient(
             colors: [
-              Colors.white.withOpacity(0.1),
+              Colors.white.withOpacity(0),
               Colors.white.withOpacity(0.2),
               Colors.white.withOpacity(0.4),
               Colors.white.withOpacity(0.4),
               Colors.white.withOpacity(0.2),
-              Colors.white.withOpacity(0.1),
+              Colors.white.withOpacity(0),
             ]
         ),
       ),
@@ -1326,7 +1326,7 @@ class CalendarPageWidget extends StatelessWidget{
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              topnav.TopNavigatorWidget(homePage: homePage, displayString: "Órarend", smallHintText: greetText),
+              topnav.TopNavigatorWidget(homePage: homePage, displayString: "Órarend", smallHintText: greetText, loggedInUsername: storage.DataCache.getUsername()!),
               Container(
                 padding: const EdgeInsets.fromLTRB(0, 0, 0, 6),
                 color: const Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
@@ -1468,7 +1468,7 @@ class MarkbookPageWidget extends StatelessWidget{
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              topnav.TopNavigatorWidget(homePage: homePage, displayString: "Tantárgyak", smallHintText: "Össz Kredited: $totalCredits🎖️\nÁtlagod: ${totalAvg.isNaN ? "0.00" : totalAvg.toStringAsFixed(2)} ${reactionForAvg(totalAvg)}"),
+              topnav.TopNavigatorWidget(homePage: homePage, displayString: "Tantárgyak", smallHintText: "Össz Kredited: $totalCredits🎖️\nÁtlagod: ${totalAvg.isNaN ? "Nincs jegyed" : totalAvg.toStringAsFixed(2)} ${reactionForAvg(totalAvg)}", loggedInUsername: storage.DataCache.getUsername()!),
               HomePageState.getSeparatorLine(context),
               Expanded(
                   child: RefreshIndicator(
@@ -1540,7 +1540,7 @@ class PaymentsPageWidget extends StatelessWidget{
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               //topnav.TopNavigatorWidget(homePage: homePage, displayString: "Befizetendők", smallHintText: "$totalMoney Ft Van A Számládon 💸"),
-              topnav.TopNavigatorWidget(homePage: homePage, displayString: "Befizetendők", smallHintText: "${totalMoney}Ft-ot Költöttél Az Egyetemre 💸"),
+              topnav.TopNavigatorWidget(homePage: homePage, displayString: "Befizetendők", smallHintText: "${totalMoney}Ft-ot Költöttél Az Egyetemre 💸", loggedInUsername: storage.DataCache.getUsername()!),
               HomePageState.getSeparatorLine(context),
               Expanded(
                   child: RefreshIndicator(
@@ -1625,7 +1625,7 @@ class PeriodsPageWidget extends StatelessWidget{
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                topnav.TopNavigatorWidget(homePage: homePage, displayString: "Időszakok", smallHintText: "Jelenleg ${currentSemester != -1 ? "${aOrAzDeterminer(currentSemester)} $currentSemester." : "Egy"} Félév Van 🗓️"),
+                topnav.TopNavigatorWidget(homePage: homePage, displayString: "Időszakok", smallHintText: "Jelenleg ${currentSemester != -1 ? "${aOrAzDeterminer(currentSemester)} $currentSemester." : "Egy"} Félév Van 🗓️", loggedInUsername: storage.DataCache.getUsername()!),
                 HomePageState.getSeparatorLine(context),
                 Expanded(
                     child: RefreshIndicator(

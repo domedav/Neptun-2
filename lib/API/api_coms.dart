@@ -191,7 +191,7 @@ class CalendarRequest{
     }
     previousMonday = DateTime(previousMonday.year, previousMonday.month, previousMonday.day, 0, 0);
 
-    DateTime nextFriday = previousMonday.add(const Duration(days: 6, hours: 23, minutes: 59));
+    DateTime nextFriday = previousMonday.add(const Duration(days: 7, hours: 23, minutes: 59));
     if (nextFriday.weekday == 7) {
       nextFriday = nextFriday.subtract(const Duration(days: 7));
     }
@@ -729,19 +729,19 @@ class Generic{
       final gen = Random().nextInt(100) % 7;
       switch (gen){
         case 0:
-          return 'Elfüstölne a telefonod, ha gyorsabb lenne.';
+          return 'Elfüstölne a telefonod, ha gyorsabb lenne...';
         case 1:
-          return 'Még mindíg jobb mint a Neptun.';
+          return 'Még mindíg, jobb mint a nem létező Neptun...';
         case 2:
           return 'Már bármelyik milleniumban betölthet...';
         case 3:
-          return 'Áramszünet van az SDA Informatikánál.';
+          return 'Áramszünet van az SDA Informatikánál...';
         case 4:
-          return 'Az SDA Informatika egy nagyon jó cég.';
+          return 'Az SDA Informatika egy nagyon jó cég...';
         case 5:
-          return 'Tudtad? A "Neptun 2" alapja csupán 1 hét alatt készen lett.';
+          return 'Tudtad? A "Neptun 2" alapja csupán 1 hét alatt készült...';
         case 6:
-          return 'Túl lassú? Panaszkodj az SDA Informatikának.';
+          return 'Túl lassú? Panaszkodj az SDA Informatikának...';
         default:
           return 'Neptun 2';
       }
@@ -749,29 +749,29 @@ class Generic{
     final gen = Random().nextInt(100) % 12;
     switch(gen){
       case 0:
-        return 'Úgy dolgoznak a Neptun szerverek, mint egy átlagos államilag finanszírozott útépítés.';
+        return 'Úgy dolgoznak a Neptun szerverek, mint egy átlagos államilag finanszírozott útépítés...';
       case 1:
-        return 'Megvárjuk, amíg az SDA Informatika főnöke kávéba fullad.';
+        return 'Megvárjuk, amíg az SDA Informatika főnöke kávéba fullad...';
       case 2:
-        return 'Légy türelmes, egy patkány miatt zárlatos lett az egyik szerver.';
+        return 'Légy türelmes, egy patkány miatt zárlatos lett az egyik szerver...';
       case 3:
-        return 'Előbb hiszem el, hogy az Északi-sarkon is vannak pingvinek, minthogy a Neptun szervereire pénzt költöttek';
+        return 'Előbb hiszem el, hogy az Északi-sarkon is vannak pingvinek, minthogy a Neptun szervereire pénzt költöttek..';
       case 4:
-        return 'Neptun szerverei olyan megbízhatóak, bankolni is lehet rajtuk.';
+        return 'Neptun szerverei olyan megbízhatóak, bankolni is lehet rajtuk...';
       case 5:
-        return 'SDA jelentése: Sok Dagadt Analfabéta.\nEgy normális mobilappot nem sikerült összehoziuk.';
+        return 'SDA jelentése: Sok Dagadt Analfabéta. Egy normális mobilappot nem sikerült összehoziuk...';
       case 6:
-        return 'Fogadni merek, mire ezt elolvasod, még mindíg a Neptun szervereire vársz.';
+        return 'Fogadni merek, mire ezt elolvasod, még mindíg a Neptun szervereire vársz...';
       case 7:
-        return '(ChatGPT)\nHa az SDA Informatika supportja egy GPS lenne, egyenesen egy tóba vezetne – irányvesztés a specialitásuk, és az problémákban való fuldoklás az erősségük.';
+        return '(ChatGPT)\nHa az SDA Informatika supportja egy GPS lenne, egyenesen egy tóba vezetne – irányvesztés a specialitásuk, és az problémákban való fuldoklás az erősségük...';
       case 8:
-        return '(ChatGPT)\nAz SDA Informatika csapata olyan, mintha egy viziló lenne a pilóta egy tüzijátékkal, amivel próbálja elérni a Holdat – nem csak nevetséges, de az egészet rossz nézni.';
+        return '(ChatGPT)\nAz SDA Informatika csapata olyan, mintha egy viziló lenne a pilóta egy tüzijátékkal, amivel próbálja elérni a Holdat – nem csak nevetséges, de az egészet rossz nézni...';
       case 9:
-        return '(ChatGPT)\nAz SDA Informatika supportja olyan, mint az UFO-k – az emberek állítják, hogy létezik, de bizonyíték nincs.';
+        return '(ChatGPT)\nAz SDA Informatika supportja olyan, mint az UFO-k – az emberek állítják, hogy létezik, de bizonyíték nincs...';
       case 10:
-        return '(ChatGPT)\nAz SDA Informatika technológiai fejlesztései olyanok, mintha egy bohóc próbálna csúcstechnológiát kitalálni – a végeredmény kaotikus, és nem éppen az innováció csúcsa.';
+        return '(ChatGPT)\nAz SDA Informatika technológiai fejlesztései olyanok, mintha egy bohóc próbálna csúcstechnológiát kitalálni – a végeredmény kaotikus, és nem éppen az innováció csúcsa...';
       case 11:
-        return '(ChatGPT)\nAz SDA Informatika munkakultúrája olyan, mintha egy bohóciskolában lenne az ember – kacagás és zűrzavar mindenütt, de az értékes eredmények hiányoznak.';
+        return '(ChatGPT)\nAz SDA Informatika munkakultúrája olyan, mintha egy bohóciskolában lenne az ember – kacagás és zűrzavar mindenütt, de az értékes eredmények hiányoznak...';
       default:
         return 'Neptun 2';
     }
