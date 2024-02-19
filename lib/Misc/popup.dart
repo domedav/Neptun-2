@@ -339,7 +339,7 @@ class PopupWidget extends State<PopupWidgetState>{
             Expanded(flex: 2, child: Container(
               margin: const EdgeInsets.all(10),
               child: const Text(
-                'Nem szókimondó betöltőszövegek',
+                'Szókimondó betöltőszövegek',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14,

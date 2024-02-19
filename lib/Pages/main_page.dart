@@ -576,7 +576,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         idx++;
       }
     }
-    calendarTabController.index = currWeekday - 1 > 6 ? 0 : currWeekday - 1;
+    calendarTabController.index = currentWeekOffset == 1 ? currWeekday - 1 > 6 ? 0 : currWeekday - 1 : calendarTabController.index;
     Future.delayed(Duration.zero,()async{
       await _setupClassesNotifications(_classesNotificationList);
     });
@@ -592,6 +592,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     if(replaceController) {
       calendarTabController = TabController(length: calendarTabs.length, vsync: this);
     }
+    setState(() {
+      isLoadingCalendar = isLoading;
+    });
   }
 
   void _fillOneCalendarElement(BuildContext context, List<Widget> w, String name, bool isLoading){
@@ -1127,6 +1130,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   Timer? _calendarTimer;
 
   bool _calendarDebounce = false;
+  bool isLoadingCalendar = true;
+
   Future<void> onCalendarRefresh() async{
     if(!storage.DataCache.getHasNetwork() || _calendarDebounce){
       return;
@@ -1140,12 +1145,16 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       _calendarDebounce = true;
       setState(() {
         canDoCalendarPaging = false;
+        isLoadingCalendar = true;
       });
       await storage.DataCache.setHasCachedCalendar(0);
       await storage.DataCache.setHasCachedFirstWeekEpoch(0);
       await fetchCalendar();
       setupCalendar(false);
       _calendarDebounce = false;
+      setState(() {
+        isLoadingCalendar = false;
+      });
     });
   }
 
@@ -1215,7 +1224,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     final elapsedWeeks = (monday.difference(sepOne).inDays / 7).floor();
 
     return elapsedWeeks + currentWeekOffset - 1 + isWeekend;*/
-    return (weeksPassed.floor() + currentWeekOffset) % 52 - isWeekend;// + isWeekend;
+
+    return ((weeksPassed.floor() % 52) + currentWeekOffset) - isWeekend;// + isWeekend;
   }
 
   @override
@@ -1287,13 +1297,13 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
             visible: currentView == 3,
             child: PeriodsPageWidget(homePage: this, currentSemester: currentSemester),
           ),
-          GestureDetector(
+          /*GestureDetector(
             onLongPress: (){
               HapticFeedback.lightImpact();
               final val = currentView + 1 > HomePageState.maxBottomNavWidgets - 1 ? 0 : currentView + 1;
               switchView(val);
             },
-          ),
+          ),*/
           Visibility(
             visible: _showBlur,
             child: Positioned.fill(
@@ -1368,6 +1378,7 @@ class CalendarPageWidget extends StatelessWidget{
                   onForwardPressed: homePage.stepCalendarForward,
                   canDoPaging: homePage.canDoCalendarPaging,
                   homePage: homePage,
+                  isLoading: homePage.isLoadingCalendar,
                 ),
               ),
               Expanded(

@@ -98,7 +98,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                                   size: 40,
                                 ),
                                 Text(
-                                  'Intézmény Választás',
+                                  'Intézmény választás',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       color: Colors.white,
@@ -582,7 +582,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                             ),
                             child: IconButton(
                               onPressed: (){
-                                _showSnackbar('A Neptun2 a központi adatok alapján listázza az iskolákat, így előfordulhat, hogy egyes iskolák nincsenek benne. Jelentkezz be URL használatával. 😉', 12);
+                                _showSnackbar('A Neptun2 a központi adatok alapján listázza az iskolákat, amiből elkezdték kivenni az egyetemeket. 😥 Így előfordulhat, hogy egyes iskolák nincsenek benne a listában.\nJelentkezz be URL használatával, ha nem találod a sulid. 😉', 12);
                               },
                               icon: Icon(
                                 Icons.question_mark_rounded,
@@ -1311,7 +1311,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                   ),
                                   child: IconButton(
                                     onPressed: (){
-                                      _showSnackbar('❌ A Neptun2 a régi Neptun mobilapp API-jait használja, amiben nem volt 2 lépcsős azonosítás. Így, ha a fiókod 2 lépcsős azonosítással van védve, a Neptun2 nem fogja tudni értelmezni ezt.\n\n🤓 Viszont, ha kikapcsolod, hiba nélkül tudod használni a Neptun2-t.\nKikapcsolni a Neptunban, a "Saját Adatok/Beállítások"-ban tudod.', 18);
+                                      _showSnackbar('❌ A Neptun2 a régi Neptun mobilapp API-jait használja, amiben nem volt 2 lépcsős azonosítás. Így, ha a fiókod 2 lépcsős azonosítással van védve, a Neptun2 nem fog tudni bejelentkeztetni.\n\n🤓 Viszont, ha kikapcsolod, hiba nélkül tudod használni a Neptun2-t.\nKikapcsolni a Neptunban, a "Saját Adatok/Beállítások"-ban tudod.', 18);
                                     },
                                     icon: Icon(
                                       Icons.question_mark_rounded,

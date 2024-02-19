@@ -88,7 +88,7 @@ class DataCache{
   late int? _firstweekOfSemesterEpoch = 0;
   late bool? _isDemoAccount = false;
   
-  late bool? _persistentSetting_familyFriendlyLoadingComments = true;
+  late bool? _persistentSetting_familyFriendlyLoadingComments = false;
   late bool? _persistentSetting_showExamNotifications = true;
   late bool? _persistentSetting_showClassNotifications = true;
   late bool? _persistentSetting_showPaymentsNotifications = true;
@@ -140,7 +140,7 @@ class DataCache{
     tmp = await getInt('SETTING_IsFamilyFriendlyLoading');
     _persistentSetting_familyFriendlyLoadingComments = tmp != null && tmp != 0;
     if(tmp == null){
-      _persistentSetting_familyFriendlyLoadingComments = true;  // this is the default value, not false
+      _persistentSetting_familyFriendlyLoadingComments = false;  // this is the default value
     }
 
     tmp = await getInt('SETTING_IsNeedExamNotifications');
@@ -251,7 +251,7 @@ class DataCache{
   static bool? getNeedFamilyFriendlyComments(){return _instance._persistentSetting_familyFriendlyLoadingComments;}
   static Future<void> setNeedFamilyFriendlyComments(int? value) async{
     _instance._persistentSetting_familyFriendlyLoadingComments = value != null && value != 0;
-    await saveInt('SETTING_IsFamilyFriendlyLoading', value ?? 1);
+    await saveInt('SETTING_IsFamilyFriendlyLoading', value ?? 0);
   }
 
   static bool? getNeedExamNotifications(){return _instance._persistentSetting_showExamNotifications;}

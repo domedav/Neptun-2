@@ -53,8 +53,8 @@ class BottomNavigatorWidget extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                     color: Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0),
-                    fontWeight: FontWeight.w700,
-                    fontSize: 14.0
+                    fontWeight: FontWeight.w800,
+                    fontSize: 13.0
                 ),
               ),
               const SizedBox(height: 5),

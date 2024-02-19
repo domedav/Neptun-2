@@ -181,21 +181,26 @@ class FreedayElementWidget extends StatelessWidget{
 class WeekoffseterElementWidget extends StatelessWidget{
   final HomePageState homePage;
 
-  WeekoffseterElementWidget({super.key, required this.week, required this.from, required this.to, required this.onBackPressed, required this.onForwardPressed, required this.canDoPaging, required this.homePage}){
+  WeekoffseterElementWidget({super.key, required this.week, required this.from, required this.to, required this.onBackPressed, required this.onForwardPressed, required this.canDoPaging, required this.homePage, required this.isLoading}){
     final startMonth = from != null ? api.Generic.monthToText(from!.month) : "_";
     final startDay = from != null ? from!.day : "";
 
     final endMonth = api.Generic.monthToText(to.month);
     final endDay = to.day;
 
-    if(startMonth == "_"){
-      displayString = "$week. Hét";
+    displayString = "$week. Hét";
+
+    if(isLoading){
+      displayString2 = "Gondolkodunk... 🤔";
       return;
     }
 
-    displayString = "$week. Hét";
-    displayString2 = "($startMonth $startDay. - $endMonth $endDay.)";
-    renderDisplay2 = true;
+    if(startMonth == "_"){
+      displayString2 = "Üres ez a heted! 🥳";
+      return;
+    }
+
+    displayString2 = "$startMonth $startDay. - $endMonth $endDay.";
   }
 
   final bool canDoPaging;
@@ -209,7 +214,8 @@ class WeekoffseterElementWidget extends StatelessWidget{
 
   late String displayString = "ERR";
   late String displayString2 = "";
-  late bool renderDisplay2 = false;
+
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -278,17 +284,19 @@ class WeekoffseterElementWidget extends StatelessWidget{
                           fontSize: 16.0,
                         ),
                       ),
-                      renderDisplay2 ?
-                      Text(
-                        displayString2,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
+                      EmojiRichText(
+                        text: displayString2,
+                        defaultStyle: TextStyle(
                           color: Colors.white.withOpacity(.6),
                           fontWeight: FontWeight.w300,
                           fontSize: 12.0,
                         ),
-                      ) :
-                      const SizedBox(),
+                        emojiStyle: const TextStyle(
+                            color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                            fontSize: 12.0,
+                            fontFamily: "Noto Color Emoji"
+                        ),
+                      ),
                     ],
                   ),
               ),

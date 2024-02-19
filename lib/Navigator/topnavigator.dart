@@ -115,12 +115,12 @@ class TopNavigatorWidget extends StatelessWidget{
                             value: 'settings',
                             child: EmojiRichText(
                               text: '⚙ Beállítások',
-                              defaultStyle: const TextStyle(
+                              defaultStyle: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w400,
                                 fontSize: 13.0,
                               ),
-                              emojiStyle: const TextStyle(
+                              emojiStyle: TextStyle(
                                   color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1),
                                   fontSize: 13.0,
                                   fontFamily: "Noto Color Emoji"
@@ -131,13 +131,13 @@ class TopNavigatorWidget extends StatelessWidget{
                           const PopupMenuItem(
                             value: 'donate',
                             child: EmojiRichText(
-                              text: '🎁 Köszönöm, ha támogatsz!',
-                              defaultStyle: const TextStyle(
+                              text: '🎁 Tetszk az app? Lepj meg!',
+                              defaultStyle: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w400,
                                 fontSize: 13.0,
                               ),
-                              emojiStyle: const TextStyle(
+                              emojiStyle: TextStyle(
                                   color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1),
                                   fontSize: 13.0,
                                   fontFamily: "Noto Color Emoji"
@@ -148,12 +148,12 @@ class TopNavigatorWidget extends StatelessWidget{
                             value: 'logout',
                             child: EmojiRichText(
                               text:  '🚪 Kijelentkezés',
-                              defaultStyle: const TextStyle(
+                              defaultStyle: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w400,
                                 fontSize: 13.0,
                               ),
-                              emojiStyle: const TextStyle(
+                              emojiStyle: TextStyle(
                                   color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1),
                                   fontSize: 13.0,
                                   fontFamily: "Noto Color Emoji"

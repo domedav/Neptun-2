@@ -729,7 +729,7 @@
     }
   
     static String randomLoadingComment(bool familyFriendlyMode){
-      if(familyFriendlyMode){
+      if(!familyFriendlyMode){
         final gen = Random().nextInt(100) % 7;
         switch (gen){
           case 0:
