@@ -51,18 +51,24 @@
       if(storage.DataCache.getIsDemoAccount()!){
         return <Term>[Term(70876, 'DEMO Félév')];
       }
+      return getTerms();
+    }
+
+    static Future<List<Term>> getTerms() async{
+      if(storage.DataCache.getIsDemoAccount()!){
+        return <Term>[Term(70876, 'DEMO Félév')];
+      }
       final username = storage.DataCache.getUsername();
       final password = storage.DataCache.getPassword();
       final url = Uri.parse(storage.DataCache.getInstituteUrl()! + URLs.PERIODTERMS_URL);
       final request = await _APIRequest.postRequest(url, _APIRequest.getGenericPostData(username!, password!));
-  
+
       List<dynamic> termList = conv.json.decode(request)['PeriodTermsList'];
       List<Term> terms = [];
       for (var term in termList){
         final map = term as Map<String, dynamic>;
         terms.add(Term(map['Id'], map['TermName']));
       }
-  
       return terms;
     }
   }

@@ -30,6 +30,10 @@ class HomePage extends StatefulWidget{
 
 class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
+  double _fbPosX = 0;
+  double _fbPosY = 0;
+  bool _fbNeedAnimate = false;
+
   static late HomePageState _instance;
   HomePageState(){
     _instance = this;
@@ -121,6 +125,14 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     bottomnavScrollCntroller = LinkedScrollControllerGroup();
     bottomnavController = bottomnavScrollCntroller.addAndGet();
 
+    _fbController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 450),
+    );
+    _fbTween = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(parent: _fbController, curve: Curves.decelerate),
+    );
+
     AppNotifications.initialize();
     Future.delayed(Duration.zero,() async{
       await AppNotifications.cancelScheduledNotifs();
@@ -201,6 +213,15 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         await storage.DataCache.setAnalyticsHasRatedApp(1);
       });
       PopupWidgetHandler.doPopup(context);
+    });
+
+    Future.delayed(const Duration(seconds: 1), (){
+      final size = MediaQuery.of(context).size;
+
+      setState(() {
+        _fbPosX = size.width - 90;
+        _fbPosY = size.height - 140;
+      });
     });
   }
 
@@ -1246,6 +1267,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     paymentsList.clear();
     periodList.clear();
     periodEntries.clear();
+    _fbController.dispose();
   }
 
   static Container getSeparatorLine(BuildContext context){
@@ -1276,6 +1298,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     });
   }
 
+  late AnimationController _fbController;
+  late Animation<double> _fbTween;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1304,6 +1329,62 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
               switchView(val);
             },
           ),*/
+          Visibility(
+            visible: currentView == 0 && currentWeekOffset != 1 && canDoCalendarPaging,
+            child: GestureDetector(
+              onPanEnd: (_){
+                setState(() {
+                  _fbNeedAnimate = true;
+                });
+                _fbController.forward(from: 0).whenComplete(() {
+                  final size = MediaQuery.of(context).size;
+
+                  setState(() {
+                    _fbPosX = size.width - 90;
+                    _fbPosY = size.height - 140;
+                  });
+                });
+              },
+              onPanStart: (_){
+                setState(() {
+                  _fbNeedAnimate = false;
+                });
+              },
+              onPanUpdate: (details){
+                final size = MediaQuery.of(context).size;
+
+                setState(() {
+                  _fbPosX += details.delta.dx;
+                  _fbPosY += details.delta.dy;
+
+                  _fbPosX = _fbPosX < 20 ? 20 : (_fbPosX > size.width - 80 ? size.width - 80 : _fbPosX);
+                  _fbPosY = _fbPosY < 120 ? 120 : (_fbPosY > size.height - 140 ? size.height - 140 : _fbPosY);
+                });
+              },
+              child: AnimatedBuilder(
+                animation: _fbController,
+                builder: (context, child) {
+                  return Padding(
+                    padding: EdgeInsets.only(left: _fbNeedAnimate ? (lerpDouble(_fbPosX, MediaQuery.of(context).size.width - 90, _fbTween.value))! : _fbPosX, top: _fbNeedAnimate ? ((lerpDouble(_fbPosY, MediaQuery.of(context).size.height - 140, _fbTween.value))!) : _fbPosY),
+                    child: IconButton(
+                      onPressed: (() async {
+                        currentWeekOffset = 1;
+                        await onCalendarRefresh();
+                      }),
+                      icon: const Icon(
+                        Icons.home_outlined,
+                        color: Colors.white,
+                      ),
+                      style: ButtonStyle(
+                        padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
+                        backgroundColor: MaterialStateProperty.all(const Color.fromRGBO(0x4F, 0x69, 0x6E, 1.0))
+                      ),
+                    ),
+                  );
+                }
+              ),
+            ),
+          ),
           Visibility(
             visible: _showBlur,
             child: Positioned.fill(
@@ -1394,43 +1475,14 @@ class CalendarPageWidget extends StatelessWidget{
           ),
         ],
       ),
-      floatingActionButton: Visibility(
-        visible: homePage.currentWeekOffset != 1 && homePage.canDoCalendarPaging,
-        child: FloatingActionButton(
-          onPressed: homePage.canDoCalendarPaging ? (() async {
-            homePage.currentWeekOffset = 1;
-            await homePage.onCalendarRefresh();
-          }
-          ) : null,
-          backgroundColor: const Color.fromRGBO(0x4F, 0x69, 0x6E, 1.0),
-          child: const Icon(
-            Icons.home_outlined,
-            color: Colors.white,
-          ),
-        ),
-      ),
-      floatingActionButtonLocation: _FloatingButtonOffset.getInstance(1.04, 0.4),
     );
   }
 }
 
 class _FloatingButtonOffset extends FloatingActionButtonLocation{
-  static _FloatingButtonOffset? Instance = _FloatingButtonOffset();
-  static _FloatingButtonOffset getInstance(double offsetX, double offsetY){
-    if(Instance == null){
-      final fbo = _FloatingButtonOffset();
-      fbo.offsetX = offsetX;
-      fbo.offsetY = offsetY;
-      return fbo;
-    }
-    Instance!.offsetX = offsetX;
-    Instance!.offsetY = offsetY;
-    return Instance!;
-  }
-
-  late double offsetY;
-  late double offsetX;
-  _FloatingButtonOffset();
+  final double offsetY;
+  final double offsetX;
+  _FloatingButtonOffset({required this.offsetX, required this.offsetY});
 
   @override
   Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry) {
@@ -1438,6 +1490,7 @@ class _FloatingButtonOffset extends FloatingActionButtonLocation{
     final double y = scaffoldGeometry.scaffoldSize.height - scaffoldGeometry.floatingActionButtonSize.height / offsetY;
     return Offset(x, y);
   }
+
 }
 
 class MarkbookPageWidget extends StatelessWidget{
