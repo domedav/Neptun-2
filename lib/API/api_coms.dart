@@ -112,7 +112,7 @@
       PeriodEntry? period;
   
       for (var item in periods){
-        if(item.name.toLowerCase().contains('szorgalmi időszak')){
+        if(item.name.toLowerCase().contains('végleges tárgyjelentkezés')){
           if(item.startEpoch <= now){
             period = item;
             break;
@@ -124,7 +124,12 @@
       }
   
       //final startDate = DateTime.fromMillisecondsSinceEpoch(period.startEpoch);
-      return period.startEpoch;
+      final date = DateTime.fromMillisecondsSinceEpoch(period.endEpoch);
+      int difference = date.weekday - DateTime.monday;
+
+      final roundedDate = date.subtract(Duration(days: difference));
+
+      return roundedDate.millisecondsSinceEpoch;
     }
   }
   
@@ -403,6 +408,7 @@
       if(storage.DataCache.getIsDemoAccount()!){
         final now = DateTime.now();
         return <PeriodEntry>[
+          PeriodEntry('lejárt időszak', DateTime(now.year - 1, now.month, now.day - 2).millisecondsSinceEpoch, DateTime(now.year - 1, now.month, now.day + 1).millisecondsSinceEpoch, 1),
           PeriodEntry('előzetes tárgyjelentkezés', DateTime(now.year, now.month, now.day - 2).millisecondsSinceEpoch, DateTime(now.year, now.month, now.day + 1).millisecondsSinceEpoch, 1),
           PeriodEntry('jegybeírási időszak', DateTime(now.year, now.month, now.day - 2).millisecondsSinceEpoch, DateTime(now.year, now.month, now.day + 2).millisecondsSinceEpoch, 1),
           PeriodEntry('bejelentkezési időszak', DateTime(now.year, now.month, now.day - 2).millisecondsSinceEpoch, DateTime(now.year, now.month, now.day +7).millisecondsSinceEpoch, 1),
@@ -567,7 +573,7 @@
     late bool completed = false;
   
     CashinEntry(this.ammount, this.dueDateMs, this.comment, this.ID, String completed){
-      if(completed.toLowerCase() == 'teljesített'){
+      if(completed.toLowerCase() == 'teljesített' || completed.toLowerCase() == 'törölt'){
         this.completed = true;
       }
     }

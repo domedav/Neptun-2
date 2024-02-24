@@ -33,7 +33,7 @@ class TimetableElementWidget extends StatelessWidget{
     var realMinutes = 0;
     var realHours = 0;
     var i = 1;
-    for (realMinutes = 0; realMinutes < totalMins && realMinutes + 45 < totalMins; realMinutes += 45){
+    for (realMinutes = 0; realMinutes <= totalMins && realMinutes + 45 <= totalMins; realMinutes += 45){
       if(i % 2 == 0){
         realHours++;
       }
@@ -188,7 +188,7 @@ class WeekoffseterElementWidget extends StatelessWidget{
     final endMonth = api.Generic.monthToText(to.month);
     final endDay = to.day;
 
-    displayString = "$week. Hét";
+    displayString = "$week. hét";
 
     if(isLoading){
       displayString2 = "Gondolkodunk... 🤔";
@@ -199,8 +199,12 @@ class WeekoffseterElementWidget extends StatelessWidget{
       displayString2 = "Üres ez a heted! 🥳";
       return;
     }
-
-    displayString2 = "$startMonth $startDay. - $endMonth $endDay.";
+    if("$startMonth $startDay" == "$endMonth $endDay"){
+      displayString2 = "Óráid ezen a héten:\n$endMonth $endDay.";
+    }
+    else{
+      displayString2 = "Óráid ezen a héten:\n$startMonth $startDay. - $endMonth $endDay.";
+    }
   }
 
   final bool canDoPaging;

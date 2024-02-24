@@ -834,11 +834,11 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                                 _warnTimer!.cancel();
                               }
                               RegExp regex = RegExp(r'/hallgato/login\.aspx');
-                              PageDTO.validatedURL = _rawNeptunURL.contains(regex);
+                              PageDTO.validatedURL = _rawNeptunURL.toLowerCase().contains(regex);
                               if(_rawNeptunURL.isEmpty){
                                 return;
                               }
-                              if(_rawNeptunURL.contains(regex)){
+                              if(_rawNeptunURL.toLowerCase().contains(regex)){
                                 setState(() {
                                   _canProceed = true;
                                   PageDTO.validatedURL = true;
@@ -1045,7 +1045,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
     if(PageDTO.validatedURL){
       if(PageDTO.customURL != null && PageDTO.customURL!.isNotEmpty){
         RegExp regex = RegExp(r'/hallgato/login\.aspx');
-        var correctedURL = PageDTO.customURL!.trim();
+        var correctedURL = PageDTO.customURL!.trim().toLowerCase();
         if(correctedURL.contains(regex)){
           correctedURL = correctedURL.replaceAll(regex, '/hallgato/MobileService.svc');
           PageDTO.customURL = correctedURL;

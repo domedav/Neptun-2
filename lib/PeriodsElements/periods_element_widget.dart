@@ -16,8 +16,9 @@ class PeriodsElementWidget extends StatelessWidget{
   final PeriodType periodType;
   final int endTime;
   final int startTime;
+  final bool expired;
 
-  const PeriodsElementWidget({super.key, required this.displayName, required this.formattedStartTime, required this.formattedEndTime, required this.formattedEndTimeYear, required this.formattedStartTimeYear, required this.isActive, required this.periodType, required this.startTime, required this.endTime});
+  const PeriodsElementWidget({super.key, required this.displayName, required this.formattedStartTime, required this.formattedEndTime, required this.formattedEndTimeYear, required this.formattedStartTimeYear, required this.isActive, required this.periodType, required this.startTime, required this.endTime, required this.expired});
 
   EmojiRichText? getIconFromType(PeriodType periodType){
     switch (periodType) {
@@ -174,8 +175,8 @@ class PeriodsElementWidget extends StatelessWidget{
         children: [
           Text(
             displayName,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: expired ? Colors.red : Colors.white,
               fontWeight: FontWeight.w600,
               fontSize: 17.0,
             ),
@@ -259,9 +260,9 @@ class PeriodsElementWidget extends StatelessWidget{
                   children: [
                     Flexible(
                       child: Text(
-                        'Kezdődik: ',
+                        expired ? 'Lejárt: ' : 'Kezdődik: ',
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.6),
+                          color: expired ? Colors.redAccent : Colors.white.withOpacity(0.6),
                           fontWeight: FontWeight.normal,
                           fontSize: 14.0,
                         ),
@@ -270,9 +271,9 @@ class PeriodsElementWidget extends StatelessWidget{
                     ),
                     Flexible(
                       child: Text(
-                        '$formattedStartTimeYear $formattedStartTime',
+                        expired ? '$formattedEndTimeYear $formattedEndTime' : '$formattedStartTimeYear $formattedStartTime',
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.6),
+                          color: expired ? Colors.redAccent : Colors.white.withOpacity(0.6),
                           fontWeight: FontWeight.w600,
                           fontSize: 14.0,
                         ),
@@ -285,7 +286,7 @@ class PeriodsElementWidget extends StatelessWidget{
             ],
           ),
           Text(
-            !isActive ? '(${Duration(milliseconds: startTime - now).inDays + 1} nap múlva)' : '(${Duration(milliseconds: endTime - now).inDays + 1} nap van hátra)',
+            expired ? '(${-(Duration(milliseconds: endTime - now).inDays + 1)} napja)' : (!isActive ? '(${Duration(milliseconds: startTime - now).inDays + 1} nap múlva)' : '(${Duration(milliseconds: endTime - now).inDays + 1} nap van hátra)'),
             style: TextStyle(
               color: Colors.white.withOpacity(0.4),
               fontWeight: FontWeight.w400,

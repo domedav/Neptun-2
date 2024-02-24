@@ -904,6 +904,39 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     }
   }
 
+  Widget _getSeparatorLine(String text, {bool expired = false}){
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Container(
+            height: 2,
+            margin: const EdgeInsets.symmetric(horizontal: 30),
+            color: expired ? Colors.red.withOpacity(.3) : Colors.white.withOpacity(.3),
+          ),
+        ),
+        Text(
+          text,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              color: expired ? Colors.red.withOpacity(.6) : Colors.white.withOpacity(.6),
+              fontWeight: FontWeight.w600,
+              fontSize: 14
+          ),
+        ),
+        Expanded(
+          child: Container(
+            height: 2,
+            margin: const EdgeInsets.symmetric(horizontal: 30),
+            color: expired ? Colors.red.withOpacity(.3) : Colors.white.withOpacity(.3),
+          ),
+        ),
+      ],
+    );
+  }
+
   void _setupPeriods(){
     //order them
     for (int i = 0; i < periodEntries.length; i++){
@@ -918,24 +951,29 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
     int prevSemester = -1;
 
+    List<api.PeriodEntry> expiredPeriods = [];
+
     //Map<String, List<api.PeriodType>> values = Map<String, List<api.PeriodType>>.identity();
     for(var item in periodEntries){
       final starttime = DateTime.fromMillisecondsSinceEpoch(item.startEpoch);
       final endtime = DateTime.fromMillisecondsSinceEpoch(item.endEpoch);
       final now = DateTime.now().millisecondsSinceEpoch;
       if(now > endtime.millisecondsSinceEpoch){
+        expiredPeriods.add(item);
         continue; // expired
       }
       if(prevSemester == -1){
         prevSemester = item.partofSemester;
+        periodList.add(
+            const Padding(padding: EdgeInsets.only(top: 10))
+        );
+        periodList.add(
+            _getSeparatorLine('Aktuális félév')
+        );
       }
       else if(item.partofSemester != prevSemester){
         periodList.add(
-            Container(
-              height: 2,
-              margin: const EdgeInsets.symmetric(horizontal: 30),
-              color: Colors.white.withOpacity(0.3),
-            )
+          _getSeparatorLine('${prevSemester + 1}. félév')
         );
         prevSemester = item.partofSemester;
       }
@@ -952,10 +990,36 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         periodType: item.type,
         startTime: item.startEpoch,
         endTime: (DateTime.fromMillisecondsSinceEpoch(item.endEpoch).millisecondsSinceEpoch),
+        expired: false,
       ));
       if(currentSemester == -1) {
         currentSemester = item.partofSemester;
       }
+    }
+
+    periodList.add(
+        const Padding(padding: EdgeInsets.only(top: 10))
+    );
+
+    periodList.add(
+        _getSeparatorLine('Lejárt időszakok', expired: true)
+    );
+    
+    for(var item in expiredPeriods){
+      final starttime = DateTime.fromMillisecondsSinceEpoch(item.startEpoch);
+      final endtime = DateTime.fromMillisecondsSinceEpoch(item.endEpoch);
+      periodList.add(priods.PeriodsElementWidget(
+        displayName: api.Generic.capitalizePeriodText(item.name),
+        formattedStartTime: '${api.Generic.monthToText(starttime.month)} ${starttime.day}',
+        formattedStartTimeYear: '${starttime.year}',
+        formattedEndTime: '${api.Generic.monthToText(endtime.month)} ${endtime.day}',
+        formattedEndTimeYear: '${endtime.year}',
+        isActive: item.isActive,
+        periodType: item.type,
+        startTime: item.startEpoch,
+        endTime: (DateTime.fromMillisecondsSinceEpoch(item.endEpoch).millisecondsSinceEpoch),
+        expired: true,
+      ));
     }
 
     if(_periodsNotificationList.isNotEmpty){
@@ -1372,7 +1436,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
                         await onCalendarRefresh();
                       }),
                       icon: const Icon(
-                        Icons.home_outlined,
+                        Icons.access_time_rounded,
                         color: Colors.white,
                       ),
                       style: ButtonStyle(
