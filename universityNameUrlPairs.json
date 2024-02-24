@@ -1,1 +1,8 @@
-{"Test":"test"}
+{
+   "Institutes":[
+      {
+         "Institude1":"url",
+         "Institude2":"url"
+      }
+   ]
+}
