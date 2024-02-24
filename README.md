@@ -4,11 +4,11 @@ Egy alternatív alkalmazás, a megszűnt Neptun mobilapp helyett. 📱 Minden be
 Tele van mindennel, ami csak kellhet az egyetemi évek során, így nem kell a webes neptunt sem használni! 🥳
 
 Funkciók:
-• Szellemjegyek 👻 Könnyebben megy majd az átlagszámítás!
-• Értesítések 🫨 Nem maradsz le az órákró, vizsgákról, de még a befizetésekről sem!
-• Átlátható órarend 📆 Mindíg tudni fogod, hogy a héten milyen órád lesz!
-• Jegyek, átlagok, kreditek, befizetések és még sok más
-• Egy modernebb UI.
+-  Szellemjegyek 👻 Könnyebben megy majd az átlagszámítás!
+- Értesítések 🫨 Nem maradsz le az órákró, vizsgákról, de még a befizetésekről sem!
+- Átlátható órarend 📆 Mindíg tudni fogod, hogy a héten milyen órád lesz!
+- Jegyek, átlagok, kreditek, befizetések és még sok más
+- Egy modernebb UI.
 
 **Ha van valami ötleted, vagy simán csak egy hibát akarsz bejelenteni, a hibabejelentés fülnél tedd meg.**
 
