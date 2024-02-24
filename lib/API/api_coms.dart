@@ -74,13 +74,25 @@
   }
   
   class InstitutesRequest{
-    static Future<String> fetchInstitudesJSON(){
-      return _APIRequest.postRequest(Uri.parse(URLs.INSTITUTIONS_URL), '{}');
+    static Future<List<dynamic>?> fetchInstitudesJSON() async{
+      //return _APIRequest.postRequest(Uri.parse(URLs.INSTITUTIONS_URL), '{}');
+      return await getRawJsonWithNameUrlPairs();
+    }
+
+    static Future<List<dynamic>?> getRawJsonWithNameUrlPairs() async{
+      final url = Uri.parse('https://raw.githubusercontent.com/domedav/Neptun-2/main/universityNameUrlPairs.json');
+      final response = await http.get(url);
+
+      if (response.statusCode != 200) {
+        return null;
+      }
+
+      Map<String, dynamic> jsonMap = conv.json.decode(response.body);
+      return jsonMap["Institutes"];
     }
   
-    static List<Institute> getDataFromInstitudesJSON(String json){
+    static List<Institute> getDataFromInstitudesJSON(List<dynamic> jsonMap){
       var newList = <Institute>[].toList();
-      List<dynamic> jsonMap = conv.json.decode(json);
       for (var item in jsonMap){
         var item2 = item as Map<String, dynamic>;
         String name = item2['Name'];

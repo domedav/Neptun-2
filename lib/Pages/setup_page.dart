@@ -292,10 +292,15 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
         return;
       }
       api.InstitutesRequest.fetchInstitudesJSON().then((value) {
+        if(value == null){
+          return;
+        }
         setState(() {
-          PageDTO.institutes = api.InstitutesRequest.getDataFromInstitudesJSON(value);
+          final data = api.InstitutesRequest.getDataFromInstitudesJSON(value);
+          PageDTO.institutes = data;
+          _institutes = data;
 
-          for(var item in PageDTO.institutes!){
+          for(var item in data){
             _filteredValues.add(item.Name);
           }
 
