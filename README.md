@@ -1,18 +1,14 @@
 # Neptun 2
 
-Egy csere alkalmazás, az elhagyatott neptun mobilapp helyett. 📱
+Egy alternatív alkalmazás, a megszűnt Neptun mobilapp helyett. 📱 Minden benne van, ami fontos lesz.
+Tele van mindennel, ami csak kellhet az egyetemi évek során, így nem kell a webes neptunt sem használni! 🥳
 
-Televan mindennel ami csak kellhet az egyetemi évek során, így nemkell a webes neptunt sem használni! 🥳
-
-Mivel nyújt többet mint a sima neptun?
-
+Funkciók:
 • Szellemjegyek 👻 Könnyebben megy majd az átlagszámítás!
-
-• Értesítések 🫨 Nem maradsz le semmiről sem!
-
-• Átlátható Órarend 📆 Mindíg tudod majd aznap milyen órád lesz 0 koppintásra!
-
-• Egy Modern UI.
+• Értesítések 🫨 Nem maradsz le az órákró, vizsgákról, de még a befizetésekről sem!
+• Átlátható órarend 📆 Mindíg tudni fogod, hogy a héten milyen órád lesz!
+• Jegyek, átlagok, kreditek, befizetések és még sok más
+• Egy modernebb UI.
 
 **Ha van valami ötleted, vagy simán csak egy hibát akarsz bejelenteni, a hibabejelentés fülnél tedd meg.**
 
@@ -20,6 +16,9 @@ Az alkalmazás még fejlesztés alatt áll, így ez még nem tökéletes. ⚠️
 
 Töltsd le a Play Áruházból!
 https://play.google.com/store/apps/details?id=com.domedav.neptun2
+
+## 1.3.0
+Arculati változások, Egyszerűbb bejelentkezési mód, Hibajavítások
 
 ## 1.2.5
 Órarend Hetek száma fix
