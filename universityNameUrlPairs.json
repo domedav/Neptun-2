@@ -1,8 +1,6 @@
 {
-   "Institutes":[
-      {
-         "Institude1":"url",
-         "Institude2":"url"
-      }
+   [
+      {"Name":"Teszt Intézmény1", "Url":"https://google.com"},
+      {"Name":"Teszt Intézmény2", "Url":"https://google.com"},
    ]
 }
