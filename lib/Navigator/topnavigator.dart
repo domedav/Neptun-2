@@ -131,7 +131,7 @@ class TopNavigatorWidget extends StatelessWidget{
                           const PopupMenuItem(
                             value: 'donate',
                             child: EmojiRichText(
-                              text: '🎁 Tetszk az app? Támogass!',
+                              text: '🎁 Fejlesztés támogatása',
                               defaultStyle: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w400,
