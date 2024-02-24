@@ -5,8 +5,8 @@ Tele van mindennel, ami csak kellhet az egyetemi évek során, így nem kell a w
 
 Funkciók:
 -  Szellemjegyek 👻 Könnyebben megy majd az átlagszámítás!
-- Értesítések 🫨 Nem maradsz le az órákró, vizsgákról, de még a befizetésekről sem!
-- Átlátható órarend 📆 Mindíg tudni fogod, hogy a héten milyen órád lesz!
+- Értesítések 🫨 Nem maradsz le az órákról, vizsgákról, de még a befizetésekről sem!
+- Átlátható órarend 📆 Mindig tudni fogod, hogy a héten milyen órád lesz!
 - Jegyek, átlagok, kreditek, befizetések és még sok más
 - Egy modernebb UI.
 
