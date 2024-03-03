@@ -116,7 +116,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
   double bottomNavSwitchValue = 0.0;
   bool bottomNavCanNavigate = true;
-  static const int maxBottomNavWidgets = 4; //todo increase
+  static const int maxBottomNavWidgets = 5;
 
   double calendarWeekSwitchValue = 0.0;
   bool calendarWeekCanNavigate = true;
