@@ -16,6 +16,8 @@ Az alkalmazás még fejlesztés alatt áll, így ez még nem tökéletes. ⚠️
 
 Töltsd le a Play Áruházból!
 https://play.google.com/store/apps/details?id=com.domedav.neptun2
+## 1.3.1
+GitHubról jön le az iskolalista (minden egyetem amiről tudok bennevan), bugfixek, egyéb apphasználatot javító apróságok
 
 ## 1.3.0
 Arculati változások, Egyszerűbb bejelentkezési mód, Hibajavítások
