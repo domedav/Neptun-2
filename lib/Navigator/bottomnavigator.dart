@@ -70,6 +70,7 @@ class BottomNavigatorWidget extends StatelessWidget {
                     _buildNavigationButton(1, Icons.backpack_rounded, Icons.backpack_outlined),
                     _buildNavigationButton(2, Icons.price_change_rounded, Icons.price_change_outlined),
                     _buildNavigationButton(3, Icons.timer_rounded, Icons.timer_outlined),
+                    //_buildNavigationButton(4, Icons.email_rounded, Icons.email_outlined),
                   ],
                 ),
               ),
@@ -91,6 +92,8 @@ class BottomNavigatorWidget extends StatelessWidget {
         return 'Befizetendők';
       case 3:
         return 'Időszakok';
+      case 4:
+        return 'Üzenetek';
       default:
         return 'Not Impl';
     }

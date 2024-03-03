@@ -3,10 +3,12 @@ import 'dart:developer' as debug;
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
+import 'package:neptun2/MailElements/mail_element_widget.dart';
 import 'package:neptun2/notifications.dart';
 import 'package:neptun2/Misc/emojirich_text.dart';
 import 'package:neptun2/Misc/popup.dart';
@@ -74,6 +76,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   late List<api.Subject> markbookEntries = <api.Subject>[].toList();
   late List<api.CashinEntry> paymentsEntries = <api.CashinEntry>[].toList();
   late List<api.PeriodEntry> periodEntries = <api.PeriodEntry>[].toList();
+  late List<api.MailEntry> mailEntries = <api.MailEntry>[].toList();
 
   late final List<Widget> mondayCalendar = <Widget>[].toList();
   late final List<Widget> tuesdayCalendar = <Widget>[].toList();
@@ -87,6 +90,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
   late final List<Widget> paymentsList = <Widget>[].toList();
   late final List<Widget> periodList = <Widget>[].toList();
+  late final List<Widget> mailList = <Widget>[].toList();
 
   late final LinkedScrollControllerGroup bottomnavScrollCntroller;
   late final ScrollController bottomnavController;
@@ -101,12 +105,18 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   int totalCredits = 0;
   int totalMoney = 0;
   double totalAvg = 0;
+  double totalAvg30 = 0;
 
   int currentSemester = -1;
+  int countActivePeriods = 0;
+  int countFuturePeriods = 0;
+  int countExpiredPeriods = 0;
+
+  int unreadMailCount = 0;
 
   double bottomNavSwitchValue = 0.0;
   bool bottomNavCanNavigate = true;
-  static const int maxBottomNavWidgets = 4;
+  static const int maxBottomNavWidgets = 4; //todo increase
 
   double calendarWeekSwitchValue = 0.0;
   bool calendarWeekCanNavigate = true;
@@ -168,6 +178,12 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         await fetchPeriods();
       }).then((value) {
         setupPeriods();
+      });
+
+      Future.delayed(Duration.zero, () async{
+        await fetchMails();
+      }).then((value) {
+        setupMails();
       });
     });
 
@@ -291,6 +307,16 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       periodEntries.clear();
       periodList.clear();
       currentSemester = -1;
+      countActivePeriods = 0;
+      countExpiredPeriods = 0;
+      countFuturePeriods = 0;
+    });
+  }
+
+  void clearMails(){
+    setState(() {
+      mailEntries.clear();
+      mailList.clear();
     });
   }
 
@@ -316,6 +342,12 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   void setupPeriods(){
     setState(() {
       _setupPeriods();
+    });
+  }
+
+  void setupMails(){
+    setState(() {
+      _setupMails();
     });
   }
 
@@ -714,9 +746,10 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   }
   
   void _setupMarkbook(){
+    totalAvg = 5;
+    totalAvg30 = 5;
     if(markbookEntries.isEmpty){
       totalCredits = 0;
-      totalAvg = 5;
       markbookList.add(Container(
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
@@ -752,6 +785,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     // set them up
     totalCredits = 0;
     totalAvg = 0;
+    totalAvg30 = 0;
     var hasCompleted = false;
     var hasIncomplete = false;
     int idx = 0;
@@ -820,6 +854,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         totalAvg += item.grade * item.credit;
       }
     }
+    totalAvg30 = totalAvg / 30;
     totalAvg /= currCredits;
   }
 
@@ -829,6 +864,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     }
     var currCredits = 0;
     totalAvg = 0;
+    totalAvg30 = 0;
     for(var item in markbookList){
       try{
         final itm = item as mbook.MarkbookElementWidget;
@@ -846,6 +882,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       }
       catch(_){}
     }
+    totalAvg30 = totalAvg / 30;
     totalAvg /= currCredits;
   }
 
@@ -955,6 +992,16 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
     //Map<String, List<api.PeriodType>> values = Map<String, List<api.PeriodType>>.identity();
     for(var item in periodEntries){
+      if(item.isActive){
+        countActivePeriods++;
+      }
+      else if(item.endEpoch > DateTime.now().millisecondsSinceEpoch){
+        countFuturePeriods++;
+      }
+      else{
+        countExpiredPeriods++;
+      }
+
       final starttime = DateTime.fromMillisecondsSinceEpoch(item.startEpoch);
       final endtime = DateTime.fromMillisecondsSinceEpoch(item.endEpoch);
       final now = DateTime.now().millisecondsSinceEpoch;
@@ -968,7 +1015,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
             const Padding(padding: EdgeInsets.only(top: 10))
         );
         periodList.add(
-            _getSeparatorLine('Aktuális félév')
+            _getSeparatorLine('Aktuális')
         );
       }
       else if(item.partofSemester != prevSemester){
@@ -1034,7 +1081,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         child: const Center(
           child: EmojiRichText(
-            text: '🤩Szünet Van!🤩',
+            text: '🤩Szünet Van🤩',
             defaultStyle: TextStyle(
               color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
               fontWeight: FontWeight.w900,
@@ -1048,6 +1095,38 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
           ),
         ),
       ));
+    }
+  }
+
+  void _setupMails(){
+    if(mailEntries.isEmpty){
+      mailList.add(Container(
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        child: const Center(
+          child: EmojiRichText(
+            text: '😥Nincs Leveled😥',
+            defaultStyle: TextStyle(
+              color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+              fontWeight: FontWeight.w900,
+              fontSize: 26.0,
+            ),
+            emojiStyle: TextStyle(
+                color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                fontSize: 26.0,
+                fontFamily: "Noto Color Emoji"
+            ),
+          ),
+        ),
+      ));
+    }
+
+    unreadMailCount = 0;
+    for(var item in mailEntries){
+      mailList.add(MailElementWidget(subject: item.subject, details: item.detail, sender: item.senderName, sendTime: item.sendDateMs, isRead: item.isRead));
+      if(!item.isRead){
+        unreadMailCount++;
+      }
     }
   }
 
@@ -1095,8 +1174,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       for (int i = 0; i < calendarEntries.length; i++) {
         storage.saveString('CachedCalendar_$i', calendarEntries[i].toString());
       }
-
-      storage.saveString('CalendarCacheTime', DateTime.now().toString());
+      final now = DateTime.now();
+      storage.saveString('CalendarCacheTime', DateTime(now.year, now.month, now.day, 0, 0, 0).toString());
     }
     storage.DataCache.setHasCachedCalendar(1);
 
@@ -1190,7 +1269,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       final len = await storage.getInt('CachedPeriodsLength');
       for(int i = 0; i < len!; i++){
         final calEntry = await storage.getString('CachedPeriods_$i');
-        periodEntries.add(api.PeriodEntry("ERROR", 0, 0, 0).fillWithExisting(calEntry!));
+        final entry = api.PeriodEntry("ERROR", 0, 0, 0).fillWithExisting(calEntry!);
+        periodEntries.add(entry);
       }
       return;
     }
@@ -1212,15 +1292,52 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     storage.DataCache.setHasCachedPeriods(1);
   }
 
+  Future<void> fetchMails()async{
+    bool hasCachedMails = storage.DataCache.getHasCachedMail() ?? false;
+
+    final cacheTime = await storage.getString('MailCacheTime');
+
+    if(!hasCachedMails && !storage.DataCache.getHasNetwork()){
+      return;
+    }
+
+    if(hasCachedMails && cacheTime != null && (DateTime.now().millisecondsSinceEpoch - DateTime.parse(cacheTime).millisecondsSinceEpoch) < const Duration(hours: 24).inMilliseconds) {
+      final len = await storage.getInt('CachedMailsLength');
+      for(int i = 0; i < len!; i++){
+        final calEntry = await storage.getString('CachedMails_$i');
+        mailEntries.add(api.MailEntry("ERROR", "ERROR", "ERROR", 0, false).fillWithExisting(calEntry!));
+      }
+      return;
+    }
+
+    final request = await api.MailRequest.getMails();
+    if(request != null && request.isEmpty){
+      return;
+    }
+    mailEntries = request!;
+
+    storage.saveInt('CachedMailsLength', mailEntries.length);
+    //cache calendar
+    for (int i = 0; i < mailEntries.length; i++) {
+      storage.saveString('CachedMails_$i', mailEntries[i].toString());
+    }
+    storage.saveString('MailCacheTime', DateTime.now().toString());
+
+    storage.DataCache.setHasCachedMail(1);
+  }
+
   Timer? _calendarTimer;
 
   bool _calendarDebounce = false;
   bool isLoadingCalendar = true;
 
+  bool keepHomeButtonHidden = true;
+
   Future<void> onCalendarRefresh() async{
     if(!storage.DataCache.getHasNetwork() || _calendarDebounce){
       return;
     }
+    keepHomeButtonHidden = true;
     if(_calendarTimer != null){
       _calendarTimer!.cancel();
     }
@@ -1231,6 +1348,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       setState(() {
         canDoCalendarPaging = false;
         isLoadingCalendar = true;
+        keepHomeButtonHidden = false;
       });
       await storage.DataCache.setHasCachedCalendar(0);
       await storage.DataCache.setHasCachedFirstWeekEpoch(0);
@@ -1282,6 +1400,19 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     _periodsDebounce = false;
   }
 
+  bool _mailsDebounce = false;
+  Future<void> onMailRefresh()async{
+    if(!storage.DataCache.getHasNetwork() || _mailsDebounce){
+      return;
+    }
+    _mailsDebounce = true;
+    clearMails();
+    await storage.DataCache.setHasCachedMail(0);
+    await fetchMails();
+    setupMails();
+    _mailsDebounce = false;
+  }
+
   DateTime getClosestMondayTo(DateTime time){
     if(time.weekday == DateTime.monday){
       return time;
@@ -1331,6 +1462,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     paymentsList.clear();
     periodList.clear();
     periodEntries.clear();
+    mailList.clear();
+    mailEntries.clear();
     _fbController.dispose();
   }
 
@@ -1376,7 +1509,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
           ),
           Visibility(
               visible: currentView == 1,
-              child: MarkbookPageWidget(homePage: this, totalCredits: totalCredits, totalAvg: totalAvg,)
+              child: MarkbookPageWidget(homePage: this, totalCredits: totalCredits, totalAvg: totalAvg, totalAvg30: totalAvg30,)
           ),
           Visibility(
               visible: currentView == 2,
@@ -1386,6 +1519,10 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
             visible: currentView == 3,
             child: PeriodsPageWidget(homePage: this, currentSemester: currentSemester),
           ),
+          Visibility(
+            visible: currentView == 4,
+            child: MailsPageWidget(homePage: this),
+          ),
           /*GestureDetector(
             onLongPress: (){
               HapticFeedback.lightImpact();
@@ -1394,7 +1531,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
             },
           ),*/
           Visibility(
-            visible: currentView == 0 && currentWeekOffset != 1 && canDoCalendarPaging,
+            visible: currentView == 0 && currentWeekOffset != 1 && canDoCalendarPaging && !keepHomeButtonHidden,
             child: GestureDetector(
               onPanEnd: (_){
                 setState(() {
@@ -1432,15 +1569,17 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
                     padding: EdgeInsets.only(left: _fbNeedAnimate ? (lerpDouble(_fbPosX, MediaQuery.of(context).size.width - 90, _fbTween.value))! : _fbPosX, top: _fbNeedAnimate ? ((lerpDouble(_fbPosY, MediaQuery.of(context).size.height - 140, _fbTween.value))!) : _fbPosY),
                     child: IconButton(
                       onPressed: (() async {
+                        HapticFeedback.lightImpact();
+                        keepHomeButtonHidden = true;
                         currentWeekOffset = 1;
                         await onCalendarRefresh();
                       }),
                       icon: const Icon(
-                        Icons.access_time_rounded,
+                        Icons.home_outlined,
                         color: Colors.white,
                       ),
                       style: ButtonStyle(
-                        padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
+                        padding: MaterialStateProperty.all(const EdgeInsets.all(15)),
                         backgroundColor: MaterialStateProperty.all(const Color.fromRGBO(0x4F, 0x69, 0x6E, 1.0))
                       ),
                     ),
@@ -1561,31 +1700,11 @@ class MarkbookPageWidget extends StatelessWidget{
   final HomePageState homePage;
   final int totalCredits;
   final double totalAvg;
-  const MarkbookPageWidget({super.key, required this.homePage, required this.totalCredits, required this.totalAvg});
+  final double totalAvg30;
+  const MarkbookPageWidget({super.key, required this.homePage, required this.totalCredits, required this.totalAvg, required this.totalAvg30});
 
   Future<void> onRefresh() async{
     homePage.onMarkbookRefresh();
-  }
-
-  String reactionForAvg(double avg){
-    if(avg >= 5.0){
-      return "💀";
-    }
-    else if(avg >= 4.25){
-      return "🤓";
-    }
-    else if(avg >= 3.75){
-      return "😌";
-    }
-    else if(avg >= 2.75){
-      return "😐";
-    }
-    else if(avg >= 2){
-      return "😬";
-    }
-    else{
-      return "😞";
-    }
   }
 
   @override
@@ -1596,7 +1715,7 @@ class MarkbookPageWidget extends StatelessWidget{
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              topnav.TopNavigatorWidget(homePage: homePage, displayString: "Tantárgyak", smallHintText: "Össz kredited: $totalCredits🎖️\nÁtlagod: ${totalAvg.isNaN ? "nincs jegyed" : totalAvg.toStringAsFixed(2)} ${reactionForAvg(totalAvg)}", loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
+              topnav.TopNavigatorWidget(homePage: homePage, displayString: "Tantárgyak", smallHintText: "Kredited ebben a félévben: $totalCredits🎖️", loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
               HomePageState.getSeparatorLine(context),
               Expanded(
                   child: RefreshIndicator(
@@ -1604,37 +1723,89 @@ class MarkbookPageWidget extends StatelessWidget{
                     child: SingleChildScrollView(
                         physics: const AlwaysScrollableScrollPhysics(),
                         scrollDirection: Axis.vertical,
-                        child: Container(
-                          margin: const EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            color: homePage.markbookList.isNotEmpty ? Colors.white.withOpacity(0.03) : Colors.transparent,
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            mainAxisSize: MainAxisSize.max,
-                            children: homePage.markbookList.isNotEmpty ? homePage.markbookList : <Widget>[
-                              Center(
-                                child: SizedBox(
-                                  height: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
-                                  width: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
-                                  child: const CircularProgressIndicator(
-                                  color: Colors.white,
-                                  ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Visibility(
+                              visible: homePage.markbookList.isNotEmpty,
+                              child: Container(
+                                margin: const EdgeInsets.only(top: 15, left: 15, right: 15),
+                                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.03),
+                                  borderRadius: BorderRadius.circular(40),
+                                  //border: Border.all(color: Colors.white.withOpacity(.2), width: 1)
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    EmojiRichText(
+                                      text: 'Átlagod: ${totalAvg.isNaN ? "nincs jegyed" : totalAvg.toStringAsFixed(2)} ${api.Generic.reactionForAvg(totalAvg)}',
+                                      defaultStyle: const TextStyle(
+                                        color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14.0,
+                                      ),
+                                      emojiStyle: const TextStyle(
+                                          color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                                          fontSize: 16.0,
+                                          fontFamily: "Noto Color Emoji"
+                                      ),
+                                    ),
+                                    EmojiRichText(
+                                      text: 'Ösztöndíj indexed: ${totalAvg30.isNaN || totalAvg30 <= 0 ? "nincs jegyed" : totalAvg30.toStringAsFixed(2)} ${api.Generic.reactionForAvg(totalAvg30)}',
+                                      defaultStyle: const TextStyle(
+                                        color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14.0,
+                                      ),
+                                      emojiStyle: const TextStyle(
+                                          color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                                          fontSize: 16.0,
+                                          fontFamily: "Noto Color Emoji"
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              const SizedBox(height: 20),
-                              Text(
-                                api.Generic.randomLoadingComment(storage.DataCache.getNeedFamilyFriendlyComments()!),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.white.withOpacity(.2),
-                                    fontWeight: FontWeight.w300,
-                                    fontSize: 10
-                                ),
-                              )
-                            ]
-                          ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.all(15),
+                              decoration: BoxDecoration(
+                                color: homePage.markbookList.isNotEmpty ? Colors.white.withOpacity(0.03) : Colors.transparent,
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisSize: MainAxisSize.max,
+                                children: homePage.markbookList.isNotEmpty ? homePage.markbookList : <Widget>[
+                                  Center(
+                                    child: SizedBox(
+                                      height: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
+                                      width: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
+                                      child: const CircularProgressIndicator(
+                                      color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  Text(
+                                    api.Generic.randomLoadingComment(storage.DataCache.getNeedFamilyFriendlyComments()!),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.white.withOpacity(.2),
+                                        fontWeight: FontWeight.w300,
+                                        fontSize: 10
+                                    ),
+                                  )
+                                ]
+                              ),
+                            ),
+                          ],
                         ),
                     )
                   )
@@ -1753,7 +1924,8 @@ class PeriodsPageWidget extends StatelessWidget{
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                topnav.TopNavigatorWidget(homePage: homePage, displayString: "Időszakok", smallHintText: "Jelenleg ${currentSemester != -1 ? "${aOrAzDeterminer(currentSemester)} $currentSemester." : "gondolkodunk mi is van..."} ${currentSemester != -1 ? 'félév van' : ''} 🗓️", loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
+                //topnav.TopNavigatorWidget(homePage: homePage, displayString: "Időszakok", smallHintText: "Jelenleg ${currentSemester != -1 ? "${aOrAzDeterminer(currentSemester)} $currentSemester." : "gondolkodunk mi is van..."} ${currentSemester != -1 ? 'félév van' : ''} 🗓️", loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
+                topnav.TopNavigatorWidget(homePage: homePage, displayString: "Időszakok", smallHintText: "${homePage.countActivePeriods} aktív, ${homePage.countFuturePeriods} jövőbeli, ${homePage.countExpiredPeriods} lejárt 🗓️", loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
                 HomePageState.getSeparatorLine(context),
                 Expanded(
                     child: RefreshIndicator(
@@ -1771,6 +1943,76 @@ class PeriodsPageWidget extends StatelessWidget{
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 mainAxisSize: MainAxisSize.max,
                                 children: homePage.periodList.isNotEmpty ? homePage.periodList : <Widget>[
+                                  Center(
+                                    child: SizedBox(
+                                      height: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
+                                      width: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
+                                      child: const CircularProgressIndicator(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  Text(
+                                    api.Generic.randomLoadingComment(storage.DataCache.getNeedFamilyFriendlyComments()!),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.white.withOpacity(.2),
+                                        fontWeight: FontWeight.w300,
+                                        fontSize: 10
+                                    ),
+                                  )
+                                ]
+                            ),
+                          ),
+                        )
+                    )
+                ),
+                HomePageState.getSeparatorLine(context),
+                bottomnav.BottomNavigatorWidget(homePage: homePage),
+              ],
+            ),
+          ],
+        ),
+        floatingActionButton: null
+    );
+  }
+}
+
+class MailsPageWidget extends StatelessWidget{
+  final HomePageState homePage;
+  const MailsPageWidget({super.key, required this.homePage});
+
+  Future<void> onRefresh() async{
+    homePage.onMailRefresh();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: Stack(
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                topnav.TopNavigatorWidget(homePage: homePage, displayString: "Üzenetek", smallHintText: "${homePage.unreadMailCount} olvasatlan üzeneted van", loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
+                HomePageState.getSeparatorLine(context),
+                Expanded(
+                    child: RefreshIndicator(
+                        onRefresh: onRefresh,
+                        child: SingleChildScrollView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          scrollDirection: Axis.vertical,
+                          child: Container(
+                            margin: const EdgeInsets.all(15),
+                            decoration: BoxDecoration(
+                              color: homePage.mailList.isNotEmpty ? Colors.white.withOpacity(0.03) : Colors.transparent,
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisSize: MainAxisSize.max,
+                                children: homePage.mailList.isNotEmpty ? homePage.mailList : <Widget>[
                                   Center(
                                     child: SizedBox(
                                       height: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,

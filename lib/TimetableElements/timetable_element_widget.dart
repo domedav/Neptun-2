@@ -188,7 +188,7 @@ class WeekoffseterElementWidget extends StatelessWidget{
     final endMonth = api.Generic.monthToText(to.month);
     final endDay = to.day;
 
-    displayString = "$week. hét";
+    displayString = "$week. oktatási hét";
 
     if(isLoading){
       displayString2 = "Gondolkodunk... 🤔";

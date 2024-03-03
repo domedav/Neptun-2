@@ -100,6 +100,10 @@ class PopupWidgetHandler{
       HomePageState.showBlurPopup(false);
     });
 
+    if(_instance!.pwidget == null || !_instance!.pwidget!.mounted){
+      return;
+    }
+
     _instance!.pwidget!.setState(() {
       _instance!.pwidget!._shouldShowSnackbar = false;
     });

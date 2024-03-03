@@ -587,7 +587,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                             ),
                             child: IconButton(
                               onPressed: (){
-                                _showSnackbar('A Neptun2 a központi adatok alapján listázza az iskolákat, amiből elkezdték kivenni az egyetemeket. 😥 Így előfordulhat, hogy egyes iskolák nincsenek benne a listában.\nJelentkezz be URL használatával, ha nem találod a sulid. 😉', 12);
+                                _showSnackbar('A fenti listában szereplő elemek manuálisan lettek felvéve! 😅 Így előfordulhat, hogy egyes iskolák nincsenek benne a listában.\nJelentkezz be URL használatával, ha nem találod a sulid. 😉', 12);
                               },
                               icon: Icon(
                                 Icons.question_mark_rounded,

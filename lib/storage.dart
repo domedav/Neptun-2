@@ -84,6 +84,7 @@ class DataCache{
   late bool? _hasCachedMarkbook = false;
   late bool? _hasCachedPayments = false;
   late bool? _hasCachedPeriods = false;
+  late bool? _hasCachedMail = false;
   late bool? _hasCachedFirstWeekEpoch = false;
   late int? _firstweekOfSemesterEpoch = 0;
   late bool? _isDemoAccount = false;
@@ -122,6 +123,9 @@ class DataCache{
 
     tmp = await getInt('HasCachedPeriods');
     _hasCachedPeriods = tmp != null && tmp != 0;
+
+    tmp = await getInt('HasCachedMail');
+    _hasCachedMail = tmp != null && tmp != 0;
 
     _hasNetwork = await Connectivity().checkConnectivity() != ConnectivityResult.none;
     Connectivity().onConnectivityChanged.listen((event) async {
@@ -228,6 +232,12 @@ class DataCache{
   static Future<void> setHasCachedPeriods(int? value) async{
     _instance._hasCachedPeriods = value != null && value != 0;
     await saveInt('HasCachedPeriods', value ?? 0);
+  }
+
+  static bool? getHasCachedMail(){return _instance._hasCachedPeriods;}
+  static Future<void> setHasCachedMail(int? value) async{
+    _instance._hasCachedMail = value != null && value != 0;
+    await saveInt('HasCachedMail', value ?? 0);
   }
 
   static bool? getHasCachedFirstWeekEpoch(){return _instance._hasCachedFirstWeekEpoch;}

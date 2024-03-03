@@ -17,6 +17,7 @@
     static const String GETCASHIN_URL = "/GetCashinData";
     static const String CURRICULUMS_URL = "/GetCurriculums";
     static const String MARKBOOK_URL = "/GetMarkbookData";
+    static const String MESSAGES_URL = "/GetMessages";
   }
   
   class _APIRequest{
@@ -469,6 +470,44 @@
       return request;
     }
   }
+
+  class MailRequest{
+    static Future<List<MailEntry>?> getMails() async{
+      if(storage.DataCache.getIsDemoAccount()!){
+        final now = DateTime.now();
+        return <MailEntry>[
+          MailEntry('Tárgy', 'Szöveg', 'DEMO feladó', now.subtract(const Duration(hours: 1)).millisecondsSinceEpoch, false),
+          MailEntry('DEMO', 'Demo Demo Demo\n\n\nDEmo demo', 'DEMO feladó', now.subtract(const Duration(hours: 2)).millisecondsSinceEpoch, false),
+          MailEntry('DEMO', 'Demo Demo Demo\n\n\nDEmo demo', 'DEMO feladó', now.subtract(const Duration(hours: 23)).millisecondsSinceEpoch, true),
+          MailEntry('DEMO', 'Demo Demo Demo\n\n\nDEmo demo', 'DEMO feladó', now.subtract(const Duration(days: 10)).millisecondsSinceEpoch, true),
+          MailEntry('DEMO', 'Demo Demo Demo\n\n\nDEmo demo', 'DEMO feladó', now.subtract(const Duration(days: 100)).millisecondsSinceEpoch, false),
+          MailEntry('DEMO', 'Demo Demo Demo\n\n\nDEmo demo', 'DEMO feladó', now.subtract(const Duration(days: 370)).millisecondsSinceEpoch, true),
+        ];
+      }
+
+      final request = await _getMailJson();
+      List<MailEntry> mails = getMailEntrysJson(request);
+      return mails;
+    }
+
+    static Future<String> _getMailJson()async{
+      final username = storage.DataCache.getUsername();
+      final password = storage.DataCache.getPassword();
+      final url = Uri.parse(storage.DataCache.getInstituteUrl()! + URLs.MESSAGES_URL);
+      final json = _APIRequest.getGenericPostData(username!, password!);
+      final request = await _APIRequest.postRequest(url, json);
+      return request;
+    }
+
+    static List<MailEntry> getMailEntrysJson(String json){
+      List<MailEntry> mails = [];
+      final result = conv.json.decode(json)['MessagesList'] as List<dynamic>;
+      for(var item in result){
+        mails.add(MailEntry(item['Subject'], item['Detail'], item['Name'], int.parse(item['SendDate'].toString().replaceAll('\/Date(', '').replaceAll(')\/', '')), !item['IsNew']));
+      }
+      return mails;
+    }
+  }
   
   class Term{
     int id;
@@ -699,8 +738,59 @@
       }
     }
   }
+
+  class MailEntry{
+    String subject;
+    String detail;
+    String senderName;
+    int sendDateMs;
+    bool isRead;
+    MailEntry(this.subject, this.detail, this.senderName, this.sendDateMs, this.isRead);
+
+    @override
+    String toString() {
+      return '$subject\u0000$detail\u0000$senderName\u0000$sendDateMs\u0000$isRead';
+    }
+
+    MailEntry fillWithExisting(String existing){
+      var data = existing.split('\u0000');
+      if(data.isEmpty || data.length < 5){
+        return this;
+      }
+      subject = data[0];
+      detail = data[1];
+      senderName = data[2];
+      sendDateMs = int.parse(data[3]);
+      isRead = bool.parse(data[4]);
+      return this;
+    }
+  }
   
   class Generic{
+    static String reactionForAvg(double avg){
+      if(avg >= 5.0){
+        return "💀";
+      }
+      else if(avg >= 4.25){
+        return "🤓";
+      }
+      else if(avg >= 3.75){
+        return "😌";
+      }
+      else if(avg >= 2.75){
+        return "😐";
+      }
+      else if(avg >= 2){
+        return "😬";
+      }
+      else if(avg > 0){
+        return "🤡";
+      }
+      else{
+        return '🤗';
+      }
+    }
+
     static String monthToText(int month){
       switch (month){
         case 1:
