@@ -234,7 +234,7 @@ class DataCache{
     await saveInt('HasCachedPeriods', value ?? 0);
   }
 
-  static bool? getHasCachedMail(){return _instance._hasCachedPeriods;}
+  static bool? getHasCachedMail(){return _instance._hasCachedMail;}
   static Future<void> setHasCachedMail(int? value) async{
     _instance._hasCachedMail = value != null && value != 0;
     await saveInt('HasCachedMail', value ?? 0);

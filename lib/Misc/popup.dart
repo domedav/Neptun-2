@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:neptun2/Misc/custom_snackbar.dart';
@@ -7,6 +8,8 @@ import 'package:neptun2/Pages/main_page.dart';
 import 'package:neptun2/storage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../API/api_coms.dart';
+import '../MailElements/mail_element_widget.dart';
 import 'emojirich_text.dart';
 
 typedef Callback = void Function(dynamic);
@@ -186,6 +189,7 @@ class PopupWidget extends State<PopupWidgetState>{
                       if(!PopupWidgetHandler._instance!._inUse || !mounted){
                         return;
                       }
+                      HapticFeedback.lightImpact();
                       setState(() {
                         selectionValue = 0;
                       });
@@ -207,6 +211,7 @@ class PopupWidget extends State<PopupWidgetState>{
                       if(!PopupWidgetHandler._instance!._inUse || !mounted){
                         return;
                       }
+                      HapticFeedback.lightImpact();
                       setState(() {
                         selectionValue = 1;
                       });
@@ -228,6 +233,7 @@ class PopupWidget extends State<PopupWidgetState>{
                       if(!PopupWidgetHandler._instance!._inUse || !mounted){
                         return;
                       }
+                      HapticFeedback.lightImpact();
                       setState(() {
                         selectionValue = 2;
                       });
@@ -249,6 +255,7 @@ class PopupWidget extends State<PopupWidgetState>{
                       if(!PopupWidgetHandler._instance!._inUse || !mounted){
                         return;
                       }
+                      HapticFeedback.lightImpact();
                       setState(() {
                         selectionValue = 3;
                       });
@@ -270,6 +277,7 @@ class PopupWidget extends State<PopupWidgetState>{
                       if(!PopupWidgetHandler._instance!._inUse || !mounted){
                         return;
                       }
+                      HapticFeedback.lightImpact();
                       setState(() {
                         selectionValue = 4;
                       });
@@ -298,6 +306,7 @@ class PopupWidget extends State<PopupWidgetState>{
             }
             PopupWidgetHandler._instance!.callback(selectionValue);
             PopupWidgetHandler.closePopup(true);
+            HapticFeedback.lightImpact();
           },
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),
@@ -375,6 +384,7 @@ class PopupWidget extends State<PopupWidgetState>{
                 value: DataCache.getNeedFamilyFriendlyComments()!,
                 onChanged: (b){
                   DataCache.setNeedFamilyFriendlyComments(b ? 1 : 0);
+                  HapticFeedback.lightImpact();
                   if(mounted) {setState((){});}
                 },
                 activeColor: Colors.white,
@@ -424,6 +434,7 @@ class PopupWidget extends State<PopupWidgetState>{
                 value: DataCache.getNeedExamNotifications()!,
                 onChanged: (b){
                   DataCache.setNeedExamNotifications(b ? 1 : 0);
+                  HapticFeedback.lightImpact();
                   if(b){
                     HomePageState.setupExamNotifications();
                   }
@@ -479,6 +490,7 @@ class PopupWidget extends State<PopupWidgetState>{
                 value: DataCache.getNeedClassNotifications()!,
                 onChanged: (b){
                   DataCache.setNeedClassNotifications(b ? 1 : 0);
+                  HapticFeedback.lightImpact();
                   if(b){
                     HomePageState.setupClassesNotifications();
                   }
@@ -534,6 +546,7 @@ class PopupWidget extends State<PopupWidgetState>{
                 value: DataCache.getNeedPaymentsNotifications()!,
                 onChanged: (b){
                   DataCache.setNeedPaymentsNotifications(b ? 1 : 0);
+                  HapticFeedback.lightImpact();
                   if(b){
                     HomePageState.setupPaymentsNotifications();
                   }
@@ -589,6 +602,7 @@ class PopupWidget extends State<PopupWidgetState>{
                 value: DataCache.getNeedPeriodsNotifications()!,
                 onChanged: (b){
                   DataCache.setNeedPeriodsNotifications(b ? 1 : 0);
+                  HapticFeedback.lightImpact();
                   if(b){
                     HomePageState.setupPeriodsNotifications();
                   }
@@ -658,13 +672,88 @@ class PopupWidget extends State<PopupWidgetState>{
             }
             PopupWidgetHandler._instance!.callback(null);
             PopupWidgetHandler.closePopup(true);
+            HapticFeedback.lightImpact();
           },
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),
           ),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 15),
-            child: const Text('Mehet',
+            child: const Text('Értékelem',
+              style: TextStyle(
+                color: Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0),
+                fontWeight: FontWeight.w900,
+                fontSize: 18.0,
+              ),
+            ),
+          ),
+        ));
+        return list;
+      case 3:
+        list.add(const EmojiRichText(
+          text: "💌 Üzenet 💌",
+          defaultStyle: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+            fontSize: 22.0,
+          ),
+          emojiStyle: TextStyle(
+              color: Colors.white,
+              fontSize: 19.0,
+              fontFamily: "Noto Color Emoji"
+          ),
+        ));
+        list.add(const SizedBox(height: 3));
+        list.add(Container(
+          color: Colors.white.withOpacity(0.3),
+          margin: const EdgeInsets.symmetric(vertical: 10),
+          height: 2,
+        ));
+
+        list.add(SelectableText.rich(
+          TextSpan(
+            text: 'Tárgy: ${MailPopupDisplayTexts.title}',
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+              fontSize: 20
+            ),
+          ),
+          textAlign: TextAlign.start,
+        ));
+        list.add(const SizedBox(height: 20));
+        list.add(SelectableText.rich(
+          TextSpan(
+            text: '',
+            children: MailPopupDisplayTexts.description,
+            style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w400,
+                fontSize: 14
+            ),
+          ),
+          textAlign: TextAlign.start,
+        ));
+
+        list.add(const SizedBox(height: 20));
+        list.add(FilledButton(
+          onPressed: (){
+            if(!PopupWidgetHandler._instance!._inUse || !mounted){
+              return;
+            }
+            PopupWidgetHandler._instance!.callback(null);
+            PopupWidgetHandler.closePopup(true);
+            HapticFeedback.lightImpact();
+            Future.delayed(Duration.zero, ()async{
+              await MailRequest.setMailRead(MailPopupDisplayTexts.mailID);
+            });
+          },
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),
+          ),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 15),
+            child: const Text('Ok',
               style: TextStyle(
                 color: Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0),
                 fontWeight: FontWeight.w900,

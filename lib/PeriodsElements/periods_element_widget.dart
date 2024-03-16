@@ -198,7 +198,7 @@ class PeriodsElementWidget extends StatelessWidget{
                       Text(
                         formattedStartTimeYear,
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.4),
+                          color: Colors.white.withOpacity(0.55),
                           fontWeight: FontWeight.w400,
                           fontSize: 11.0,
                         ),
@@ -226,7 +226,7 @@ class PeriodsElementWidget extends StatelessWidget{
                     Text(
                       formattedEndTimeYear,
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.4),
+                        color: Colors.white.withOpacity(0.55),
                         fontWeight: FontWeight.w400,
                         fontSize: 11.0,
                       ),

@@ -6,6 +6,7 @@
   import 'dart:typed_data';
   import 'package:flutter/material.dart';
   import 'package:http/http.dart' as http;
+import 'package:neptun2/Misc/clickable_text_span.dart';
   import '../storage.dart' as storage;
   
   class URLs{
@@ -18,6 +19,7 @@
     static const String CURRICULUMS_URL = "/GetCurriculums";
     static const String MARKBOOK_URL = "/GetMarkbookData";
     static const String MESSAGES_URL = "/GetMessages";
+    static const String MESSAGE_SET_READ = "/SetReadedMessage";
   }
   
   class _APIRequest{
@@ -182,6 +184,7 @@
         return list;
       }
       List<dynamic> sublist = map['calendarData'];
+      //debug.log(sublist.toString());
       final numberRegex = RegExp(r'\d+');
       for(var item in sublist){
         map = item as Map<String, dynamic>;
@@ -472,29 +475,35 @@
   }
 
   class MailRequest{
-    static Future<List<MailEntry>?> getMails() async{
+    static Future<List<MailEntry>?> getMails(int page) async{
       if(storage.DataCache.getIsDemoAccount()!){
         final now = DateTime.now();
         return <MailEntry>[
-          MailEntry('Tárgy', 'Szöveg', 'DEMO feladó', now.subtract(const Duration(hours: 1)).millisecondsSinceEpoch, false),
-          MailEntry('DEMO', 'Demo Demo Demo\n\n\nDEmo demo', 'DEMO feladó', now.subtract(const Duration(hours: 2)).millisecondsSinceEpoch, false),
-          MailEntry('DEMO', 'Demo Demo Demo\n\n\nDEmo demo', 'DEMO feladó', now.subtract(const Duration(hours: 23)).millisecondsSinceEpoch, true),
-          MailEntry('DEMO', 'Demo Demo Demo\n\n\nDEmo demo', 'DEMO feladó', now.subtract(const Duration(days: 10)).millisecondsSinceEpoch, true),
-          MailEntry('DEMO', 'Demo Demo Demo\n\n\nDEmo demo', 'DEMO feladó', now.subtract(const Duration(days: 100)).millisecondsSinceEpoch, false),
-          MailEntry('DEMO', 'Demo Demo Demo\n\n\nDEmo demo', 'DEMO feladó', now.subtract(const Duration(days: 370)).millisecondsSinceEpoch, true),
+          MailEntry('Tárgy', 'Szöveg', 'DEMO feladó', now.subtract(const Duration(hours: 1)).millisecondsSinceEpoch, false, 0),
+          MailEntry('DEMO', 'Demo Demo Demo\n\n\nDEmo demo', 'DEMO feladó', now.subtract(const Duration(hours: 2)).millisecondsSinceEpoch, false, 0),
+          MailEntry('DEMO', 'Demo Demo Demo\n\n\nDEmo demo', 'DEMO feladó', now.subtract(const Duration(hours: 23)).millisecondsSinceEpoch, true, 0),
+          MailEntry('DEMO', 'Demo Demo Demo\n\n\nDEmo demo', 'DEMO feladó', now.subtract(const Duration(days: 10)).millisecondsSinceEpoch, true, 0),
+          MailEntry('DEMO', 'Demo Demo Demo\n\n\nDEmo demo', 'DEMO feladó', now.subtract(const Duration(days: 100)).millisecondsSinceEpoch, false, 0),
+          MailEntry('DEMO', 'Demo Demo Demo\n\n\nDEmo demo', 'DEMO feladó', now.subtract(const Duration(days: 370)).millisecondsSinceEpoch, true, 0),
         ];
       }
 
-      final request = await _getMailJson();
+      final request = await _getMailJson(page);
       List<MailEntry> mails = getMailEntrysJson(request);
       return mails;
     }
 
-    static Future<String> _getMailJson()async{
+    static Future<String> _getMailJson(int page)async{
       final username = storage.DataCache.getUsername();
       final password = storage.DataCache.getPassword();
       final url = Uri.parse(storage.DataCache.getInstituteUrl()! + URLs.MESSAGES_URL);
-      final json = _APIRequest.getGenericPostData(username!, password!);
+      //final json = _APIRequest.getGenericPostData(username!, password!);
+      final json =
+      '{'
+      '"UserLogin":"$username",'
+      '"Password":"$password",'
+      '"CurrentPage":$page'
+      '}';
       final request = await _APIRequest.postRequest(url, json);
       return request;
     }
@@ -503,9 +512,31 @@
       List<MailEntry> mails = [];
       final result = conv.json.decode(json)['MessagesList'] as List<dynamic>;
       for(var item in result){
-        mails.add(MailEntry(item['Subject'], item['Detail'], item['Name'], int.parse(item['SendDate'].toString().replaceAll('\/Date(', '').replaceAll(')\/', '')), !item['IsNew']));
+        mails.add(MailEntry(item['Subject'], removeBloatFromMail(item['Detail']), item['Name'], int.parse(item['SendDate'].toString().replaceAll('\/Date(', '').replaceAll(')\/', '')), !item['IsNew'], item['PersonMessageId']));
       }
       return mails;
+    }
+
+    static String removeBloatFromMail(String raw){
+      var san = raw.trim();
+      san = san.replaceAll(RegExp(r'\.\w+\{[^}]*\}'), '');
+      return san.trim();
+    }
+
+    static Future<void> setMailRead(int id)async{
+      if(storage.DataCache.getIsDemoAccount()!){
+        return;
+      }
+      final username = storage.DataCache.getUsername();
+      final password = storage.DataCache.getPassword();
+      final url = Uri.parse(storage.DataCache.getInstituteUrl()! + URLs.MESSAGE_SET_READ);
+      final json =
+          '{'
+          '"UserLogin":"$username",'
+          '"Password":"$password",'
+          '"PersonMessageId":$id,'
+          '}';
+      final request = await _APIRequest.postRequest(url, json);
     }
   }
   
@@ -745,16 +776,17 @@
     String senderName;
     int sendDateMs;
     bool isRead;
-    MailEntry(this.subject, this.detail, this.senderName, this.sendDateMs, this.isRead);
+    int ID;
+    MailEntry(this.subject, this.detail, this.senderName, this.sendDateMs, this.isRead, this.ID);
 
     @override
     String toString() {
-      return '$subject\u0000$detail\u0000$senderName\u0000$sendDateMs\u0000$isRead';
+      return '$subject\u0000$detail\u0000$senderName\u0000$sendDateMs\u0000$isRead\u0000$ID';
     }
 
     MailEntry fillWithExisting(String existing){
       var data = existing.split('\u0000');
-      if(data.isEmpty || data.length < 5){
+      if(data.isEmpty || data.length < 6){
         return this;
       }
       subject = data[0];
@@ -762,78 +794,83 @@
       senderName = data[2];
       sendDateMs = int.parse(data[3]);
       isRead = bool.parse(data[4]);
+      ID = int.parse(data[5]);
       return this;
     }
   }
   
-  class Generic{
-    static String reactionForAvg(double avg){
-      if(avg >= 5.0){
+  class Generic {
+    static String reactionForAvg(double avg) {
+      if (avg >= 5.0) {
         return "💀";
       }
-      else if(avg >= 4.25){
+      else if (avg >= 4.25) {
         return "🤓";
       }
-      else if(avg >= 3.75){
+      else if (avg >= 3.75) {
         return "😌";
       }
-      else if(avg >= 2.75){
+      else if (avg >= 2.75) {
         return "😐";
       }
-      else if(avg >= 2){
+      else if (avg >= 2) {
         return "😬";
       }
-      else if(avg > 0){
+      else if (avg > 0) {
         return "🤡";
       }
-      else{
+      else {
         return '🤗';
       }
     }
 
-    static String monthToText(int month){
-      switch (month){
+    static String monthToText(int month) {
+      switch (month) {
         case 1:
-          return "Január";
+          return "január";
         case 2:
-          return "Február";
+          return "február";
         case 3:
-          return "Március";
+          return "március";
         case 4:
-          return "Április";
+          return "április";
         case 5:
-          return "Május";
+          return "május";
         case 6:
-          return "Június";
+          return "június";
         case 7:
-          return "Július";
+          return "július";
         case 8:
-          return "Augusztus";
+          return "augusztus";
         case 9:
-          return "Szeptember";
+          return "szeptember";
         case 10:
-          return "Október";
+          return "október";
         case 11:
-          return "November";
+          return "november";
         case 12:
-          return "December";
+          return "december";
       }
       return "NULL";
     }
-  
-    static String capitalizePeriodText(String periodName){
-      final chars = periodName.toLowerCase().trim().characters.toList();
+
+    static String capitalizePeriodText(String periodName) {
+      final chars = periodName
+          .toLowerCase()
+          .trim()
+          .characters
+          .toList();
       String str = '';
       int idx = 0;
       bool setNexttoCapitalize = false;
-      for(var item in chars){
-        if(idx == 0 || setNexttoCapitalize) {
+      for (var item in chars) {
+        if (idx == 0 || setNexttoCapitalize) {
           str += item.toUpperCase();
           idx++;
           setNexttoCapitalize = false;
           continue;
         }
-        if(item == ' '){
+        if (item == ' ') {
           setNexttoCapitalize = true;
         }
         str += item;
@@ -841,11 +878,11 @@
       }
       return str;
     }
-  
-    static String randomLoadingComment(bool familyFriendlyMode){
-      if(!familyFriendlyMode){
+
+    static String randomLoadingComment(bool familyFriendlyMode) {
+      if (!familyFriendlyMode) {
         final gen = Random().nextInt(100) % 7;
-        switch (gen){
+        switch (gen) {
           case 0:
             return 'Elfüstölne a telefonod, ha gyorsabb lenne...';
           case 1:
@@ -865,7 +902,7 @@
         }
       }
       final gen = Random().nextInt(100) % 12;
-      switch(gen){
+      switch (gen) {
         case 0:
           return 'Úgy dolgoznak a Neptun szerverek, mint egy átlagos államilag finanszírozott útépítés...';
         case 1:
@@ -893,6 +930,34 @@
         default:
           return 'Neptun 2';
       }
+    }
+
+    static List<InlineSpan> textToInlineSpan(String text) {
+      List<InlineSpan> spans = [];
+
+      final pattern = RegExp(r'<a[^>]*>(.*?)<\/a>');
+
+      // Split the text at anchor tags using the regex pattern
+      List<String> matches = pattern.allMatches(text)
+          .map((m) => m.group(0)!)
+          .toList();
+      List<String> parts = text.split(pattern);
+
+      for (int i = 0; i < parts.length; i++) {
+        spans.add(TextSpan(text: parts[i]));
+        if (i < matches.length) {
+          final pattern2 = RegExp(r'>(.*?)<\/a>');
+          final match = pattern2.firstMatch(matches[i]);
+          final newText = match!.group(1)!;
+          
+          final isMailTo = newText.contains('@') && !newText.contains('https://');
+
+          spans.add(ClickableTextSpan.getNewClickableSpan(
+              ClickableTextSpan.getNewOpenLinkCallback(isMailTo ? 'mailto:$newText' : newText), newText,
+              ClickableTextSpan.getStockStyle()));
+        }
+      }
+      return spans;
     }
   }
   

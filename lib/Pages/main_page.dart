@@ -5,6 +5,7 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
@@ -142,6 +143,32 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     _fbTween = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(parent: _fbController, curve: Curves.decelerate),
     );
+
+    currentMailPageController = ScrollController();
+    currentMailPageController.addListener(() {
+      //debug.log(currentMailPageController.position.atEdge.toString() + " " + currentMailPageController.position.userScrollDirection.toString());
+      if(currentMailPageController.position.atEdge && currentMailPageController.position.userScrollDirection == ScrollDirection.reverse){
+        if(currentMailLoadingDebounce){
+          return;
+        }
+        currentMailLoadingDebounce = true;
+        Future.delayed(Duration.zero, ()async{
+          setState((){
+            currentMailPage++;
+          });
+          await fetchMails(force: true);
+          mailList.add(Container(
+            height: 1,
+            width: MediaQuery.of(context).size.width,
+            margin: const EdgeInsets.symmetric(horizontal: 30),
+            color: Colors.white.withOpacity(.3),
+          ));
+          setupMails();
+        }).whenComplete((){
+          currentMailLoadingDebounce = false;
+        });
+      }
+    });
 
     AppNotifications.initialize();
     Future.delayed(Duration.zero,() async{
@@ -317,6 +344,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     setState(() {
       mailEntries.clear();
       mailList.clear();
+      currentMailPage = 1;
+      currentMailLoadingDebounce = false;
     });
   }
 
@@ -464,7 +493,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       final daysRemaining = (Duration(milliseconds: item.dueDateMs) - Duration(milliseconds: now.millisecondsSinceEpoch)).inDays;
       final time = DateTime.fromMillisecondsSinceEpoch(item.dueDateMs);
       for(int i = 0; i <= daysRemaining; i++){
-        await AppNotifications.scheduleNotification('Befizetés', '${item.ammount}Ft-al lógsz. Fizesd be: ${daysRemaining > 61 ? "(${time.year})" : ""} ${api.Generic.monthToText(time.month)} ${time.day}-ig!', DateTime(now.year, now.month, now.day + i, 11, 00), 2);
+        await AppNotifications.scheduleNotification('Befizetés', '${item.ammount}Ft-al lógsz. Fizesd be: ${daysRemaining > 61 ? "(${time.year})" : ""} ${api.Generic.monthToText(time.month)}. ${time.day}.-ig!', DateTime(now.year, now.month, now.day + i, 11, 00), 2);
       }
     }
   }
@@ -989,13 +1018,22 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     int prevSemester = -1;
 
     List<api.PeriodEntry> expiredPeriods = [];
-
+    bool hasFuturePeriodLine = false;
     //Map<String, List<api.PeriodType>> values = Map<String, List<api.PeriodType>>.identity();
     for(var item in periodEntries){
       if(item.isActive){
         countActivePeriods++;
       }
       else if(item.endEpoch > DateTime.now().millisecondsSinceEpoch){
+        if(!hasFuturePeriodLine){
+          hasFuturePeriodLine = true;
+          periodList.add(
+              const Padding(padding: EdgeInsets.only(top: 10))
+          );
+          periodList.add(
+              _getSeparatorLine('Jövőbeli')
+          );
+        }
         countFuturePeriods++;
       }
       else{
@@ -1029,9 +1067,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       }
       periodList.add(priods.PeriodsElementWidget(
         displayName: api.Generic.capitalizePeriodText(item.name),
-        formattedStartTime: '${api.Generic.monthToText(starttime.month)} ${starttime.day}',
+        formattedStartTime: '${api.Generic.monthToText(starttime.month)}. ${starttime.day}.',
         formattedStartTimeYear: '${starttime.year}',
-        formattedEndTime: '${api.Generic.monthToText(endtime.month)} ${endtime.day}',
+        formattedEndTime: '${api.Generic.monthToText(endtime.month)}. ${endtime.day}.',
         formattedEndTimeYear: '${endtime.year}',
         isActive: item.isActive,
         periodType: item.type,
@@ -1049,7 +1087,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     );
 
     periodList.add(
-        _getSeparatorLine('Lejárt időszakok', expired: true)
+        _getSeparatorLine('Lejárt', expired: true)
     );
     
     for(var item in expiredPeriods){
@@ -1057,9 +1095,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       final endtime = DateTime.fromMillisecondsSinceEpoch(item.endEpoch);
       periodList.add(priods.PeriodsElementWidget(
         displayName: api.Generic.capitalizePeriodText(item.name),
-        formattedStartTime: '${api.Generic.monthToText(starttime.month)} ${starttime.day}',
+        formattedStartTime: '${api.Generic.monthToText(starttime.month)}. ${starttime.day}.',
         formattedStartTimeYear: '${starttime.year}',
-        formattedEndTime: '${api.Generic.monthToText(endtime.month)} ${endtime.day}',
+        formattedEndTime: '${api.Generic.monthToText(endtime.month)}. ${endtime.day}.',
         formattedEndTimeYear: '${endtime.year}',
         isActive: item.isActive,
         periodType: item.type,
@@ -1105,7 +1143,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         child: const Center(
           child: EmojiRichText(
-            text: '😥Nincs Leveled😥',
+            text: '😥Nincs Üzeneted😥',
             defaultStyle: TextStyle(
               color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
               fontWeight: FontWeight.w900,
@@ -1122,11 +1160,21 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     }
 
     unreadMailCount = 0;
+    int idx = 0;
     for(var item in mailEntries){
-      mailList.add(MailElementWidget(subject: item.subject, details: item.detail, sender: item.senderName, sendTime: item.sendDateMs, isRead: item.isRead));
+      mailList.add(MailElementWidget(subject: item.subject, details: item.detail, sender: item.senderName, sendTime: item.sendDateMs, isRead: item.isRead, mailID: item.ID));
       if(!item.isRead){
         unreadMailCount++;
       }
+      if(mailEntries.length == ++idx){
+        continue;
+      }
+      mailList.add(Container(
+        height: 1,
+        width: MediaQuery.of(context).size.width,
+        margin: const EdgeInsets.symmetric(horizontal: 30),
+        color: Colors.white.withOpacity(.3),
+      ));
     }
   }
 
@@ -1292,29 +1340,37 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     storage.DataCache.setHasCachedPeriods(1);
   }
 
-  Future<void> fetchMails()async{
+  int currentMailPage = 1;
+  bool currentMailLoadingDebounce = false;
+  late ScrollController currentMailPageController;
+  Future<void> fetchMails({bool force = false})async{
     bool hasCachedMails = storage.DataCache.getHasCachedMail() ?? false;
 
     final cacheTime = await storage.getString('MailCacheTime');
 
-    if(!hasCachedMails && !storage.DataCache.getHasNetwork()){
+    if(!hasCachedMails && !storage.DataCache.getHasNetwork() && !force){
       return;
     }
 
-    if(hasCachedMails && cacheTime != null && (DateTime.now().millisecondsSinceEpoch - DateTime.parse(cacheTime).millisecondsSinceEpoch) < const Duration(hours: 24).inMilliseconds) {
+    if(!force && hasCachedMails && cacheTime != null && (DateTime.now().millisecondsSinceEpoch - DateTime.parse(cacheTime).millisecondsSinceEpoch) < const Duration(hours: 24).inMilliseconds) {
       final len = await storage.getInt('CachedMailsLength');
       for(int i = 0; i < len!; i++){
         final calEntry = await storage.getString('CachedMails_$i');
-        mailEntries.add(api.MailEntry("ERROR", "ERROR", "ERROR", 0, false).fillWithExisting(calEntry!));
+        mailEntries.add(api.MailEntry("ERROR", "ERROR", "ERROR", 0, false, 0).fillWithExisting(calEntry!));
       }
       return;
     }
 
-    final request = await api.MailRequest.getMails();
+    final request = await api.MailRequest.getMails(currentMailPage);
     if(request != null && request.isEmpty){
       return;
     }
     mailEntries = request!;
+    //debug.log(request!.toString());
+
+    if(force){
+      return;
+    }
 
     storage.saveInt('CachedMailsLength', mailEntries.length);
     //cache calendar
@@ -1430,7 +1486,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
     final timepassSinceSepOne = Duration(milliseconds: (yearlessNow.millisecondsSinceEpoch - sepOne.millisecondsSinceEpoch));
     final weeksPassed = timepassSinceSepOne.inDays / 7;
-    final isWeekend = now.weekday == DateTime.saturday || now.weekday == DateTime.sunday ? 1 : 0;
+    //final isWeekend = now.weekday == DateTime.saturday || now.weekday == DateTime.sunday ? 1 : 0;
 
     /*
     // Find the most recent Monday on or before the current date
@@ -1441,7 +1497,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
     return elapsedWeeks + currentWeekOffset - 1 + isWeekend;*/
 
-    return ((weeksPassed.floor() % 52) + currentWeekOffset) - isWeekend;// + isWeekend;
+    return ((weeksPassed.floor() % 52) + currentWeekOffset);// - isWeekend;// + isWeekend;
   }
 
   @override
@@ -1465,6 +1521,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     mailList.clear();
     mailEntries.clear();
     _fbController.dispose();
+    currentMailPageController.dispose();
   }
 
   static Container getSeparatorLine(BuildContext context){
@@ -1731,11 +1788,12 @@ class MarkbookPageWidget extends StatelessWidget{
                             Visibility(
                               visible: homePage.markbookList.isNotEmpty,
                               child: Container(
-                                margin: const EdgeInsets.only(top: 15, left: 15, right: 15),
-                                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                                margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
+                                padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 12),
+                                width: MediaQuery.of(context).size.width,
                                 decoration: BoxDecoration(
                                   color: Colors.white.withOpacity(0.03),
-                                  borderRadius: BorderRadius.circular(40),
+                                  borderRadius: BorderRadius.circular(20),
                                   //border: Border.all(color: Colors.white.withOpacity(.2), width: 1)
                                 ),
                                 child: Column(
@@ -1748,11 +1806,11 @@ class MarkbookPageWidget extends StatelessWidget{
                                       defaultStyle: const TextStyle(
                                         color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
                                         fontWeight: FontWeight.w600,
-                                        fontSize: 14.0,
+                                        fontSize: 13.0,
                                       ),
                                       emojiStyle: const TextStyle(
                                           color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
-                                          fontSize: 16.0,
+                                          fontSize: 14.0,
                                           fontFamily: "Noto Color Emoji"
                                       ),
                                     ),
@@ -1761,11 +1819,11 @@ class MarkbookPageWidget extends StatelessWidget{
                                       defaultStyle: const TextStyle(
                                         color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
                                         fontWeight: FontWeight.w600,
-                                        fontSize: 14.0,
+                                        fontSize: 13.0,
                                       ),
                                       emojiStyle: const TextStyle(
                                           color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
-                                          fontSize: 16.0,
+                                          fontSize: 14.0,
                                           fontFamily: "Noto Color Emoji"
                                       ),
                                     ),
@@ -1995,7 +2053,7 @@ class MailsPageWidget extends StatelessWidget{
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                topnav.TopNavigatorWidget(homePage: homePage, displayString: "Üzenetek", smallHintText: "${homePage.unreadMailCount} olvasatlan üzeneted van", loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
+                topnav.TopNavigatorWidget(homePage: homePage, displayString: "Üzenetek", smallHintText: "${homePage.unreadMailCount} olvasatlan üzeneted van 💌", loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
                 HomePageState.getSeparatorLine(context),
                 Expanded(
                     child: RefreshIndicator(
@@ -2003,6 +2061,7 @@ class MailsPageWidget extends StatelessWidget{
                         child: SingleChildScrollView(
                           physics: const AlwaysScrollableScrollPhysics(),
                           scrollDirection: Axis.vertical,
+                          controller: homePage.currentMailPageController,
                           child: Container(
                             margin: const EdgeInsets.all(15),
                             decoration: BoxDecoration(
