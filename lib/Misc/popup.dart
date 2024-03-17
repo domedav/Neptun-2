@@ -712,7 +712,7 @@ class PopupWidget extends State<PopupWidgetState>{
 
         list.add(SelectableText.rich(
           TextSpan(
-            text: 'Tárgy: ${MailPopupDisplayTexts.title}',
+            text: MailPopupDisplayTexts.title,
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w600,

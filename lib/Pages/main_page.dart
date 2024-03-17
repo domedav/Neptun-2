@@ -114,6 +114,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   int countExpiredPeriods = 0;
 
   int unreadMailCount = 0;
+  int totalMailCount = 0;
+  int allLoadedMailCount = 0;
 
   double bottomNavSwitchValue = 0.0;
   bool bottomNavCanNavigate = true;
@@ -147,7 +149,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     currentMailPageController = ScrollController();
     currentMailPageController.addListener(() {
       //debug.log(currentMailPageController.position.atEdge.toString() + " " + currentMailPageController.position.userScrollDirection.toString());
-      if(currentMailPageController.position.atEdge && currentMailPageController.position.userScrollDirection == ScrollDirection.reverse){
+      if(currentMailPageController.position.atEdge && currentMailPageController.position.userScrollDirection == ScrollDirection.reverse && allLoadedMailCount < totalMailCount){
         if(currentMailLoadingDebounce){
           return;
         }
@@ -155,6 +157,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         Future.delayed(Duration.zero, ()async{
           setState((){
             currentMailPage++;
+            //mailList.add(Progress());
           });
           await fetchMails(force: true);
           mailList.add(Container(
@@ -346,6 +349,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       mailList.clear();
       currentMailPage = 1;
       currentMailLoadingDebounce = false;
+      unreadMailCount = 0;
+      totalMailCount = 0;
+      allLoadedMailCount = 0;
     });
   }
 
@@ -1159,22 +1165,34 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       ));
     }
 
-    unreadMailCount = 0;
     int idx = 0;
+    var prevDate = DateTime.now();
+    mailList.add(
+        const Padding(padding: EdgeInsets.only(top: 10))
+    );
     for(var item in mailEntries){
-      mailList.add(MailElementWidget(subject: item.subject, details: item.detail, sender: item.senderName, sendTime: item.sendDateMs, isRead: item.isRead, mailID: item.ID));
-      if(!item.isRead){
+      allLoadedMailCount++;
+      final date = DateTime.fromMillisecondsSinceEpoch(item.sendDateMs);
+      final currDate = DateTime(date.year, date.month, date.day);
+      if(mailEntries.length != ++idx && prevDate != currDate){
+        prevDate = currDate;
+        mailList.add(_getSeparatorLine('${currDate.year}. ${api.Generic.monthToText(date.month)}. ${date.day}.'));
+      }
+      mailList.add(MailElementWidget(subject: item.subject, details: item.detail, sender: item.senderName, sendTime: item.sendDateMs, isRead: item.isRead, mailID: item.ID, callback: (element){
+        setState(() {
+          if(element.isRead){
+            return;
+          }
+          final indx = mailList.indexOf(element);
+          mailList.remove(element);
+          mailList.insert(indx, MailElementWidget(subject: element.subject, details: element.details, sender: element.sender, sendTime: element.sendTime, isRead: true, mailID: element.mailID, callback: (_){}));
+          unreadMailCount--;
+          storage.saveInt('CachedMailsUnread', unreadMailCount);
+        });
+      },));
+      /*if(!item.isRead){
         unreadMailCount++;
-      }
-      if(mailEntries.length == ++idx){
-        continue;
-      }
-      mailList.add(Container(
-        height: 1,
-        width: MediaQuery.of(context).size.width,
-        margin: const EdgeInsets.symmetric(horizontal: 30),
-        color: Colors.white.withOpacity(.3),
-      ));
+      }*/
     }
   }
 
@@ -1354,6 +1372,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
     if(!force && hasCachedMails && cacheTime != null && (DateTime.now().millisecondsSinceEpoch - DateTime.parse(cacheTime).millisecondsSinceEpoch) < const Duration(hours: 24).inMilliseconds) {
       final len = await storage.getInt('CachedMailsLength');
+      unreadMailCount = (await storage.getInt('CachedMailsUnread')) ?? 0;
+      totalMailCount = (await storage.getInt('CachedMailsTotal')) ?? 0;
       for(int i = 0; i < len!; i++){
         final calEntry = await storage.getString('CachedMails_$i');
         mailEntries.add(api.MailEntry("ERROR", "ERROR", "ERROR", 0, false, 0).fillWithExisting(calEntry!));
@@ -1371,8 +1391,14 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     if(force){
       return;
     }
+    
+    final nums = await api.MailRequest.getUnreadMessagesAndAllMessages();
+    unreadMailCount = nums[0];
+    totalMailCount = nums[1];
 
     storage.saveInt('CachedMailsLength', mailEntries.length);
+    storage.saveInt('CachedMailsUnread', nums[0]);
+    storage.saveInt('CachedMailsTotal', nums[1]);
     //cache calendar
     for (int i = 0; i < mailEntries.length; i++) {
       storage.saveString('CachedMails_$i', mailEntries[i].toString());
@@ -1486,7 +1512,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
     final timepassSinceSepOne = Duration(milliseconds: (yearlessNow.millisecondsSinceEpoch - sepOne.millisecondsSinceEpoch));
     final weeksPassed = timepassSinceSepOne.inDays / 7;
-    //final isWeekend = now.weekday == DateTime.saturday || now.weekday == DateTime.sunday ? 1 : 0;
+    final isWeekend = /*now.weekday == DateTime.saturday || */now.weekday == DateTime.sunday ? 1 : 0;
 
     /*
     // Find the most recent Monday on or before the current date
@@ -1497,7 +1523,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
     return elapsedWeeks + currentWeekOffset - 1 + isWeekend;*/
 
-    return ((weeksPassed.floor() % 52) + currentWeekOffset);// - isWeekend;// + isWeekend;
+    return ((weeksPassed.floor() % 52) + currentWeekOffset) - isWeekend;// + isWeekend;
   }
 
   @override

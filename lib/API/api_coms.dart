@@ -475,6 +475,15 @@ import 'package:neptun2/Misc/clickable_text_span.dart';
   }
 
   class MailRequest{
+    static Future<List<int>> getUnreadMessagesAndAllMessages()async{
+      List<int> list = [];
+      final json = await _getMailJson(0);
+      var result = conv.json.decode(json)['NewMessagesNumber'];
+      list.add(result);
+      result = conv.json.decode(json)['TotalRowCount'];
+      list.add(result);
+      return list;
+    }
     static Future<List<MailEntry>?> getMails(int page) async{
       if(storage.DataCache.getIsDemoAccount()!){
         final now = DateTime.now();
@@ -950,7 +959,7 @@ import 'package:neptun2/Misc/clickable_text_span.dart';
           final match = pattern2.firstMatch(matches[i]);
           final newText = match!.group(1)!;
           
-          final isMailTo = newText.contains('@') && !newText.contains('https://');
+          final isMailTo = newText.contains('@') && (!newText.contains('https://') || newText.contains('http://'));
 
           spans.add(ClickableTextSpan.getNewClickableSpan(
               ClickableTextSpan.getNewOpenLinkCallback(isMailTo ? 'mailto:$newText' : newText), newText,

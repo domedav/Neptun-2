@@ -1,11 +1,7 @@
 import 'dart:core';
-import 'dart:developer';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:neptun2/API/api_coms.dart';
-import 'package:neptun2/Misc/clickable_text_span.dart';
 import 'package:neptun2/Misc/popup.dart';
 
 import '../Misc/emojirich_text.dart';
@@ -23,8 +19,9 @@ class MailElementWidget extends StatelessWidget{
   final sendTime;
   final isRead;
   final mailID;
+  final Function(MailElementWidget) callback;
 
-  const MailElementWidget({super.key, required this.subject, required this.details, required this.sender, required this.sendTime, required this.isRead, required this.mailID});
+  const MailElementWidget({super.key, required this.subject, required this.details, required this.sender, required this.sendTime, required this.isRead, required this.mailID, required this.callback});
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +32,9 @@ class MailElementWidget extends StatelessWidget{
         MailPopupDisplayTexts.description = Generic.textToInlineSpan(details);
         MailPopupDisplayTexts.mailID = mailID;
 
-        PopupWidgetHandler(mode: 3, callback: (_){});
+        PopupWidgetHandler(mode: 3, callback: (_){
+          callback(this);
+        });
         PopupWidgetHandler.doPopup(context);
       },
       child: Container(
@@ -49,7 +48,7 @@ class MailElementWidget extends StatelessWidget{
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: [
-            Row(
+            /*Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -85,7 +84,7 @@ class MailElementWidget extends StatelessWidget{
                       Flexible(
                         flex: 2,
                         child: Text(
-                          'Dátum: ${date.year}. ${Generic.monthToText(date.month)}. ${date.day}. ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}',
+                          'Küldték: ${date.year}. ${Generic.monthToText(date.month)}. ${date.day}. ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}',
                           style: const TextStyle(
                             color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
                             fontWeight: FontWeight.w700,
@@ -98,40 +97,7 @@ class MailElementWidget extends StatelessWidget{
                   )
                 ),
               ],
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                EmojiRichText(
-                  text: isRead ? '📭' : '📬',
-                  defaultStyle: const TextStyle(
-                    color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
-                    fontWeight: FontWeight.w900,
-                    fontSize: 20.0,
-                  ),
-                  emojiStyle: const TextStyle(
-                      color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
-                      fontSize: 20.0,
-                      fontFamily: "Noto Color Emoji"
-                  ),
-                ),
-                const Padding(padding: EdgeInsets.symmetric(horizontal: 20)),
-                Flexible(
-                  flex: 2,
-                  child: Text(
-                    'Feladó: $sender',
-                    style: const TextStyle(
-                      color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
-                      fontWeight: FontWeight.w700,
-                      fontSize: 14.0,
-                    ),
-                    textAlign: TextAlign.start,
-                  ),
-                )
-              ],
-            ),
+            ),*/
             Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -162,9 +128,42 @@ class MailElementWidget extends StatelessWidget{
                 Flexible(
                   flex: 2,
                   child: Text(
-                    'Tárgy: $subject',
+                    '$subject',
                     style: const TextStyle(
                       color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 18.0,
+                    ),
+                    textAlign: TextAlign.start,
+                  ),
+                )
+              ],
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                EmojiRichText(
+                  text: isRead ? '📭' : '📬',
+                  defaultStyle: const TextStyle(
+                    color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                    fontWeight: FontWeight.w900,
+                    fontSize: 20.0,
+                  ),
+                  emojiStyle: const TextStyle(
+                      color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                      fontSize: 20.0,
+                      fontFamily: "Noto Color Emoji"
+                  ),
+                ),
+                const Padding(padding: EdgeInsets.symmetric(horizontal: 20)),
+                Flexible(
+                  flex: 2,
+                  child: Text(
+                    'Feladó: $sender',
+                    style: const TextStyle(
+                      color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
                       fontWeight: FontWeight.w700,
                       fontSize: 14.0,
                     ),
