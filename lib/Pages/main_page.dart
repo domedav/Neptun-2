@@ -157,16 +157,33 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         Future.delayed(Duration.zero, ()async{
           setState((){
             currentMailPage++;
-            //mailList.add(Progress());
+            mailList.add(Column(
+              children: [
+                const CircularProgressIndicator(
+                  color: Colors.white,
+                ),
+                const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+                Text(
+                 api.Generic.randomLoadingCommentMini(),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(.2),
+                    fontSize: 11,
+                    fontWeight: FontWeight.w300
+                  ),
+                ),
+                const Padding(padding: EdgeInsets.symmetric(vertical: 8)),
+              ],
+            ),);
           });
           await fetchMails(force: true);
-          mailList.add(Container(
+          /*mailList.add(Container(
             height: 1,
             width: MediaQuery.of(context).size.width,
             margin: const EdgeInsets.symmetric(horizontal: 30),
             color: Colors.white.withOpacity(.3),
-          ));
-          setupMails();
+          ));*/
+          setupMails(clear: true);
         }).whenComplete((){
           currentMailLoadingDebounce = false;
         });
@@ -380,9 +397,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     });
   }
 
-  void setupMails(){
+  void setupMails({bool clear = false}){
     setState(() {
-      _setupMails();
+      _setupMails(clearLoader: clear);
     });
   }
 
@@ -1142,7 +1159,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     }
   }
 
-  void _setupMails(){
+  void _setupMails({bool clearLoader = false}){
     if(mailEntries.isEmpty){
       mailList.add(Container(
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
@@ -1163,6 +1180,10 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
           ),
         ),
       ));
+    }
+
+    if(clearLoader){
+      mailList.removeAt(mailList.length-1);
     }
 
     int idx = 0;

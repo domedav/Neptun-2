@@ -1,6 +1,8 @@
 import 'dart:core';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:neptun2/API/api_coms.dart';
 import 'package:neptun2/Misc/popup.dart';
 
@@ -38,16 +40,101 @@ class MailElementWidget extends StatelessWidget{
         PopupWidgetHandler.doPopup(context);
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         width: MediaQuery.of(context).size.width,
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(16)),
           color: Colors.transparent // needed for gesture ontap hittest
         ),
-        child: Column(
+        child: Row(
           mainAxisSize: MainAxisSize.max,
           children: [
+            Expanded(
+              child: EmojiRichText(
+                text: isRead ? '📭' : '📬',
+                defaultStyle: const TextStyle(
+                  color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                  fontWeight: FontWeight.w900,
+                  fontSize: 20.0,
+                ),
+                emojiStyle: const TextStyle(
+                    color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                    fontSize: 20.0,
+                    fontFamily: "Noto Color Emoji"
+                ),
+              ),
+            ),
+            const Padding(padding: EdgeInsets.symmetric(horizontal: 12)),
+            Expanded(
+              flex: 10,
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        flex: 2,
+                        child: Text(
+                          '$subject',
+                          style: const TextStyle(
+                            color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                            fontWeight: FontWeight.w700,
+                            fontSize: 18.0,
+                          ),
+                          textAlign: TextAlign.start,
+                        ),
+                      )
+                    ],
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        flex: 2,
+                        child: Text(
+                          'Küldte: $sender',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 13.0,
+                          ),
+                          textAlign: TextAlign.start,
+                        ),
+                      )
+                    ],
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        flex: 2,
+                        child: Text(
+                          '${details.toString().replaceAll('\n', ' ')}...',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w300,
+                            fontSize: 13.0,
+                          ),
+                          textAlign: TextAlign.start,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            )
             /*Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -98,80 +185,6 @@ class MailElementWidget extends StatelessWidget{
                 ),
               ],
             ),*/
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Visibility(
-                  visible: false,
-                  maintainState: true,
-                  maintainSemantics: true,
-                  maintainInteractivity: true,
-                  maintainAnimation: true,
-                  maintainSize: true,
-                  child: EmojiRichText(
-                    text: '📬',
-                    defaultStyle: TextStyle(
-                      color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
-                      fontWeight: FontWeight.w900,
-                      fontSize: 20.0,
-                    ),
-                    emojiStyle: TextStyle(
-                        color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
-                        fontSize: 20.0,
-                        fontFamily: "Noto Color Emoji"
-                    ),
-                  ),
-                ),
-                const Padding(padding: EdgeInsets.symmetric(horizontal: 20)),
-                Flexible(
-                  flex: 2,
-                  child: Text(
-                    '$subject',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 18.0,
-                    ),
-                    textAlign: TextAlign.start,
-                  ),
-                )
-              ],
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                EmojiRichText(
-                  text: isRead ? '📭' : '📬',
-                  defaultStyle: const TextStyle(
-                    color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
-                    fontWeight: FontWeight.w900,
-                    fontSize: 20.0,
-                  ),
-                  emojiStyle: const TextStyle(
-                      color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
-                      fontSize: 20.0,
-                      fontFamily: "Noto Color Emoji"
-                  ),
-                ),
-                const Padding(padding: EdgeInsets.symmetric(horizontal: 20)),
-                Flexible(
-                  flex: 2,
-                  child: Text(
-                    'Feladó: $sender',
-                    style: const TextStyle(
-                      color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
-                      fontWeight: FontWeight.w700,
-                      fontSize: 14.0,
-                    ),
-                    textAlign: TextAlign.start,
-                  ),
-                )
-              ],
-            ),
           ],
         )
         /*Column(

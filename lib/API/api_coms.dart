@@ -940,6 +940,21 @@ import 'package:neptun2/Misc/clickable_text_span.dart';
           return 'Neptun 2';
       }
     }
+    static String randomLoadingCommentMini() {
+      final gen = Random().nextInt(100) % 4;
+      switch (gen) {
+        case 0:
+          return 'Egy pillanat...';
+        case 1:
+          return 'Alakul a molekula...';
+        case 2:
+          return 'Csak szépen lassan...';
+        case 3:
+          return 'Tölt valamit nagyon...';
+        default:
+          return 'Neptun 2';
+      }
+    }
 
     static List<InlineSpan> textToInlineSpan(String text) {
       List<InlineSpan> spans = [];
