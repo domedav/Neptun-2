@@ -611,7 +611,9 @@ import 'package:neptun2/Misc/clickable_text_span.dart';
     late String location;
     late String title;
     late bool isExam;
-  
+    late String subjectCode;
+    late String teacher;
+
     CalendarEntry(String start, String end, String loc, String rawTitle, this.isExam){
       startEpoch = int.parse(start);
       startEpoch = DateTime.fromMillisecondsSinceEpoch(startEpoch).subtract(const Duration(hours: 1)).millisecondsSinceEpoch; // need to offset
@@ -635,16 +637,36 @@ import 'package:neptun2/Misc/clickable_text_span.dart';
         // we couldnt find the real title
         title = rawTitle;
       }
+      
+      final regex2 = RegExp(r'\((.*?)\)');
+      final match2 = regex2.firstMatch(rawTitle);
+
+      if(match2 != null){
+        subjectCode = match2.group(1)!.trim().replaceAll('(', '').replaceAll(')', '');
+      }
+      else{
+        subjectCode = 'Nincs Adat';
+      }
+
+      final regex3 = RegExp(r'hét \((.*?)\)');
+      final match3 = regex3.firstMatch(rawTitle);
+
+      if(match3 != null){
+        teacher = match3.group(1)!.trim().replaceAll('(', '').replaceAll(')', '');
+      }
+      else{
+        teacher = 'Nincs Adat';
+      }
     }
   
     @override
     String toString() {
-      return '$startEpoch\n$endEpoch\n$location\n$title\n$isExam';
+      return '$startEpoch\n$endEpoch\n$location\n$title\n$isExam\n$teacher\n$subjectCode';
     }
   
     CalendarEntry fillWithExisting(String existing){
       var data = existing.split('\n');
-      if(data.isEmpty || data.length < 5){
+      if(data.isEmpty || data.length < 7){
         return this;
       }
       startEpoch = int.parse(data[0]);
@@ -652,6 +674,8 @@ import 'package:neptun2/Misc/clickable_text_span.dart';
       location = data[2];
       title = data[3];
       isExam = bool.parse(data[4]);
+      teacher = data[5];
+      subjectCode = data[6];
       return this;
     }
   }
@@ -941,16 +965,18 @@ import 'package:neptun2/Misc/clickable_text_span.dart';
       }
     }
     static String randomLoadingCommentMini() {
-      final gen = Random().nextInt(100) % 4;
+      final gen = Random().nextInt(100) % 5;
       switch (gen) {
         case 0:
-          return 'Egy pillanat...';
+          return '⟸ Egy pillanat...⟹';
         case 1:
-          return 'Alakul a molekula...';
+          return '⟸ Alakul a molekula...⟹';
         case 2:
-          return 'Csak szépen lassan...';
+          return '⟸ Csak szépen lassan...⟹';
         case 3:
-          return 'Tölt valamit nagyon...';
+          return '⟸ Tölt valamit nagyon...⟹';
+        case 4:
+          return '⟸ Mindjárt, csak lekérdezem...⟹';
         default:
           return 'Neptun 2';
       }

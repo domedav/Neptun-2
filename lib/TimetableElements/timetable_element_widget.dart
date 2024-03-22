@@ -1,10 +1,17 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../API/api_coms.dart' as api;
 import '../Misc/emojirich_text.dart';
+import '../Misc/popup.dart';
 import '../Pages/main_page.dart';
 
 typedef Callback = Future<void> Function();
+
+class TimetableCurrentlySelected{
+  static api.CalendarEntry? entry;
+}
 
 class TimetableElementWidget extends StatelessWidget{
 
@@ -54,96 +61,108 @@ class TimetableElementWidget extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
-      padding: isExam ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10) : null,
-      decoration: isExam ? BoxDecoration(
-        border: Border.all(
-          color: const Color.fromRGBO(0xBF, 0x86, 0x86, .5),
-          width: .75
+    return GestureDetector(
+      onTap: (){
+        if(isExam){
+          return;
+        }
+        TimetableCurrentlySelected.entry = entry;
+        PopupWidgetHandler(mode: 4, callback: (_){});
+        PopupWidgetHandler.doPopup(context);
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+        padding: isExam ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10) : null,
+        decoration: isExam ? BoxDecoration(
+          border: Border.all(
+            color: const Color.fromRGBO(0xBF, 0x86, 0x86, .5),
+            width: .75
+          ),
+          borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+          color: const Color.fromRGBO(0xBF, 0x86, 0x86, .05)
+        ) : const BoxDecoration(
+          color: Colors.transparent
         ),
-        borderRadius: const BorderRadius.all(Radius.circular(20.0)),
-        color: const Color.fromRGBO(0xBF, 0x86, 0x86, .05)
-      ) : null,
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            // Leftmost position
-            Container(
-              margin: const EdgeInsets.fromLTRB(0, 0, 30, 0),
-              child: !isExam ? Text(
-                "$position.",
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
-                  fontWeight: FontWeight.w900,
-                  fontSize: 26.0,
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              // Leftmost position
+              Container(
+                margin: const EdgeInsets.fromLTRB(0, 0, 30, 0),
+                child: !isExam ? Text(
+                  "$position.",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                    fontWeight: FontWeight.w900,
+                    fontSize: 26.0,
+                  ),
+                  maxLines: 1,
+                ) : const Icon(
+                    Icons.warning_rounded,
+                    color: Color.fromRGBO(0xBF, 0x86, 0x86, 1.0),
+                    size: 28.0,
                 ),
-                maxLines: 1,
-              ) : const Icon(
-                  Icons.warning_rounded,
-                  color: Color.fromRGBO(0xBF, 0x86, 0x86, 1.0),
-                  size: 28.0,
               ),
-            ),
-            // Center
-            Expanded(
-              flex: 2,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                  Text(
-                    location,
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.7),
-                      fontSize: 14.0,
+              // Center
+              Expanded(
+                flex: 2,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: Theme.of(context).textTheme.bodyLarge,
                     ),
-                  ),
-                ],
+                    Text(
+                      location,
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.7),
+                        fontSize: 14.0,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
 
-            // Rightmost position
-            Expanded(
-              flex: 1,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    displayStartTime,
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.7),
-                      fontWeight: FontWeight.w600,
-                      fontSize: !isExam ? 14.0 : 16.0,
+              // Rightmost position
+              Expanded(
+                flex: 1,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      displayStartTime,
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.7),
+                        fontWeight: FontWeight.w600,
+                        fontSize: !isExam ? 14.0 : 16.0,
+                      ),
                     ),
-                  ),
-                  !isExam ?
-                  Text(
-                    displayEndTime,
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.4),
-                      fontWeight: FontWeight.w300,
-                      fontSize: 12.0,
-                    ),
-                  ) : const SizedBox(),
-                ],
+                    !isExam ?
+                    Text(
+                      displayEndTime,
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.4),
+                        fontWeight: FontWeight.w300,
+                        fontSize: 12.0,
+                      ),
+                    ) : const SizedBox(),
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-      )
+            ],
+          ),
+        )
+      ),
     );
   }
 

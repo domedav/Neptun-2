@@ -107,7 +107,8 @@ class BottomNavigatorWidget extends StatelessWidget {
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
-        width: 65,
+        width: 60,
+        height: 60,
         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
         decoration: BoxDecoration(
           color: homePage.currentView == index

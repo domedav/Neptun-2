@@ -1,4 +1,5 @@
 import 'dart:core';
+import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,10 @@ class MailElementWidget extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    final date = DateTime.fromMillisecondsSinceEpoch(sendTime);
+    //final date = DateTime.fromMillisecondsSinceEpoch(sendTime);
+    final pattern = RegExp(r'<a[^>]*>(.*?)<\/a>');
+    List<String> parts = details.split(pattern);
+
     return GestureDetector(
       onTap: (){
         MailPopupDisplayTexts.title = subject;
@@ -119,7 +123,7 @@ class MailElementWidget extends StatelessWidget{
                       Flexible(
                         flex: 2,
                         child: Text(
-                          '${details.toString().replaceAll('\n', ' ')}...',
+                          '${(parts.join().toString()).replaceAll('\n', ' ').replaceAll('\t', ' ')}...',
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w300,

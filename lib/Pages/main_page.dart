@@ -167,7 +167,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
                  api.Generic.randomLoadingCommentMini(),
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.white.withOpacity(.2),
+                    color: Colors.white.withOpacity(.4),
                     fontSize: 11,
                     fontWeight: FontWeight.w300
                   ),

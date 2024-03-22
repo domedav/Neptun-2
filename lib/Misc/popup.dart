@@ -10,6 +10,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 import '../API/api_coms.dart';
 import '../MailElements/mail_element_widget.dart';
+import '../TimetableElements/timetable_element_widget.dart';
 import 'emojirich_text.dart';
 
 typedef Callback = void Function(dynamic);
@@ -714,7 +715,7 @@ class PopupWidget extends State<PopupWidgetState>{
           TextSpan(
             text: MailPopupDisplayTexts.title,
             style: const TextStyle(
-              color: Colors.white,
+              color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
               fontWeight: FontWeight.w600,
               fontSize: 20
             ),
@@ -735,6 +736,170 @@ class PopupWidget extends State<PopupWidgetState>{
           textAlign: TextAlign.start,
         ));
 
+        list.add(const SizedBox(height: 20));
+        list.add(FilledButton(
+          onPressed: (){
+            if(!PopupWidgetHandler._instance!._inUse || !mounted){
+              return;
+            }
+            PopupWidgetHandler._instance!.callback(null);
+            PopupWidgetHandler.closePopup(true);
+            HapticFeedback.lightImpact();
+            Future.delayed(Duration.zero, ()async{
+              await MailRequest.setMailRead(MailPopupDisplayTexts.mailID);
+            });
+          },
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),
+          ),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 15),
+            child: const Text('Ok',
+              style: TextStyle(
+                color: Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0),
+                fontWeight: FontWeight.w900,
+                fontSize: 18.0,
+              ),
+            ),
+          ),
+        ));
+        return list;
+      case 4:
+        list.add(const EmojiRichText(
+          text: "📢 Óra Infó 📢",
+          defaultStyle: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+            fontSize: 22.0,
+          ),
+          emojiStyle: TextStyle(
+              color: Colors.white,
+              fontSize: 19.0,
+              fontFamily: "Noto Color Emoji"
+          ),
+        ));
+        list.add(const SizedBox(height: 3));
+        list.add(Container(
+          color: Colors.white.withOpacity(0.3),
+          margin: const EdgeInsets.symmetric(vertical: 10),
+          height: 2,
+        ));
+        final entry = TimetableCurrentlySelected.entry;
+        list.add(Text(
+          entry!.title,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+            fontSize: 20
+          ),
+        ));
+        list.add(const SizedBox(height: 20));
+        list.add(Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Text(
+              'Tanítja:',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14.5
+              ),
+            ),
+            const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
+            Text(
+              '${entry!.teacher}',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14
+              ),
+            )
+          ],
+        ));
+        list.add(Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Text(
+              'Tárgykód:',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14.5
+              ),
+            ),
+            const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
+            Text(
+              '${entry!.subjectCode}',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14
+              ),
+            )
+          ],
+        ));
+        list.add(Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Text(
+              'Helyszín:',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14.5
+              ),
+            ),
+            const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
+            Text(
+              '${entry!.location}',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14
+              ),
+            )
+          ],
+        ));
+        final timeStart = DateTime.fromMillisecondsSinceEpoch(entry!.startEpoch);
+        list.add(Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Text(
+              'Órakezdés:',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14.5
+              ),
+            ),
+            const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
+            Text(
+              '${timeStart.hour.toString().padLeft(2, '0')}:${timeStart.minute.toString().padLeft(2, '0')}',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14
+              ),
+            )
+          ],
+        ));
         list.add(const SizedBox(height: 20));
         list.add(FilledButton(
           onPressed: (){
