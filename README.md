@@ -1,14 +1,16 @@
 # Neptun 2
 
-Egy alternatív alkalmazás, a megszűnt Neptun mobilapp helyett. 📱 Minden benne van, ami fontos lesz.
-Tele van mindennel, ami csak kellhet az egyetemi évek során, így nem kell a webes neptunt sem használni! 🥳
+Egy alternatív alkalmazás, a hivatalos Neptun mobilapp helyett. 📱
+Minden lényeges funkció benne van, ami csak kellhet az egyetemi évek során, így nem kell a webes neptunt sem használni! 🥳
 
 Funkciók:
 -  Szellemjegyek 👻 Könnyebben megy majd az átlagszámítás!
 - Értesítések 🫨 Nem maradsz le az órákról, vizsgákról, de még a befizetésekről sem!
 - Átlátható órarend 📆 Mindig tudni fogod, hogy a héten milyen órád lesz!
-- Jegyek, átlagok, kreditek, befizetések és még sok más
+- Jegyek, átlagok, kreditek, beérkezett üzenetek, befizetések és még sok más
 - Egy modernebb UI.
+
+*Ha az iskoládban kötelező a két lépcsős azonosítás 🔒, és nem engedi az intézmény annak kikapcsolását, akkor sajnos nem fogod tudni használni az appot. 😔*
 
 **Ha van valami ötleted, vagy simán csak egy hibát akarsz bejelenteni, a hibabejelentés fülnél tedd meg.**
 
