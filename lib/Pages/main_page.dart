@@ -3,11 +3,14 @@ import 'dart:developer' as debug;
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/animation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:in_app_update/in_app_update.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:neptun2/MailElements/mail_element_widget.dart';
 import 'package:neptun2/notifications.dart';
@@ -53,16 +56,19 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     });
   }
 
+  late AnimationController blurController;
+  late Animation<double> blurAnimation;
+
   void setBlurComplex(bool state){
     setState(() {
-      _showBlur = state;
-
       if(state) {
         SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
             statusBarIconBrightness: Brightness.light,
             systemNavigationBarColor: Color.fromRGBO(0x0C, 0x0C, 0x0C, 1.0), // navigation bar color
             statusBarColor: Color.fromRGBO(0x1A, 0x1A, 0x1A, 1.0), // status bar color
         ));
+        blurController.forward();
+        _showBlur = true;
         return;
       }
       SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -70,6 +76,11 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         systemNavigationBarColor: Color.fromRGBO(0x22, 0x22, 0x22, 1.0), // navigation bar color
         statusBarColor: Color.fromRGBO(0x22, 0x22, 0x22, 1.0), // status bar color
       ));
+      blurController.reverse().whenComplete((){
+        setState(() {
+          _showBlur = false;
+        });
+      });
     });
   }
 
@@ -135,6 +146,28 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       statusBarColor: Color.fromRGBO(0x22, 0x22, 0x22, 1.0), // status bar color
     ));
 
+    if(Platform.isAndroid){
+      Future.delayed(const Duration(seconds: 3), ()async{
+        final cacheTime = await storage.getInt('UpdateCacheTime') ?? -1;
+        if(cacheTime <= 0){ // fresh app version
+          storage.saveInt('UpdateCacheTime', DateTime.now().microsecondsSinceEpoch);
+          return;
+        }
+
+        if((DateTime.now().millisecondsSinceEpoch - cacheTime) > const Duration(hours: 24).inMilliseconds || // once a day update check
+        await Connectivity().checkConnectivity() != ConnectivityResult.wifi) // only check for updates on wifi
+        {return;}
+
+        final appupdateInfo = await InAppUpdate.checkForUpdate();
+        storage.saveInt('UpdateCacheTime', DateTime.now().microsecondsSinceEpoch); // save last checked update time
+        if(appupdateInfo.updateAvailability == UpdateAvailability.updateAvailable){ // has new version
+          await InAppUpdate.startFlexibleUpdate().then((value) async { // install update
+            await InAppUpdate.completeFlexibleUpdate();
+          });
+        }
+      });
+    }
+
     bottomnavScrollCntroller = LinkedScrollControllerGroup();
     bottomnavController = bottomnavScrollCntroller.addAndGet();
 
@@ -144,6 +177,14 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     );
     _fbTween = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(parent: _fbController, curve: Curves.decelerate),
+    );
+
+    blurController = AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 350),
+    );
+    blurAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: blurController, curve: Curves.linear),
     );
 
     currentMailPageController = ScrollController();
@@ -1205,10 +1246,13 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
             return;
           }
           final indx = mailList.indexOf(element);
-          mailList.remove(element);
           mailList.insert(indx, MailElementWidget(subject: element.subject, details: element.details, sender: element.sender, sendTime: element.sendTime, isRead: true, mailID: element.mailID, callback: (_){}));
+          mailList.remove(element);
           unreadMailCount--;
           storage.saveInt('CachedMailsUnread', unreadMailCount);
+          Future.delayed(Duration.zero, ()async{
+            await api.MailRequest.setMailRead(MailPopupDisplayTexts.mailID);
+          });
         });
       },));
       /*if(!item.isRead){
@@ -1569,6 +1613,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     mailEntries.clear();
     _fbController.dispose();
     currentMailPageController.dispose();
+    blurController.dispose();
   }
 
   static Container getSeparatorLine(BuildContext context){
@@ -1694,13 +1739,18 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
           ),
           Visibility(
             visible: _showBlur,
-            child: Positioned.fill(
-              child: BackdropFilter(
-                 filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                 child: Container(
-                   color: Colors.black.withOpacity(0.4),
-                 ),
-               ),
+            child: AnimatedBuilder(
+              animation: blurController,
+              builder: (context, widget) {
+                return Positioned.fill(
+                  child: BackdropFilter(
+                     filter: ImageFilter.blur(sigmaX: blurAnimation.value * 10, sigmaY: blurAnimation.value * 10),
+                     child: Container(
+                       color: Colors.black.withOpacity(blurAnimation.value * 0.4),
+                     ),
+                   ),
+                );
+              },
             ),
           ),
         ],

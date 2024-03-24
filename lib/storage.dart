@@ -71,6 +71,7 @@ class DataCache{
     setAnalyticsNextRatePopupTime(_persistentAnalytics_nextRatePopupShowMs!);
     setAnalyticsRateNudgedAmount(_persistentAnalytics_userRateNudgedAmount!);
     setAnalyticsHasRatedApp(_persistentAnalytics_hasRatedApp! ? 1 : 0);
+    setIsInstalledFromGPlay(_permanentConfiguration_isInstalledFromGooglePlay!);
   }
 
   static final DataCache _instance = DataCache();
@@ -95,10 +96,14 @@ class DataCache{
   late bool? _persistentSetting_showPaymentsNotifications = true;
   late bool? _persistentSetting_showPeriodsNotifications = true;
 
+  late int? _permanentConfiguration_isInstalledFromGooglePlay = 0;
+
   late int? _persistentAnalytics_firstAppOpenTimeMs = 0;
   late int? _persistentAnalytics_nextRatePopupShowMs = 0;
   late int? _persistentAnalytics_userRateNudgedAmount = 0;
   late bool? _persistentAnalytics_hasRatedApp = false;
+
+  late bool? _persistentAnalytics_enrolledInSendingAnaliticsData = true;
 
   static Future<void> loadData() async{return _instance._loadData();}
 
@@ -171,6 +176,9 @@ class DataCache{
       _persistentSetting_showPeriodsNotifications = true;  // this is the default value, not false
     }
 
+    tmp = await getInt('CONFIG_IsInstalledFromGPlay');
+    _permanentConfiguration_isInstalledFromGooglePlay = tmp ?? 0;
+
     tmp = await getInt('ANALYTICS_FirstAppOpenTime');
     _persistentAnalytics_firstAppOpenTimeMs = tmp ?? 0;
 
@@ -182,6 +190,12 @@ class DataCache{
 
     tmp = await getInt('ANALYTICS_HasRatedApp');
     _persistentAnalytics_hasRatedApp = tmp != null && tmp != 0;
+
+    tmp = await getInt('ANALYTICS_EnrolledInSendingAnaliticsData');
+    _persistentAnalytics_enrolledInSendingAnaliticsData = tmp != null && tmp != 0;
+    if(tmp == null){
+      _persistentAnalytics_enrolledInSendingAnaliticsData = true;  // this is the default value, not false
+    }
   }
 
   static String? getUsername(){return _instance._username;}
@@ -288,6 +302,12 @@ class DataCache{
     await saveInt('SETTING_IsNeedPeriodsNotifications', value ?? 1);
   }
 
+  static int? getIsInstalledFromGPlay({bool excludeDefaultState = true}){return _instance._permanentConfiguration_isInstalledFromGooglePlay! - (excludeDefaultState ? 1 : 0);}
+  static Future<void> setIsInstalledFromGPlay(int? value)async{
+    _instance._permanentConfiguration_isInstalledFromGooglePlay = value ?? 0;
+    await saveInt('CONFIG_IsInstalledFromGPlay', value ?? 0);
+  }
+
   static int? getAnalyticsFirstAppOpenTime(){return _instance._persistentAnalytics_firstAppOpenTimeMs;}
   static Future<void> setAnalyticsFirstAppOpenTime(int? value) async{
     _instance._persistentAnalytics_firstAppOpenTimeMs = value ?? 0;
@@ -310,5 +330,11 @@ class DataCache{
   static Future<void> setAnalyticsHasRatedApp(int? value) async{
     _instance._persistentAnalytics_hasRatedApp = value != null && value != 0;
     await saveInt('ANALYTICS_HasRatedApp', value ?? 0);
+  }
+
+  static bool? getAnalyticsEnrolledState(){return _instance._persistentAnalytics_enrolledInSendingAnaliticsData;}
+  static Future<void> setAnalyticsEnrolledState(int? value) async{
+    _instance._persistentAnalytics_enrolledInSendingAnaliticsData = value != null && value != 0;
+    await saveInt('ANALYTICS_EnrolledInSendingAnaliticsData', value ?? 1);
   }
 }

@@ -39,6 +39,8 @@ class MailElementWidget extends StatelessWidget{
         MailPopupDisplayTexts.mailID = mailID;
 
         PopupWidgetHandler(mode: 3, callback: (_){
+
+        }, onCloseCallback: (){
           callback(this);
         });
         PopupWidgetHandler.doPopup(context);

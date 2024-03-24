@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:neptun2/API/api_coms.dart' as api;
-import '../Misc/popup.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../storage.dart';
 import 'main_page.dart' as main_page;
 import 'setup_page.dart' as setup_page;
@@ -35,6 +35,12 @@ class _SplitterState extends State<Splitter>{
       }
       else if(flag != null && !flag){
         DataCache.setFirstWeekEpoch(-1);
+      }
+
+      final flag2 = DataCache.getIsInstalledFromGPlay(excludeDefaultState: false);
+      if(flag2 == 0){
+        final pinfo = await PackageInfo.fromPlatform();
+        DataCache.setIsInstalledFromGPlay(pinfo.installerStore == 'com.android.vending' ? 2 : 1);
       }
     }).then((value) {
       Navigator.popUntil(context, (route) => route.willHandlePopInternally);

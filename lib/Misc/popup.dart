@@ -2,7 +2,10 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:neptun2/Misc/custom_snackbar.dart';
 import 'package:neptun2/Pages/main_page.dart';
 import 'package:neptun2/storage.dart';
@@ -20,20 +23,25 @@ class PopupWidgetHandler{
   bool _inUse = false;
   BuildContext? _prevContext;
   final int mode;
-  static const Duration animTime = Duration(milliseconds: 500);
+  static const Duration animTime = Duration(milliseconds: 400);
 
   double animValue = 0.0;
 
   PopupWidget? pwidget;
   PackageInfo? pinfo;
 
-  final Callback callback;
+  final linkedScroller = LinkedScrollControllerGroup();
+  ScrollController? scrollController;
 
-  PopupWidgetHandler({required this.mode, required this.callback}){
+  final Callback callback;
+  final VoidCallback? onCloseCallback;
+
+  PopupWidgetHandler({required this.mode, required this.callback, this.onCloseCallback}){
     _instance = this;
     Future.delayed(Duration.zero, ()async{
       pinfo = await PackageInfo.fromPlatform();
     });
+    scrollController = linkedScroller.addAndGet();
   }
 
   bool hasListener = false;
@@ -78,7 +86,7 @@ class PopupWidgetHandler{
       });
     }
 
-    var curve = _instance!._inUse ? Curves.bounceOut : Curves.easeOutExpo;
+    var curve = _instance!._inUse ? Curves.easeInOutCubicEmphasized : Curves.easeOutBack;
     var tween = Tween<double>(begin: 0.0, end: 1.0).chain(
       CurveTween(curve: curve),
     );
@@ -99,10 +107,11 @@ class PopupWidgetHandler{
     if(needPop){
       Navigator.of(_instance!._prevContext!).pop();
     }
-    Future.delayed(animTime, (){
-      //_instance!.homePage.setBlurComplex(false);
-      HomePageState.showBlurPopup(false);
-    });
+    HomePageState.showBlurPopup(false);
+
+    if(PopupWidgetHandler._instance!.onCloseCallback != null){
+      PopupWidgetHandler._instance!.onCloseCallback!();
+    }
 
     if(_instance!.pwidget == null || !_instance!.pwidget!.mounted){
       return;
@@ -111,6 +120,7 @@ class PopupWidgetHandler{
     _instance!.pwidget!.setState(() {
       _instance!.pwidget!._shouldShowSnackbar = false;
     });
+
   }
 
 }
@@ -619,13 +629,69 @@ class PopupWidget extends State<PopupWidgetState>{
             )
           ],
         ));
+        list.add(Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(flex: 2, child: Container(
+              margin: const EdgeInsets.all(10),
+              child: const Text(
+                'Appal kapcsolatos adatok küldése',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white
+                ),
+              ),
+            )),
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(90)),
+                  color: Colors.white.withOpacity(.06)
+              ),
+              child: IconButton(
+                onPressed: (){
+                  _showSnackbar('Elküldi az esetleges API-val, és appal kapcsolatos problémákat / felhaszálói tevékenységeket nekem, így könnyebben ki tudom javítani a hibákat, és az app jobban fog működni neked, és másoknak is.\nCsak WIFI-n küldi, úgyhogy nem kell aggódni a mobilneted miatt.\nAz elküldött adatok névtelenek!', 24);
+                },
+                icon: Icon(
+                  Icons.question_mark_rounded,
+                  color: Colors.white.withOpacity(.4),
+                ),
+                enableFeedback: true,
+                iconSize: 24,
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.all(10),
+              child: Switch(
+                value: DataCache.getNeedPeriodsNotifications()!,
+                onChanged: (b){
+                  DataCache.setNeedPeriodsNotifications(b ? 1 : 0);
+                  HapticFeedback.lightImpact();
+                  if(b){
+                    HomePageState.setupPeriodsNotifications();
+                  }
+                  else{
+                    HomePageState.cancelPeriodsNotifications();
+                  }
+                  if(mounted) {setState((){});}
+                },
+                activeColor: Colors.white,
+                activeTrackColor: const Color.fromRGBO(0x4F, 0x69, 0x6E, 1.0),
+                hoverColor: Colors.white.withOpacity(.1),
+              ),
+            )
+          ],
+        ));
         list.add(const SizedBox(height: 6));
         final pinfo = PopupWidgetHandler._instance!.pinfo ?? PackageInfo(appName: 'neptun2', packageName: 'com.domedav.neptun2', version: '1.1.2', buildNumber: '7', buildSignature: '');
         list.add(Container(
           alignment: Alignment.bottomLeft,
           margin: const EdgeInsets.all(10),
           child: Text(
-            'v${pinfo.version} (${pinfo.buildNumber}) - Telepítve innen: ${pinfo.installerStore == 'com.android.vending' ? "Play Áruház" : "Csomagteleíptő"}',
+            'v${pinfo.version} (${pinfo.buildNumber}) - Telepítve innen: ${DataCache.getIsInstalledFromGPlay()! != 0 ? "Play Áruház" : "Csomagteleíptő"}',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontWeight: FontWeight.w300,
@@ -657,7 +723,7 @@ class PopupWidget extends State<PopupWidgetState>{
           height: 2,
         ));
         list.add(const Text(
-          'Tetszik az app? Esetleg nem? Értékeld a Play Áruházba!\n10 másodpercet vesz igénybe, és ezzel információt nyújtassz mind nekünk, mind másoknak.',
+          'Tetszik az app? Esetleg nem? Értékeld a Play Áruházban!\n10 másodpercet vesz igénybe, és ezzel információt nyújthatsz nekem, és másoknak.',
           textAlign: TextAlign.center,
           style: TextStyle(
             color: Colors.white,
@@ -745,9 +811,6 @@ class PopupWidget extends State<PopupWidgetState>{
             PopupWidgetHandler._instance!.callback(null);
             PopupWidgetHandler.closePopup(true);
             HapticFeedback.lightImpact();
-            Future.delayed(Duration.zero, ()async{
-              await MailRequest.setMailRead(MailPopupDisplayTexts.mailID);
-            });
           },
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),
@@ -785,14 +848,15 @@ class PopupWidget extends State<PopupWidgetState>{
           height: 2,
         ));
         final entry = TimetableCurrentlySelected.entry;
-        list.add(Text(
-          entry!.title,
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
-            fontSize: 20
-          ),
+        list.add(SelectableText.rich(
+            TextSpan(
+              text: entry!.title,
+              style: const TextStyle(
+                color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                fontWeight: FontWeight.w600,
+                fontSize: 20
+              ),
+            )
         ));
         list.add(const SizedBox(height: 20));
         list.add(Row(
@@ -800,103 +864,126 @@ class PopupWidget extends State<PopupWidgetState>{
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text(
-              'Tanítja:',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
-                  fontWeight: FontWeight.w700,
-                  fontSize: 14.5
+            const Flexible(
+              child: Text(
+                'Tanítja:',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14.5
+                ),
               ),
             ),
             const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
-            Text(
-              '${entry!.teacher}',
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w400,
-                  fontSize: 14
-              ),
+            Flexible(
+              child: SelectableText.rich(
+                TextSpan(
+                  text: entry!.teacher,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 14
+                  ),
+                ),
+              )
             )
           ],
         ));
+        list.add(const SizedBox(height: 4));
         list.add(Row(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text(
-              'Tárgykód:',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
-                  fontWeight: FontWeight.w700,
-                  fontSize: 14.5
+            const Flexible(
+              child: Text(
+                'Tárgykód:',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14.5
+                ),
               ),
             ),
             const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
-            Text(
-              '${entry!.subjectCode}',
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w400,
-                  fontSize: 14
-              ),
+            Flexible(
+              child: SelectableText.rich(
+                TextSpan(
+                  text: entry!.subjectCode,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 14
+                  ),
+                ),
+              )
             )
           ],
         ));
+        list.add(const SizedBox(height: 4));
         list.add(Row(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text(
-              'Helyszín:',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
-                  fontWeight: FontWeight.w700,
-                  fontSize: 14.5
+            const Flexible(
+              child: Text(
+                'Helyszín:',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14.5
+                ),
               ),
             ),
             const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
-            Text(
-              '${entry!.location}',
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w400,
-                  fontSize: 14
-              ),
+            Flexible(
+              child: SelectableText.rich(
+                TextSpan(
+                  text: entry!.location,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 14
+                  ),
+                ),
+              )
             )
           ],
         ));
         final timeStart = DateTime.fromMillisecondsSinceEpoch(entry!.startEpoch);
+        list.add(const SizedBox(height: 4));
         list.add(Row(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text(
-              'Órakezdés:',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
-                  fontWeight: FontWeight.w700,
-                  fontSize: 14.5
+            const Flexible(
+              child: Text(
+                'Órakezdés:',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14.5
+                ),
               ),
             ),
             const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
-            Text(
-              '${timeStart.hour.toString().padLeft(2, '0')}:${timeStart.minute.toString().padLeft(2, '0')}',
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w400,
-                  fontSize: 14
-              ),
+            Flexible(
+              child: SelectableText.rich(
+                  TextSpan(
+                    text: '${timeStart.hour.toString().padLeft(2, '0')}:${timeStart.minute.toString().padLeft(2, '0')}',
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14
+                    ),
+                  ),
+                )
             )
           ],
         ));
@@ -972,6 +1059,7 @@ class PopupWidget extends State<PopupWidgetState>{
                     color: Colors.transparent,
                     child: SingleChildScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
+                      controller: PopupWidgetHandler._instance!.scrollController,
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 10),
                         margin: const EdgeInsets.all(15),
