@@ -86,7 +86,7 @@ class PopupWidgetHandler{
       });
     }
 
-    var curve = _instance!._inUse ? Curves.easeInOutCubicEmphasized : Curves.easeOutBack;
+    var curve = _instance!._inUse ? Curves.easeInOutCubicEmphasized : Curves.ease;
     var tween = Tween<double>(begin: 0.0, end: 1.0).chain(
       CurveTween(curve: curve),
     );
