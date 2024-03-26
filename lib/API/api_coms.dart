@@ -648,14 +648,21 @@ import 'package:neptun2/Misc/clickable_text_span.dart';
         subjectCode = 'Nincs Adat';
       }
 
-      final regex3 = RegExp(r'hét \((.*?)\)');
-      final match3 = regex3.firstMatch(rawTitle);
+      var regex3 = RegExp(r'\([^)]+\)(?=\s*\([^)]+\)*$)'); //igen... egy jéghideg olyat kérünk
+      var match3 = regex3.firstMatch(rawTitle);
 
       if(match3 != null){
-        teacher = match3.group(1)!.trim().replaceAll('(', '').replaceAll(')', '');
+        teacher = match3.group(0)!.trim().replaceAll('(', '').replaceAll(')', '');
       }
       else{
-        teacher = 'Nincs Adat';
+        regex3 = RegExp(r'(?<=Minden hét\s)\((.*?)\)');
+        match3 = regex3.firstMatch(rawTitle);
+        if(match3 != null){
+          teacher = match3.group(1)!.trim().replaceAll('(', '').replaceAll(')', '');
+        }
+        else{
+          teacher = 'Nincs Adat';
+        }
       }
     }
   
@@ -964,19 +971,30 @@ import 'package:neptun2/Misc/clickable_text_span.dart';
           return 'Neptun 2';
       }
     }
-    static String randomLoadingCommentMini() {
-      final gen = Random().nextInt(100) % 5;
+    static String randomLoadingCommentMini(bool familyFriendlyMode) {
+      if (!familyFriendlyMode) {
+        final gen = Random().nextInt(100) % 4;
+        switch (gen) {
+          case 0:
+            return '⟸ Egy pillanat...⟹';
+          case 1:
+            return '⟸ Alakul a molekula...⟹';
+          case 2:
+            return '⟸ Csak szépen lassan...⟹';
+          case 3:
+            return '⟸ Tölt valamit nagyon...⟹';
+          default:
+            return 'Neptun 2';
+        }
+      }
+      final gen = Random().nextInt(100) % 3;
       switch (gen) {
         case 0:
-          return '⟸ Egy pillanat...⟹';
+          return '⟸ Na, megvan?...⟹';
         case 1:
-          return '⟸ Alakul a molekula...⟹';
+          return '⟸ Várjál! Nem megy ez ilyen gyorsan...⟹';
         case 2:
-          return '⟸ Csak szépen lassan...⟹';
-        case 3:
-          return '⟸ Tölt valamit nagyon...⟹';
-        case 4:
-          return '⟸ Mindjárt, csak lekérdezem...⟹';
+          return '⟸ Nem emlékszel mit olvastál? Szedj B6 vitamint!...⟹';
         default:
           return 'Neptun 2';
       }

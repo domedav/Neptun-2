@@ -205,7 +205,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
                 ),
                 const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
                 Text(
-                 api.Generic.randomLoadingCommentMini(),
+                 api.Generic.randomLoadingCommentMini(storage.DataCache.getNeedFamilyFriendlyComments()!),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white.withOpacity(.4),
@@ -232,12 +232,19 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     });
 
     AppNotifications.initialize();
+    Future.delayed(Duration.zero, ()async{
+      if(storage.DataCache.getHasCachedFirstWeekEpoch()!){
+        return;
+      }
+      final firstWeekOfSemester = await api.InstitutesRequest.getFirstStudyweek();
+      storage.DataCache.setHasCachedFirstWeekEpoch(1);
+      await storage.DataCache.setFirstWeekEpoch(firstWeekOfSemester);
+    }).whenComplete(() => setState(() {weeksSinceStart = calcPassedWeeks();}));
     Future.delayed(Duration.zero,() async{
       await AppNotifications.cancelScheduledNotifs();
     }).whenComplete((){
       Future.delayed(Duration.zero, () async{
         await fetchCalendar();
-        weeksSinceStart = calcPassedWeeks();
       }).then((value) async {
         if(storage.DataCache.getNeedExamNotifications()!){
           Future.delayed(Duration.zero,() async{
@@ -1309,10 +1316,6 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       storage.saveString('CalendarCacheTime', DateTime(now.year, now.month, now.day, 0, 0, 0).toString());
     }
     storage.DataCache.setHasCachedCalendar(1);
-
-    final firstWeekOfSemester = await api.InstitutesRequest.getFirstStudyweek();
-    storage.DataCache.setHasCachedFirstWeekEpoch(1);
-    await storage.DataCache.setFirstWeekEpoch(firstWeekOfSemester);
   }
   Future<void> fetchMarkbook() async{
     bool hasCachedMarkbook= storage.DataCache.getHasCachedMarkbook() ?? false;
@@ -1744,7 +1747,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
               builder: (context, widget) {
                 return Positioned.fill(
                   child: BackdropFilter(
-                     filter: ImageFilter.blur(sigmaX: blurAnimation.value * 10, sigmaY: blurAnimation.value * 10),
+                     filter: ImageFilter.blur(sigmaX: blurAnimation.value * 15, sigmaY: blurAnimation.value * 15),
                      child: Container(
                        color: Colors.black.withOpacity(blurAnimation.value * 0.4),
                      ),

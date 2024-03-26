@@ -852,7 +852,7 @@ class PopupWidget extends State<PopupWidgetState>{
             TextSpan(
               text: entry!.title,
               style: const TextStyle(
-                color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                color: Colors.white,
                 fontWeight: FontWeight.w600,
                 fontSize: 20
               ),
