@@ -12,6 +12,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../API/api_coms.dart' as api;
 import '../Misc/custom_snackbar.dart';
 import '../Misc/emojirich_text.dart';
+import '../app_analitics.dart';
 import '../storage.dart' as storage;
 import '../storage.dart';
 import 'main_page.dart' as main_page;
@@ -38,6 +39,8 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
 
     FlutterNativeSplash.remove();
   }
+
+  bool _analiticsDebounce = false;
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +73,10 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                   children: [
                     GestureDetector(
                       onTap: (){
+                        if(!_analiticsDebounce){
+                          _analiticsDebounce = true;
+                          AppAnalitics.sendAnaliticsData(AppAnalitics.INFO, 'setup_page.dart => _SetupPageLoginTypeSelectionState.build() Info: Institude selection login');
+                        }
                         Navigator.push(context, MaterialPageRoute(builder: (context) => SetupPageInstitudeSelection(fetchData: _obtainFreshData, callback: changeFreshDataVal)));
                       },
                       child: Container(
@@ -124,7 +131,11 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                     ),
                     GestureDetector(
                       onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => SetupPageURLInput()));
+                        if(!_analiticsDebounce){
+                          _analiticsDebounce = true;
+                          AppAnalitics.sendAnaliticsData(AppAnalitics.INFO, 'setup_page.dart => _SetupPageLoginTypeSelectionState.build() Info: URL input login');
+                        }
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const SetupPageURLInput()));
                       },
                       child: Container(
                         padding: const EdgeInsets.all(20),
@@ -253,7 +264,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
     PageDTO.validatedURL = false;
     PageDTO.selected = _selectedValue;
 
-    Navigator.push(context, MaterialPageRoute(builder: (context) => SetupPageLogin()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const SetupPageLogin()));
   }
 
   int _hasData = 0;
@@ -505,7 +516,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                                       _selectedValue = _filteredValues[0];
                                       _canProceed = true;
                                     } else{
-                                      _filteredValues.add("Nincs Találat...");
+                                      _filteredValues.add("Nincs találat...");
                                       _selectedValue = _filteredValues[0];
                                       _canProceed = false;
                                     }
@@ -718,7 +729,7 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
 
     PageDTO.customURL = _rawNeptunURL;
 
-    Navigator.push(context, MaterialPageRoute(builder: (context) => SetupPageLogin()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const SetupPageLogin()));
   }
 
   @override
@@ -1086,6 +1097,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
       });
     });
 
+    AppAnalitics.sendAnaliticsData(AppAnalitics.INFO, 'api_coms.dart => SetupPageLogin.finishLogin() Info: Login: ${selected.Name} - ${selected.URL}');
     api.InstitutesRequest.validateLoginCredentials(selected, _username.toUpperCase(), _password).then((value)
     {
       if(value){ // logged in

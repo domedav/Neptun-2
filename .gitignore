@@ -42,3 +42,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Dont leak anything server related into the internet
+/lib/app_analitics_server_send.dart

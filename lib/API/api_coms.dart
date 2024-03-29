@@ -7,7 +7,8 @@
   import 'package:flutter/material.dart';
   import 'package:http/http.dart' as http;
 import 'package:neptun2/Misc/clickable_text_span.dart';
-  import '../storage.dart' as storage;
+  import '../app_analitics.dart';
+import '../storage.dart' as storage;
   
   class URLs{
     static const String INSTITUTIONS_URL = "https://mobilecloudservice.cloudapp.net/MobileServiceLib/MobileCloudService.svc/GetAllNeptunMobileUrls";
@@ -30,12 +31,18 @@ import 'package:neptun2/Misc/clickable_text_span.dart';
       final request = http.Request('POST', url);
       request.headers['Content-Type'] = 'application/json';
       request.body = requestBody;
-  
-      final response = await client.send(request).then((response) {
-        // Read and return the response
-        return response.stream.bytesToString();
-      });
-  
+
+      var response;
+      try{
+        response = await client.send(request).then((response) {
+          // Read and return the response
+          return response.stream.bytesToString();
+        });
+      }
+      catch(error){
+        AppAnalitics.sendAnaliticsData(AppAnalitics.ERROR, 'api_coms.dart => _APIRequest.postRequest() NeptunError: PostRequest Error: $error');
+      }
+
       // Close the client when done
       client.close();
   
@@ -79,7 +86,14 @@ import 'package:neptun2/Misc/clickable_text_span.dart';
   class InstitutesRequest{
     static Future<List<dynamic>?> fetchInstitudesJSON() async{
       //return _APIRequest.postRequest(Uri.parse(URLs.INSTITUTIONS_URL), '{}');
-      return await getRawJsonWithNameUrlPairs();
+      var json;
+      try{
+        json = await getRawJsonWithNameUrlPairs();
+      }
+      catch(error){
+        AppAnalitics.sendAnaliticsData(AppAnalitics.ERROR, 'api_coms.dart => InstitudesRequest.fetchInstitudesJSON() Error: $error');
+      }
+      return json;
     }
 
     static Future<List<dynamic>?> getRawJsonWithNameUrlPairs() async{
@@ -87,6 +101,7 @@ import 'package:neptun2/Misc/clickable_text_span.dart';
       final response = await http.get(url);
 
       if (response.statusCode != 200) {
+        AppAnalitics.sendAnaliticsData(AppAnalitics.ERROR, 'api_coms.dart => InstitudesRequest.getRawJsonWithNameUrlPairs() Error: Failed to fetch universityNameUrlPairs.json');
         return null;
       }
 
@@ -109,9 +124,13 @@ import 'package:neptun2/Misc/clickable_text_span.dart';
     static Future<bool> validateLoginCredentials(Institute institute, String username, String password) async{
       if(username == 'DEMO' && password == 'DEMO'){
         await storage.DataCache.setIsDemoAccount(1);
+        AppAnalitics.sendAnaliticsData(AppAnalitics.INFO, 'api_coms.dart => InstitudesRequest.validateLoginCredentials() Info: Login on demo account');
         return true;
       }
       final request = await _APIRequest.postRequest(Uri.parse(institute.URL + URLs.TRAININGS_URL), _APIRequest.getGenericPostData(username, password));
+      if(conv.json.decode(request)["ErrorMessage"] != null){
+        AppAnalitics.sendAnaliticsData(AppAnalitics.ERROR, 'api_coms.dart => InstitudesRequest.validateLoginCredentials() NeptunError: ${conv.json.decode(request)["ErrorMessage"]}');
+      }
       return conv.json.decode(request)["ErrorMessage"] == null;
     }
     static Future<int?> getFirstStudyweek() async{
@@ -121,6 +140,7 @@ import 'package:neptun2/Misc/clickable_text_span.dart';
       }
       final now = DateTime.now().millisecondsSinceEpoch;
       if(periods == null){
+        AppAnalitics.sendAnaliticsData(AppAnalitics.ERROR, 'api_coms.dart => InstitudesRequest.getFirstStudyweek() Error: No period available');
         return null;
       }
   
@@ -135,6 +155,7 @@ import 'package:neptun2/Misc/clickable_text_span.dart';
         }
       }
       if(period == null){
+        AppAnalitics.sendAnaliticsData(AppAnalitics.ERROR, 'api_coms.dart => InstitudesRequest.getFirstStudyweek() Error: No "végleges tárgyjelenkezés" period available, ${periods.toString()}');
         return null;
       }
   
@@ -181,6 +202,7 @@ import 'package:neptun2/Misc/clickable_text_span.dart';
       Map<String, dynamic> map = conv.json.decode(json);
       if(map['calendarData'] == null) {
         list.add(CalendarEntry(DateTime(1970, 1, 6).millisecondsSinceEpoch.toString(), DateTime.now().millisecondsSinceEpoch.toString(), 'ERROR', 'ERROR', false));
+        AppAnalitics.sendAnaliticsData(AppAnalitics.ERROR, 'api_coms.dart => CalendarRequest.getCalendarEntriesFromJSON() NeptunError: No Calendar data ${map["ErrorMessage"]}');
         return list;
       }
       List<dynamic> sublist = map['calendarData'];
@@ -281,6 +303,7 @@ import 'package:neptun2/Misc/clickable_text_span.dart';
       }
       List<Term> terms = await _APIRequest._getTermIDs();
       if(terms.isEmpty){
+        AppAnalitics.sendAnaliticsData(AppAnalitics.ERROR, 'api_coms.dart => MarkbookRequest._getMarkbookJSon() Error: No Terms');
         return <Subject>[
           Subject(false, 0, 'Hiba a jegyzetfüzet betöltésekor!\nNincs term id', 0, 0, 1),
         ];
@@ -297,6 +320,7 @@ import 'package:neptun2/Misc/clickable_text_span.dart';
       }
   
       if(responseJson.isEmpty || markbooklistRaw.isEmpty){    // if we went thru all possible markbooks, but non was valid
+        AppAnalitics.sendAnaliticsData(AppAnalitics.ERROR, 'api_coms.dart => MarkbookRequest._getMarkbookJSon() Error: No reponsejson, and markbooklist is empty');
         return null;
       }
   
@@ -438,6 +462,7 @@ import 'package:neptun2/Misc/clickable_text_span.dart';
       }
       final terms = await _APIRequest._getTermIDs();
       if(terms.isEmpty){
+        AppAnalitics.sendAnaliticsData(AppAnalitics.ERROR, 'api_coms.dart => PeriodsRequest.getPeriods()  Error: No Terms');
         return <PeriodEntry>[
           PeriodEntry('Hiba lépett fel!\nNincs term id.', DateTime.now().millisecondsSinceEpoch, DateTime.now().millisecondsSinceEpoch, 1)
         ];
@@ -1052,6 +1077,9 @@ import 'package:neptun2/Misc/clickable_text_span.dart';
           //debug.log(cert.sha1.toString());
           //debug.log(validCertSha1.toString());
           hasValidCertificate = cert.sha1.toString() == validCertSha1.toString(); // list comparison doesnt always work for some reason...
+          if(!hasValidCertificate){
+            AppAnalitics.sendAnaliticsData(AppAnalitics.ERROR, 'api_coms.dart => NeptunCerts.createHttpClient() Error: app found an invalid cert');
+          }
           return hasValidCertificate;
         };
     }

@@ -13,6 +13,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:neptun2/MailElements/mail_element_widget.dart';
+import 'package:neptun2/app_analitics.dart';
 import 'package:neptun2/notifications.dart';
 import 'package:neptun2/Misc/emojirich_text.dart';
 import 'package:neptun2/Misc/popup.dart';
@@ -155,7 +156,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         }
 
         if((DateTime.now().millisecondsSinceEpoch - cacheTime) > const Duration(hours: 24).inMilliseconds || // once a day update check
-        await Connectivity().checkConnectivity() != ConnectivityResult.wifi) // only check for updates on wifi
+        await Connectivity().checkConnectivity() == ConnectivityResult.none) // only check for updates, if there is internet
         {return;}
 
         final appupdateInfo = await InAppUpdate.checkForUpdate();
@@ -1230,7 +1231,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       ));
     }
 
-    if(clearLoader){
+    if(clearLoader && mailList.isNotEmpty){
       mailList.removeAt(mailList.length-1);
     }
 
