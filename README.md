@@ -18,6 +18,9 @@ Az alkalmazás még fejlesztés alatt áll, így ez még nem tökéletes. ⚠️
 
 Töltsd le a Play Áruházból!
 https://play.google.com/store/apps/details?id=com.domedav.neptun2
+## 1.4.1
+Bugfixek, szebb animációk
+
 ## 1.4.0
 Beérkezett üzenetek menüpont, extra órarend információk, hibajavítások
 
