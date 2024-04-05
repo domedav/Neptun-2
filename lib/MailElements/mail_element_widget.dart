@@ -56,19 +56,17 @@ class MailElementWidget extends StatelessWidget{
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: [
-            Expanded(
-              child: EmojiRichText(
-                text: isRead ? '📭' : '📬',
-                defaultStyle: const TextStyle(
+            EmojiRichText(
+              text: isRead ? '📭' : '📬',
+              defaultStyle: const TextStyle(
+                color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                fontWeight: FontWeight.w900,
+                fontSize: 20.0,
+              ),
+              emojiStyle: const TextStyle(
                   color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
-                  fontWeight: FontWeight.w900,
                   fontSize: 20.0,
-                ),
-                emojiStyle: const TextStyle(
-                    color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
-                    fontSize: 20.0,
-                    fontFamily: "Noto Color Emoji"
-                ),
+                  fontFamily: "Noto Color Emoji"
               ),
             ),
             const Padding(padding: EdgeInsets.symmetric(horizontal: 12)),

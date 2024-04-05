@@ -1075,8 +1075,6 @@ import '../storage.dart' as storage;
       else{
         daylightSavingsTimeTo = probableSunday.subtract(Duration(days: probableSunday.weekday));
       }
-
-      debug.log('$daylightSavingsTimeFrom $daylightSavingsTimeTo');
     }
 
     static DateTime daylightSavingsTimeFrom = DateTime(DateTime.now().year, 3, 31, 0, 0, 0);
