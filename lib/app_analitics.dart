@@ -18,7 +18,7 @@ class AppAnalitics{
 
   static Future<AnaliticsData> _getAnaliticsData(int reportType, String reportData)async{
     final pkgInfo = (await PackageInfo.fromPlatform());
-    final version = "${pkgInfo.version}+${pkgInfo.buildNumber}-${DataCache.getIsInstalledFromGPlay()! != 0 ? "Gplay" : "3rd party"}";
+    final version = "${pkgInfo.version}+${pkgInfo.buildNumber}-${pkgInfo.installerStore}";
     final institude = DataCache.getInstituteUrl() ?? "No Login";
 
     if(!Platform.isAndroid){

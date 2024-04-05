@@ -1,13 +1,15 @@
-  import 'dart:async';
-  import 'dart:convert' as conv;
-  import 'dart:developer' as debug;
-  import 'dart:io';
-  import 'dart:math';
-  import 'dart:typed_data';
-  import 'package:flutter/material.dart';
-  import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'dart:convert' as conv;
+import 'dart:developer' as debug;
+import 'dart:io';
+import 'dart:math';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:neptun2/Misc/clickable_text_span.dart';
-  import '../app_analitics.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
+import '../app_analitics.dart';
 import '../storage.dart' as storage;
   
   class URLs{
@@ -641,10 +643,10 @@ import '../storage.dart' as storage;
 
     CalendarEntry(String start, String end, String loc, String rawTitle, this.isExam){
       startEpoch = int.parse(start);
-      startEpoch = DateTime.fromMillisecondsSinceEpoch(startEpoch).subtract(const Duration(hours: 1)).millisecondsSinceEpoch; // need to offset
+      startEpoch = DateTime.fromMillisecondsSinceEpoch(startEpoch).subtract(Duration(hours: (Generic.isDaylightSavings(DateTime.fromMillisecondsSinceEpoch(startEpoch)) ? 2 : 1))).millisecondsSinceEpoch;
   
       endEpoch = int.parse(end);
-      endEpoch = DateTime.fromMillisecondsSinceEpoch(endEpoch).subtract(const Duration(hours: 1)).millisecondsSinceEpoch;
+      endEpoch = DateTime.fromMillisecondsSinceEpoch(endEpoch).subtract(Duration(hours: (Generic.isDaylightSavings(DateTime.fromMillisecondsSinceEpoch(endEpoch)) ? 2 : 1))).millisecondsSinceEpoch;
   
       location = loc;
   
@@ -1051,6 +1053,37 @@ import '../storage.dart' as storage;
         }
       }
       return spans;
+    }
+
+    static void setupDaylightSavingsTime(){
+      final now = DateTime.now();
+      var probableSunday = DateTime(now.year, 3, 31, 0, 0, 0);
+      if(probableSunday.weekday == 7){
+        daylightSavingsTimeFrom = probableSunday;
+      }
+      else{
+        daylightSavingsTimeFrom = probableSunday.subtract(Duration(days: probableSunday.weekday));
+        if(daylightSavingsTimeFrom.hour != 0){
+          daylightSavingsTimeFrom = DateTime(daylightSavingsTimeFrom.year, daylightSavingsTimeFrom.month, daylightSavingsTimeFrom.day + 1);
+        }
+      }
+
+      probableSunday = DateTime(now.year, 10, 31, 0, 0, 0);
+      if(probableSunday.weekday == 7){
+        daylightSavingsTimeFrom = probableSunday;
+      }
+      else{
+        daylightSavingsTimeTo = probableSunday.subtract(Duration(days: probableSunday.weekday));
+      }
+
+      debug.log('$daylightSavingsTimeFrom $daylightSavingsTimeTo');
+    }
+
+    static DateTime daylightSavingsTimeFrom = DateTime(DateTime.now().year, 3, 31, 0, 0, 0);
+    static DateTime daylightSavingsTimeTo = DateTime(DateTime.now().year, 10, 27, 0, 0, 0);
+
+    static bool isDaylightSavings(DateTime time){
+      return (daylightSavingsTimeFrom.microsecondsSinceEpoch < time.microsecondsSinceEpoch && time.microsecondsSinceEpoch < daylightSavingsTimeTo.microsecondsSinceEpoch);
     }
   }
   

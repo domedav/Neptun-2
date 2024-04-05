@@ -27,6 +27,9 @@ import '../MarkbookElements/markbook_element_widget.dart' as mbook;
 import '../PeriodsElements/periods_element_widget.dart' as priods;
 import '../Navigator/bottomnavigator.dart' as bottomnav;
 import '../Navigator/topnavigator.dart' as topnav;
+import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class HomePage extends StatefulWidget{
   const HomePage({super.key});
@@ -146,6 +149,16 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       systemNavigationBarColor: Color.fromRGBO(0x22, 0x22, 0x22, 1.0), // navigation bar color
       statusBarColor: Color.fromRGBO(0x22, 0x22, 0x22, 1.0), // status bar color
     ));
+
+    api.Generic.setupDaylightSavingsTime();
+
+    if(Platform.isAndroid){
+      Future.delayed(Duration.zero, ()async{
+        tz.initializeTimeZones();
+        final String timeZone = await FlutterTimezone.getLocalTimezone();
+        tz.setLocalLocation(tz.getLocation(timeZone));
+      });
+    }
 
     if(Platform.isAndroid){
       Future.delayed(const Duration(seconds: 3), ()async{
@@ -731,9 +744,6 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       }
     }
     calendarTabController.index = currentWeekOffset == 1 ? currWeekday - 1 > 6 ? 0 : currWeekday - 1 : calendarTabController.index;
-    Future.delayed(Duration.zero,()async{
-      await _setupClassesNotifications(_classesNotificationList);
-    });
   }
 
   List<Widget> calendarTabs = <Widget>[].toList();
@@ -1300,7 +1310,10 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         final calEntry = await storage.getString('CachedCalendar_$i');
         calendarEntries.add(api.CalendarEntry('0', '0', 'NULL', 'NULL', false).fillWithExisting(calEntry!));
       }
-      storage.DataCache.setHasCachedFirstWeekEpoch(1); // dont fetch this, as there is still no network
+      storage.DataCache.setHasCachedFirstWeekEpoch(1);
+      Future.delayed(Duration.zero,()async{
+        await _setupClassesNotifications(_classesNotificationList);
+      });
       return;
     }
     //otherwise, just fetch again
@@ -1315,6 +1328,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       }
       final now = DateTime.now();
       storage.saveString('CalendarCacheTime', DateTime(now.year, now.month, now.day, 0, 0, 0).toString());
+      Future.delayed(Duration.zero,()async{
+        await _setupClassesNotifications(_classesNotificationList);
+      });
     }
     storage.DataCache.setHasCachedCalendar(1);
   }
@@ -1581,7 +1597,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
     final timepassSinceSepOne = Duration(milliseconds: (yearlessNow.millisecondsSinceEpoch - sepOne.millisecondsSinceEpoch));
     final weeksPassed = timepassSinceSepOne.inDays / 7;
-    final isWeekend = /*now.weekday == DateTime.saturday || */now.weekday == DateTime.sunday ? 1 : 0;
+    //final isWeekend = /*now.weekday == DateTime.saturday || */now.weekday == DateTime.sunday ? 1 : 0;
 
     /*
     // Find the most recent Monday on or before the current date
@@ -1592,7 +1608,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
     return elapsedWeeks + currentWeekOffset - 1 + isWeekend;*/
 
-    return ((weeksPassed.floor() % 52) + currentWeekOffset) - isWeekend;// + isWeekend;
+    return ((weeksPassed.floor() % 52) + currentWeekOffset);// - isWeekend;// + isWeekend;
   }
 
   @override
