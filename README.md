@@ -18,6 +18,9 @@ Az alkalmazás még fejlesztés alatt áll, így ez még nem tökéletes. ⚠️
 
 Töltsd le a Play Áruházból!
 https://play.google.com/store/apps/details?id=com.domedav.neptun2
+## 1.4.3
+Bugfixek, hiányzó emojik néhány telefonon fix
+
 ## 1.4.2
 Időállítás miatti órarend bug fix
 
