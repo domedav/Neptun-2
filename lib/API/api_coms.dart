@@ -228,6 +228,7 @@ import '../storage.dart' as storage;
       }
       final url = Uri.parse(storage.DataCache.getInstituteUrl()! + URLs.CALENDAR_URL);
       final request = await _APIRequest.postRequest(url, calendarJson);
+      debug.log(request);
       return request;
     }
   
@@ -248,7 +249,7 @@ import '../storage.dart' as storage;
       }
   
       DateTime startOfTargetWeek = previousMonday.add(Duration(days: weekOffset * 7));
-      DateTime endOfTargetWeek = nextFriday.add(Duration(days: weekOffset * 7));
+      DateTime endOfTargetWeek = nextFriday.add(Duration(days: weekOffset * 7)).add(Duration(days: 7));
   
       final epochStart = startOfTargetWeek.millisecondsSinceEpoch;
       final epochEnd = endOfTargetWeek.millisecondsSinceEpoch;
@@ -260,7 +261,8 @@ import '../storage.dart' as storage;
           '"Time":true,'
           '"Exam":true,'
           '"startDate":"/Date($epochStart)/",'
-          '"endDate":"/Date($epochEnd)/"'
+          '"endDate":"/Date($epochEnd)/",'
+          '"TotalRowCount":-1'
         '}';
     }
   }
