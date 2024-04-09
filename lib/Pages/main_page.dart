@@ -1293,7 +1293,20 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   Future<List<api.CalendarEntry>> fetchCalendarToList(int offset) async{
     final request = await api.CalendarRequest.makeCalendarRequest(api.CalendarRequest.getCalendarOneWeekJSON(storage.DataCache.getUsername()!, storage.DataCache.getPassword()!, currentWeekOffset + offset/* + isWeekend*/));
     final list = api.CalendarRequest.getCalendarEntriesFromJSON(request);
-    return list;
+    final List<api.CalendarEntry> list2 = [];
+    for(var item in list){
+      bool flag = false;
+      for(var item2 in list2){
+        if(item.isIdentical(item2)){
+          flag = true;
+          break;
+        }
+      }
+      if(!flag){
+        list2.add(item);
+      }
+    }
+    return list2;
   }
 
   Future<void> fetchCalendar() async{
@@ -1319,7 +1332,22 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     //otherwise, just fetch again
     //final isWeekend = DateTime.now().weekday == DateTime.saturday || DateTime.now().weekday == DateTime.sunday ? 1 : 0;
     final request = await api.CalendarRequest.makeCalendarRequest(api.CalendarRequest.getCalendarOneWeekJSON(storage.DataCache.getUsername()!, storage.DataCache.getPassword()!, currentWeekOffset/* + isWeekend*/));
-    calendarEntries = api.CalendarRequest.getCalendarEntriesFromJSON(request);
+    calendarEntries.clear();
+    final list = api.CalendarRequest.getCalendarEntriesFromJSON(request);
+    final List<api.CalendarEntry> list2 = [];
+    for(var item in list){
+      bool flag = false;
+      for(var item2 in list2){
+        if(item.isIdentical(item2)){
+          flag = true;
+          break;
+        }
+      }
+      if(!flag){
+        list2.add(item);
+      }
+    }
+    calendarEntries = list2;
     if(currentWeekOffset == 1) {
       storage.saveInt('CachedCalendarLength', calendarEntries.length);
       //cache calendar

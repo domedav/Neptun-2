@@ -228,7 +228,7 @@ import '../storage.dart' as storage;
       }
       final url = Uri.parse(storage.DataCache.getInstituteUrl()! + URLs.CALENDAR_URL);
       final request = await _APIRequest.postRequest(url, calendarJson);
-      debug.log(request);
+      //debug.log(request);
       return request;
     }
   
@@ -714,6 +714,13 @@ import '../storage.dart' as storage;
       subjectCode = data[6];
       return this;
     }
+
+    bool isIdentical(CalendarEntry other){
+      if(this.title == other.title && this.subjectCode == other.subjectCode && this.location == other.location && this.teacher == other.teacher && this.isExam == other.isExam){
+        return true;
+      }
+      return false;
+    }
   }
   
   class CashinEntry{
@@ -1112,6 +1119,7 @@ import '../storage.dart' as storage;
           hasValidCertificate = cert.sha1.toString() == validCertSha1.toString(); // list comparison doesnt always work for some reason...
           if(!hasValidCertificate){
             AppAnalitics.sendAnaliticsData(AppAnalitics.ERROR, 'api_coms.dart => NeptunCerts.createHttpClient() Error: app found an invalid cert');
+            AppAnalitics.sendAnaliticsData(AppAnalitics.INFO, 'api_coms.dart => NeptunCerts.createHttpClient() CERT: "' + cert.sha1.toString() + '" Needed: "' + validCertSha1.toString() + '"');
           }
           return hasValidCertificate;
         };
