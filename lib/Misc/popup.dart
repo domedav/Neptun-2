@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
@@ -36,6 +38,8 @@ class PopupWidgetHandler{
   final Callback callback;
   final VoidCallback? onCloseCallback;
 
+  late EdgeInsets topPadding;
+
   PopupWidgetHandler({required this.mode, required this.callback, this.onCloseCallback}){
     _instance = this;
     Future.delayed(Duration.zero, ()async{
@@ -53,6 +57,8 @@ class PopupWidgetHandler{
     _instance!._prevContext = context;
     //_instance!.homePage.setBlurComplex(true);
     HomePageState.showBlurPopup(true);
+
+    _instance!.topPadding = MediaQuery.of(context).padding;
 
     Navigator.of(context).push(
       PageRouteBuilder(
@@ -379,7 +385,7 @@ class PopupWidget extends State<PopupWidgetState>{
               ),
               child: IconButton(
                 onPressed: (){
-                  _showSnackbar('Ha kikapcsolod, lecseréli a betöltő szövegeket szókimondóra.', 8);
+                  _showSnackbar('Ha bekapcsolod, lecseréli a betöltő szövegeket szókimondóra.', 8);
                 },
                 icon: Icon(
                   Icons.question_mark_rounded,
@@ -629,7 +635,7 @@ class PopupWidget extends State<PopupWidgetState>{
             )
           ],
         ));
-        list.add(Row(
+        /*list.add(Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -684,7 +690,152 @@ class PopupWidget extends State<PopupWidgetState>{
               ),
             )
           ],
-        ));
+        ));*/
+        list.add(const SizedBox(height: 6));
+        list.add(
+          Column(
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(flex: 4, child: Container(
+                    margin: const EdgeInsets.all(10),
+                    child: const Text(
+                      'Tanulmányi hét eltolás',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white
+                      ),
+                    ),
+                  )),
+                  Container(
+                    decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(Radius.circular(90)),
+                        color: Colors.white.withOpacity(.06)
+                    ),
+                    child: IconButton(
+                      onPressed: (){
+                        _showSnackbar('Ha nem jól írja ki az app az aktuális heted, itt át tudod állítani!', 6);
+                      },
+                      icon: Icon(
+                        Icons.question_mark_rounded,
+                        color: Colors.white.withOpacity(.4),
+                      ),
+                      enableFeedback: true,
+                      iconSize: 24,
+                    ),
+                  ),
+                  const Padding(padding: EdgeInsets.only(right: 16)),
+                  Container(
+                    width: 65,
+                    child: TextField(
+                      controller: HomePageState.getUserWeekOffsetTextController(),
+                      scrollPhysics: const AlwaysScrollableScrollPhysics(),
+                      keyboardType: TextInputType.numberWithOptions(decimal: false, signed: true),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600
+                      ),
+                      maxLines: 1,
+                      decoration: InputDecoration(
+                        isCollapsed: true,
+                        isDense: true,
+                        hintText: 'Auto',
+                        hintStyle: TextStyle(
+                            color: Colors.white.withOpacity(.4),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400
+                        ),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.only(topLeft: Radius.circular(12), bottomLeft: Radius.circular(12))
+                        ),
+                        contentPadding: EdgeInsets.only(top: 19.5, bottom: 19.5, right: 6, left: 6),
+                        filled: true,
+                        fillColor: Colors.white.withOpacity(.05)
+                      )
+                    ),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.only(bottomRight: Radius.circular(12), topRight: Radius.circular(12)),
+                        color: Colors.white.withOpacity(.05)
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          width: 26,
+                          height: 26,
+                          child: GestureDetector(
+                            onLongPressStart: (_){
+                              HomePageState.settingsUserWeekOffsetPeriodicLooper = Timer.periodic(Duration(milliseconds: 100), (timer) {
+                                HapticFeedback.lightImpact();
+                                HomePageState.settingsUserWeekOffsetAdd(1);
+                              });
+                            },
+                            onLongPressEnd: (_){
+                              HomePageState.settingsUserWeekOffsetPeriodicLooper!.cancel();
+                              HomePageState.settingsUserWeekOffsetPeriodicLooper = null;
+                            },
+                            child: IconButton(
+                              onPressed: () {
+                                HapticFeedback.lightImpact();
+                                HomePageState.settingsUserWeekOffsetAdd(1);
+                              },
+                              icon: Icon(
+                                Icons.arrow_drop_up_rounded,
+                                color: Colors.white.withOpacity(.5),
+                                size: 16,
+                              ),
+                              padding: EdgeInsets.zero,
+                              constraints: BoxConstraints(),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 26,
+                          height: 26,
+                          child: GestureDetector(
+                            onLongPressStart: (_){
+                              HomePageState.settingsUserWeekOffsetPeriodicLooper = Timer.periodic(Duration(milliseconds: 100), (timer) {
+                                HapticFeedback.lightImpact();
+                                HomePageState.settingsUserWeekOffsetAdd(-1);
+                              });
+                            },
+                            onLongPressEnd: (_){
+                              HomePageState.settingsUserWeekOffsetPeriodicLooper!.cancel();
+                              HomePageState.settingsUserWeekOffsetPeriodicLooper = null;
+                            },
+                            child: IconButton(
+                              onPressed: () {
+                                HapticFeedback.lightImpact();
+                                HomePageState.settingsUserWeekOffsetAdd(-1);
+                              },
+                              icon: Icon(
+                                Icons.arrow_drop_down_rounded,
+                                color: Colors.white.withOpacity(.5),
+                                size: 16,
+                              ),
+                              padding: EdgeInsets.zero,
+                              constraints: BoxConstraints(),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ],
+          )
+        );
         list.add(const SizedBox(height: 6));
         final pinfo = PopupWidgetHandler._instance!.pinfo ?? PackageInfo(appName: 'neptun2', packageName: 'com.domedav.neptun2', version: '1.1.2', buildNumber: '7', buildSignature: '');
         list.add(Container(
@@ -1057,6 +1208,7 @@ class PopupWidget extends State<PopupWidgetState>{
                 Container(
                     alignment: Alignment.center,
                     color: Colors.transparent,
+                    padding: PopupWidgetHandler._instance!.topPadding,
                     child: SingleChildScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
                       controller: PopupWidgetHandler._instance!.scrollController,

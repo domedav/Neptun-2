@@ -243,13 +243,13 @@ import '../storage.dart' as storage;
       }
       previousMonday = DateTime(previousMonday.year, previousMonday.month, previousMonday.day, 0, 0);
   
-      DateTime nextFriday = previousMonday.add(const Duration(days: 6, hours: 23, minutes: 59));
-      if (nextFriday.weekday == 7) {
-        nextFriday = nextFriday.subtract(const Duration(days: 7));
+      DateTime nextSunday = previousMonday.add(const Duration(days: 6, hours: 23, minutes: 59));
+      if (nextSunday.weekday == 7) {
+        nextSunday = nextSunday.subtract(const Duration(days: 7));
       }
   
       DateTime startOfTargetWeek = previousMonday.add(Duration(days: weekOffset * 7));
-      DateTime endOfTargetWeek = nextFriday.add(Duration(days: weekOffset * 7)).add(Duration(days: 7));
+      DateTime endOfTargetWeek = nextSunday.add(Duration(days: weekOffset * 7));//.add(Duration(days: 7));
   
       final epochStart = startOfTargetWeek.millisecondsSinceEpoch;
       final epochEnd = endOfTargetWeek.millisecondsSinceEpoch;
@@ -556,9 +556,9 @@ import '../storage.dart' as storage;
     }
 
     static String removeBloatFromMail(String raw){
-      var san = raw.trim();
-      san = san.replaceAll(RegExp(r'\.\w+\{[^}]*\}'), '');
-      return san.trim();
+      var sanitised = raw.trim();
+      sanitised = sanitised.replaceAll(RegExp(r'\.\w+\{[^}]*\}'), '');
+      return sanitised.trim();
     }
 
     static Future<void> setMailRead(int id)async{
@@ -1012,13 +1012,13 @@ import '../storage.dart' as storage;
         final gen = Random().nextInt(100) % 4;
         switch (gen) {
           case 0:
-            return '⟸ Egy pillanat...⟹';
+            return 'Egy pillanat...';
           case 1:
-            return '⟸ Alakul a molekula...⟹';
+            return 'Alakul a molekula...';
           case 2:
-            return '⟸ Csak szépen lassan...⟹';
+            return 'Csak szépen lassan...';
           case 3:
-            return '⟸ Tölt valamit nagyon...⟹';
+            return 'Tölt valamit nagyon...';
           default:
             return 'Neptun 2';
         }
@@ -1026,11 +1026,11 @@ import '../storage.dart' as storage;
       final gen = Random().nextInt(100) % 3;
       switch (gen) {
         case 0:
-          return '⟸ Na, megvan?...⟹';
+          return 'Na, megvan?...';
         case 1:
-          return '⟸ Várjál! Nem megy ez ilyen gyorsan...⟹';
+          return 'Várjál! Nem megy ez ilyen gyorsan...';
         case 2:
-          return '⟸ Nem emlékszel mit olvastál? Szedj B6 vitamint!...⟹';
+          return 'Nem emlékszel mit olvastál? Szedj B6 vitamint!...';
         default:
           return 'Neptun 2';
       }

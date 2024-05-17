@@ -67,7 +67,7 @@ class TopNavigatorWidget extends StatelessWidget{
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
                 Container(
-                  margin: const EdgeInsets.fromLTRB(10, 0, 30, 6),
+                  margin: const EdgeInsets.fromLTRB(10, 0, 18, 6),
                   child: IconButton(
                     onPressed: (){
                       homePage.setBlurComplex(true);
@@ -203,8 +203,10 @@ class TopNavigatorWidget extends StatelessWidget{
                           });
                         }
                         else if(selectedValue == 'settings'){
-                          PopupWidgetHandler(mode: 1, callback: (d){
+                          PopupWidgetHandler(mode: 1, callback: (res){
                             //log('PopupComplete');
+                          }, onCloseCallback: (){
+                            HomePageState.settingsUserWeekOffsetChangeDetect();
                           });
                           PopupWidgetHandler.doPopup(context);
                         }
@@ -212,12 +214,12 @@ class TopNavigatorWidget extends StatelessWidget{
                     },
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),
-                      padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 20, vertical: 15)),
+                      padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 16, vertical: 12)),
                     ),
                     icon: const Icon(
-                      Icons.person_outline_rounded,
+                      Icons.menu_rounded,
                       color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
-                      size: 28,
+                      size: 24,
                     ),
                   ),
                 ),

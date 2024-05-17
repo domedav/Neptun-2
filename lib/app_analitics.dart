@@ -9,6 +9,7 @@ class AppAnalitics{
   static const int INFO = 1;
 
   static Future<void> sendAnaliticsData(int reportType, String reportData)async{
+    return; // no longer have analitics server running
     if(!DataCache.getAnalyticsEnrolledState()! || !DataCache.getHasNetwork()!){
       return;
     }

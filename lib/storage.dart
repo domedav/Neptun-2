@@ -67,6 +67,7 @@ class DataCache{
     setNeedClassNotifications(_persistentSetting_showClassNotifications! ? 1 : 0);
     setNeedClassNotifications(_persistentSetting_showPaymentsNotifications! ? 1 : 0);
     setNeedClassNotifications(_persistentSetting_showPeriodsNotifications! ? 1 : 0);
+    setUserWeekOffset(_persistentSetting_weekOffset!);
     setAnalyticsFirstAppOpenTime(_persistentAnalytics_firstAppOpenTimeMs!);
     setAnalyticsNextRatePopupTime(_persistentAnalytics_nextRatePopupShowMs!);
     setAnalyticsRateNudgedAmount(_persistentAnalytics_userRateNudgedAmount!);
@@ -95,6 +96,7 @@ class DataCache{
   late bool? _persistentSetting_showClassNotifications = true;
   late bool? _persistentSetting_showPaymentsNotifications = true;
   late bool? _persistentSetting_showPeriodsNotifications = true;
+  late int? _persistentSetting_weekOffset = 0;
 
   late int? _permanentConfiguration_isInstalledFromGooglePlay = 0;
 
@@ -176,8 +178,13 @@ class DataCache{
       _persistentSetting_showPeriodsNotifications = true;  // this is the default value, not false
     }
 
+    tmp = await getInt('SETTING_UserWeekOffset');
+    _persistentSetting_weekOffset = tmp ?? 0;
+
+
     tmp = await getInt('CONFIG_IsInstalledFromGPlay');
     _permanentConfiguration_isInstalledFromGooglePlay = tmp ?? 0;
+
 
     tmp = await getInt('ANALYTICS_FirstAppOpenTime');
     _persistentAnalytics_firstAppOpenTimeMs = tmp ?? 0;
@@ -300,6 +307,12 @@ class DataCache{
   static Future<void> setNeedPeriodsNotifications(int? value) async{
     _instance._persistentSetting_showPeriodsNotifications = value != null && value != 0;
     await saveInt('SETTING_IsNeedPeriodsNotifications', value ?? 1);
+  }
+
+  static int? getUserWeekOffset(){return _instance._persistentSetting_weekOffset;}
+  static Future<void> setUserWeekOffset(int? value)async{
+    _instance._persistentSetting_weekOffset = value ?? 0;
+    await saveInt('SETTING_UserWeekOffset', value ?? 0);
   }
 
   static int? getIsInstalledFromGPlay({bool excludeDefaultState = true}){return _instance._permanentConfiguration_isInstalledFromGooglePlay! - (excludeDefaultState ? 1 : 0);}

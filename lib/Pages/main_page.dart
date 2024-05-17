@@ -1,11 +1,8 @@
 import 'dart:async';
 import 'dart:developer' as debug;
 import 'dart:io';
-import 'dart:math';
 import 'dart:ui';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/animation.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -13,7 +10,6 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:neptun2/MailElements/mail_element_widget.dart';
-import 'package:neptun2/app_analitics.dart';
 import 'package:neptun2/notifications.dart';
 import 'package:neptun2/Misc/emojirich_text.dart';
 import 'package:neptun2/Misc/popup.dart';
@@ -111,6 +107,14 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   late final LinkedScrollControllerGroup bottomnavScrollCntroller;
   late final ScrollController bottomnavController;
 
+  late final TextEditingController settingsUserWeekOffset;
+  late int settingsUserWeekOffsetPrev;
+  String prevSettingsUserWeekOffset = '';
+  static TextEditingController getUserWeekOffsetTextController(){
+    return _instance.settingsUserWeekOffset;
+  }
+  static Timer? settingsUserWeekOffsetPeriodicLooper = null;
+
   bool canDoCalendarPaging = false;
   int weeksSinceStart = 1;
   int currentWeekOffset = 1;
@@ -184,6 +188,17 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
     bottomnavScrollCntroller = LinkedScrollControllerGroup();
     bottomnavController = bottomnavScrollCntroller.addAndGet();
+
+    final userWeekOffserValue = storage.DataCache.getUserWeekOffset()!;
+    settingsUserWeekOffset = TextEditingController(text: (userWeekOffserValue == 0 ? '' : userWeekOffserValue.toString()));
+    prevSettingsUserWeekOffset = settingsUserWeekOffset.text;
+    settingsUserWeekOffsetPrev = storage.DataCache.getUserWeekOffset()!;
+    settingsUserWeekOffset.addListener(() {
+      if(settingsUserWeekOffset.text != prevSettingsUserWeekOffset){
+        changedSettingsUserWeekOffset = true;
+        settingsUserWeekOffsetSetup();
+      }
+    });
 
     _fbController = AnimationController(
       vsync: this,
@@ -348,6 +363,56 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         _fbPosY = size.height - 140;
       });
     });
+  }
+
+  bool changedSettingsUserWeekOffset = false;
+
+  void settingsUserWeekOffsetSetup(){
+    final newVal = int.tryParse(settingsUserWeekOffset.text);
+    var correctedVal = 0;
+    if(newVal == null || newVal == 0){
+      settingsUserWeekOffset.text = '';
+      prevSettingsUserWeekOffset = settingsUserWeekOffset.text;
+      Future.delayed(Duration.zero, ()async{
+        await storage.DataCache.setUserWeekOffset(correctedVal);
+      });
+      return;
+    }
+    correctedVal = clampDouble(newVal.toDouble(), -calcPassedWeekOffsetless().toDouble(), 51 - calcPassedWeekOffsetless().toDouble()).toInt();
+    settingsUserWeekOffset.text = correctedVal.toString();
+    settingsUserWeekOffset.text = correctedVal.toString();
+    prevSettingsUserWeekOffset = settingsUserWeekOffset.text;
+    Future.delayed(Duration.zero, ()async{
+      await storage.DataCache.setUserWeekOffset(correctedVal);
+    });
+  }
+
+  static void settingsUserWeekOffsetAdd(int val){
+    _instance.changedSettingsUserWeekOffset = true;
+    final oldVal = storage.DataCache.getUserWeekOffset()!;
+    var correctedVal = oldVal + val;
+    correctedVal = clampDouble(correctedVal.toDouble(), -_instance.calcPassedWeekOffsetless().toDouble(), 51 - _instance.calcPassedWeekOffsetless().toDouble()).toInt();
+    _instance.settingsUserWeekOffset.text = correctedVal.toString();
+    _instance.prevSettingsUserWeekOffset = _instance.settingsUserWeekOffset.text;
+    Future.delayed(Duration.zero, ()async{
+      await storage.DataCache.setUserWeekOffset(correctedVal);
+    });
+  }
+
+  static void settingsUserWeekOffsetChangeDetect(){
+    _instance._settingsUserWeekOffsetChangeDetect();
+  }
+  void _settingsUserWeekOffsetChangeDetect(){
+    final currentOffset = storage.DataCache.getUserWeekOffset()!;
+    if(settingsUserWeekOffsetPrev != currentOffset){
+      settingsUserWeekOffsetPrev = currentOffset;
+      Future.delayed(Duration.zero,() async{
+        await storage.DataCache.setHasCachedCalendar(0);
+        await AppNotifications.cancelScheduledNotifs();
+      }).whenComplete(()async{
+        await onCalendarRefresh();
+      });
+    }
   }
 
   void setupCalendarGreetText(){
@@ -1270,6 +1335,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
           storage.saveInt('CachedMailsUnread', unreadMailCount);
           Future.delayed(Duration.zero, ()async{
             await api.MailRequest.setMailRead(MailPopupDisplayTexts.mailID);
+            if(currentMailPage == 1){
+              storage.DataCache.setHasCachedMail(0); // update first batch, needed so that the icon is displayed correctly for the read messages
+            }
           });
         });
       },));
@@ -1291,18 +1359,19 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   }
 
   Future<List<api.CalendarEntry>> fetchCalendarToList(int offset) async{
-    final request = await api.CalendarRequest.makeCalendarRequest(api.CalendarRequest.getCalendarOneWeekJSON(storage.DataCache.getUsername()!, storage.DataCache.getPassword()!, currentWeekOffset + offset/* + isWeekend*/));
+    final userOffset = storage.DataCache.getUserWeekOffset()!;
+    final request = await api.CalendarRequest.makeCalendarRequest(api.CalendarRequest.getCalendarOneWeekJSON(storage.DataCache.getUsername()!, storage.DataCache.getPassword()!, currentWeekOffset + offset/* + isWeekend*/ + userOffset));
     final list = api.CalendarRequest.getCalendarEntriesFromJSON(request);
     final List<api.CalendarEntry> list2 = [];
     for(var item in list){
-      bool flag = false;
+      bool duplicate = false;
       for(var item2 in list2){
         if(item.isIdentical(item2)){
-          flag = true;
+          duplicate = true;
           break;
         }
       }
-      if(!flag){
+      if(!duplicate){
         list2.add(item);
       }
     }
@@ -1331,19 +1400,20 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     }
     //otherwise, just fetch again
     //final isWeekend = DateTime.now().weekday == DateTime.saturday || DateTime.now().weekday == DateTime.sunday ? 1 : 0;
-    final request = await api.CalendarRequest.makeCalendarRequest(api.CalendarRequest.getCalendarOneWeekJSON(storage.DataCache.getUsername()!, storage.DataCache.getPassword()!, currentWeekOffset/* + isWeekend*/));
+    final userOffset = storage.DataCache.getUserWeekOffset()!;
+    final request = await api.CalendarRequest.makeCalendarRequest(api.CalendarRequest.getCalendarOneWeekJSON(storage.DataCache.getUsername()!, storage.DataCache.getPassword()!, currentWeekOffset/* + isWeekend*/ + userOffset));
     calendarEntries.clear();
     final list = api.CalendarRequest.getCalendarEntriesFromJSON(request);
     final List<api.CalendarEntry> list2 = [];
     for(var item in list){
-      bool flag = false;
+      bool duplicate = false;
       for(var item2 in list2){
         if(item.isIdentical(item2)){
-          flag = true;
+          duplicate = true;
           break;
         }
       }
-      if(!flag){
+      if(!duplicate){
         list2.add(item);
       }
     }
@@ -1636,7 +1706,21 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
     return elapsedWeeks + currentWeekOffset - 1 + isWeekend;*/
 
-    return ((weeksPassed.floor() % 52) + currentWeekOffset);// - isWeekend;// + isWeekend;
+    final userOffset = storage.DataCache.getUserWeekOffset()!;
+    return ((weeksPassed.floor() % 52) + (currentWeekOffset + userOffset));// - isWeekend;// + isWeekend;
+  }
+  
+  int calcPassedWeekOffsetless(){
+    final epochsemester = storage.DataCache.getFirstWeekEpoch()!;
+    final now = DateTime.now();
+    final determiner = epochsemester > 0 ? DateTime.fromMillisecondsSinceEpoch(epochsemester) : getClosestMondayTo(DateTime(now.year - (now.millisecondsSinceEpoch > DateTime(now.year, 9, 1).millisecondsSinceEpoch ? 0 : 1), 9, 1));
+    final yearlessNow = DateTime(1, now.month, now.day);
+    final sepOne = DateTime(yearlessNow.year - 1, determiner.month, determiner.day); // first week
+
+    final timepassSinceSepOne = Duration(milliseconds: (yearlessNow.millisecondsSinceEpoch - sepOne.millisecondsSinceEpoch));
+    final weeksPassed = timepassSinceSepOne.inDays / 7;
+
+    return ((weeksPassed.floor() % 52));
   }
 
   @override
