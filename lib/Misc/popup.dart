@@ -731,106 +731,113 @@ class PopupWidget extends State<PopupWidgetState>{
                   ),
                   const Padding(padding: EdgeInsets.only(right: 16)),
                   Container(
-                    width: 65,
-                    child: TextField(
-                      controller: HomePageState.getUserWeekOffsetTextController(),
-                      scrollPhysics: const AlwaysScrollableScrollPhysics(),
-                      keyboardType: TextInputType.numberWithOptions(decimal: false, signed: true),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600
-                      ),
-                      maxLines: 1,
-                      decoration: InputDecoration(
-                        isCollapsed: true,
-                        isDense: true,
-                        hintText: 'Auto',
-                        hintStyle: TextStyle(
-                            color: Colors.white.withOpacity(.4),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400
-                        ),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.only(topLeft: Radius.circular(12), bottomLeft: Radius.circular(12))
-                        ),
-                        contentPadding: EdgeInsets.only(top: 19.5, bottom: 19.5, right: 6, left: 6),
-                        filled: true,
-                        fillColor: Colors.white.withOpacity(.05)
-                      )
-                    ),
-                  ),
-                  Container(
                     decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.only(bottomRight: Radius.circular(12), topRight: Radius.circular(12)),
-                        color: Colors.white.withOpacity(.05)
+                      color: Colors.white.withOpacity(.05),
+                      borderRadius: BorderRadius.all(Radius.circular(14))
                     ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    padding: const EdgeInsets.all(4),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        SizedBox(
-                          width: 26,
-                          height: 26,
-                          child: GestureDetector(
-                            onLongPressStart: (_){
-                              HomePageState.settingsUserWeekOffsetPeriodicLooper = Timer.periodic(Duration(milliseconds: 100), (timer) {
-                                HapticFeedback.lightImpact();
-                                HomePageState.settingsUserWeekOffsetAdd(1);
-                              });
-                            },
-                            onLongPressEnd: (_){
-                              HomePageState.settingsUserWeekOffsetPeriodicLooper!.cancel();
-                              HomePageState.settingsUserWeekOffsetPeriodicLooper = null;
-                            },
-                            child: IconButton(
-                              onPressed: () {
-                                HapticFeedback.lightImpact();
-                                HomePageState.settingsUserWeekOffsetAdd(1);
-                              },
-                              icon: Icon(
-                                Icons.arrow_drop_up_rounded,
-                                color: Colors.white.withOpacity(.5),
-                                size: 16,
-                              ),
-                              padding: EdgeInsets.zero,
-                              constraints: BoxConstraints(),
+                        Container(
+                          width: 65,
+                          child: TextField(
+                            controller: HomePageState.getUserWeekOffsetTextController(),
+                            scrollPhysics: const AlwaysScrollableScrollPhysics(),
+                            keyboardType: TextInputType.numberWithOptions(decimal: false, signed: true),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600
                             ),
+                            maxLines: 1,
+                            decoration: InputDecoration(
+                              isCollapsed: true,
+                              isDense: true,
+                              hintText: 'Auto',
+                              hintStyle: TextStyle(
+                                  color: Colors.white.withOpacity(.4),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400
+                              ),
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius: BorderRadius.only(topLeft: Radius.circular(12), bottomLeft: Radius.circular(12))
+                              ),
+                              contentPadding: const EdgeInsets.all(6),
+                              filled: false,
+                            )
                           ),
                         ),
-                        SizedBox(
-                          width: 26,
-                          height: 26,
-                          child: GestureDetector(
-                            onLongPressStart: (_){
-                              HomePageState.settingsUserWeekOffsetPeriodicLooper = Timer.periodic(Duration(milliseconds: 100), (timer) {
-                                HapticFeedback.lightImpact();
-                                HomePageState.settingsUserWeekOffsetAdd(-1);
-                              });
-                            },
-                            onLongPressEnd: (_){
-                              HomePageState.settingsUserWeekOffsetPeriodicLooper!.cancel();
-                              HomePageState.settingsUserWeekOffsetPeriodicLooper = null;
-                            },
-                            child: IconButton(
-                              onPressed: () {
-                                HapticFeedback.lightImpact();
-                                HomePageState.settingsUserWeekOffsetAdd(-1);
-                              },
-                              icon: Icon(
-                                Icons.arrow_drop_down_rounded,
-                                color: Colors.white.withOpacity(.5),
-                                size: 16,
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(
+                              width: 26,
+                              height: 26,
+                              child: GestureDetector(
+                                onLongPressStart: (_){
+                                  HomePageState.settingsUserWeekOffsetPeriodicLooper = Timer.periodic(Duration(milliseconds: 100), (timer) {
+                                    HapticFeedback.lightImpact();
+                                    HomePageState.settingsUserWeekOffsetAdd(1);
+                                  });
+                                },
+                                onLongPressEnd: (_){
+                                  HomePageState.settingsUserWeekOffsetPeriodicLooper!.cancel();
+                                  HomePageState.settingsUserWeekOffsetPeriodicLooper = null;
+                                },
+                                child: IconButton(
+                                  onPressed: () {
+                                    HapticFeedback.lightImpact();
+                                    HomePageState.settingsUserWeekOffsetAdd(1);
+                                  },
+                                  icon: Icon(
+                                    Icons.arrow_drop_up_rounded,
+                                    color: Colors.white.withOpacity(.5),
+                                    size: 16,
+                                  ),
+                                  padding: EdgeInsets.zero,
+                                  constraints: const BoxConstraints(),
+                                ),
                               ),
-                              padding: EdgeInsets.zero,
-                              constraints: BoxConstraints(),
                             ),
-                          ),
-                        ),
+                            SizedBox(
+                              width: 26,
+                              height: 26,
+                              child: GestureDetector(
+                                onLongPressStart: (_){
+                                  HomePageState.settingsUserWeekOffsetPeriodicLooper = Timer.periodic(Duration(milliseconds: 100), (timer) {
+                                    HapticFeedback.lightImpact();
+                                    HomePageState.settingsUserWeekOffsetAdd(-1);
+                                  });
+                                },
+                                onLongPressEnd: (_){
+                                  HomePageState.settingsUserWeekOffsetPeriodicLooper!.cancel();
+                                  HomePageState.settingsUserWeekOffsetPeriodicLooper = null;
+                                },
+                                child: IconButton(
+                                  onPressed: () {
+                                    HapticFeedback.lightImpact();
+                                    HomePageState.settingsUserWeekOffsetAdd(-1);
+                                  },
+                                  icon: Icon(
+                                    Icons.arrow_drop_down_rounded,
+                                    color: Colors.white.withOpacity(.5),
+                                    size: 16,
+                                  ),
+                                  padding: EdgeInsets.zero,
+                                  constraints: const BoxConstraints(),
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
                       ],
                     ),
-                  )
+                  ),
                 ],
               ),
             ],

@@ -368,7 +368,10 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   bool changedSettingsUserWeekOffset = false;
 
   void settingsUserWeekOffsetSetup(){
-    final newVal = int.tryParse(settingsUserWeekOffset.text);
+    if(settingsUserWeekOffset.text == '-'){
+      return;
+    }
+    var newVal = int.tryParse(settingsUserWeekOffset.text);
     var correctedVal = 0;
     if(newVal == null || newVal == 0){
       settingsUserWeekOffset.text = '';
