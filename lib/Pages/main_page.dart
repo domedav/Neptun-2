@@ -572,11 +572,15 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   Future<void> _setupNotificationsForSkimmedExams(api.CalendarEntry item, DateTime now)async{
     final daysTillExam = (Duration(milliseconds: item.startEpoch) - Duration(milliseconds: now.millisecondsSinceEpoch)).inDays;
     for(int i = 1; i <= daysTillExam + 1; i++){
-      if(daysTillExam <= 1){
-        await AppNotifications.scheduleNotification('Vizsga emlékeztető!', '"${item.title}" tárgyból vizsgád lesz MA!', DateTime(now.year, now.month, now.day + i, 06, 00), 0);
+      if(i == 1){
+        await AppNotifications.scheduleNotification('Vizsga emlékeztető!', '"${item.title}" tárgyból vizsgád lesz MA!', DateTime(now.year, now.month, now.day + daysTillExam - i + 2, 06, 00), 0);
         continue;
       }
-      await AppNotifications.scheduleNotification('Vizsga emlékeztető!', '"${item.title}" tárgyból vizsgád lesz $i nap múlva!', DateTime(now.year, now.month, now.day + i, 09, 00), 0);
+      else if(i == 2){
+        await AppNotifications.scheduleNotification('Vizsga emlékeztető!', '"${item.title}" tárgyból vizsgád lesz HOLNAP!', DateTime(now.year, now.month, now.day + daysTillExam - i + 2, 09, 00), 0);
+        continue;
+      }
+      await AppNotifications.scheduleNotification('Vizsga emlékeztető!', '"${item.title}" tárgyból vizsgád lesz $i nap múlva!', DateTime(now.year, now.month, now.day + daysTillExam - i + 2, 09, 00), 0);
     }
   }
 
