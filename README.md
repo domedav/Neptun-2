@@ -18,6 +18,8 @@ Az alkalmazás még fejlesztés alatt áll, így ez még nem tökéletes. ⚠️
 
 Töltsd le a Play Áruházból!
 https://play.google.com/store/apps/details?id=com.domedav.neptun2
+## 1.4.7
+Vizsga értesítés bugfix
 
 ## 1.4.6
 Eltolható tanulmányi hetek beállítás
