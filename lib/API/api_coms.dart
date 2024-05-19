@@ -268,7 +268,7 @@ import '../storage.dart' as storage;
   }
   
   class MarkbookRequest{
-    static Future<String> _getMarkbookJSon(int termID) async{
+    static Future<String> _getMarkbookJSon() async{
       if(storage.DataCache.getIsDemoAccount()!){
         return '';
       }
@@ -280,7 +280,8 @@ import '../storage.dart' as storage;
             '"UserLogin":"$username",'
             '"Password":"$password",'
             '"CurrentPage":1,'
-            '"filter":[{"TermID": $termID}]'
+            '"filter":{"TermID": 0},'
+            '"TotalRowCount":-1'
           '}';
       final request = await _APIRequest.postRequest(url, json);
       return request;
@@ -305,23 +306,17 @@ import '../storage.dart' as storage;
           Subject(true, 2, 'DEMO szellemjegy 2', 1, 0, 0),
         ];
       }
-      List<Term> terms = await _APIRequest._getTermIDs();
+      /*List<Term> terms = await _APIRequest._getTermIDs();
       if(terms.isEmpty){
         AppAnalitics.sendAnaliticsData(AppAnalitics.ERROR, 'api_coms.dart => MarkbookRequest._getMarkbookJSon() Error: No Terms');
         return <Subject>[
           Subject(false, 0, 'Hiba a jegyzetfüzet betöltésekor!\nNincs term id', 0, 0, 1),
         ];
-      }
+      }*/
   
-      String responseJson = "";
+      String responseJson = await _getMarkbookJSon();
       List<dynamic> markbooklistRaw = [];
-      for(var term in terms){
-        responseJson = await _getMarkbookJSon(term.id);
-        markbooklistRaw = conv.json.decode(responseJson)['MarkBookList'];
-        if(markbooklistRaw.isNotEmpty){
-          break;                        // find first non null markbook term
-        }
-      }
+      markbooklistRaw = conv.json.decode(responseJson)['MarkBookList'];
   
       if(responseJson.isEmpty || markbooklistRaw.isEmpty){    // if we went thru all possible markbooks, but non was valid
         AppAnalitics.sendAnaliticsData(AppAnalitics.ERROR, 'api_coms.dart => MarkbookRequest._getMarkbookJSon() Error: No reponsejson, and markbooklist is empty');
@@ -418,11 +413,16 @@ import '../storage.dart' as storage;
       }
       final username = storage.DataCache.getUsername();
       final password = storage.DataCache.getPassword();
-      String requestBody = _APIRequest.getGenericPostData(username!, password!);
+      final json =
+          '{'
+          '"UserLogin":"$username",'
+          '"Password":"$password",'
+          '"TotalRowCount":-1'
+          '}';
   
       final url = Uri.parse(storage.DataCache.getInstituteUrl()! + URLs.GETCASHIN_URL);
   
-      List<CashinEntry> entries = CashinRequest._jsonToCashinEntry(await _APIRequest.postRequest(url, requestBody));
+      List<CashinEntry> entries = CashinRequest._jsonToCashinEntry(await _APIRequest.postRequest(url, json));
       return entries;
     }
   
@@ -497,6 +497,7 @@ import '../storage.dart' as storage;
           '"UserLogin":"$username",'
           '"Password":"$password",'
           '"PeriodTermID":$termID,'
+          '"TotalRowCount":-1'
           '}';
       final request = await _APIRequest.postRequest(url, json);
       return request;
@@ -540,7 +541,10 @@ import '../storage.dart' as storage;
       '{'
       '"UserLogin":"$username",'
       '"Password":"$password",'
-      '"CurrentPage":$page'
+      '"CurrentPage":$page,'
+      '"TotalRowCount":-1,'
+      '"MessageID":0,'
+      '"MessageSortEnum":0'
       '}';
       final request = await _APIRequest.postRequest(url, json);
       return request;
@@ -928,6 +932,27 @@ import '../storage.dart' as storage;
           return "december";
       }
       return "NULL";
+    }
+
+    static String dayToText(int day){
+      switch(day){
+        case 1:
+          return 'Hétfő';
+        case 2:
+          return 'Kedd';
+        case 3:
+          return 'Szerda';
+        case 4:
+          return 'Csütörtök';
+        case 5:
+          return 'Péntek';
+        case 6:
+          return 'Szombat';
+        case 7:
+          return 'Vasárnap';
+        default:
+          return '';
+      }
     }
 
     static String capitalizePeriodText(String periodName) {

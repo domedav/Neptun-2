@@ -1,4 +1,6 @@
 import 'dart:developer';
+import 'dart:ui';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../Pages/main_page.dart';
@@ -43,21 +45,21 @@ class BottomNavigatorWidget extends StatelessWidget {
               HapticFeedback.lightImpact();
               return;
             }
-            homePage.bottomNavSwitchValue += e.delta.dx;
+            homePage.bottomNavSwitchValue -= e.delta.dx;
           },
           child: Column(
             children: [
-              const SizedBox(height: 5),
+              const SizedBox(height: 4),
               Text(
                 _getNameOfMenu(homePage.currentView),
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                     color: Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0),
                     fontWeight: FontWeight.w800,
-                    fontSize: 13.0
+                    fontSize: 12.0
                 ),
               ),
-              const SizedBox(height: 5),
+              const SizedBox(height: 2),
               SingleChildScrollView(
                 controller: homePage.bottomnavController,
                 physics: const BouncingScrollPhysics(decelerationRate: ScrollDecelerationRate.fast),
@@ -100,56 +102,35 @@ class BottomNavigatorWidget extends StatelessWidget {
   }
 
   Widget _buildNavigationButton(int index, IconData filledIcon, IconData outlinedIcon) {
-    return GestureDetector(
-      onTap: (){
-        homePage.switchView(index);
-        HapticFeedback.lightImpact();
-      },
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
-        width: 60,
-        height: 60,
-        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
-        decoration: BoxDecoration(
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 4),
+      decoration: BoxDecoration(
           color: homePage.currentView == index
               ? const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.15)
               : const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05),
-          borderRadius: const BorderRadius.all(Radius.circular(20)),
+          borderRadius: const BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(12), bottomRight: Radius.circular(16), bottomLeft: Radius.circular(12)),
           border: Border.all(
             width: 1,
             color: homePage.currentView == index ? const Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0) : const Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0).withOpacity(0),
           )
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            /*IconButton(
-              onPressed: () {
-                homePage.switchView(index);
-              },
-              style: ButtonStyle(
-                backgroundColor: homePage.currentView == index
-                    ? MaterialStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.15))
-                    : MaterialStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),
-                padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 20, vertical: 8)),
-              ),
-              icon: Icon(
-                homePage.currentView == index ? filledIcon : outlinedIcon,
-                color: homePage.currentView == index ? const Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0) : const Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
-                size: homePage.currentView == index ? 32 : 28,
-              ),
-            ),*/
-            Icon(
-              homePage.currentView == index ? filledIcon : outlinedIcon,
-              color: homePage.currentView == index ?
-                const Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0) :
-                const Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0).withOpacity(.3),
-              size: 32,
-            ),
-            const SizedBox(height: 5),
-          ],
+      ),
+      child: IconButton(
+        onPressed: (){
+          homePage.switchView(index);
+          HapticFeedback.lightImpact();
+        },
+        color: Colors.transparent,
+        focusColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        disabledColor: Colors.transparent,
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 13),
+        icon: Icon(
+          homePage.currentView == index ? filledIcon : outlinedIcon,
+          color: homePage.currentView == index ?
+          const Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0) :
+          const Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0).withOpacity(.3),
+          size: 28,
         ),
       ),
     );

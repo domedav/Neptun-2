@@ -61,7 +61,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 24,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w800,
                     color: Colors.white
                   ),
                 ),
@@ -104,13 +104,15 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                                   color: Colors.white,
                                   size: 40,
                                 ),
-                                Text(
-                                  'Intézmény választás',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600
+                                Flexible(
+                                  child: Text(
+                                    'Intézmény választás',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600
+                                    ),
                                   ),
                                 ),
                               ],
@@ -162,13 +164,15 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                                   color: Colors.white,
                                   size: 40,
                                 ),
-                                Text(
-                                  'Neptun URL',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600
+                                Flexible(
+                                  child: Text(
+                                    'Neptun URL',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600
+                                    ),
                                   ),
                                 ),
                               ],
@@ -485,77 +489,125 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 28,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w800,
                             color: Colors.white
                         ),
                       ),
                       const SizedBox(height: 60),
-                      Container(
-                        margin: const EdgeInsets.all(20),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: TextField(
-                                decoration: const InputDecoration(
+                      Column(
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: TextField(
+                              keyboardType: TextInputType.name,
+                              decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.all(18),
                                   suffixIcon: Icon(Icons.search_rounded),
-                                  hintText: 'Keresés...',
-                                ),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _filteredValues.clear();
-                                    for(var item in _institutes){
-                                      if(item.Name.toLowerCase().contains(value.toLowerCase())){
-                                        _filteredValues.add(item.Name);
-                                      }
-                                    }
-                                    if(_filteredValues.isNotEmpty) {
-                                      _selectedValue = _filteredValues[0];
-                                      _canProceed = true;
-                                    } else{
-                                      _filteredValues.add("Nincs találat...");
-                                      _selectedValue = _filteredValues[0];
-                                      _canProceed = false;
-                                    }
-                                  });
-                                },
+                                  labelText: 'Keresés',
+                                  labelStyle: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.white.withOpacity(.6),
+                                      fontWeight: FontWeight.w400
+                                  ),
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                                      borderSide: BorderSide.none
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.white.withOpacity(.05)
                               ),
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600
+                              ),
+                              autofocus: true,
+                              enableSuggestions: false,
+                              autocorrect: false,
+                              onChanged: (value) {
+                                setState(() {
+                                  _filteredValues.clear();
+                                  for(var item in _institutes){
+                                    if(item.Name.toLowerCase().contains(value.toLowerCase())){
+                                      _filteredValues.add(item.Name);
+                                    }
+                                  }
+                                  if(_filteredValues.isNotEmpty) {
+                                    _selectedValue = _filteredValues[0];
+                                    _canProceed = true;
+                                  } else{
+                                    _filteredValues.add("Nincs találat...");
+                                    _selectedValue = _filteredValues[0];
+                                    _canProceed = false;
+                                  }
+                                });
+                              },
                             ),
-                            DropdownButtonFormField<String>(
+                          ),
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            child: DropdownButtonFormField<String>(
                               key: _dropdownSelectionGK,
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(12),
                               value: _selectedValue, // The currently selected value.
-                              padding: const EdgeInsets.all(8),
-                              icon: const Icon(Icons.arrow_drop_down_rounded),
+                              icon: const SizedBox(),
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600
+                              ),
+                              enableFeedback: true,
+                              focusColor: Colors.transparent,
+                              dropdownColor: Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
+                              decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.all(18),
+                                  suffixIcon: const Icon(Icons.arrow_drop_down_rounded),
+                                  labelStyle: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.white.withOpacity(.6),
+                                      fontWeight: FontWeight.w400
+                                  ),
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                                      borderSide: BorderSide.none
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.white.withOpacity(.05)
+                              ),
                               items: _filteredValues.map<DropdownMenuItem<String>>((String value) {
                                 return DropdownMenuItem<String>(
                                     value: value,
-                                    child: Text(
-                                      value,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 2),
+                                      child: Text(
+                                        value,
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.start,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w400
+                                        ),
                                       ),
-                                      overflow: TextOverflow.ellipsis,
                                     )
                                 );
                               }).toList(),
                               selectedItemBuilder: (context){
                                 return _filteredValues.map<Widget>((String value){
-                                  return SizedBox(
-                                    width: _dropdownSelectionGK.currentContext?.findRenderObject() == null ? MediaQuery.of(context).size.width / 1.5 : (_dropdownSelectionGK.currentContext?.findRenderObject() as RenderBox).size.width - 50,
+                                  return Container(
+                                    constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 100), // nemtom miért 100, de így jó...
                                     child: Text(
                                       value,
                                       textAlign: TextAlign.start,
                                       overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
                                       style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 14,
-                                        fontWeight: FontWeight.w600
+                                        fontWeight: FontWeight.w400
                                       ),
                                     ),
                                   );
@@ -567,8 +619,8 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                                 });
                               }
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 35),
                       Row(
@@ -819,53 +871,64 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 28,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w800,
                             color: Colors.white
                         ),
                       ),
                       const SizedBox(height: 60),
                       Container(
-                        padding: const EdgeInsets.all(20),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: TextField(
-                            keyboardType: TextInputType.url,
-                            decoration: const InputDecoration(
-                              suffixIcon: Icon(Icons.link_rounded),
-                              hintText: 'Egyetem neptun URL-je...',
-                              hintStyle: TextStyle(
-                                fontSize: 14,
-                              ),
-                              border: null,
+                        padding: const EdgeInsets.all(8),
+                        child: TextField(
+                          keyboardType: TextInputType.url,
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.all(18),
+                            suffixIcon: Icon(Icons.link_rounded),
+                            labelText: 'Egyetem neptun URL-je',
+                            labelStyle: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white.withOpacity(.6),
+                              fontWeight: FontWeight.w400
                             ),
-                            enableSuggestions: false,
-                            autocorrect: false,
-                            onChanged: (value) {
-                              setState(() {
-                                _canProceed = false;
-                                PageDTO.validatedURL = false;
-                              });
-                              _rawNeptunURL = value.trim();
-                              if(_warnTimer != null){
-                                _warnTimer!.cancel();
-                              }
-                              RegExp regex = RegExp(r'/hallgato/login\.aspx');
-                              PageDTO.validatedURL = _rawNeptunURL.toLowerCase().contains(regex);
-                              if(_rawNeptunURL.isEmpty){
-                                return;
-                              }
-                              if(_rawNeptunURL.toLowerCase().contains(regex)){
-                                setState(() {
-                                  _canProceed = true;
-                                  PageDTO.validatedURL = true;
-                                });
-                                return;
-                              }
-                              _warnTimer = Timer(const Duration(seconds: 2),(){
-                                _showSnackbar('Ez nem egy jó neptun URL! 😡\n\nValami ilyesmit másolj ide:\nhttps://neptun-ws01.uni-pannon.hu/hallgato/login.aspx 🤫', 18);
-                              });
-                            },
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(12)),
+                              borderSide: BorderSide.none
+                            ),
+                            filled: true,
+                            fillColor: Colors.white.withOpacity(.05)
                           ),
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600
+                          ),
+                          autofocus: true,
+                          enableSuggestions: false,
+                          autocorrect: false,
+                          onChanged: (value) {
+                            setState(() {
+                              _canProceed = false;
+                              PageDTO.validatedURL = false;
+                            });
+                            _rawNeptunURL = value.trim();
+                            if(_warnTimer != null){
+                              _warnTimer!.cancel();
+                            }
+                            RegExp regex = RegExp(r'/hallgato/login\.aspx');
+                            PageDTO.validatedURL = _rawNeptunURL.toLowerCase().contains(regex);
+                            if(_rawNeptunURL.isEmpty){
+                              return;
+                            }
+                            if(_rawNeptunURL.toLowerCase().contains(regex)){
+                              setState(() {
+                                _canProceed = true;
+                                PageDTO.validatedURL = true;
+                              });
+                              return;
+                            }
+                            _warnTimer = Timer(const Duration(seconds: 2),(){
+                              _showSnackbar('Ez nem egy jó neptun URL! 😡\n\nValami ilyesmit másolj ide:\nhttps://neptun-ws01.uni-pannon.hu/hallgato/login.aspx 🤫', 18);
+                            });
+                          },
                         ),
                       ),
                       const SizedBox(height: 50),
@@ -1232,26 +1295,40 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                           )
                         ],
                       ),
-                      Container(
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            TextField(
+                      Column(
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: TextField(
                               decoration: InputDecoration(
-                                  suffixIcon: Icon(
-                                      Icons.person_2_rounded,
-                                      color: _paintRed ? Colors.red : Colors.white),
-                                  hintText: 'Neptun Kód...',
-                                  border: null
-                              ),
-                              controller: _usernameController,
+                                contentPadding: const EdgeInsets.all(18),
+                                suffixIcon: Icon(
+                                    Icons.person_2_rounded,
+                                    color: _paintRed ? Colors.red : Colors.white),
+                                labelText: 'Neptun kód',
+                                labelStyle: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white.withOpacity(.6),
+                                    fontWeight: FontWeight.w400
+                                ),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                                    borderSide: BorderSide.none
+                                ),
+                                filled: true,
+                                fillColor: Colors.white.withOpacity(.05)
+                            ),
+                              autofocus: true,
                               enableSuggestions: false,
                               autocorrect: false,
+                              controller: _usernameController,
                               style: TextStyle(
-                                  color: _paintRed ? const Color.fromRGBO(0xFF, 0xB0, 0xB0, 1.0) : Colors.white
+                                color: _paintRed ? const Color.fromRGBO(0xFF, 0xB0, 0xB0, 1.0) : Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
                               ),
                               onChanged: (value) {
                                 _username = value;
@@ -1261,26 +1338,42 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                 });
                               },
                             ),
-                            TextField(
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: TextField(
                               decoration: InputDecoration(
-                                  suffixIcon: IconButton(
-                                      icon: Icon(
-                                          _obscureText ? Icons.visibility_rounded : Icons.visibility_off_rounded,
-                                          color: _paintRed ? Colors.red : Colors.white),
-                                      onPressed: () {
-                                        setState(() {
-                                          _obscureText = !_obscureText; // Toggle the password visibility
-                                        });
-                                      }),
-                                  hintText: 'Jelszó...',
-                                  border: null
+                                contentPadding: const EdgeInsets.all(18),
+                                suffixIcon: IconButton(
+                                    icon: Icon(
+                                        _obscureText ? Icons.visibility_rounded : Icons.visibility_off_rounded,
+                                        color: _paintRed ? Colors.red : Colors.white),
+                                    onPressed: () {
+                                      setState(() {
+                                        _obscureText = !_obscureText; // Toggle the password visibility
+                                      });
+                                    }),
+                                labelText: 'Jelszó',
+                                labelStyle: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white.withOpacity(.6),
+                                    fontWeight: FontWeight.w400
+                                ),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                                    borderSide: BorderSide.none
+                                ),
+                                filled: true,
+                                fillColor: Colors.white.withOpacity(.05)
                               ),
                               controller: _passwordController,
                               obscureText: _obscureText,
                               enableSuggestions: false,
                               autocorrect: false,
                               style: TextStyle(
-                                  color: _paintRed ? const Color.fromRGBO(0xFF, 0xB0, 0xB0, 1.0) : Colors.white
+                                color: _paintRed ? const Color.fromRGBO(0xFF, 0xB0, 0xB0, 1.0) : Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
                               ),
                               onChanged: (value) {
                                 _password = value;
@@ -1290,133 +1383,133 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                 });
                               },
                             ),
-                            const SizedBox(height: 10),
-                            Text(
-                              _paintRed ? "Hibás felhasználónév vagy jelszó!" : "",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: _paintRed ? Colors.red : Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12
-                              ),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            _paintRed ? "Hibás felhasználónév vagy jelszó!" : "",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: _paintRed ? Colors.red : Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12
                             ),
-                            const SizedBox(height: 45),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
+                          ),
+                          const SizedBox(height: 45),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Flexible(
+                                child: Container(
+                                  margin: const EdgeInsets.all(15),
+                                  child: Text(
+                                    'Ha két lépcsős azonosítás van a fiókodon, nem fogsz tudni bejelenzkezni!',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white.withOpacity(.6)
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.all(15),
+                                decoration: BoxDecoration(
+                                    borderRadius: const BorderRadius.all(Radius.circular(90)),
+                                    color: Colors.white.withOpacity(.06)
+                                ),
+                                child: IconButton(
+                                  onPressed: (){
+                                    _showSnackbar('❌ A Neptun2 a régi Neptun mobilapp API-jait használja, amiben nem volt 2 lépcsős azonosítás. Így, ha a fiókod 2 lépcsős azonosítással van védve, a Neptun2 nem fog tudni bejelentkeztetni.\n\n🤓 Viszont, ha kikapcsolod, hiba nélkül tudod használni a Neptun2-t.\nKikapcsolni a Neptunban, a "Saját Adatok/Beállítások"-ban tudod.', 18);
+                                  },
+                                  icon: Icon(
+                                    Icons.question_mark_rounded,
+                                    color: Colors.white.withOpacity(.4),
+                                  ),
+                                  enableFeedback: true,
+                                  iconSize: 24,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 50),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Flexible(
-                                  child: Container(
-                                    margin: const EdgeInsets.all(15),
-                                    child: Text(
-                                      'Ha két lépcsős azonosítás van a fiókodon, nem fogsz tudni bejelenzkezni!',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.white.withOpacity(.6)
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  margin: const EdgeInsets.all(15),
-                                  decoration: BoxDecoration(
-                                      borderRadius: const BorderRadius.all(Radius.circular(90)),
-                                      color: Colors.white.withOpacity(.06)
-                                  ),
-                                  child: IconButton(
+                                ElevatedButton(
                                     onPressed: (){
-                                      _showSnackbar('❌ A Neptun2 a régi Neptun mobilapp API-jait használja, amiben nem volt 2 lépcsős azonosítás. Így, ha a fiókod 2 lépcsős azonosítással van védve, a Neptun2 nem fog tudni bejelentkeztetni.\n\n🤓 Viszont, ha kikapcsolod, hiba nélkül tudod használni a Neptun2-t.\nKikapcsolni a Neptunban, a "Saját Adatok/Beállítások"-ban tudod.', 18);
+                                      HapticFeedback.lightImpact();
+                                      Navigator.pop(context);
                                     },
-                                    icon: Icon(
-                                      Icons.question_mark_rounded,
-                                      color: Colors.white.withOpacity(.4),
+                                    style: ButtonStyle(
+                                        backgroundColor: MaterialStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)),
+                                        padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
                                     ),
-                                    enableFeedback: true,
-                                    iconSize: 24,
-                                  ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.arrow_back_ios_rounded,
+                                          color: Colors.white.withOpacity(.6),
+                                        ),
+                                        const Text(
+                                          'Vissza',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 12,
+                                              color: Colors.white
+                                          ),
+                                        )
+                                      ],
+                                    )
                                 ),
+                                SizedBox(width: MediaQuery.of(context).size.width / 11),
+                                ElevatedButton(
+                                    onPressed: _canProceed ? (){
+                                      HapticFeedback.lightImpact();
+                                      finishLogin();
+                                    } : (){
+                                      _showSnackbar('Érvényes adatokat adj meg! 😡', 5);
+                                    },
+                                    style: ButtonStyle(
+                                        backgroundColor: _canProceed ? MaterialStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)) : MaterialStateProperty.all(const Color.fromRGBO(0x1B, 0x24, 0x25, 1.0)),
+                                        padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Text(
+                                          'Belépés',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 12,
+                                              color: Colors.white
+                                          ),
+                                        ),
+                                        Icon(
+                                          Icons.arrow_forward_ios_rounded,
+                                          color: Colors.white.withOpacity(.6),
+                                        ),
+                                      ],
+                                    )
+                                )
                               ],
                             ),
-                            const SizedBox(height: 50),
-                            SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  ElevatedButton(
-                                      onPressed: (){
-                                        HapticFeedback.lightImpact();
-                                        Navigator.pop(context);
-                                      },
-                                      style: ButtonStyle(
-                                          backgroundColor: MaterialStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)),
-                                          padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(
-                                            Icons.arrow_back_ios_rounded,
-                                            color: Colors.white.withOpacity(.6),
-                                          ),
-                                          const Text(
-                                            'Vissza',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 12,
-                                                color: Colors.white
-                                            ),
-                                          )
-                                        ],
-                                      )
-                                  ),
-                                  SizedBox(width: MediaQuery.of(context).size.width / 11),
-                                  ElevatedButton(
-                                      onPressed: _canProceed ? (){
-                                        HapticFeedback.lightImpact();
-                                        finishLogin();
-                                      } : (){
-                                        _showSnackbar('Érvényes adatokat adj meg! 😡', 5);
-                                      },
-                                      style: ButtonStyle(
-                                          backgroundColor: _canProceed ? MaterialStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)) : MaterialStateProperty.all(const Color.fromRGBO(0x1B, 0x24, 0x25, 1.0)),
-                                          padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          const Text(
-                                            'Belépés',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 12,
-                                                color: Colors.white
-                                            ),
-                                          ),
-                                          Icon(
-                                            Icons.arrow_forward_ios_rounded,
-                                            color: Colors.white.withOpacity(.6),
-                                          ),
-                                        ],
-                                      )
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       )
                     ],
                   ),
@@ -1450,45 +1543,50 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                         mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text(
-                            'Bejelentkezés...',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w800,
-                                fontSize: 26
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: const Text(
+                              'Bejelentkezés...',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 28
+                              ),
                             ),
                           ),
                           const SizedBox(height: 60),
                           Center(
-                            child: SizedBox(
-                              height: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
-                              width: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
-                              child: const CircularProgressIndicator(
-                                color: Colors.white,
-                              ),
+                            child: const CircularProgressIndicator(
+                              color: Colors.white,
                             ),
                           ),
                           const SizedBox(height: 20),
-                          Text(
-                            api.Generic.randomLoadingComment(DataCache.getNeedFamilyFriendlyComments()!),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Colors.white.withOpacity(.6),
-                                fontWeight: FontWeight.w300,
-                                fontSize: 10
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Text(
+                              api.Generic.randomLoadingComment(DataCache.getNeedFamilyFriendlyComments()!),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.white.withOpacity(.6),
+                                  fontWeight: FontWeight.w300,
+                                  fontSize: 10
+                              ),
                             ),
                           ),
                           const SizedBox(height: 60),
                           Visibility(
                             visible: _showNeptunServerError,
-                            child: Text(
-                              'Neptun szervereivel lehet problémák vannak...',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: Colors.white.withOpacity(.3),
-                                  fontWeight: FontWeight.w300,
-                                  fontSize: 14
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              child: Text(
+                                'Neptun szervereivel lehet problémák vannak...',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.white.withOpacity(.3),
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 14
+                                ),
                               ),
                             ),
                           ),

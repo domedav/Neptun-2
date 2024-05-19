@@ -312,7 +312,6 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     });
 
     setupCalendarGreetText();
-
     setupCalendarController(true, true);
 
     if(storage.DataCache.getAnalyticsFirstAppOpenTime()! == 0){
@@ -840,7 +839,14 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     calendarTabs.add(Container(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Tab(
-        text: name,
+        child: Text(
+          name,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 12
+          ),
+        ),
       ),
     ));
     calendarTabViews.add(RefreshIndicator(
@@ -855,7 +861,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
             borderRadius: BorderRadius.circular(14),
           ),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
             children: w.isNotEmpty ? w : isLoading ? <Widget>[
               const Center(
@@ -1931,7 +1937,7 @@ class CalendarPageWidget extends StatelessWidget{
                   ),
                   indicator: BoxDecoration(
                     color: const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05),
-                    borderRadius: BorderRadius.circular(40),
+                    borderRadius: const BorderRadius.all(Radius.circular(26))
                   ),
                   onTap: (index){
                     return;
@@ -1941,12 +1947,6 @@ class CalendarPageWidget extends StatelessWidget{
               HomePageState.getSeparatorLine(context),
               Container(
                 width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                decoration: BoxDecoration(
-                  color: homePage.mondayCalendar.isNotEmpty ? Colors.white.withOpacity(0.03) : Colors.transparent,
-                  borderRadius: BorderRadius.circular(14),
-                ),
                 child: t_table.WeekoffseterElementWidget(
                   week: homePage.weeksSinceStart,
                   from: homePage.calendarEntries.isEmpty ? null : DateTime.fromMillisecondsSinceEpoch(homePage.calendarEntries[0].startEpoch),

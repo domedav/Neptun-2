@@ -53,7 +53,7 @@ class TopNavigatorWidget extends StatelessWidget{
             HapticFeedback.lightImpact();
             return;
           }
-          homePage.bottomNavSwitchValue += e.delta.dx;
+          homePage.bottomNavSwitchValue -= e.delta.dx;
         },
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(
@@ -144,6 +144,23 @@ class TopNavigatorWidget extends StatelessWidget{
                               ),
                             ),
                           ),
+                          const PopupMenuItem(
+                            value: 'bugreport',
+                            child: EmojiRichText(
+                              text: '🐞 Hibabejelentés',
+                              defaultStyle: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 13.0,
+                              ),
+                              emojiStyle: TextStyle(
+                                  color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1),
+                                  fontSize: 13.0,
+                                  fontFamily: "Noto Color Emoji"
+                              ),
+                            ),
+                          ),
+                          const PopupMenuDivider(height: 20),
                           const PopupMenuItem<String>(
                             value: 'logout',
                             child: EmojiRichText(
@@ -209,6 +226,13 @@ class TopNavigatorWidget extends StatelessWidget{
                             HomePageState.settingsUserWeekOffsetChangeDetect();
                           });
                           PopupWidgetHandler.doPopup(context);
+                        }
+                        else if(selectedValue == 'bugreport'){
+                          if(!Platform.isAndroid){
+                            return;
+                          }
+                          final url = Uri.parse('https://github.com/domedav/Neptun-2/issues/new/choose');
+                          launchUrl(url);
                         }
                       });
                     },

@@ -286,7 +286,7 @@ class PeriodsElementWidget extends StatelessWidget{
             ],
           ),
           Text(
-            expired ? '(${-(Duration(milliseconds: endTime - now).inDays + 1)} napja)' : (!isActive ? '(${Duration(milliseconds: startTime - now).inDays + 1} nap múlva)' : '(${Duration(milliseconds: endTime - now).inDays + 1} nap van hátra)'),
+            expired ? '(${-(Duration(milliseconds: endTime - now).inDays + 1) * (Duration(milliseconds: endTime - now).inDays == 0 ? -1 : 1)} napja)' : (!isActive ? '(${Duration(milliseconds: startTime - now).inDays + 1} nap múlva)' : '(${Duration(milliseconds: endTime - now).inDays + 1} nap van hátra)'),
             style: TextStyle(
               color: Colors.white.withOpacity(0.4),
               fontWeight: FontWeight.w400,

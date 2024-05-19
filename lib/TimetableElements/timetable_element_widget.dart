@@ -219,10 +219,10 @@ class WeekoffseterElementWidget extends StatelessWidget{
       return;
     }
     if("$startMonth $startDay" == "$endMonth $endDay"){
-      displayString2 = "Óráid ezen a héten:\n$endMonth $endDay.";
+      displayString2 = "Óráid ezen a héten: $endMonth $endDay. (${api.Generic.dayToText(to.weekday)})";
     }
     else{
-      displayString2 = "Óráid ezen a héten:\n$startMonth $startDay. - $endMonth $endDay.";
+      displayString2 = "Óráid ezen a héten: $startMonth $startDay. - $endMonth $endDay.";
     }
   }
 
@@ -280,25 +280,29 @@ class WeekoffseterElementWidget extends StatelessWidget{
         homePage.calendarWeekSwitchValue += e.delta.dx;
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
+        margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 2),
         color: Colors.black.withOpacity(0.01),
         child: SizedBox(
           width: MediaQuery.of(context).size.width,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          child: Column(
             children: [
-              IconButton(
-                onPressed: week <= 1 || !canDoPaging ? null : onBackPressed,
-                icon: const Icon(Icons.arrow_back_rounded),
-              ),
-              Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+                margin: const EdgeInsets.only(top: 3),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.03),
+                  borderRadius: BorderRadius.circular(21),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    IconButton(
+                      onPressed: week <= 1 || !canDoPaging ? null : onBackPressed,
+                      icon: const Icon(Icons.arrow_back_rounded),
+                    ),
+                    Expanded(
+                      child: Text(
                         displayString,
                         textAlign: TextAlign.center,
                         style: const TextStyle(
@@ -307,25 +311,34 @@ class WeekoffseterElementWidget extends StatelessWidget{
                           fontSize: 16.0,
                         ),
                       ),
-                      EmojiRichText(
-                        text: displayString2,
-                        defaultStyle: TextStyle(
-                          color: Colors.white.withOpacity(.6),
-                          fontWeight: FontWeight.w300,
-                          fontSize: 12.0,
-                        ),
-                        emojiStyle: const TextStyle(
-                            color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
-                            fontSize: 12.0,
-                            fontFamily: "Noto Color Emoji"
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                    IconButton(
+                      onPressed: week >= 52 || !canDoPaging ? null : onForwardPressed,
+                      icon: const Icon(Icons.arrow_forward_rounded)
+                    ),
+                  ],
+                ),
               ),
-              IconButton(
-                onPressed: week >= 52 || !canDoPaging ? null : onForwardPressed,
-                icon: const Icon(Icons.arrow_forward_rounded)
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+                margin: const EdgeInsets.only(bottom: 3),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.03),
+                  borderRadius: BorderRadius.only(bottomRight: Radius.circular(12), bottomLeft: Radius.circular(12)),
+                ),
+                child: EmojiRichText(
+                  text: displayString2,
+                  defaultStyle: TextStyle(
+                    color: Colors.white.withOpacity(.6),
+                    fontWeight: FontWeight.w300,
+                    fontSize: 12.0,
+                  ),
+                  emojiStyle: const TextStyle(
+                      color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                      fontSize: 12.0,
+                      fontFamily: "Noto Color Emoji"
+                  ),
+                ),
               ),
             ],
           ),
