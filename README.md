@@ -20,8 +20,7 @@ Töltsd le a Play Áruházból!
 https://play.google.com/store/apps/details?id=com.domedav.neptun2
 
 ## 1.5.0
-UI javítások
-API javítások
+UI javítások, API javítások
 
 ## 1.4.7
 Vizsga értesítés bugfix
