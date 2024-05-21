@@ -147,25 +147,35 @@ import '../storage.dart' as storage;
       }
   
       PeriodEntry? period;
-  
+      int neededExtraWeeks = 0;
       for (var item in periods){
         if(item.name.toLowerCase().contains('végleges tárgyjelentkezés')){
-          if(item.startEpoch <= now){
+          if(item.startEpoch <= now || period != null && item.startEpoch <= now && item.startEpoch > period.startEpoch){
             period = item;
-            break;
+            neededExtraWeeks = 0;
           }
         }
       }
       if(period == null){
-        AppAnalitics.sendAnaliticsData(AppAnalitics.ERROR, 'api_coms.dart => InstitudesRequest.getFirstStudyweek() Error: No "végleges tárgyjelenkezés" period available, ${periods.toString()}');
-        return null;
+        for (var item in periods){
+          if(item.name.toLowerCase().contains('bejelentkezési időszak')){
+            if(item.startEpoch <= now || period != null && item.startEpoch <= now && item.startEpoch > period.startEpoch){
+              period = item;
+              neededExtraWeeks = 1;
+            }
+          }
+        }
+        if(period == null){
+          AppAnalitics.sendAnaliticsData(AppAnalitics.ERROR, 'api_coms.dart => InstitudesRequest.getFirstStudyweek() Error: No "végleges tárgyjelenkezés" or "bejelentkezési időszak" period available, ${periods.toString()}');
+          return null;
+        }
       }
   
       //final startDate = DateTime.fromMillisecondsSinceEpoch(period.startEpoch);
       final date = DateTime.fromMillisecondsSinceEpoch(period.endEpoch);
       int difference = date.weekday - DateTime.monday;
 
-      final roundedDate = date.subtract(Duration(days: difference));
+      final roundedDate = date.subtract(Duration(days: difference)).add(Duration(days: 7 * neededExtraWeeks));
 
       return roundedDate.millisecondsSinceEpoch;
     }
@@ -198,6 +208,14 @@ import '../storage.dart' as storage;
           CalendarEntry(DateTime(now.year, now.month, now.day, now.hour + 1, now.minute + 11, 4).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, now.hour + 1, now.minute + 45, 9, 9).millisecondsSinceEpoch.toString(), 'DEMO helyszín 8', 'DEMO Óra', false),
           CalendarEntry(DateTime(now.year, now.month, now.day, now.hour + 1, now.minute + 12, 4).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, now.hour + 1, now.minute + 45, 9, 9).millisecondsSinceEpoch.toString(), 'DEMO helyszín 8', 'DEMO Óra', false),
           CalendarEntry(DateTime(now.year, now.month, now.day, now.hour + 1, now.minute + 13, 4).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, now.hour + 1, now.minute + 45, 9, 9).millisecondsSinceEpoch.toString(), 'DEMO helyszín 8', 'DEMO Óra', false),
+
+          CalendarEntry(DateTime(now.year, now.month, now.day, 17, 00).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, now.day, 18, 30).millisecondsSinceEpoch.toString(), 'Clipping', '1...', false),
+          CalendarEntry(DateTime(now.year, now.month, now.day, 18, 30).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, now.day, 20, 00).millisecondsSinceEpoch.toString(), 'Clipping', '2...', false),
+          CalendarEntry(DateTime(now.year, now.month, now.day + 1, 08, 00).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, now.day + 1, 09, 30).millisecondsSinceEpoch.toString(), 'Clipping', '3...', false),
+          CalendarEntry(DateTime(now.year, now.month, now.day + 1, 08, 00).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, now.day + 1, 09, 30).millisecondsSinceEpoch.toString(), 'Clipping', '4...', false),
+          CalendarEntry(DateTime(now.year, now.month, now.day+ 1, 09, 45).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, now.day + 1, 11, 15).millisecondsSinceEpoch.toString(), 'Clipping', '3...', false),
+          CalendarEntry(DateTime(now.year, now.month, now.day + 1, 09, 45).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, now.day + 1, 11, 15).millisecondsSinceEpoch.toString(), 'Clipping', '4...', false),
+
         ];
       }
       var list = <CalendarEntry>[].toList();
@@ -452,7 +470,7 @@ import '../storage.dart' as storage;
       if(storage.DataCache.getIsDemoAccount()!){
         final now = DateTime.now();
         return <PeriodEntry>[
-          PeriodEntry('lejárt időszak', DateTime(now.year - 1, now.month, now.day - 2).millisecondsSinceEpoch, DateTime(now.year - 1, now.month, now.day + 1).millisecondsSinceEpoch, 1),
+         PeriodEntry('lejárt időszak', DateTime(now.year - 1, now.month, now.day - 2).millisecondsSinceEpoch, DateTime(now.year - 1, now.month, now.day + 1).millisecondsSinceEpoch, 1),
           PeriodEntry('előzetes tárgyjelentkezés', DateTime(now.year, now.month, now.day - 2).millisecondsSinceEpoch, DateTime(now.year, now.month, now.day + 1).millisecondsSinceEpoch, 1),
           PeriodEntry('jegybeírási időszak', DateTime(now.year, now.month, now.day - 2).millisecondsSinceEpoch, DateTime(now.year, now.month, now.day + 2).millisecondsSinceEpoch, 1),
           PeriodEntry('bejelentkezési időszak', DateTime(now.year, now.month, now.day - 2).millisecondsSinceEpoch, DateTime(now.year, now.month, now.day +7).millisecondsSinceEpoch, 1),
@@ -462,11 +480,13 @@ import '../storage.dart' as storage;
           PeriodEntry('szorgalmi időszak', DateTime(now.year, now.month, now.day + 1).millisecondsSinceEpoch, DateTime(now.year, now.month + 3, now.day).millisecondsSinceEpoch, 2),
           PeriodEntry('vizsgajelentkezési időszak', DateTime(now.year, now.month, now.day + 20).millisecondsSinceEpoch, DateTime(now.year + 1, now.month, now.day).millisecondsSinceEpoch, 3),
           PeriodEntry('none', DateTime(now.year, now.month + 1, now.day).millisecondsSinceEpoch, DateTime(now.year + 1, now.month, now.day).millisecondsSinceEpoch, 4),
+
+          //PeriodEntry('bejelentkezési időszak', DateTime(2024, 01, 15, 00, 00).millisecondsSinceEpoch, DateTime(2024, 02, 09, 24, 59, 59).millisecondsSinceEpoch, 1),
         ];
       }
       final terms = await _APIRequest._getTermIDs();
       if(terms.isEmpty){
-        AppAnalitics.sendAnaliticsData(AppAnalitics.ERROR, 'api_coms.dart => PeriodsRequest.getPeriods()  Error: No Terms');
+        AppAnalitics.sendAnaliticsData(AppAnalitics.ERROR, 'api_coms.dart => PeriodsRequest.getPeriods() Error: No Terms');
         return <PeriodEntry>[
           PeriodEntry('Hiba lépett fel!\nNincs term id.', DateTime.now().millisecondsSinceEpoch, DateTime.now().millisecondsSinceEpoch, 1)
         ];
@@ -785,7 +805,11 @@ import '../storage.dart' as storage;
       this.startEpoch = correctedStartEpoch.millisecondsSinceEpoch;
   
       final endEp = DateTime.fromMillisecondsSinceEpoch(endEpoch).add(const Duration(days: 1)); // last day counts too
-      final correctedEndEpoch = DateTime(endEp.year, endEp.month, endEp.day);
+      var correctedEndEpoch = DateTime(endEp.year, endEp.month, endEp.day);
+      final isOverflowedByOneDay = endEp.add(Duration(minutes: 1)).hour == 1;
+      if(isOverflowedByOneDay){
+        correctedEndEpoch = correctedEndEpoch.subtract(Duration(days: 1));
+      }
       this.endEpoch = correctedEndEpoch.millisecondsSinceEpoch;
   
   
