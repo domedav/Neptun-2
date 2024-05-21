@@ -598,7 +598,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                               selectedItemBuilder: (context){
                                 return _filteredValues.map<Widget>((String value){
                                   return Container(
-                                    constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 100), // nemtom miért 100, de így jó...
+                                    constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 105),
                                     child: Text(
                                       value,
                                       textAlign: TextAlign.start,

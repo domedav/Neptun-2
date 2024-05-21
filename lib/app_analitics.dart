@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:neptun2/app_analitics_server_send.dart';
+//import 'package:neptun2/app_analitics_server_send.dart';
 import 'package:neptun2/storage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -14,7 +14,7 @@ class AppAnalitics{
       return;
     }
     final analiticsData = await _getAnaliticsData(reportType, reportData);
-    AppAnaliticsServer.makePostRequest(analiticsData);
+    //AppAnaliticsServer.makePostRequest(analiticsData);
   }
 
   static Future<AnaliticsData> _getAnaliticsData(int reportType, String reportData)async{
