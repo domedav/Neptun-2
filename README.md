@@ -20,7 +20,7 @@ Töltsd le a Play Áruházból!
 https://play.google.com/store/apps/details?id=com.domedav.neptun2
 
 ## 1.5.3
-Bugfixek, auto kijelentkeztetés ha a fiók jelszava / 2FA állapota változik
+Bugfixek, auto kijelentkeztetés ha a fiók jelszava / 2FA állapota változik, vizsgainfók popup, üzenetekben link fixek
 
 ## 1.5.2
 Bugfixek, splash screen kép nincs levágva
