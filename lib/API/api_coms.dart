@@ -124,17 +124,22 @@ import '../storage.dart' as storage;
       return newList;
     }
     static Future<bool> validateLoginCredentials(Institute institute, String username, String password) async{
+      return validateLoginCredentialsUrl(institute.URL, username, password);
+    }
+
+    static Future<bool> validateLoginCredentialsUrl(String url, String username, String password)async{
       if(username == 'DEMO' && password == 'DEMO'){
         await storage.DataCache.setIsDemoAccount(1);
         AppAnalitics.sendAnaliticsData(AppAnalitics.INFO, 'api_coms.dart => InstitudesRequest.validateLoginCredentials() Info: Login on demo account');
         return true;
       }
-      final request = await _APIRequest.postRequest(Uri.parse(institute.URL + URLs.TRAININGS_URL), _APIRequest.getGenericPostData(username, password));
+      final request = await _APIRequest.postRequest(Uri.parse(url + URLs.TRAININGS_URL), _APIRequest.getGenericPostData(username, password));
       if(conv.json.decode(request)["ErrorMessage"] != null){
         AppAnalitics.sendAnaliticsData(AppAnalitics.ERROR, 'api_coms.dart => InstitudesRequest.validateLoginCredentials() NeptunError: ${conv.json.decode(request)["ErrorMessage"]}');
       }
       return conv.json.decode(request)["ErrorMessage"] == null;
     }
+
     static Future<int?> getFirstStudyweek() async{
       final periods = await PeriodsRequest.getPeriods();
       if(storage.DataCache.getIsDemoAccount()!){
@@ -347,27 +352,35 @@ import '../storage.dart' as storage;
         final markbookMap = markbook as Map<String, dynamic>;
         subjects.add(Subject(markbookMap['Completed'], markbookMap['Credit'], markbookMap['SubjectName'], markbookMap['ID'], parseTextToGrade(markbookMap['Values']), parseTextToFailstate(markbookMap['Signer'])));
       }
-  
+
       return subjects;
     }
   
-    static int parseTextToFailstate(String failState){
-      RegExp regex = RegExp(r'^(.*?)<br/>');
-      Match? match = regex.firstMatch(failState);
-      if(match == null){
+    static int parseTextToFailstate(String failstate){
+      RegExp regex = RegExp(r'(aláírva|megtagadva)');
+      final matches = regex.allMatches(failstate.toLowerCase());
+      if(matches.isEmpty){
         return 0;
       }
-      failState = (match.group(1) ?? '').trim().toLowerCase();
-      if(failState.isEmpty){
-        return 0;
-      }
-  
-      switch (failState.toLowerCase()){
-        case "megtagadva":
-          return 1;
-        default:
+
+      int best = 99;
+      for(var match in matches){
+        final result = (match.group(1) ?? '').trim().toLowerCase();
+        if(result.isEmpty){
           return 0;
+        }
+        switch (result){
+          case "megtagadva":
+            if(best > 1){
+              best = 1;
+            }
+          default:
+            if(best > 0){
+              best = 0;
+            }
+        }
       }
+      return best;
     }
   
     static bool isMark(String txt){
@@ -384,37 +397,48 @@ import '../storage.dart' as storage;
     }
   
     static int parseTextToGrade(String gradeTxt){
-      final lst = gradeTxt.split('<br/>');
-      var lst2 = <String>[];
-      for (var item in lst){
-        final checkFor = item.trim().toLowerCase();
-        if(isMark(checkFor)){
-          lst2.add(checkFor);
-        }
-      }
-      if(!lst2.isNotEmpty){
+      RegExp regex = RegExp(r'(elégtelen|elégséges|közepes|jó|jeles)');
+      final matches = regex.allMatches(gradeTxt.toLowerCase());
+      if(matches.isEmpty){
         return 0;
       }
-  
-      final latestGrade = lst2[lst2.length - 1];
-  
-      switch (latestGrade){
-        case 'jeles':
-          return 5;
-        case 'jó':
-          return 4;
-        case 'közepes':
-          return 3;
-        case 'elégséges':
-          return 2;
-        case 'elégtelen':
-          return 1;
-        default:
+
+      int best = 0;
+      for(var match in matches){
+        final result = (match.group(1) ?? '').trim().toLowerCase();
+        if(result.isEmpty){
           return 0;
+        }
+        switch (result){
+          case 'jeles':
+            if(best < 5){
+              best = 5;
+            }
+            break;
+          case 'jó':
+            if(best < 4){
+              best = 4;
+            }
+            break;
+          case 'közepes':
+            if(best < 3){
+              best = 3;
+            }
+            break;
+          case 'elégséges':
+            if(best < 2){
+              best = 2;
+            }
+            break;
+          case 'elégtelen':
+            if(best < 1){
+              best = 1;
+            }
+            break;
+        }
       }
+      return best;
     }
-  
-  
   }
   
   class CashinRequest{
@@ -1088,28 +1112,42 @@ import '../storage.dart' as storage;
     static List<InlineSpan> textToInlineSpan(String text) {
       List<InlineSpan> spans = [];
 
-      final pattern = RegExp(r'<a[^>]*>(.*?)<\/a>');
+      final htmlLink = RegExp(r'<a[^>]*>(.*?)</a>|https?://\S+|mailto:\S+');
 
       // Split the text at anchor tags using the regex pattern
-      List<String> matches = pattern.allMatches(text)
+      List<String> matches = htmlLink.allMatches(text)
           .map((m) => m.group(0)!)
           .toList();
-      List<String> parts = text.split(pattern);
+      List<String> parts = text.split(htmlLink);
 
       for (int i = 0; i < parts.length; i++) {
         spans.add(TextSpan(text: parts[i]));
         if (i < matches.length) {
-          final pattern2 = RegExp(r'>(.*?)<\/a>');
-          final match = pattern2.firstMatch(matches[i]);
-          final newText = match!.group(1)!;
-          
-          final isMailTo = newText.contains('@') && (!newText.contains('https://') || newText.contains('http://'));
+          if (matches[i].startsWith('<a')) {
+            final htmlLink2 = RegExp(r'>(.*?)</a>');
+            final match = htmlLink2.firstMatch(matches[i]);
+            if (match == null) {
+              continue;
+            }
+            final newText = match.group(1)!;
 
-          spans.add(ClickableTextSpan.getNewClickableSpan(
-              ClickableTextSpan.getNewOpenLinkCallback(isMailTo ? 'mailto:$newText' : newText), newText,
-              ClickableTextSpan.getStockStyle()));
+            final isMailTo = newText.contains('@') &&
+                !(newText.contains('https://') || newText.contains('http://'));
+
+            spans.add(ClickableTextSpan.getNewClickableSpan(
+                ClickableTextSpan.getNewOpenLinkCallback(
+                    isMailTo ? 'mailto:$newText' : newText), newText,
+                ClickableTextSpan.getStockStyle()));
+          } else {
+            // Handle URLs
+            final url = matches[i];
+            spans.add(ClickableTextSpan.getNewClickableSpan(
+                ClickableTextSpan.getNewOpenLinkCallback(url), url,
+                ClickableTextSpan.getStockStyle()));
+          }
         }
       }
+
       return spans;
     }
 
@@ -1128,7 +1166,7 @@ import '../storage.dart' as storage;
 
       probableSunday = DateTime(now.year, 10, 31, 0, 0, 0);
       if(probableSunday.weekday == 7){
-        daylightSavingsTimeFrom = probableSunday;
+        daylightSavingsTimeTo = probableSunday;
       }
       else{
         daylightSavingsTimeTo = probableSunday.subtract(Duration(days: probableSunday.weekday));

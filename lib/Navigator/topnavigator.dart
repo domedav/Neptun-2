@@ -237,8 +237,8 @@ class TopNavigatorWidget extends StatelessWidget{
                       });
                     },
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),
-                      padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 16, vertical: 12)),
+                      backgroundColor: WidgetStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),
+                      padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 16, vertical: 12)),
                     ),
                     icon: const Icon(
                       Icons.menu_rounded,

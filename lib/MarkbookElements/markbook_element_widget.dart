@@ -49,11 +49,11 @@ class MarkbookElementWidget extends StatelessWidget{
         },
         style: ButtonStyle(
           enableFeedback: true,
-          backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.transparent),
-          foregroundColor: MaterialStateProperty.resolveWith((states) => Colors.white),
-          overlayColor: MaterialStateProperty.resolveWith((states) => Colors.transparent),
-          shadowColor: MaterialStateProperty.resolveWith((states) => Colors.transparent),
-          surfaceTintColor: MaterialStateProperty.resolveWith((states) => Colors.black.withOpacity(.04)),
+          backgroundColor: WidgetStateProperty.resolveWith((states) => Colors.transparent),
+          foregroundColor: WidgetStateProperty.resolveWith((states) => Colors.white),
+          overlayColor: WidgetStateProperty.resolveWith((states) => Colors.transparent),
+          shadowColor: WidgetStateProperty.resolveWith((states) => Colors.transparent),
+          surfaceTintColor: WidgetStateProperty.resolveWith((states) => Colors.black.withOpacity(.04)),
         ),
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),

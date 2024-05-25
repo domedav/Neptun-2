@@ -316,7 +316,7 @@ class PopupWidget extends State<PopupWidgetState>{
             )
         );
         list.add(const SizedBox(height: 20));
-        list.add(FilledButton(
+        list.add(TextButton(
           onPressed: (){
             if(!PopupWidgetHandler._instance!._inUse || !mounted){
               return;
@@ -326,7 +326,8 @@ class PopupWidget extends State<PopupWidgetState>{
             HapticFeedback.lightImpact();
           },
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),
+            backgroundColor: WidgetStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),
+            overlayColor: WidgetStateProperty.all(Colors.white.withOpacity(.05)),
           ),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 15),
@@ -890,7 +891,7 @@ class PopupWidget extends State<PopupWidgetState>{
           ),
         ));
         list.add(const SizedBox(height: 20));
-        list.add(FilledButton(
+        list.add(TextButton(
           onPressed: (){
             if(!PopupWidgetHandler._instance!._inUse || !mounted){
               return;
@@ -900,7 +901,8 @@ class PopupWidget extends State<PopupWidgetState>{
             HapticFeedback.lightImpact();
           },
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),
+            backgroundColor: WidgetStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),
+            overlayColor: WidgetStateProperty.all(Colors.white.withOpacity(.05)),
           ),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 15),
@@ -961,7 +963,7 @@ class PopupWidget extends State<PopupWidgetState>{
         ));
 
         list.add(const SizedBox(height: 20));
-        list.add(FilledButton(
+        list.add(TextButton(
           onPressed: (){
             if(!PopupWidgetHandler._instance!._inUse || !mounted){
               return;
@@ -969,9 +971,13 @@ class PopupWidget extends State<PopupWidgetState>{
             PopupWidgetHandler._instance!.callback(null);
             PopupWidgetHandler.closePopup(true);
             HapticFeedback.lightImpact();
+            Future.delayed(Duration.zero, ()async{
+              await MailRequest.setMailRead(MailPopupDisplayTexts.mailID);
+            });
           },
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),
+            backgroundColor: WidgetStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),
+            overlayColor: WidgetStateProperty.all(Colors.white.withOpacity(.05)),
           ),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 15),
@@ -1146,7 +1152,7 @@ class PopupWidget extends State<PopupWidgetState>{
           ],
         ));
         list.add(const SizedBox(height: 20));
-        list.add(FilledButton(
+        list.add(TextButton(
           onPressed: (){
             if(!PopupWidgetHandler._instance!._inUse || !mounted){
               return;
@@ -1154,16 +1160,223 @@ class PopupWidget extends State<PopupWidgetState>{
             PopupWidgetHandler._instance!.callback(null);
             PopupWidgetHandler.closePopup(true);
             HapticFeedback.lightImpact();
-            Future.delayed(Duration.zero, ()async{
-              await MailRequest.setMailRead(MailPopupDisplayTexts.mailID);
-            });
           },
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),
+            backgroundColor: WidgetStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),
+            overlayColor: WidgetStateProperty.all(Colors.white.withOpacity(.05)),
           ),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 15),
             child: const Text('Ok',
+              style: TextStyle(
+                color: Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0),
+                fontWeight: FontWeight.w900,
+                fontSize: 18.0,
+              ),
+            ),
+          ),
+        ));
+        return list;
+      case 5:
+        list.add(const EmojiRichText(
+          text: "⚠️ Vizsga Infó ⚠️",
+          defaultStyle: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+            fontSize: 22.0,
+          ),
+          emojiStyle: TextStyle(
+              color: Colors.white,
+              fontSize: 19.0,
+              fontFamily: "Noto Color Emoji"
+          ),
+        ));
+        list.add(const SizedBox(height: 3));
+        list.add(Container(
+          color: Colors.white.withOpacity(0.3),
+          margin: const EdgeInsets.symmetric(vertical: 10),
+          height: 2,
+        ));
+        final entry = TimetableCurrentlySelected.entry;
+        list.add(SelectableText.rich(
+            TextSpan(
+              text: entry!.title,
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 20
+              ),
+            )
+        ));
+        list.add(const SizedBox(height: 4));
+        list.add(Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Flexible(
+              child: Text(
+                'Tárgykód:',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14.5
+                ),
+              ),
+            ),
+            const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
+            Flexible(
+                child: SelectableText.rich(
+                  TextSpan(
+                    text: entry!.subjectCode,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14
+                    ),
+                  ),
+                )
+            )
+          ],
+        ));
+        list.add(const SizedBox(height: 4));
+        list.add(Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Flexible(
+              child: Text(
+                'Helyszín:',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14.5
+                ),
+              ),
+            ),
+            const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
+            Flexible(
+                child: SelectableText.rich(
+                  TextSpan(
+                    text: entry!.location,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14
+                    ),
+                  ),
+                )
+            )
+          ],
+        ));
+        final timeStart = DateTime.fromMillisecondsSinceEpoch(entry!.startEpoch);
+        list.add(const SizedBox(height: 4));
+        list.add(Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Flexible(
+              child: Text(
+                'Vizsgaidőpont:',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14.5
+                ),
+              ),
+            ),
+            const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
+            Flexible(
+                child: SelectableText.rich(
+                  TextSpan(
+                    text: '${timeStart.hour.toString().padLeft(2, '0')}:${timeStart.minute.toString().padLeft(2, '0')}',
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14
+                    ),
+                  ),
+                )
+            )
+          ],
+        ));
+        list.add(const SizedBox(height: 20));
+        list.add(TextButton(
+          onPressed: (){
+            if(!PopupWidgetHandler._instance!._inUse || !mounted){
+              return;
+            }
+            PopupWidgetHandler._instance!.callback(null);
+            PopupWidgetHandler.closePopup(true);
+            HapticFeedback.lightImpact();
+          },
+          style: ButtonStyle(
+            backgroundColor: WidgetStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),
+            overlayColor: WidgetStateProperty.all(Colors.white.withOpacity(.05)),
+          ),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 15),
+            child: const Text('Ok',
+              style: TextStyle(
+                color: Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0),
+                fontWeight: FontWeight.w900,
+                fontSize: 18.0,
+              ),
+            ),
+          ),
+        ));
+        return list;
+      case 6:
+        list.add(const EmojiRichText(
+          text: "🤷 Probléma van a fiókoddal 🤷",
+          defaultStyle: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+            fontSize: 22.0,
+          ),
+          emojiStyle: TextStyle(
+              color: Colors.white,
+              fontSize: 19.0,
+              fontFamily: "Noto Color Emoji"
+          ),
+        ));
+        list.add(const SizedBox(height: 3));
+        list.add(Container(
+          color: Colors.white.withOpacity(0.3),
+          margin: const EdgeInsets.symmetric(vertical: 10),
+          height: 2,
+        ));
+        list.add(const Text(
+          'Úgy tűnik nem tudjuk lekérni az adatokat a neptunodból.\nKérlek jelentkezz ki, majd vissza.',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+              fontWeight: FontWeight.w400
+          ),
+        ));
+        list.add(const SizedBox(height: 20));
+        list.add(TextButton(
+          onPressed: (){
+            if(!PopupWidgetHandler._instance!._inUse || !mounted){
+              return;
+            }
+            PopupWidgetHandler._instance!.callback(null);
+            PopupWidgetHandler.closePopup(true);
+            HapticFeedback.lightImpact();
+          },
+          style: ButtonStyle(
+            backgroundColor: WidgetStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),
+            overlayColor: WidgetStateProperty.all(Colors.white.withOpacity(.05)),
+          ),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 15),
+            child: const Text('Kijelentkezés',
               style: TextStyle(
                 color: Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0),
                 fontWeight: FontWeight.w900,

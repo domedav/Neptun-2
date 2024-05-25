@@ -677,8 +677,8 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                                   Navigator.pop(context);
                                 },
                                 style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)),
-                                    padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
+                                    backgroundColor: WidgetStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)),
+                                    padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
                                 ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -710,8 +710,8 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                                   _showSnackbar('Válassz ki egy érvényes egyetemet! 😡', 5);
                                 },
                                 style: ButtonStyle(
-                                    backgroundColor: _canProceed ? MaterialStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)) : MaterialStateProperty.all(const Color.fromRGBO(0x1B, 0x24, 0x25, 1.0)),
-                                    padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
+                                    backgroundColor: _canProceed ? WidgetStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)) : WidgetStateProperty.all(const Color.fromRGBO(0x1B, 0x24, 0x25, 1.0)),
+                                    padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
                                 ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -946,8 +946,8 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                                   Navigator.pop(context);
                                 },
                                 style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)),
-                                    padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
+                                    backgroundColor: WidgetStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)),
+                                    padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
                                 ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -979,8 +979,8 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                                   _showSnackbar('Írj be egy érvényes neptun URL-t! 😡', 5);
                                 },
                                 style: ButtonStyle(
-                                    backgroundColor: _canProceed ? MaterialStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)) : MaterialStateProperty.all(const Color.fromRGBO(0x1B, 0x24, 0x25, 1.0)),
-                                    padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
+                                    backgroundColor: _canProceed ? WidgetStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)) : WidgetStateProperty.all(const Color.fromRGBO(0x1B, 0x24, 0x25, 1.0)),
+                                    padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
                                 ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -1449,8 +1449,8 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                       Navigator.pop(context);
                                     },
                                     style: ButtonStyle(
-                                        backgroundColor: MaterialStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)),
-                                        padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
+                                        backgroundColor: WidgetStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)),
+                                        padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
                                     ),
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -1482,8 +1482,8 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                       _showSnackbar('Érvényes adatokat adj meg! 😡', 5);
                                     },
                                     style: ButtonStyle(
-                                        backgroundColor: _canProceed ? MaterialStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)) : MaterialStateProperty.all(const Color.fromRGBO(0x1B, 0x24, 0x25, 1.0)),
-                                        padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
+                                        backgroundColor: _canProceed ? WidgetStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)) : WidgetStateProperty.all(const Color.fromRGBO(0x1B, 0x24, 0x25, 1.0)),
+                                        padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
                                     ),
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -1966,8 +1966,8 @@ class _Page1State extends State<Page1> {
                               goToPage2();
                             } : null,
                             style: ButtonStyle(
-                              backgroundColor: _canProceed ? MaterialStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)) : MaterialStateProperty.all(const Color.fromRGBO(0x1C, 0x25, 0x26, 1.0)),
-                              padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
+                              backgroundColor: _canProceed ? WidgetStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)) : WidgetStateProperty.all(const Color.fromRGBO(0x1C, 0x25, 0x26, 1.0)),
+                              padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
                             ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -2420,8 +2420,8 @@ class _Page2State extends State<Page2>{
                                         goToPage1();
                                       } : null,
                                       style: ButtonStyle(
-                                          backgroundColor: _canGoBack ? MaterialStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)) : MaterialStateProperty.all(const Color.fromRGBO(0x1C, 0x25, 0x26, 1.0)),
-                                          padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
+                                          backgroundColor: _canGoBack ? WidgetStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)) : WidgetStateProperty.all(const Color.fromRGBO(0x1C, 0x25, 0x26, 1.0)),
+                                          padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
                                       ),
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -2442,8 +2442,8 @@ class _Page2State extends State<Page2>{
                                         finishLogin();
                                       } : null,
                                       style: ButtonStyle(
-                                          backgroundColor: _canProceed ? MaterialStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)) : MaterialStateProperty.all(const Color.fromRGBO(0x1C, 0x25, 0x26, 1.0)),
-                                          padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
+                                          backgroundColor: _canProceed ? WidgetStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)) : WidgetStateProperty.all(const Color.fromRGBO(0x1C, 0x25, 0x26, 1.0)),
+                                          padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
                                       ),
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

@@ -26,6 +26,7 @@ import '../Navigator/topnavigator.dart' as topnav;
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import '../Pages/startup_page.dart' as root_page;
 
 class HomePage extends StatefulWidget{
   const HomePage({super.key});
@@ -361,6 +362,44 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         _fbPosX = size.width - 90;
         _fbPosY = size.height - 140;
       });
+    });
+
+    Future.delayed(Duration(seconds: 5), ()async{
+      final hasConnection = storage.DataCache.getHasNetwork();
+      final isLoggedIn = storage.DataCache.getHasLogin()!;
+
+      if(!hasConnection || !isLoggedIn){
+        return;
+      }
+
+      final username = storage.DataCache.getUsername()!;
+      final password = storage.DataCache.getPassword()!;
+      final url = storage.DataCache.getInstituteUrl()!;
+
+      final result = await api.InstitutesRequest.validateLoginCredentialsUrl(url, username, password);
+      if(result){
+        return;
+      }
+
+      PopupWidgetHandler(mode: 6, callback: (_){
+        userUnavailableAccountLogout();
+      }, onCloseCallback: (){
+        userUnavailableAccountLogout();
+      });
+      PopupWidgetHandler.doPopup(context);
+    });
+  }
+
+  void userUnavailableAccountLogout(){
+    Future.delayed(Duration.zero, ()async{
+      await storage.DataCache.dataWipe();
+      await AppNotifications.cancelScheduledNotifs();
+    }).whenComplete((){
+      Navigator.popUntil(context, (route) => route.willHandlePopInternally);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const root_page.Splitter()),
+      );
     });
   }
 
@@ -1349,7 +1388,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
           Future.delayed(Duration.zero, ()async{
             await api.MailRequest.setMailRead(MailPopupDisplayTexts.mailID);
             if(currentMailPage == 1){
-              storage.DataCache.setHasCachedMail(0); // update first batch, needed so that the icon is displayed correctly for the read messages
+              storage.DataCache.setHasCachedMail(0);
             }
           });
         });
@@ -1875,8 +1914,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
                         color: Colors.white,
                       ),
                       style: ButtonStyle(
-                        padding: MaterialStateProperty.all(const EdgeInsets.all(15)),
-                        backgroundColor: MaterialStateProperty.all(const Color.fromRGBO(0x4F, 0x69, 0x6E, 1.0))
+                        padding: WidgetStateProperty.all(const EdgeInsets.all(15)),
+                        backgroundColor: WidgetStateProperty.all(const Color.fromRGBO(0x4F, 0x69, 0x6E, 1.0))
                       ),
                     ),
                   );

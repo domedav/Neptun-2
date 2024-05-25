@@ -64,6 +64,9 @@ class TimetableElementWidget extends StatelessWidget{
     return GestureDetector(
       onTap: (){
         if(isExam){
+          TimetableCurrentlySelected.entry = entry;
+          PopupWidgetHandler(mode: 5, callback: (_){});
+          PopupWidgetHandler.doPopup(context);
           return;
         }
         TimetableCurrentlySelected.entry = entry;
