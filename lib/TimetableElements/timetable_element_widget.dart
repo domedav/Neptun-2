@@ -1,7 +1,4 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../API/api_coms.dart' as api;
 import '../Misc/emojirich_text.dart';
 import '../Misc/popup.dart';
@@ -15,11 +12,11 @@ class TimetableCurrentlySelected{
 
 class TimetableElementWidget extends StatelessWidget{
 
-  late String title = "NULL";
-  late String location = "NULL";
-  late String displayStartTime = "NULL";
-  late String displayEndTime = "NULL";
-  late bool isExam = false;
+  late final String title;
+  late final String location;
+  late final String displayStartTime;
+  late final String displayEndTime;
+  late final bool isExam;
 
   TimetableElementWidget({super.key, required this.entry, required this.position}){
     title = entry.title;
@@ -238,8 +235,8 @@ class WeekoffseterElementWidget extends StatelessWidget{
   final Callback onBackPressed;
   final Callback onForwardPressed;
 
-  late String displayString = "ERR";
-  late String displayString2 = "";
+  late final String displayString;
+  late final String displayString2;
 
   final bool isLoading;
 

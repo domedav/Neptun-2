@@ -2016,7 +2016,7 @@ class CalendarPageWidget extends StatelessWidget{
   }
 }
 
-class _FloatingButtonOffset extends FloatingActionButtonLocation{
+/*class _FloatingButtonOffset extends FloatingActionButtonLocation{
   final double offsetY;
   final double offsetX;
   _FloatingButtonOffset({required this.offsetX, required this.offsetY});
@@ -2027,8 +2027,7 @@ class _FloatingButtonOffset extends FloatingActionButtonLocation{
     final double y = scaffoldGeometry.scaffoldSize.height - scaffoldGeometry.floatingActionButtonSize.height / offsetY;
     return Offset(x, y);
   }
-
-}
+}*/
 
 class MarkbookPageWidget extends StatelessWidget{
   final HomePageState homePage;

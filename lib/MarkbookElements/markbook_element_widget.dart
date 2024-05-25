@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:neptun2/Misc/popup.dart';
 import '../Misc/emojirich_text.dart';

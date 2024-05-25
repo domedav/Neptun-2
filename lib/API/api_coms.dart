@@ -1,14 +1,10 @@
 import 'dart:async';
 import 'dart:convert' as conv;
-import 'dart:developer' as debug;
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:neptun2/Misc/clickable_text_span.dart';
-import 'package:flutter_timezone/flutter_timezone.dart';
-import 'package:timezone/data/latest.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
 import '../app_analitics.dart';
 import '../storage.dart' as storage;
   
@@ -622,7 +618,7 @@ import '../storage.dart' as storage;
           '"Password":"$password",'
           '"PersonMessageId":$id,'
           '}';
-      final request = await _APIRequest.postRequest(url, json);
+      await _APIRequest.postRequest(url, json);
     }
   }
   

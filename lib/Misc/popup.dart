@@ -1,12 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:neptun2/Misc/custom_snackbar.dart';
 import 'package:neptun2/Pages/main_page.dart';
@@ -1043,7 +1038,7 @@ class PopupWidget extends State<PopupWidgetState>{
             Flexible(
               child: SelectableText.rich(
                 TextSpan(
-                  text: entry!.teacher,
+                  text: entry.teacher,
                   style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w400,
@@ -1075,7 +1070,7 @@ class PopupWidget extends State<PopupWidgetState>{
             Flexible(
               child: SelectableText.rich(
                 TextSpan(
-                  text: entry!.subjectCode,
+                  text: entry.subjectCode,
                   style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w400,
@@ -1107,7 +1102,7 @@ class PopupWidget extends State<PopupWidgetState>{
             Flexible(
               child: SelectableText.rich(
                 TextSpan(
-                  text: entry!.location,
+                  text: entry.location,
                   style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w400,
@@ -1118,7 +1113,7 @@ class PopupWidget extends State<PopupWidgetState>{
             )
           ],
         ));
-        final timeStart = DateTime.fromMillisecondsSinceEpoch(entry!.startEpoch);
+        final timeStart = DateTime.fromMillisecondsSinceEpoch(entry.startEpoch);
         list.add(const SizedBox(height: 4));
         list.add(Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -1229,7 +1224,7 @@ class PopupWidget extends State<PopupWidgetState>{
             Flexible(
                 child: SelectableText.rich(
                   TextSpan(
-                    text: entry!.subjectCode,
+                    text: entry.subjectCode,
                     style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w400,
@@ -1261,7 +1256,7 @@ class PopupWidget extends State<PopupWidgetState>{
             Flexible(
                 child: SelectableText.rich(
                   TextSpan(
-                    text: entry!.location,
+                    text: entry.location,
                     style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w400,
@@ -1272,7 +1267,7 @@ class PopupWidget extends State<PopupWidgetState>{
             )
           ],
         ));
-        final timeStart = DateTime.fromMillisecondsSinceEpoch(entry!.startEpoch);
+        final timeStart = DateTime.fromMillisecondsSinceEpoch(entry.startEpoch);
         list.add(const SizedBox(height: 4));
         list.add(Row(
           mainAxisAlignment: MainAxisAlignment.center,

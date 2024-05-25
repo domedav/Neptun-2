@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer' as debug;
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
@@ -1089,7 +1088,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
 
   bool _obscureText = true;
   bool _canProceed = false;
-  bool _canGoBack = true;
+  //bool _canGoBack = true;
 
   bool _isLoading = false;
 
@@ -1144,7 +1143,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
 
     setState(() {
       _canProceed = false;
-      _canGoBack = false;
+      //_canGoBack = false;
       _isLoading = true;
       _showNeptunServerError = false;
     });
@@ -1179,7 +1178,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
       setState(() {
         _paintRed = true;
         _canProceed = true;
-        _canGoBack = true;
+        //_canGoBack = true;
         _isLoading = false;
         _showNeptunServerError = false;
       });
