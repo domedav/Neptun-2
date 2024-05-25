@@ -117,7 +117,7 @@ class PopupWidgetHandler{
       return;
     }
 
-    _instance!.pwidget!.setState(() {
+    _instance!.pwidget!.setState(() { //jóvanazúgy
       _instance!.pwidget!._shouldShowSnackbar = false;
     });
 
