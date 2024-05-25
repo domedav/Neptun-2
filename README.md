@@ -17,7 +17,11 @@ Funkciók:
 Az alkalmazás még fejlesztés alatt áll, így ez még nem tökéletes. ⚠️
 
 Töltsd le a Play Áruházból!
-https://play.google.com/store/apps/details?id=com.domedav.neptun2
+- https://play.google.com/store/apps/details?id=com.domedav.neptun2
+
+Töltsd le másmilyen áruházból!
+- https://apkpure.com/p/com.domedav.neptun2
+...
 
 ## 1.5.3
 Bugfixek, auto kijelentkeztetés ha a fiók jelszava / 2FA állapota változik, vizsgainfók popup, üzenetekben link fixek
