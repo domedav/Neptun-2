@@ -64,7 +64,10 @@ Arculati változások, Egyszerűbb bejelentkezési mód, Hibajavítások
 ## 1.2.5
 Órarend Hetek száma fix
 
-## 1.2.3 | 1.2.4
+## 1.2.4
+Hibajavítások
+
+## 1.2.3
 Hibajavítások
 
 ## 1.2.2
