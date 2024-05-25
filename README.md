@@ -21,7 +21,7 @@ Töltsd le a Play Áruházból!
 
 Töltsd le másmilyen áruházból!
 - https://apkpure.com/p/com.domedav.neptun2
-...
+- ...
 
 ## 1.5.3
 Bugfixek, auto kijelentkeztetés ha a fiók jelszava / 2FA állapota változik, vizsgainfók popup, üzenetekben link fixek
