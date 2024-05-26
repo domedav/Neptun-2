@@ -23,6 +23,9 @@ Töltsd le másmilyen áruházból!
 - https://apkpure.com/p/com.domedav.neptun2
 - ...
 
+## 1.5.4
+Bugfixek, haptikai javítások
+
 ## 1.5.3
 Bugfixek, auto kijelentkeztetés ha a fiók jelszava / 2FA állapota változik, vizsgainfók popup, üzenetekben link fixek
 
