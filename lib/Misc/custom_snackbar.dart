@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'emojirich_text.dart';
 
-typedef ChangeCallback = void Function(double, bool);
+//typedef ChangeCallback = void Function(double, bool);
 
 class AppSnackbar extends StatelessWidget{
 
@@ -17,11 +17,11 @@ class AppSnackbar extends StatelessWidget{
   final String text;
   final Duration displayDuration;
 
-  final double dragAmmount;
-  final ChangeCallback changer;
+  //final double dragAmmount;
+  final VoidCallback changer;
   final bool state;
 
-  AppSnackbar({super.key, required this.text, required this.displayDuration, required this.dragAmmount, required this.changer, required this.state}){
+  AppSnackbar({super.key, required this.text, required this.displayDuration, /*required this.dragAmmount,*/ required this.changer, required this.state}){
     if(state == false){
       return;
     }
@@ -29,7 +29,7 @@ class AppSnackbar extends StatelessWidget{
       selfdestructTimer!.cancel();
     }
     selfdestructTimer = Timer(displayDuration, (){
-      changer(999, false);
+      changer();
     });
   }
 
@@ -38,7 +38,57 @@ class AppSnackbar extends StatelessWidget{
     if(state == false || displayDuration.inMilliseconds == 0){
       return const SizedBox();
     }
-    return Transform.translate(
+    return Dismissible(
+      onDismissed: (_){
+        selfdestructTimer!.cancel();
+        changer();
+      },
+      key: GlobalKey(),
+      movementDuration: Duration(milliseconds: 400),
+      resizeDuration: Duration(milliseconds: 100),
+      child: Container(
+        padding: const EdgeInsets.only(left: 22, right: 22, top: 10, bottom: 10),
+        margin: const EdgeInsets.all(15),
+        decoration: BoxDecoration(
+          color: const Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
+          borderRadius: const BorderRadius.only(topRight: Radius.circular(30), topLeft: Radius.circular(30), bottomRight: Radius.circular(15), bottomLeft: Radius.circular(15)),
+          border: Border.all(
+            color: Colors.white.withOpacity(.1),
+            width: 1,
+          )
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.question_mark_rounded,
+              size: 24,
+              color: Color.fromRGBO(0x4F, 0x69, 0x6E, 1.0),
+            ),
+            const SizedBox(width: 15),
+            Expanded(
+                child: EmojiRichText(
+                  text: text,
+                  defaultStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400
+                  ),
+                  emojiStyle: const TextStyle(
+                      color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                      fontSize: 14.0,
+                      fontFamily: "Noto Color Emoji"
+                  ),
+                ),
+            )
+          ],
+        ),
+      ),
+    );
+    
+    /*return Transform.translate(
       offset: Offset(dragAmmount, 0),
       child: Container(
         padding: const EdgeInsets.only(left: 22, right: 22, top: 10, bottom: 10),
@@ -93,6 +143,6 @@ class AppSnackbar extends StatelessWidget{
           ),
         ),
       ),
-    );
+    );*/
   }
 }

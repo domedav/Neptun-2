@@ -352,7 +352,6 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
   String _snackbarMessage = "";
   Duration _displayDuration = Duration.zero;
   bool _shouldShowSnackbar = false;
-  double _snackbarDelta = 0;
 
   void _showSnackbar(String text, int displayDurationSec){
     if(!mounted){
@@ -362,7 +361,6 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
       _shouldShowSnackbar = true;
       _displayDuration = Duration(seconds: displayDurationSec);
       _snackbarMessage = text;
-      _snackbarDelta = 0;
     });
   }
   
@@ -753,16 +751,13 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
             ),
             Visibility(
               visible: _shouldShowSnackbar,
-              child: AppSnackbar(text: _snackbarMessage, displayDuration: _displayDuration, dragAmmount: _snackbarDelta, changer: (deltaChange, isHolding){
+              child: AppSnackbar(text: _snackbarMessage, displayDuration: _displayDuration, /*dragAmmount: _snackbarDelta,*/ changer: (){
                 if(!mounted){
                   return;
                 }
                 AppSnackbar.cancelTimer();
                 setState(() {
-                  if(!isHolding && (_snackbarDelta < 0 ? -_snackbarDelta : _snackbarDelta) >= 50){
-                    _shouldShowSnackbar = false;
-                  }
-                  _snackbarDelta = deltaChange;
+                  _shouldShowSnackbar = false;
                 });
               }, state: _shouldShowSnackbar,
               ),
@@ -808,7 +803,6 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
   String _snackbarMessage = "";
   Duration _displayDuration = Duration.zero;
   bool _shouldShowSnackbar = false;
-  double _snackbarDelta = 0;
 
   void _showSnackbar(String text, int displayDurationSec){
     if(!mounted){
@@ -818,7 +812,6 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
       _shouldShowSnackbar = true;
       _displayDuration = Duration(seconds: displayDurationSec);
       _snackbarMessage = text;
-      _snackbarDelta = 0;
     });
   }
 
@@ -1067,16 +1060,13 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
             ),
             Visibility(
               visible: _shouldShowSnackbar,
-              child: AppSnackbar(text: _snackbarMessage, displayDuration: _displayDuration, dragAmmount: _snackbarDelta, changer: (deltaChange, isHolding){
+              child: AppSnackbar(text: _snackbarMessage, displayDuration: _displayDuration, /*dragAmmount: _snackbarDelta,*/ changer: (){
                 if(!mounted){
                   return;
                 }
                 AppSnackbar.cancelTimer();
                 setState(() {
-                  if(!isHolding && (_snackbarDelta < 0 ? -_snackbarDelta : _snackbarDelta) >= 50){
-                    _shouldShowSnackbar = false;
-                  }
-                  _snackbarDelta = deltaChange;
+                  _shouldShowSnackbar = false;
                 });
               }, state: _shouldShowSnackbar,
               ),
@@ -1211,7 +1201,6 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
   String _snackbarMessage = "";
   Duration _displayDuration = Duration.zero;
   bool _shouldShowSnackbar = false;
-  double _snackbarDelta = 0;
 
   void _showSnackbar(String text, int displayDurationSec){
     if(!mounted){
@@ -1221,7 +1210,6 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
       _shouldShowSnackbar = true;
       _displayDuration = Duration(seconds: displayDurationSec);
       _snackbarMessage = text;
-      _snackbarDelta = 0;
     });
   }
 
@@ -1539,16 +1527,13 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
             ),
             Visibility(
               visible: _shouldShowSnackbar,
-              child: AppSnackbar(text: _snackbarMessage, displayDuration: _displayDuration, dragAmmount: _snackbarDelta, changer: (deltaChange, isHolding){
+              child: AppSnackbar(text: _snackbarMessage, displayDuration: _displayDuration, /*dragAmmount: _snackbarDelta,*/ changer: (){
                 if(!mounted){
                   return;
                 }
                 AppSnackbar.cancelTimer();
                 setState(() {
-                  if(!isHolding && (_snackbarDelta < 0 ? -_snackbarDelta : _snackbarDelta) >= 50){
-                    _shouldShowSnackbar = false;
-                  }
-                  _snackbarDelta = deltaChange;
+                  _shouldShowSnackbar = false;
                 });
               }, state: _shouldShowSnackbar,
               ),

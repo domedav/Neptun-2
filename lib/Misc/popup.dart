@@ -408,6 +408,10 @@ class PopupWidget extends State<PopupWidgetState>{
             )
           ],
         ));
+        list.add(Container(
+          height: 1,
+          color: Colors.white.withOpacity(.1),
+        ));
         list.add(Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -636,6 +640,10 @@ class PopupWidget extends State<PopupWidgetState>{
             )
           ],
         ));
+        list.add(Container(
+          height: 1,
+          color: Colors.white.withOpacity(.1),
+        ));
         list.add(Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -743,6 +751,10 @@ class PopupWidget extends State<PopupWidgetState>{
             )
           ],
         ));*/
+        list.add(Container(
+          height: 1,
+          color: Colors.white.withOpacity(.1),
+        ));
         list.add(const SizedBox(height: 6));
         list.add(
           Column(
@@ -1446,7 +1458,7 @@ class PopupWidget extends State<PopupWidgetState>{
   String _snackbarMessage = "";
   Duration _displayDuration = Duration.zero;
   bool _shouldShowSnackbar = false;
-  double _snackbarDelta = 0;
+  //double _snackbarDelta = 0;
 
   void _showSnackbar(String text, int displayDurationSec){
     if(!mounted){
@@ -1456,7 +1468,7 @@ class PopupWidget extends State<PopupWidgetState>{
       _shouldShowSnackbar = true;
       _displayDuration = Duration(seconds: displayDurationSec);
       _snackbarMessage = text;
-      _snackbarDelta = 0;
+      //_snackbarDelta = 0;
     });
   }
 
@@ -1478,40 +1490,38 @@ class PopupWidget extends State<PopupWidgetState>{
               alignment: Alignment.bottomCenter,
               children: [
                 Container(
-                    alignment: Alignment.center,
-                    color: Colors.transparent,
-                    padding: PopupWidgetHandler._instance!.topPadding,
-                    child: SingleChildScrollView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      controller: PopupWidgetHandler._instance!.scrollController,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 10),
-                        margin: const EdgeInsets.all(15),
-                        decoration: const BoxDecoration(
-                          color: Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: getWidgets(PopupWidgetHandler._instance!.mode),
-                        ),
+                  alignment: Alignment.center,
+                  color: Colors.transparent,
+                  padding: PopupWidgetHandler._instance!.topPadding,
+                  margin: EdgeInsets.only(bottom: mounted ? MediaQuery.of(context).viewInsets.bottom : 0),
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    controller: PopupWidgetHandler._instance!.scrollController,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 10),
+                      margin: const EdgeInsets.all(15),
+                      decoration: const BoxDecoration(
+                        color: Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
-                    )
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: getWidgets(PopupWidgetHandler._instance!.mode),
+                      ),
+                    ),
+                  )
                 ),
                 Visibility(
                   visible: _shouldShowSnackbar,
-                  child: AppSnackbar(text: _snackbarMessage, displayDuration: _displayDuration, dragAmmount: _snackbarDelta, changer: (deltaChange, isHolding){
+                  child: AppSnackbar(text: _snackbarMessage, displayDuration: _displayDuration, /*dragAmmount: _snackbarDelta,*/ changer: (){
                     if(!mounted){
                       return;
                     }
                     AppSnackbar.cancelTimer();
                     setState(() {
-                      if(!isHolding && (_snackbarDelta < 0 ? -_snackbarDelta : _snackbarDelta) >= 50){
-                        _shouldShowSnackbar = false;
-                      }
-                      _snackbarDelta = deltaChange;
+                      _shouldShowSnackbar = false;
                     });
                   }, state: _shouldShowSnackbar,
                   ),
