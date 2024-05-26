@@ -51,7 +51,7 @@ class PopupWidgetHandler{
     _instance!._prevContext = context;
     //_instance!.homePage.setBlurComplex(true);
     HomePageState.showBlurPopup(true);
-    AppHaptics.attentionLightImpact();
+    AppHaptics.lightImpact();
 
     _instance!.topPadding = MediaQuery.of(context).padding;
 

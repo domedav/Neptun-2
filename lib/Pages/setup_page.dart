@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:neptun2/haptics.dart';
+import 'package:neptun2/language.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../API/api_coms.dart' as api;
 import '../Misc/custom_snackbar.dart';
@@ -56,8 +57,8 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 40),
-                const Text(
-                  'Válassz bejelentkezési módot',
+                Text(
+                  AppStrings.getLanguagePack().setupPage_selectLoginTypeHeader_RootPage,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 24,
@@ -95,7 +96,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            const Row(
+                            Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisSize: MainAxisSize.max,
@@ -107,7 +108,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                                 ),
                                 Flexible(
                                   child: Text(
-                                    'Intézmény választás',
+                                    AppStrings.getLanguagePack().setupPage_institutesSelection_RootPage,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         color: Colors.white,
@@ -120,7 +121,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                             ),
                             const SizedBox(height: 20),
                             Text(
-                              'Ez a legkényelmesebb opció. Egy szimpla lista, amiben meg tudod keresni az egyetemedet, viszont nem minden intézmény található meg a listában!',
+                              AppStrings.getLanguagePack().setupPage_institutesSelectionDescription_RootPage,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Colors.white.withOpacity(.6),
@@ -156,7 +157,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            const Row(
+                            Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisSize: MainAxisSize.max,
@@ -168,7 +169,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                                 ),
                                 Flexible(
                                   child: Text(
-                                    'Neptun URL',
+                                    AppStrings.getLanguagePack().setupPage_urlLogin_RootPage,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         color: Colors.white,
@@ -181,7 +182,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                             ),
                             const SizedBox(height: 20),
                             Text(
-                              'Ha nincs az iskolád a listában, akkor az egyetemed neptun URL-jét használva is be tudsz lépni. Nem a legkényelmesebb és nem minden egyetemmel működik!',
+                              AppStrings.getLanguagePack().setupPage_urlLoginDescription_RootPage,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Colors.white.withOpacity(.6),
@@ -205,7 +206,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                       children: [
                         Flexible(
                           child: EmojiRichText(
-                            text: 'Probléma van az appal?\nÍrd meg nekem! 👉',
+                            text: AppStrings.getLanguagePack().setupPage_appProblemReporting_RootPage,
                             defaultStyle: TextStyle(
                               color: Colors.white.withOpacity(.6),
                               fontWeight: FontWeight.w700,
