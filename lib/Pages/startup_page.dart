@@ -1,8 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:neptun2/API/api_coms.dart' as api;
+import 'package:neptun2/haptics.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../storage.dart';
 import 'main_page.dart' as main_page;
@@ -24,6 +23,7 @@ class _SplitterState extends State<Splitter>{
     ));
 
     DataCache.loadData().then((value) async {
+      AppHaptics.initialise();
       final flag = DataCache.getHasCachedFirstWeekEpoch();
 
       if(flag != null && !flag && DataCache.getHasNetwork() && DataCache.getHasLogin()!){

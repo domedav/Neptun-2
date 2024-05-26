@@ -1,9 +1,8 @@
 import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:neptun2/haptics.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ClickableTextSpan extends StatelessWidget{
@@ -17,7 +16,7 @@ class ClickableTextSpan extends StatelessWidget{
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: (){
-        HapticFeedback.lightImpact();
+        AppHaptics.lightImpact();
         callback();
       },
       child: Text(
@@ -25,7 +24,7 @@ class ClickableTextSpan extends StatelessWidget{
         style: style,
       ),
       onLongPress: ()async{
-        HapticFeedback.lightImpact();
+        AppHaptics.attentionLightImpact();
         await Clipboard.setData(ClipboardData(text: text));
         if(!Platform.isAndroid){
           return;

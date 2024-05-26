@@ -4,9 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:neptun2/Misc/custom_snackbar.dart';
 import 'package:neptun2/Pages/main_page.dart';
+import 'package:neptun2/haptics.dart';
 import 'package:neptun2/storage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-
 import '../API/api_coms.dart';
 import '../MailElements/mail_element_widget.dart';
 import '../TimetableElements/timetable_element_widget.dart';
@@ -51,6 +51,7 @@ class PopupWidgetHandler{
     _instance!._prevContext = context;
     //_instance!.homePage.setBlurComplex(true);
     HomePageState.showBlurPopup(true);
+    AppHaptics.attentionLightImpact();
 
     _instance!.topPadding = MediaQuery.of(context).padding;
 
@@ -200,7 +201,7 @@ class PopupWidget extends State<PopupWidgetState>{
                       if(!PopupWidgetHandler._instance!._inUse || !mounted){
                         return;
                       }
-                      HapticFeedback.lightImpact();
+                      AppHaptics.lightImpact();
                       setState(() {
                         selectionValue = 0;
                       });
@@ -222,7 +223,7 @@ class PopupWidget extends State<PopupWidgetState>{
                       if(!PopupWidgetHandler._instance!._inUse || !mounted){
                         return;
                       }
-                      HapticFeedback.lightImpact();
+                      AppHaptics.lightImpact();
                       setState(() {
                         selectionValue = 1;
                       });
@@ -244,7 +245,7 @@ class PopupWidget extends State<PopupWidgetState>{
                       if(!PopupWidgetHandler._instance!._inUse || !mounted){
                         return;
                       }
-                      HapticFeedback.lightImpact();
+                      AppHaptics.lightImpact();
                       setState(() {
                         selectionValue = 2;
                       });
@@ -266,7 +267,7 @@ class PopupWidget extends State<PopupWidgetState>{
                       if(!PopupWidgetHandler._instance!._inUse || !mounted){
                         return;
                       }
-                      HapticFeedback.lightImpact();
+                      AppHaptics.lightImpact();
                       setState(() {
                         selectionValue = 3;
                       });
@@ -288,7 +289,7 @@ class PopupWidget extends State<PopupWidgetState>{
                       if(!PopupWidgetHandler._instance!._inUse || !mounted){
                         return;
                       }
-                      HapticFeedback.lightImpact();
+                      AppHaptics.lightImpact();
                       setState(() {
                         selectionValue = 4;
                       });
@@ -317,7 +318,7 @@ class PopupWidget extends State<PopupWidgetState>{
             }
             PopupWidgetHandler._instance!.callback(selectionValue);
             PopupWidgetHandler.closePopup(true);
-            HapticFeedback.lightImpact();
+            AppHaptics.lightImpact();
           },
           style: ButtonStyle(
             backgroundColor: WidgetStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),
@@ -381,6 +382,7 @@ class PopupWidget extends State<PopupWidgetState>{
               child: IconButton(
                 onPressed: (){
                   _showSnackbar('Ha bekapcsolod, lecseréli a betöltő szövegeket szókimondóra.', 8);
+                  AppHaptics.attentionLightImpact();
                 },
                 icon: Icon(
                   Icons.question_mark_rounded,
@@ -396,7 +398,7 @@ class PopupWidget extends State<PopupWidgetState>{
                 value: DataCache.getNeedFamilyFriendlyComments()!,
                 onChanged: (b){
                   DataCache.setNeedFamilyFriendlyComments(b ? 1 : 0);
-                  HapticFeedback.lightImpact();
+                  AppHaptics.lightImpact();
                   if(mounted) {setState((){});}
                 },
                 activeColor: Colors.white,
@@ -431,6 +433,7 @@ class PopupWidget extends State<PopupWidgetState>{
               child: IconButton(
                 onPressed: (){
                   _showSnackbar('Vizsgaértesítő értesítéseket küld neked a vizsga előtti 2 hétben. Hasznos, ha szereted halogatni a tanulást, vagy szimplán feledékeny vagy.', 12);
+                  AppHaptics.attentionLightImpact();
                 },
                 icon: Icon(
                   Icons.question_mark_rounded,
@@ -446,7 +449,7 @@ class PopupWidget extends State<PopupWidgetState>{
                 value: DataCache.getNeedExamNotifications()!,
                 onChanged: (b){
                   DataCache.setNeedExamNotifications(b ? 1 : 0);
-                  HapticFeedback.lightImpact();
+                  AppHaptics.lightImpact();
                   if(b){
                     HomePageState.setupExamNotifications();
                   }
@@ -487,6 +490,7 @@ class PopupWidget extends State<PopupWidgetState>{
               child: IconButton(
                 onPressed: (){
                   _showSnackbar('Órák kezdete előtt 10 percel; 5 percel; és a kezdetük időpontjában, küld neked értesítést, hogy ne késd le őket. Hasznos, ha tudni akarod milyen órád lesz, anélkül, hogy a telódon lecsekkolnád. (pl: Okosórád van, és értesítésként látod a kövi órádat.)', 12);
+                  AppHaptics.attentionLightImpact();
                 },
                 icon: Icon(
                   Icons.question_mark_rounded,
@@ -502,7 +506,7 @@ class PopupWidget extends State<PopupWidgetState>{
                 value: DataCache.getNeedClassNotifications()!,
                 onChanged: (b){
                   DataCache.setNeedClassNotifications(b ? 1 : 0);
-                  HapticFeedback.lightImpact();
+                  AppHaptics.lightImpact();
                   if(b){
                     HomePageState.setupClassesNotifications();
                   }
@@ -543,6 +547,7 @@ class PopupWidget extends State<PopupWidgetState>{
               child: IconButton(
                 onPressed: (){
                   _showSnackbar('Ha van befizetnivalód, értesíteni fog az app, minden nap, amíg nem fizeted be. Hasznos, ha feledékeny vagy, vagy nem szeretnéd lekésni a határidőt.', 8);
+                  AppHaptics.attentionLightImpact();
                 },
                 icon: Icon(
                   Icons.question_mark_rounded,
@@ -558,7 +563,7 @@ class PopupWidget extends State<PopupWidgetState>{
                 value: DataCache.getNeedPaymentsNotifications()!,
                 onChanged: (b){
                   DataCache.setNeedPaymentsNotifications(b ? 1 : 0);
-                  HapticFeedback.lightImpact();
+                  AppHaptics.lightImpact();
                   if(b){
                     HomePageState.setupPaymentsNotifications();
                   }
@@ -599,6 +604,7 @@ class PopupWidget extends State<PopupWidgetState>{
               child: IconButton(
                 onPressed: (){
                   _showSnackbar('Ha valamilyen új időszak lesz, értesíteni fog az app, az adott időszak előtt 1 nappal, és aznap fogsz értesítést kapni. Hasznos, ha nem akarsz lemaradni az adott időszakokról. (pl: tárgyfelvételi időszak)', 8);
+                  AppHaptics.attentionLightImpact();
                 },
                 icon: Icon(
                   Icons.question_mark_rounded,
@@ -614,13 +620,64 @@ class PopupWidget extends State<PopupWidgetState>{
                 value: DataCache.getNeedPeriodsNotifications()!,
                 onChanged: (b){
                   DataCache.setNeedPeriodsNotifications(b ? 1 : 0);
-                  HapticFeedback.lightImpact();
+                  AppHaptics.lightImpact();
                   if(b){
                     HomePageState.setupPeriodsNotifications();
                   }
                   else{
                     HomePageState.cancelPeriodsNotifications();
                   }
+                  if(mounted) {setState((){});}
+                },
+                activeColor: Colors.white,
+                activeTrackColor: const Color.fromRGBO(0x4F, 0x69, 0x6E, 1.0),
+                hoverColor: Colors.white.withOpacity(.1),
+              ),
+            )
+          ],
+        ));
+        list.add(Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(flex: 2, child: Container(
+              margin: const EdgeInsets.all(10),
+              child: const Text(
+                'App haptika',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white
+                ),
+              ),
+            )),
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(90)),
+                  color: Colors.white.withOpacity(.06)
+              ),
+              child: IconButton(
+                onPressed: (){
+                  _showSnackbar('Beállíthatod, hogy kapj haptikai visszajelzést az appban történő dolgokról. (Rezgés)', 6);
+                  AppHaptics.attentionLightImpact();
+                },
+                icon: Icon(
+                  Icons.question_mark_rounded,
+                  color: Colors.white.withOpacity(.4),
+                ),
+                enableFeedback: true,
+                iconSize: 24,
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.all(10),
+              child: Switch(
+                value: DataCache.getNeedsHaptics()!,
+                onChanged: (b){
+                  DataCache.setNeedsHaptics(b ? 1 : 0);
+                  AppHaptics.lightImpact();
                   if(mounted) {setState((){});}
                 },
                 activeColor: Colors.white,
@@ -670,7 +727,7 @@ class PopupWidget extends State<PopupWidgetState>{
                 value: DataCache.getNeedPeriodsNotifications()!,
                 onChanged: (b){
                   DataCache.setNeedPeriodsNotifications(b ? 1 : 0);
-                  HapticFeedback.lightImpact();
+                  AppHaptics.lightImpact();
                   if(b){
                     HomePageState.setupPeriodsNotifications();
                   }
@@ -715,6 +772,7 @@ class PopupWidget extends State<PopupWidgetState>{
                     child: IconButton(
                       onPressed: (){
                         _showSnackbar('Ha nem jól írja ki az app az aktuális heted, itt át tudod állítani!', 6);
+                        AppHaptics.attentionLightImpact();
                       },
                       icon: Icon(
                         Icons.question_mark_rounded,
@@ -776,7 +834,7 @@ class PopupWidget extends State<PopupWidgetState>{
                               child: GestureDetector(
                                 onLongPressStart: (_){
                                   HomePageState.settingsUserWeekOffsetPeriodicLooper = Timer.periodic(Duration(milliseconds: 100), (timer) {
-                                    HapticFeedback.lightImpact();
+                                    AppHaptics.lightImpact();
                                     HomePageState.settingsUserWeekOffsetAdd(1);
                                   });
                                 },
@@ -786,7 +844,7 @@ class PopupWidget extends State<PopupWidgetState>{
                                 },
                                 child: IconButton(
                                   onPressed: () {
-                                    HapticFeedback.lightImpact();
+                                    AppHaptics.lightImpact();
                                     HomePageState.settingsUserWeekOffsetAdd(1);
                                   },
                                   icon: Icon(
@@ -805,7 +863,7 @@ class PopupWidget extends State<PopupWidgetState>{
                               child: GestureDetector(
                                 onLongPressStart: (_){
                                   HomePageState.settingsUserWeekOffsetPeriodicLooper = Timer.periodic(Duration(milliseconds: 100), (timer) {
-                                    HapticFeedback.lightImpact();
+                                    AppHaptics.lightImpact();
                                     HomePageState.settingsUserWeekOffsetAdd(-1);
                                   });
                                 },
@@ -815,7 +873,7 @@ class PopupWidget extends State<PopupWidgetState>{
                                 },
                                 child: IconButton(
                                   onPressed: () {
-                                    HapticFeedback.lightImpact();
+                                    AppHaptics.lightImpact();
                                     HomePageState.settingsUserWeekOffsetAdd(-1);
                                   },
                                   icon: Icon(
@@ -892,7 +950,7 @@ class PopupWidget extends State<PopupWidgetState>{
             }
             PopupWidgetHandler._instance!.callback(null);
             PopupWidgetHandler.closePopup(true);
-            HapticFeedback.lightImpact();
+            AppHaptics.lightImpact();
           },
           style: ButtonStyle(
             backgroundColor: WidgetStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),
@@ -964,7 +1022,7 @@ class PopupWidget extends State<PopupWidgetState>{
             }
             PopupWidgetHandler._instance!.callback(null);
             PopupWidgetHandler.closePopup(true);
-            HapticFeedback.lightImpact();
+            AppHaptics.lightImpact();
             Future.delayed(Duration.zero, ()async{
               await MailRequest.setMailRead(MailPopupDisplayTexts.mailID);
             });
@@ -1153,7 +1211,7 @@ class PopupWidget extends State<PopupWidgetState>{
             }
             PopupWidgetHandler._instance!.callback(null);
             PopupWidgetHandler.closePopup(true);
-            HapticFeedback.lightImpact();
+            AppHaptics.lightImpact();
           },
           style: ButtonStyle(
             backgroundColor: WidgetStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),
@@ -1307,7 +1365,7 @@ class PopupWidget extends State<PopupWidgetState>{
             }
             PopupWidgetHandler._instance!.callback(null);
             PopupWidgetHandler.closePopup(true);
-            HapticFeedback.lightImpact();
+            AppHaptics.lightImpact();
           },
           style: ButtonStyle(
             backgroundColor: WidgetStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),
@@ -1362,7 +1420,7 @@ class PopupWidget extends State<PopupWidgetState>{
             }
             PopupWidgetHandler._instance!.callback(null);
             PopupWidgetHandler.closePopup(true);
-            HapticFeedback.lightImpact();
+            AppHaptics.lightImpact();
           },
           style: ButtonStyle(
             backgroundColor: WidgetStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),

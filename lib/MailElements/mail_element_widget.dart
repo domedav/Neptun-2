@@ -1,9 +1,5 @@
 import 'dart:core';
-import 'dart:developer';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:neptun2/API/api_coms.dart';
 import 'package:neptun2/Misc/popup.dart';
 
@@ -29,7 +25,7 @@ class MailElementWidget extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     //final date = DateTime.fromMillisecondsSinceEpoch(sendTime);
-    final pattern = RegExp(r'<a[^>]*>(.*?)<\/a>');
+    final pattern = RegExp(r'<a[^>]*>(.*?)</a>');
     List<String> parts = details.split(pattern);
 
     return GestureDetector(

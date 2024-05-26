@@ -17,6 +17,7 @@ import 'package:neptun2/PaymentsElements/payment_element_widget.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../API/api_coms.dart' as api;
+import '../haptics.dart';
 import '../storage.dart' as storage;
 import '../TimetableElements/timetable_element_widget.dart' as t_table;
 import '../MarkbookElements/markbook_element_widget.dart' as mbook;
@@ -451,7 +452,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         await storage.DataCache.setHasCachedCalendar(0);
         await AppNotifications.cancelScheduledNotifs();
       }).whenComplete(()async{
-        await onCalendarRefresh();
+        await onCalendarRefresh(false);
       });
     }
   }
@@ -865,6 +866,11 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     getCalendarTabViews(context, isLoading);
     if(replaceController) {
       calendarTabController = TabController(length: calendarTabs.length, vsync: this);
+      calendarTabController.addListener((){
+        if(calendarTabController.indexIsChanging){
+          AppHaptics.lightImpact();
+        }
+      });
     }
     setState(() {
       isLoadingCalendar = isLoading;
@@ -889,7 +895,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       ),
     ));
     calendarTabViews.add(RefreshIndicator(
-      onRefresh: onCalendarRefresh,
+      onRefresh: ()=>onCalendarRefresh(false),
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         scrollDirection: Axis.vertical,
@@ -1401,13 +1407,13 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
   Future<void> stepCalendarBack() async{
     currentWeekOffset--;
-    HapticFeedback.lightImpact();
-    await onCalendarRefresh();
+    AppHaptics.lightImpact();
+    await onCalendarRefresh(true);
   }
   Future<void> stepCalendarForward() async{
     currentWeekOffset++;
-    HapticFeedback.lightImpact();
-    await onCalendarRefresh();
+    AppHaptics.lightImpact();
+    await onCalendarRefresh(true);
   }
 
   Future<List<api.CalendarEntry>> fetchCalendarToList(int offset) async{
@@ -1652,7 +1658,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
   bool keepHomeButtonHidden = true;
 
-  Future<void> onCalendarRefresh() async{
+  Future<void> onCalendarRefresh(bool isPaging) async{
     if(!storage.DataCache.getHasNetwork() || _calendarDebounce){
       return;
     }
@@ -1662,7 +1668,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     }
     clearCalendar();
     setupCalendarController(false, true);
-    _calendarTimer = Timer(const Duration(milliseconds: 700), () async {
+    _calendarTimer = Timer(Duration(milliseconds: isPaging ? 500 : 0), () async {
       _calendarDebounce = true;
       setState(() {
         canDoCalendarPaging = false;
@@ -1670,7 +1676,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         keepHomeButtonHidden = false;
       });
       await storage.DataCache.setHasCachedCalendar(0);
-      await storage.DataCache.setHasCachedFirstWeekEpoch(0);
+      //await storage.DataCache.setHasCachedFirstWeekEpoch(0);
       await fetchCalendar();
       setupCalendar(false);
       _calendarDebounce = false;
@@ -1860,7 +1866,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
           ),
           /*GestureDetector(
             onLongPress: (){
-              HapticFeedback.lightImpact();
+              AppHaptics.lightImpact();
               final val = currentView + 1 > HomePageState.maxBottomNavWidgets - 1 ? 0 : currentView + 1;
               switchView(val);
             },
@@ -1904,10 +1910,10 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
                     padding: EdgeInsets.only(left: _fbNeedAnimate ? (lerpDouble(_fbPosX, MediaQuery.of(context).size.width - 90, _fbTween.value))! : _fbPosX, top: _fbNeedAnimate ? ((lerpDouble(_fbPosY, MediaQuery.of(context).size.height - 140, _fbTween.value))!) : _fbPosY),
                     child: IconButton(
                       onPressed: (() async {
-                        HapticFeedback.lightImpact();
+                        AppHaptics.lightImpact();
                         keepHomeButtonHidden = true;
                         currentWeekOffset = 1;
-                        await onCalendarRefresh();
+                        await onCalendarRefresh(false);
                       }),
                       icon: const Icon(
                         Icons.home_outlined,

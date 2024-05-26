@@ -1,9 +1,5 @@
-import 'dart:developer';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neptun2/Misc/emojirich_text.dart';
-
 import '../API/api_coms.dart';
 
 class PeriodsElementWidget extends StatelessWidget{

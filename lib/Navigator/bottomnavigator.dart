@@ -1,9 +1,6 @@
-import 'dart:developer';
-import 'dart:ui';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../Pages/main_page.dart';
+import '../haptics.dart';
 
 class BottomNavigatorWidget extends StatelessWidget {
   final HomePageState homePage;
@@ -35,14 +32,14 @@ class BottomNavigatorWidget extends StatelessWidget {
               homePage.bottomNavCanNavigate = false;
               final val = homePage.currentView + 1 > HomePageState.maxBottomNavWidgets - 1 ? 0 : homePage.currentView + 1;
               homePage.switchView(val);
-              HapticFeedback.lightImpact();
+              AppHaptics.lightImpact();
               return;
             }
             else if(homePage.bottomNavSwitchValue > 50){
               homePage.bottomNavCanNavigate = false;
               final val = homePage.currentView - 1 < 0 ? HomePageState.maxBottomNavWidgets - 1 : homePage.currentView - 1;
               homePage.switchView(val);
-              HapticFeedback.lightImpact();
+              AppHaptics.lightImpact();
               return;
             }
             homePage.bottomNavSwitchValue -= e.delta.dx;
@@ -117,7 +114,7 @@ class BottomNavigatorWidget extends StatelessWidget {
       child: IconButton(
         onPressed: (){
           homePage.switchView(index);
-          HapticFeedback.lightImpact();
+          AppHaptics.lightImpact();
         },
         color: Colors.transparent,
         focusColor: Colors.transparent,

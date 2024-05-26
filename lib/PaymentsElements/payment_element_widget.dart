@@ -1,9 +1,5 @@
-import 'dart:developer';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neptun2/API/api_coms.dart';
-
 import '../Misc/emojirich_text.dart';
 
 class PaymentElementWidget extends StatelessWidget{

@@ -1,8 +1,5 @@
 import 'dart:async';
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-
 import 'emojirich_text.dart';
 
 typedef ChangeCallback = void Function(double, bool);

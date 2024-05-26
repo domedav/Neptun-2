@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -84,9 +83,9 @@ class AppNotifications{
         content,
         _convert(time.year, time.month, time.day, time.hour, time.minute),
         details,
-        androidAllowWhileIdle: true,
+        //androidAllowWhileIdle: true,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.wallClockTime,
       );
     }
   }

@@ -68,6 +68,7 @@ class DataCache{
     setNeedClassNotifications(_persistentSetting_showPaymentsNotifications! ? 1 : 0);
     setNeedClassNotifications(_persistentSetting_showPeriodsNotifications! ? 1 : 0);
     setUserWeekOffset(_persistentSetting_weekOffset!);
+    setNeedsHaptics(_persistentSetting_needBetterHaptics! ? 1 : 0);
     setAnalyticsFirstAppOpenTime(_persistentAnalytics_firstAppOpenTimeMs!);
     setAnalyticsNextRatePopupTime(_persistentAnalytics_nextRatePopupShowMs!);
     setAnalyticsRateNudgedAmount(_persistentAnalytics_userRateNudgedAmount!);
@@ -97,6 +98,7 @@ class DataCache{
   late bool? _persistentSetting_showPaymentsNotifications = true;
   late bool? _persistentSetting_showPeriodsNotifications = true;
   late int? _persistentSetting_weekOffset = 0;
+  late bool? _persistentSetting_needBetterHaptics = true;
 
   late int? _permanentConfiguration_isInstalledFromGooglePlay = 0;
 
@@ -176,6 +178,12 @@ class DataCache{
     _persistentSetting_showPeriodsNotifications = tmp != null && tmp != 0;
     if(tmp == null){
       _persistentSetting_showPeriodsNotifications = true;  // this is the default value, not false
+    }
+
+    tmp = await getInt('SETTING_NeedHaptics');
+    _persistentSetting_needBetterHaptics = tmp != null && tmp != 0;
+    if(tmp == null){
+      _persistentSetting_needBetterHaptics = true;
     }
 
     tmp = await getInt('SETTING_UserWeekOffset');
@@ -313,6 +321,12 @@ class DataCache{
   static Future<void> setUserWeekOffset(int? value)async{
     _instance._persistentSetting_weekOffset = value ?? 0;
     await saveInt('SETTING_UserWeekOffset', value ?? 0);
+  }
+
+  static bool? getNeedsHaptics(){return _instance._persistentSetting_needBetterHaptics;}
+  static Future<void> setNeedsHaptics(int? value)async{
+    _instance._persistentSetting_needBetterHaptics =  value != null && value != 0;
+    await saveInt('SETTING_NeedHaptics', value ?? 1);
   }
 
   static int? getIsInstalledFromGPlay({bool excludeDefaultState = true}){return _instance._permanentConfiguration_isInstalledFromGooglePlay! - (excludeDefaultState ? 1 : 0);}
