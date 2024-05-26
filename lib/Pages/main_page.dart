@@ -181,6 +181,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         final appupdateInfo = await InAppUpdate.checkForUpdate();
         storage.saveInt('UpdateCacheTime', DateTime.now().microsecondsSinceEpoch); // save last checked update time
         if(appupdateInfo.updateAvailability == UpdateAvailability.updateAvailable){ // has new version
+          AppHaptics.attentionImpact();
           await InAppUpdate.startFlexibleUpdate().then((value) async { // install update
             await InAppUpdate.completeFlexibleUpdate();
           });
@@ -270,7 +271,12 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       final firstWeekOfSemester = await api.InstitutesRequest.getFirstStudyweek();
       storage.DataCache.setHasCachedFirstWeekEpoch(1);
       await storage.DataCache.setFirstWeekEpoch(firstWeekOfSemester);
-    }).whenComplete(() => setState(() {weeksSinceStart = calcPassedWeeks();}));
+    }).whenComplete((){
+      Future.delayed(const Duration(seconds: 1), (){
+        setState(() {weeksSinceStart = calcPassedWeeks();});
+      });
+    });
+
     Future.delayed(Duration.zero,() async{
       await AppNotifications.cancelScheduledNotifs();
     }).whenComplete((){
@@ -866,11 +872,6 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     getCalendarTabViews(context, isLoading);
     if(replaceController) {
       calendarTabController = TabController(length: calendarTabs.length, vsync: this);
-      calendarTabController.addListener((){
-        if(calendarTabController.indexIsChanging){
-          AppHaptics.lightImpact();
-        }
-      });
     }
     setState(() {
       isLoadingCalendar = isLoading;
@@ -895,7 +896,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       ),
     ));
     calendarTabViews.add(RefreshIndicator(
-      onRefresh: ()=>onCalendarRefresh(false),
+      onRefresh: ()async{AppHaptics.lightImpact(); onCalendarRefresh(false);},
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         scrollDirection: Axis.vertical,
@@ -2043,6 +2044,7 @@ class MarkbookPageWidget extends StatelessWidget{
   const MarkbookPageWidget({super.key, required this.homePage, required this.totalCredits, required this.totalAvg, required this.totalAvg30});
 
   Future<void> onRefresh() async{
+    AppHaptics.lightImpact();
     homePage.onMarkbookRefresh();
   }
 
@@ -2167,6 +2169,7 @@ class PaymentsPageWidget extends StatelessWidget{
   const PaymentsPageWidget({super.key, required this.homePage, required this.totalMoney});
 
   Future<void> onRefresh() async{
+    AppHaptics.lightImpact();
     homePage.onPaymentsRefresh();
   }
 
@@ -2240,6 +2243,7 @@ class PeriodsPageWidget extends StatelessWidget{
   const PeriodsPageWidget({super.key, required this.homePage, required this.currentSemester});
 
   Future<void> onRefresh() async{
+    AppHaptics.lightImpact();
     homePage.onPeriodsRefresh();
   }
 
@@ -2324,6 +2328,7 @@ class MailsPageWidget extends StatelessWidget{
   const MailsPageWidget({super.key, required this.homePage});
 
   Future<void> onRefresh() async{
+    AppHaptics.lightImpact();
     homePage.onMailRefresh();
   }
 

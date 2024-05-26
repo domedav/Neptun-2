@@ -620,6 +620,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                                 }).toList();
                               },
                               onChanged: (String? value) {
+                                AppHaptics.lightImpact();
                                 setState(() {
                                   _selectedValue = value!;
                                 });
@@ -1365,6 +1366,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                         _obscureText ? Icons.visibility_rounded : Icons.visibility_off_rounded,
                                         color: _paintRed ? Colors.red : Colors.white),
                                     onPressed: () {
+                                      AppHaptics.lightImpact();
                                       setState(() {
                                         _obscureText = !_obscureText; // Toggle the password visibility
                                       });
