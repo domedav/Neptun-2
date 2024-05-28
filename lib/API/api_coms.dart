@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:neptun2/Misc/clickable_text_span.dart';
+import 'package:neptun2/language.dart';
 import '../app_analitics.dart';
 import '../storage.dart' as storage;
   
@@ -951,29 +952,29 @@ import '../storage.dart' as storage;
     static String monthToText(int month) {
       switch (month) {
         case 1:
-          return "január";
+          return AppStrings.getLanguagePack().api_monthJan_Universal;
         case 2:
-          return "február";
+          return AppStrings.getLanguagePack().api_monthFeb_Universal;
         case 3:
-          return "március";
+          return AppStrings.getLanguagePack().api_monthMar_Universal;
         case 4:
-          return "április";
+          return AppStrings.getLanguagePack().api_monthApr_Universal;
         case 5:
-          return "május";
+          return AppStrings.getLanguagePack().api_monthMay_Universal;
         case 6:
-          return "június";
+          return AppStrings.getLanguagePack().api_monthJun_Universal;
         case 7:
-          return "július";
+          return AppStrings.getLanguagePack().api_monthJul_Universal;
         case 8:
-          return "augusztus";
+          return AppStrings.getLanguagePack().api_monthAug_Universal;
         case 9:
-          return "szeptember";
+          return AppStrings.getLanguagePack().api_monthSep_Universal;
         case 10:
-          return "október";
+          return AppStrings.getLanguagePack().api_monthOkt_Universal;
         case 11:
-          return "november";
+          return AppStrings.getLanguagePack().api_monthNov_Universal;
         case 12:
-          return "december";
+          return AppStrings.getLanguagePack().api_monthDec_Universal;
       }
       return "NULL";
     }
@@ -981,19 +982,19 @@ import '../storage.dart' as storage;
     static String dayToText(int day){
       switch(day){
         case 1:
-          return 'Hétfő';
+          return AppStrings.getLanguagePack().api_dayMon_Universal;
         case 2:
-          return 'Kedd';
+          return AppStrings.getLanguagePack().api_dayTue_Universal;
         case 3:
-          return 'Szerda';
+          return AppStrings.getLanguagePack().api_dayWed_Universal;
         case 4:
-          return 'Csütörtök';
+          return AppStrings.getLanguagePack().api_dayThu_Universal;
         case 5:
-          return 'Péntek';
+          return AppStrings.getLanguagePack().api_dayFri_Universal;
         case 6:
-          return 'Szombat';
+          return AppStrings.getLanguagePack().api_daySat_Universal;
         case 7:
-          return 'Vasárnap';
+          return AppStrings.getLanguagePack().api_daySun_Universal;
         default:
           return '';
       }

@@ -279,7 +279,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
 
   final List<String> _filteredValues = [];
   late List<api.Institute> _institutes = [];
-  String _selectedValue = "Betöltés...";
+  String _selectedValue = AppStrings.getLanguagePack().setupPage_loadingText_InstituteSelection;
 
   @override
   void initState() {
@@ -399,8 +399,8 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               child: _drawNoInternet ?
-              const Text(
-                "Nincs Internet...",
+              Text(
+                AppStrings.getLanguagePack().setupPage_noNetwork_InstituteSelection,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,
@@ -412,8 +412,8 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  const Text(
-                    "Betöltés...",
+                  Text(
+                    AppStrings.getLanguagePack().setupPage_loadingText_InstituteSelection,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         color: Colors.white,
@@ -456,7 +456,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
               _dragDebounce = true;
 
               if(!_canProceed){
-                _showSnackbar('Válassz ki egy érvényes egyetemet! 😡', 5);
+                _showSnackbar(AppStrings.getLanguagePack().setupPage_selectValidInstitute_InstituteSelection, 5);
                 AppHaptics.attentionLightImpact();
                 return;
               }
@@ -486,8 +486,8 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const SizedBox(height: 40),
-                      const Text(
-                        'Válassz intézményt',
+                      Text(
+                        AppStrings.getLanguagePack().setupPage_selectInstitute_InstituteSelection,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 28,
@@ -508,7 +508,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                               decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.all(18),
                                   suffixIcon: Icon(Icons.search_rounded),
-                                  labelText: 'Keresés',
+                                  labelText: AppStrings.getLanguagePack().setupPage_search_InstituteSelection,
                                   labelStyle: TextStyle(
                                       fontSize: 14,
                                       color: Colors.white.withOpacity(.6),
@@ -543,7 +543,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                                     _canProceed = true;
                                   } else{
                                     AppHaptics.attentionLightImpact();
-                                    _filteredValues.add("Nincs találat...");
+                                    _filteredValues.add(AppStrings.getLanguagePack().setupPage_searchNotFound_InstituteSelection);
                                     _selectedValue = _filteredValues[0];
                                     _canProceed = false;
                                   }
@@ -638,7 +638,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                             child: Container(
                               margin: const EdgeInsets.all(15),
                               child: Text(
-                                'Nem találod az iskolád a listában?',
+                                AppStrings.getLanguagePack().setupPage_instituteCantFindHelpText_InstituteSelection,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     fontSize: 12,
@@ -656,7 +656,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                             ),
                             child: IconButton(
                               onPressed: (){
-                                _showSnackbar('A fenti listában szereplő elemek manuálisan lettek felvéve! 😅 Így előfordulhat, hogy egyes iskolák nincsenek benne a listában.\nJelentkezz be URL használatával, ha nem találod a sulid. 😉', 12);
+                                _showSnackbar(AppStrings.getLanguagePack().setupPage_instituteCantFindHelpTextDescription_InstituteSelection, 12);
                                 AppHaptics.attentionLightImpact();
                               },
                               icon: Icon(
@@ -696,8 +696,8 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                                       Icons.arrow_back_ios_rounded,
                                       color: Colors.white.withOpacity(.6),
                                     ),
-                                    const Text(
-                                      'Vissza',
+                                    Text(
+                                      AppStrings.getLanguagePack().setupPage_goBack_Universal,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontWeight: FontWeight.w400,
@@ -714,7 +714,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                                   AppHaptics.lightImpact();
                                   proceedToLogin();
                                 } : (){
-                                  _showSnackbar('Válassz ki egy érvényes egyetemet! 😡', 5);
+                                  _showSnackbar(AppStrings.getLanguagePack().setupPage_selectValidInstitute_InstituteSelection, 5);
                                   AppHaptics.attentionLightImpact();
                                 },
                                 style: ButtonStyle(
@@ -726,8 +726,8 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    const Text(
-                                      'Tovább',
+                                    Text(
+                                      AppStrings.getLanguagePack().setupPage_proceedLogin_Universal,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           fontWeight: FontWeight.w400,
@@ -840,7 +840,7 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
             _dragDebounce = true;
 
             if(!_canProceed){
-              _showSnackbar('Írj be egy érvényes neptun URL-t! 😡', 5);
+              _showSnackbar(AppStrings.getLanguagePack().setupPage_invalidUrl_UrlLogin, 5);
               AppHaptics.attentionLightImpact();
               return;
             }
@@ -870,8 +870,8 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const SizedBox(height: 40),
-                      const Text(
-                        'Belépés URL-el',
+                      Text(
+                        AppStrings.getLanguagePack().setupPage_loginViaURlHeader_UrlLogin,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 28,
@@ -887,7 +887,7 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.all(18),
                             suffixIcon: Icon(Icons.link_rounded),
-                            labelText: 'Egyetem neptun URL-je',
+                            labelText: AppStrings.getLanguagePack().setupPage_instituteNeptunUrl_UrlLogin,
                             labelStyle: TextStyle(
                               fontSize: 14,
                               color: Colors.white.withOpacity(.6),
@@ -931,7 +931,7 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                               return;
                             }
                             _warnTimer = Timer(const Duration(seconds: 2),(){
-                              _showSnackbar('Ez nem egy jó neptun URL! 😡\n\nValami ilyesmit másolj ide:\nhttps://neptun-ws01.uni-pannon.hu/hallgato/login.aspx 🤫', 18);
+                              _showSnackbar(AppStrings.getLanguagePack().setupPage_instituteNeptunUrlInvalid_UrlLogin, 18);
                               AppHaptics.attentionLightImpact();
                             });
                           },
@@ -964,8 +964,8 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                                       Icons.arrow_back_ios_rounded,
                                       color: Colors.white.withOpacity(.6),
                                     ),
-                                    const Text(
-                                      'Vissza',
+                                    Text(
+                                      AppStrings.getLanguagePack().setupPage_goBack_Universal,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           fontWeight: FontWeight.w400,
@@ -982,7 +982,7 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                                   AppHaptics.lightImpact();
                                   proceedToLogin();
                                 } : (){
-                                  _showSnackbar('Írj be egy érvényes neptun URL-t! 😡', 5);
+                                  _showSnackbar(AppStrings.getLanguagePack().setupPage_invalidUrl_UrlLogin, 5);
                                   AppHaptics.attentionLightImpact();
                                 },
                                 style: ButtonStyle(
@@ -994,8 +994,8 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    const Text(
-                                      'Tovább',
+                                    Text(
+                                      AppStrings.getLanguagePack().setupPage_proceedLogin_Universal,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           fontWeight: FontWeight.w400,
@@ -1023,7 +1023,7 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                             child: Container(
                               margin: const EdgeInsets.all(15),
                               child: Text(
-                                'Hol találom meg az URL-t?',
+                                AppStrings.getLanguagePack().setupPage_whereIsURLHelper_UrlLogin,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     fontSize: 12,
@@ -1041,7 +1041,7 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                             ),
                             child: IconButton(
                               onPressed: (){
-                                _showSnackbar('Keresd meg weben az egyetemed neptun weboldalát és másold be ide a fenti linket. 🔗\n\nPld: https://neptun-ws01.uni-pannon.hu/hallgato/login.aspx', 18);
+                                _showSnackbar(AppStrings.getLanguagePack().setupPage_whereIsURLHelperDescription_UrlLogin, 18);
                                 AppHaptics.attentionLightImpact();
                               },
                               icon: Icon(
@@ -1236,7 +1236,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
             _dragDebounce = true;
 
             if(!_canProceed){
-              _showSnackbar('Írj be egy érvényes neptun URL-t! 😡', 5);
+              _showSnackbar(AppStrings.getLanguagePack().setupPage_invalidCredentials_LoginPage, 5);
               AppHaptics.attentionLightImpact();
               return;
             }
@@ -1266,8 +1266,8 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const SizedBox(height: 40),
-                      const Text(
-                        'Jelentkezz be',
+                      Text(
+                        AppStrings.getLanguagePack().setupPage_loginHeaderText_LoginPage,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 28,
@@ -1289,7 +1289,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                           const SizedBox(width: 4),
                           Flexible(
                             child: Text(
-                              PageDTO.validatedURL ? PageDTO.customURL!.replaceAll(RegExp(r'/hallgato/login\.aspx'), '').replaceAll(RegExp(r'/hallgato/MobileService\.svc'), "").replaceAll("https://", '') : (PageDTO.selected ?? 'HIBA! Lépj egyet vissza!'),
+                              PageDTO.validatedURL ? PageDTO.customURL!.replaceAll(RegExp(r'/hallgato/login\.aspx'), '').replaceAll(RegExp(r'/hallgato/MobileService\.svc'), "").replaceAll("https://", '') : (PageDTO.selected ?? AppStrings.getLanguagePack().setupPage_activityCacheInvalidHelper_LoginPage),
                               textAlign: TextAlign.start,
                               style: TextStyle(
                                   color: Colors.white.withOpacity(.2),
@@ -1313,7 +1313,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                 suffixIcon: Icon(
                                     Icons.person_2_rounded,
                                     color: _paintRed ? Colors.red : Colors.white),
-                                labelText: 'Neptun kód',
+                                labelText: AppStrings.getLanguagePack().setupPage_neptunCode_LoginPage,
                                 labelStyle: TextStyle(
                                     fontSize: 14,
                                     color: Colors.white.withOpacity(.6),
@@ -1360,7 +1360,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                         _obscureText = !_obscureText; // Toggle the password visibility
                                       });
                                     }),
-                                labelText: 'Jelszó',
+                                labelText: AppStrings.getLanguagePack().setupPage_password_LoginPage,
                                 labelStyle: TextStyle(
                                     fontSize: 14,
                                     color: Colors.white.withOpacity(.6),
@@ -1394,7 +1394,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            _paintRed ? "Hibás felhasználónév vagy jelszó!" : "",
+                            _paintRed ? AppStrings.getLanguagePack().setupPage_invalidCredentialsEntered_LoginPage : "",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 color: _paintRed ? Colors.red : Colors.white,
@@ -1412,7 +1412,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                 child: Container(
                                   margin: const EdgeInsets.all(15),
                                   child: Text(
-                                    'Ha két lépcsős azonosítás van a fiókodon, nem fogsz tudni bejelenzkezni!',
+                                    AppStrings.getLanguagePack().setupPage_2faWarning_LoginPage,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontSize: 12,
@@ -1430,7 +1430,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                 ),
                                 child: IconButton(
                                   onPressed: (){
-                                    _showSnackbar('❌ A Neptun2 a régi Neptun mobilapp API-jait használja, amiben nem volt 2 lépcsős azonosítás. Így, ha a fiókod 2 lépcsős azonosítással van védve, a Neptun2 nem fog tudni bejelentkeztetni.\n\n🤓 Viszont, ha kikapcsolod, hiba nélkül tudod használni a Neptun2-t.\nKikapcsolni a Neptunban, a "Saját Adatok/Beállítások"-ban tudod.', 18);
+                                    _showSnackbar(AppStrings.getLanguagePack().setupPage_2faWarningDescription_LoginPage, 18);
                                     AppHaptics.attentionLightImpact();
                                   },
                                   icon: Icon(
@@ -1470,8 +1470,8 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                           Icons.arrow_back_ios_rounded,
                                           color: Colors.white.withOpacity(.6),
                                         ),
-                                        const Text(
-                                          'Vissza',
+                                        Text(
+                                          AppStrings.getLanguagePack().setupPage_goBack_Universal,
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                               fontWeight: FontWeight.w400,
@@ -1488,7 +1488,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                       AppHaptics.lightImpact();
                                       finishLogin();
                                     } : (){
-                                      _showSnackbar('Érvényes adatokat adj meg! 😡', 5);
+                                      _showSnackbar(AppStrings.getLanguagePack().setupPage_invalidCredentials_LoginPage, 5);
                                       AppHaptics.attentionLightImpact();
                                     },
                                     style: ButtonStyle(
@@ -1500,8 +1500,8 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        const Text(
-                                          'Belépés',
+                                        Text(
+                                          AppStrings.getLanguagePack().setupPage_logInButton_LoginPage,
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                               fontWeight: FontWeight.w400,
@@ -1552,8 +1552,8 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                         children: [
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: const Text(
-                              'Bejelentkezés...',
+                            child: Text(
+                              AppStrings.getLanguagePack().setupPage_loginInProgress_LoginPage,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Colors.white,
@@ -1587,7 +1587,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                             child: Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 20),
                               child: Text(
-                                'Neptun szervereivel lehet problémák vannak...',
+                                AppStrings.getLanguagePack().setupPage_loginInProgressSlow_LoginPage,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: Colors.white.withOpacity(.3),
