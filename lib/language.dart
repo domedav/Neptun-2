@@ -58,7 +58,14 @@ class AppStrings{
       api_dayThu_Universal: 'Csütörtök',
       api_dayFri_Universal: 'Péntek',
       api_daySat_Universal: 'Szombat',
-      api_daySun_Universal: 'Vasárnap'
+      api_daySun_Universal: 'Vasárnap',
+      api_loadingScreenHintFriendly1_Universal: 'Elfüstölne a telefonod, ha gyorsabb lenne...',
+      api_loadingScreenHintFriendly2_Universal: 'Még mindíg, jobb mint a nem létező Neptun...',
+      api_loadingScreenHintFriendly3_Universal: 'Már bármelyik milleniumban betölthet...',
+      api_loadingScreenHintFriendly4_Universal: 'Áramszünet van az SDA Informatikánál...',
+      api_loadingScreenHintFriendly5_Universal: 'Az SDA Informatika egy nagyon jó cég...',
+      api_loadingScreenHintFriendly6_Universal: 'Tudtad? A "Neptun 2" alapja csupán 1 hét alatt készült...',
+      api_loadingScreenHintFriendly7_Universal: 'Túl lassú? Panaszkodj az SDA Informatikának...',
     )});
     _languages.addAll({_supportedLanguages[1]: LanguagePack(
         setupPage_selectLoginTypeHeader_RootPage: 'Select login method',
@@ -100,7 +107,7 @@ class AppStrings{
       api_monthApr_Universal: 'april',
       api_monthMay_Universal: 'may',
       api_monthJun_Universal: 'june',
-      api_monthJul_Universal: 'juli',
+      api_monthJul_Universal: 'july',
       api_monthAug_Universal: 'august',
       api_monthSep_Universal: 'september',
       api_monthOkt_Universal: 'october',
@@ -112,7 +119,14 @@ class AppStrings{
       api_dayThu_Universal: 'Thursday',
       api_dayFri_Universal: 'Friday',
       api_daySat_Universal: 'Saturday',
-      api_daySun_Universal: 'Sunday'
+      api_daySun_Universal: 'Sunday',
+      api_loadingScreenHintFriendly1_Universal: 'Elfüstölne a telefonod, ha gyorsabb lenne...',
+      api_loadingScreenHintFriendly2_Universal: 'Még mindíg, jobb mint a nem létező Neptun...',
+      api_loadingScreenHintFriendly3_Universal: 'Már bármelyik milleniumban betölthet...',
+      api_loadingScreenHintFriendly4_Universal: 'Áramszünet van az SDA Informatikánál...',
+      api_loadingScreenHintFriendly5_Universal: 'Az SDA Informatika egy nagyon jó cég...',
+      api_loadingScreenHintFriendly6_Universal: 'Tudtad? A "Neptun 2" alapja csupán 1 hét alatt készült...',
+      api_loadingScreenHintFriendly7_Universal: 'Túl lassú? Panaszkodj az SDA Informatikának...',
     )});
   }
 
@@ -152,6 +166,7 @@ class LanguagePack{
   final String setupPage_urlLogin_RootPage;
   final String setupPage_urlLoginDescription_RootPage;
   final String setupPage_appProblemReporting_RootPage;
+
   final String setupPage_loadingText_InstituteSelection;
   final String setupPage_noNetwork_InstituteSelection;
   final String setupPage_selectValidInstitute_InstituteSelection;
@@ -160,14 +175,17 @@ class LanguagePack{
   final String setupPage_searchNotFound_InstituteSelection;
   final String setupPage_instituteCantFindHelpText_InstituteSelection;
   final String setupPage_instituteCantFindHelpTextDescription_InstituteSelection;
+
   final String setupPage_goBack_Universal;
   final String setupPage_proceedLogin_Universal;
+
   final String setupPage_invalidUrl_UrlLogin;
   final String setupPage_loginViaURlHeader_UrlLogin;
   final String setupPage_instituteNeptunUrl_UrlLogin;
   final String setupPage_instituteNeptunUrlInvalid_UrlLogin;
   final String setupPage_whereIsURLHelper_UrlLogin;
   final String setupPage_whereIsURLHelperDescription_UrlLogin;
+
   final String setupPage_invalidCredentials_LoginPage;
   final String setupPage_loginHeaderText_LoginPage;
   final String setupPage_activityCacheInvalidHelper_LoginPage;
@@ -179,6 +197,7 @@ class LanguagePack{
   final String setupPage_logInButton_LoginPage;
   final String setupPage_loginInProgress_LoginPage;
   final String setupPage_loginInProgressSlow_LoginPage;
+
   final String api_monthJan_Universal;
   final String api_monthFeb_Universal;
   final String api_monthMar_Universal;
@@ -191,6 +210,7 @@ class LanguagePack{
   final String api_monthOkt_Universal;
   final String api_monthNov_Universal;
   final String api_monthDec_Universal;
+
   final String api_dayMon_Universal;
   final String api_dayTue_Universal;
   final String api_dayWed_Universal;
@@ -198,6 +218,14 @@ class LanguagePack{
   final String api_dayFri_Universal;
   final String api_daySat_Universal;
   final String api_daySun_Universal;
+
+  final String api_loadingScreenHintFriendly1_Universal;
+  final String api_loadingScreenHintFriendly2_Universal;
+  final String api_loadingScreenHintFriendly3_Universal;
+  final String api_loadingScreenHintFriendly4_Universal;
+  final String api_loadingScreenHintFriendly5_Universal;
+  final String api_loadingScreenHintFriendly6_Universal;
+  final String api_loadingScreenHintFriendly7_Universal;
   LanguagePack({
     required this.setupPage_selectLoginTypeHeader_RootPage,
     required this.setupPage_institutesSelection_RootPage,
@@ -251,5 +279,12 @@ class LanguagePack{
     required this.api_dayFri_Universal,
     required this.api_daySat_Universal,
     required this.api_daySun_Universal,
+    required this.api_loadingScreenHintFriendly1_Universal,
+    required this.api_loadingScreenHintFriendly2_Universal,
+    required this.api_loadingScreenHintFriendly3_Universal,
+    required this.api_loadingScreenHintFriendly4_Universal,
+    required this.api_loadingScreenHintFriendly5_Universal,
+    required this.api_loadingScreenHintFriendly6_Universal,
+    required this.api_loadingScreenHintFriendly7_Universal,
   });
 }

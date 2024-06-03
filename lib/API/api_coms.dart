@@ -1030,7 +1030,7 @@ import '../storage.dart' as storage;
         final gen = Random().nextInt(100) % 7;
         switch (gen) {
           case 0:
-            return 'Elfüstölne a telefonod, ha gyorsabb lenne...';
+            return AppStrings.getLanguagePack().api_loadingScreenHintFriendly1_Universal;
           case 1:
             return 'Még mindíg, jobb mint a nem létező Neptun...';
           case 2:

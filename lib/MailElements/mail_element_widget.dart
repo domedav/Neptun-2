@@ -82,9 +82,9 @@ class MailElementWidget extends StatelessWidget{
                         flex: 2,
                         child: Text(
                           '$subject',
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
-                            fontWeight: FontWeight.w700,
+                            fontWeight: !isRead ? FontWeight.w700 : FontWeight.w500,
                             fontSize: 18.0,
                           ),
                           textAlign: TextAlign.start,

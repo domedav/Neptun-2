@@ -1263,9 +1263,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         );
       }
       else if(item.partofSemester != prevSemester){
-        periodList.add(
+        /*periodList.add(
           _getSeparatorLine('${prevSemester + 1}. félév')
-        );
+        );*/
         prevSemester = item.partofSemester;
       }
       if(!item.isActive){ // exclude today
