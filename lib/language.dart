@@ -1,10 +1,14 @@
 import 'dart:io';
 class AppStrings{
+  static bool _hasInit = false;
   static late final String _defaultLocale;
   static List<String> _supportedLanguages = ['hu', 'en'];
   static final Map<String, LanguagePack> _languages = {};
 
   static void initialize(){
+    if(_hasInit){
+      return;
+    }
     _defaultLocale = Platform.localeName.split('_')[0].toLowerCase();
     _languages.addAll({_supportedLanguages[0]: LanguagePack(
       setupPage_selectLoginTypeHeader_RootPage: 'Válassz bejelentkezési módot',
@@ -60,12 +64,19 @@ class AppStrings{
       api_daySat_Universal: 'Szombat',
       api_daySun_Universal: 'Vasárnap',
       api_loadingScreenHintFriendly1_Universal: 'Elfüstölne a telefonod, ha gyorsabb lenne...',
-      api_loadingScreenHintFriendly2_Universal: 'Még mindíg, jobb mint a nem létező Neptun...',
+      api_loadingScreenHintFriendly2_Universal: 'Még mindíg, jobb mint a nem létező Neptun mobilapp...',
       api_loadingScreenHintFriendly3_Universal: 'Már bármelyik milleniumban betölthet...',
       api_loadingScreenHintFriendly4_Universal: 'Áramszünet van az SDA Informatikánál...',
       api_loadingScreenHintFriendly5_Universal: 'Az SDA Informatika egy nagyon jó cég...',
       api_loadingScreenHintFriendly6_Universal: 'Tudtad? A "Neptun 2" alapja csupán 1 hét alatt készült...',
       api_loadingScreenHintFriendly7_Universal: 'Túl lassú? Panaszkodj az SDA Informatikának...',
+      api_loadingScreenHint1_Universal: 'Úgy dolgoznak a Neptun szerverek, mint egy átlagos államilag finanszírozott útépítés...',
+      api_loadingScreenHint2_Universal: 'Megvárjuk, amíg az SDA Informatika főnöke kávéba fullad...',
+      api_loadingScreenHint3_Universal: 'Légy türelmes, egy patkány miatt zárlatos lett az egyik szerver...',
+      api_loadingScreenHint4_Universal: 'Előbb hiszem el, hogy az Északi-sarkon is vannak pingvinek, minthogy a Neptun szervereire pénzt költöttek...',
+      api_loadingScreenHint5_Universal: 'Neptun szerverei olyan megbízhatóak, bankolni is lehet rajtuk...',
+      api_loadingScreenHint6_Universal: 'SDA jelentése: Sok Dagadt Analfabéta. Egy normális mobilappot nem sikerült összehoziuk...',
+      api_loadingScreenHint7_Universal: 'Fogadni merek, mire ezt elolvasod, még mindíg a Neptun szervereire vársz...',
     )});
     _languages.addAll({_supportedLanguages[1]: LanguagePack(
         setupPage_selectLoginTypeHeader_RootPage: 'Select login method',
@@ -120,14 +131,22 @@ class AppStrings{
       api_dayFri_Universal: 'Friday',
       api_daySat_Universal: 'Saturday',
       api_daySun_Universal: 'Sunday',
-      api_loadingScreenHintFriendly1_Universal: 'Elfüstölne a telefonod, ha gyorsabb lenne...',
-      api_loadingScreenHintFriendly2_Universal: 'Még mindíg, jobb mint a nem létező Neptun...',
-      api_loadingScreenHintFriendly3_Universal: 'Már bármelyik milleniumban betölthet...',
-      api_loadingScreenHintFriendly4_Universal: 'Áramszünet van az SDA Informatikánál...',
-      api_loadingScreenHintFriendly5_Universal: 'Az SDA Informatika egy nagyon jó cég...',
-      api_loadingScreenHintFriendly6_Universal: 'Tudtad? A "Neptun 2" alapja csupán 1 hét alatt készült...',
-      api_loadingScreenHintFriendly7_Universal: 'Túl lassú? Panaszkodj az SDA Informatikának...',
+      api_loadingScreenHintFriendly1_Universal: 'Your phone would go up in flames, if this was faster...',
+      api_loadingScreenHintFriendly2_Universal: 'Still better, than the non existent Neptun mobileapp...',
+      api_loadingScreenHintFriendly3_Universal: 'Loading in any millenium now...',
+      api_loadingScreenHintFriendly4_Universal: 'Theres a power outage at SDA informatics...',
+      api_loadingScreenHintFriendly5_Universal: 'SDA informatics is an amazing company...',
+      api_loadingScreenHintFriendly6_Universal: 'Did you know? "Neptun 2" was created in about 1 week...',
+      api_loadingScreenHintFriendly7_Universal: 'Too slow? Send a complaint to SDA informatics...',
+      api_loadingScreenHint1_Universal: 'The Neptun servers are working as hard az an average hungarian construction worker...',
+      api_loadingScreenHint2_Universal: 'We are waiting until the CEO of SDA informatics drown in coffee...',
+      api_loadingScreenHint3_Universal: 'Be patient, the servers are down, because a rat went into them...',
+      api_loadingScreenHint4_Universal: 'Im more likely to believe, that there are penguins at the North pole, than SDA informatics has spent money on Neptun servers...',
+      api_loadingScreenHint5_Universal: 'Neptun servers are so reliable, I would do my banking on them...',
+      api_loadingScreenHint6_Universal: 'SDA meaning: Sok Dagadt Analfabéta, aka: Many Fat Analfabetics. They couldnt create a usable mobileapp...',
+      api_loadingScreenHint7_Universal: 'I would bet my house on that, you are still reading this, because it is still loading...',
     )});
+    _hasInit = true;
   }
 
   static LanguagePack getLanguagePack(){
@@ -226,6 +245,30 @@ class LanguagePack{
   final String api_loadingScreenHintFriendly5_Universal;
   final String api_loadingScreenHintFriendly6_Universal;
   final String api_loadingScreenHintFriendly7_Universal;
+
+  final String api_loadingScreenHint1_Universal;
+  final String api_loadingScreenHint2_Universal;
+  final String api_loadingScreenHint3_Universal;
+  final String api_loadingScreenHint4_Universal;
+  final String api_loadingScreenHint5_Universal;
+  final String api_loadingScreenHint6_Universal;
+  final String api_loadingScreenHint7_Universal;
+
+  final String api_loadingScreenHintFriendlyMini1_Universal;
+  final String api_loadingScreenHintFriendlyMini2_Universal;
+  final String api_loadingScreenHintFriendlyMini3_Universal;
+  final String api_loadingScreenHintFriendlyMini4_Universal;
+  final String api_loadingScreenHintFriendlyMini5_Universal;
+  final String api_loadingScreenHintFriendlyMini6_Universal;
+  final String api_loadingScreenHintFriendlyMini7_Universal;
+
+  final String api_loadingScreenHintMini1_Universal;
+  final String api_loadingScreenHintMini2_Universal;
+  final String api_loadingScreenHintMini3_Universal;
+  final String api_loadingScreenHintMini4_Universal;
+  final String api_loadingScreenHintMini5_Universal;
+  final String api_loadingScreenHintMini6_Universal;
+  final String api_loadingScreenHintMini7_Universal;
   LanguagePack({
     required this.setupPage_selectLoginTypeHeader_RootPage,
     required this.setupPage_institutesSelection_RootPage,
@@ -286,5 +329,26 @@ class LanguagePack{
     required this.api_loadingScreenHintFriendly5_Universal,
     required this.api_loadingScreenHintFriendly6_Universal,
     required this.api_loadingScreenHintFriendly7_Universal,
+    required this.api_loadingScreenHint1_Universal,
+    required this.api_loadingScreenHint2_Universal,
+    required this.api_loadingScreenHint3_Universal,
+    required this.api_loadingScreenHint4_Universal,
+    required this.api_loadingScreenHint5_Universal,
+    required this.api_loadingScreenHint6_Universal,
+    required this.api_loadingScreenHint7_Universal,
+    required this.api_loadingScreenHintFriendlyMini1_Universal,
+    required this.api_loadingScreenHintFriendlyMini2_Universal,
+    required this.api_loadingScreenHintFriendlyMini3_Universal,
+    required this.api_loadingScreenHintFriendlyMini4_Universal,
+    required this.api_loadingScreenHintFriendlyMini5_Universal,
+    required this.api_loadingScreenHintFriendlyMini6_Universal,
+    required this.api_loadingScreenHintFriendlyMini7_Universal,
+    required this.api_loadingScreenHintMini1_Universal,
+    required this.api_loadingScreenHintMini2_Universal,
+    required this.api_loadingScreenHintMini3_Universal,
+    required this.api_loadingScreenHintMini4_Universal,
+    required this.api_loadingScreenHintMini5_Universal,
+    required this.api_loadingScreenHintMini6_Universal,
+    required this.api_loadingScreenHintMini7_Universal,
   });
 }

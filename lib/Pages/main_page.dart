@@ -10,6 +10,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:neptun2/MailElements/mail_element_widget.dart';
+import 'package:neptun2/language.dart';
 import 'package:neptun2/notifications.dart';
 import 'package:neptun2/Misc/emojirich_text.dart';
 import 'package:neptun2/Misc/popup.dart';
@@ -933,13 +934,13 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   }
 
   void getCalendarTabViews(BuildContext context, bool isLoading){
-    _fillOneCalendarElement(context, mondayCalendar, 'Hétfő', isLoading);
-    _fillOneCalendarElement(context, tuesdayCalendar, 'Kedd', isLoading);
-    _fillOneCalendarElement(context, wednessdayCalendar, 'Szerda', isLoading);
-    _fillOneCalendarElement(context, thursdayCalendar, 'Csütörtök', isLoading);
-    _fillOneCalendarElement(context, fridayCalendar, 'Péntek', isLoading);
-    _fillOneCalendarElement(context, saturdayCalendar, 'Szombat', isLoading);
-    _fillOneCalendarElement(context, sundayCalendar, 'Vasárnap', isLoading);
+    _fillOneCalendarElement(context, mondayCalendar, AppStrings.getLanguagePack().api_dayMon_Universal, isLoading);
+    _fillOneCalendarElement(context, tuesdayCalendar, AppStrings.getLanguagePack().api_dayTue_Universal, isLoading);
+    _fillOneCalendarElement(context, wednessdayCalendar, AppStrings.getLanguagePack().api_dayWed_Universal, isLoading);
+    _fillOneCalendarElement(context, thursdayCalendar, AppStrings.getLanguagePack().api_dayThu_Universal, isLoading);
+    _fillOneCalendarElement(context, fridayCalendar, AppStrings.getLanguagePack().api_dayFri_Universal, isLoading);
+    _fillOneCalendarElement(context, saturdayCalendar, AppStrings.getLanguagePack().api_daySat_Universal, isLoading);
+    _fillOneCalendarElement(context, sundayCalendar, AppStrings.getLanguagePack().api_daySun_Universal, isLoading);
   }
 
   void _mbookPopupResult(int result, int idx){

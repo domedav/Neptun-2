@@ -1032,38 +1032,38 @@ import '../storage.dart' as storage;
           case 0:
             return AppStrings.getLanguagePack().api_loadingScreenHintFriendly1_Universal;
           case 1:
-            return 'Még mindíg, jobb mint a nem létező Neptun...';
+            return AppStrings.getLanguagePack().api_loadingScreenHintFriendly2_Universal;
           case 2:
-            return 'Már bármelyik milleniumban betölthet...';
+            return AppStrings.getLanguagePack().api_loadingScreenHintFriendly3_Universal;
           case 3:
-            return 'Áramszünet van az SDA Informatikánál...';
+            return AppStrings.getLanguagePack().api_loadingScreenHintFriendly4_Universal;
           case 4:
-            return 'Az SDA Informatika egy nagyon jó cég...';
+            return AppStrings.getLanguagePack().api_loadingScreenHintFriendly5_Universal;
           case 5:
-            return 'Tudtad? A "Neptun 2" alapja csupán 1 hét alatt készült...';
+            return AppStrings.getLanguagePack().api_loadingScreenHintFriendly6_Universal;
           case 6:
-            return 'Túl lassú? Panaszkodj az SDA Informatikának...';
+            return AppStrings.getLanguagePack().api_loadingScreenHintFriendly7_Universal;
           default:
             return 'Neptun 2';
         }
       }
-      final gen = Random().nextInt(100) % 12;
+      final gen = Random().nextInt(100) % 7;
       switch (gen) {
         case 0:
-          return 'Úgy dolgoznak a Neptun szerverek, mint egy átlagos államilag finanszírozott útépítés...';
+          return AppStrings.getLanguagePack().api_loadingScreenHint1_Universal;
         case 1:
-          return 'Megvárjuk, amíg az SDA Informatika főnöke kávéba fullad...';
+          return AppStrings.getLanguagePack().api_loadingScreenHint2_Universal;
         case 2:
-          return 'Légy türelmes, egy patkány miatt zárlatos lett az egyik szerver...';
+          return AppStrings.getLanguagePack().api_loadingScreenHint3_Universal;
         case 3:
-          return 'Előbb hiszem el, hogy az Északi-sarkon is vannak pingvinek, minthogy a Neptun szervereire pénzt költöttek..';
+          return AppStrings.getLanguagePack().api_loadingScreenHint4_Universal;
         case 4:
-          return 'Neptun szerverei olyan megbízhatóak, bankolni is lehet rajtuk...';
+          return AppStrings.getLanguagePack().api_loadingScreenHint5_Universal;
         case 5:
-          return 'SDA jelentése: Sok Dagadt Analfabéta. Egy normális mobilappot nem sikerült összehoziuk...';
+          return AppStrings.getLanguagePack().api_loadingScreenHint6_Universal;
         case 6:
-          return 'Fogadni merek, mire ezt elolvasod, még mindíg a Neptun szervereire vársz...';
-        case 7:
+          return AppStrings.getLanguagePack().api_loadingScreenHint7_Universal;
+        /*case 7:
           return '(ChatGPT)\nHa az SDA Informatika supportja egy GPS lenne, egyenesen egy tóba vezetne – irányvesztés a specialitásuk, és az problémákban való fuldoklás az erősségük...';
         case 8:
           return '(ChatGPT)\nAz SDA Informatika csapata olyan, mintha egy viziló lenne a pilóta egy tüzijátékkal, amivel próbálja elérni a Holdat – nem csak nevetséges, de az egészet rossz nézni...';
@@ -1072,7 +1072,7 @@ import '../storage.dart' as storage;
         case 10:
           return '(ChatGPT)\nAz SDA Informatika technológiai fejlesztései olyanok, mintha egy bohóc próbálna csúcstechnológiát kitalálni – a végeredmény kaotikus, és nem éppen az innováció csúcsa...';
         case 11:
-          return '(ChatGPT)\nAz SDA Informatika munkakultúrája olyan, mintha egy bohóciskolában lenne az ember – kacagás és zűrzavar mindenütt, de az értékes eredmények hiányoznak...';
+          return '(ChatGPT)\nAz SDA Informatika munkakultúrája olyan, mintha egy bohóciskolában lenne az ember – kacagás és zűrzavar mindenütt, de az értékes eredmények hiányoznak...';*/
         default:
           return 'Neptun 2';
       }

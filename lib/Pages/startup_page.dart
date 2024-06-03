@@ -25,7 +25,6 @@ class _SplitterState extends State<Splitter>{
 
     DataCache.loadData().then((value) async {
       AppHaptics.initialise();
-      AppStrings.initialize();
       final flag = DataCache.getHasCachedFirstWeekEpoch();
 
       if(flag != null && !flag && DataCache.getHasNetwork() && DataCache.getHasLogin()!){
