@@ -2,6 +2,7 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:neptun2/API/api_coms.dart';
 import 'package:neptun2/Misc/popup.dart';
+import 'package:neptun2/language.dart';
 
 import '../Misc/emojirich_text.dart';
 
@@ -84,7 +85,7 @@ class MailElementWidget extends StatelessWidget{
                           '$subject',
                           style: TextStyle(
                             color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
-                            fontWeight: !isRead ? FontWeight.w700 : FontWeight.w500,
+                            fontWeight: !isRead ? FontWeight.w800 : FontWeight.w500,
                             fontSize: 18.0,
                           ),
                           textAlign: TextAlign.start,
@@ -100,7 +101,7 @@ class MailElementWidget extends StatelessWidget{
                       Flexible(
                         flex: 2,
                         child: Text(
-                          'Küldte: $sender',
+                          AppStrings.getStringWithParams(AppStrings.getLanguagePack().messagePage_SentBy, [sender]),
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w500,

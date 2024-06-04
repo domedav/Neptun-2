@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:neptun2/Misc/popup.dart';
+import 'package:neptun2/language.dart';
 import 'package:neptun2/notifications.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../Pages/main_page.dart';
@@ -78,7 +79,7 @@ class TopNavigatorWidget extends StatelessWidget{
                             value: 'null',
                             enabled: false,
                             child: EmojiRichText(
-                              text: 'Szia ${loggedInUsername}! 👋',
+                              text: AppStrings.getStringWithParams(AppStrings.getLanguagePack().topmenu_Greet, [loggedInUsername]),
                               defaultStyle: const TextStyle(
                                 color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
                                 fontWeight: FontWeight.w700,
@@ -95,7 +96,7 @@ class TopNavigatorWidget extends StatelessWidget{
                             value: 'null',
                             enabled: false,
                             child: EmojiRichText(
-                              text: 'Ide vagy bejelentkezve: 🔗\n${loggedInURL}',
+                              text: AppStrings.getStringWithParams(AppStrings.getLanguagePack().topmenu_LoginPlace, [loggedInURL]),
                               defaultStyle: const TextStyle(
                                 color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1),
                                 fontWeight: FontWeight.w700,
@@ -109,10 +110,10 @@ class TopNavigatorWidget extends StatelessWidget{
                             ),
                           ),
                           const PopupMenuDivider(height: 20),
-                          const PopupMenuItem(
+                          PopupMenuItem(
                             value: 'settings',
                             child: EmojiRichText(
-                              text: '⚙ Beállítások',
+                              text: AppStrings.getLanguagePack().topmenu_buttons_Settings,
                               defaultStyle: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w400,
@@ -126,10 +127,10 @@ class TopNavigatorWidget extends StatelessWidget{
                             ),
                           ),
                           const PopupMenuDivider(height: 20),
-                          const PopupMenuItem(
+                          PopupMenuItem(
                             value: 'donate',
                             child: EmojiRichText(
-                              text: '🎁 Fejlesztés támogatása',
+                              text: AppStrings.getLanguagePack().topmenu_buttons_SupportDev,
                               defaultStyle: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w400,
@@ -142,10 +143,10 @@ class TopNavigatorWidget extends StatelessWidget{
                               ),
                             ),
                           ),
-                          const PopupMenuItem(
+                          PopupMenuItem(
                             value: 'bugreport',
                             child: EmojiRichText(
-                              text: '🐞 Hibabejelentés',
+                              text: AppStrings.getLanguagePack().topmenu_buttons_Bugreport,
                               defaultStyle: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w400,
@@ -159,10 +160,10 @@ class TopNavigatorWidget extends StatelessWidget{
                             ),
                           ),
                           const PopupMenuDivider(height: 20),
-                          const PopupMenuItem<String>(
+                          PopupMenuItem<String>(
                             value: 'logout',
                             child: EmojiRichText(
-                              text:  '🚪 Kijelentkezés',
+                              text:  AppStrings.getLanguagePack().topmenu_buttons_Logout,
                               defaultStyle: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w400,
@@ -194,7 +195,7 @@ class TopNavigatorWidget extends StatelessWidget{
                             return;
                           }
                           Fluttertoast.showToast(
-                            msg: 'Sikeresen Kijelentkeztél!',
+                            msg: AppStrings.getLanguagePack().topmenu_buttons_LogoutSuccessToast,
                             toastLength: Toast.LENGTH_SHORT,
                             fontSize: 14,
                             gravity: ToastGravity.SNACKBAR,

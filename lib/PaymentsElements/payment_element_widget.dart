@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:neptun2/API/api_coms.dart';
+import 'package:neptun2/language.dart';
 import '../Misc/emojirich_text.dart';
 
 class PaymentElementWidget extends StatelessWidget{
@@ -61,7 +62,7 @@ class PaymentElementWidget extends StatelessWidget{
               Expanded(
                   flex: 2,
                   child: Text(
-                    '${ammount}Ft',
+                    AppStrings.getStringWithParams(AppStrings.getLanguagePack().paymentPage_MoneyDisplay, [ammount]),
                     style: const TextStyle(
                       color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
                       fontWeight: FontWeight.w800,
@@ -101,7 +102,7 @@ class PaymentElementWidget extends StatelessWidget{
             ],
           ),
           !isNonTimed ? Text(
-            isMissed ? '(${-(Duration(milliseconds: dueDateMs - nowMs).inDays + 1)} nappal lekésve)' : '(${Duration(milliseconds: dueDateMs - nowMs).inDays + 1} nap van hátra)',
+            isMissed ? AppStrings.getStringWithParams(AppStrings.getLanguagePack().paymentPage_PaymentMissedTime, [-(Duration(milliseconds: dueDateMs - nowMs).inDays + 1)]) : AppStrings.getStringWithParams(AppStrings.getLanguagePack().paymentPage_PaymentDeadlineTime, [Duration(milliseconds: dueDateMs - nowMs).inDays + 1]),
             style: TextStyle(
               color: Colors.white.withOpacity(0.4),
               fontWeight: FontWeight.w400,

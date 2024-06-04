@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:neptun2/language.dart';
 import '../Pages/main_page.dart';
 import '../haptics.dart';
 
@@ -84,15 +85,15 @@ class BottomNavigatorWidget extends StatelessWidget {
   String _getNameOfMenu(int idx){
     switch(idx){
       case 0:
-        return 'Órarend';
+        return AppStrings.getLanguagePack().view_header_Calendar;
       case 1:
-        return 'Tantárgyak';
+        return AppStrings.getLanguagePack().view_header_Subjects;
       case 2:
-        return 'Befizetendők';
+        return AppStrings.getLanguagePack().view_header_Payments;
       case 3:
-        return 'Időszakok';
+        return AppStrings.getLanguagePack().view_header_Periods;
       case 4:
-        return 'Üzenetek';
+        return AppStrings.getLanguagePack().view_header_Messages;
       default:
         return 'Not Impl';
     }

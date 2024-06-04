@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:neptun2/Misc/emojirich_text.dart';
+import 'package:neptun2/language.dart';
 import '../API/api_coms.dart';
 
 class PeriodsElementWidget extends StatelessWidget{
@@ -256,7 +257,7 @@ class PeriodsElementWidget extends StatelessWidget{
                   children: [
                     Flexible(
                       child: Text(
-                        expired ? 'Lejárt: ' : 'Kezdődik: ',
+                        expired ? AppStrings.getLanguagePack().periodPage_Expired : AppStrings.getLanguagePack().periodPage_Starts,
                         style: TextStyle(
                           color: expired ? Colors.redAccent : Colors.white.withOpacity(0.6),
                           fontWeight: FontWeight.normal,
@@ -282,7 +283,7 @@ class PeriodsElementWidget extends StatelessWidget{
             ],
           ),
           Text(
-            expired ? '(${-(Duration(milliseconds: endTime - now).inDays + 1) * (Duration(milliseconds: endTime - now).inDays == 0 ? -1 : 1)} napja)' : (!isActive ? '(${Duration(milliseconds: startTime - now).inDays + 1} nap múlva)' : '(${Duration(milliseconds: endTime - now).inDays + 1} nap van hátra)'),
+            expired ? AppStrings.getStringWithParams(AppStrings.getLanguagePack().periodPage_ExpiredDays, [-(Duration(milliseconds: endTime - now).inDays + 1) * (Duration(milliseconds: endTime - now).inDays == 0 ? -1 : 1)]) : !isActive ? AppStrings.getStringWithParams(AppStrings.getLanguagePack().periodPage_StartDays, [Duration(milliseconds: startTime - now).inDays + 1]) : AppStrings.getStringWithParams(AppStrings.getLanguagePack().periodPage_ActiveDays, [Duration(milliseconds: endTime - now).inDays + 1]),
             style: TextStyle(
               color: Colors.white.withOpacity(0.4),
               fontWeight: FontWeight.w400,

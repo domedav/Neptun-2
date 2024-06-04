@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:neptun2/language.dart';
 import '../API/api_coms.dart' as api;
 import '../Misc/emojirich_text.dart';
 import '../Misc/popup.dart';
@@ -177,15 +178,15 @@ class FreedayElementWidget extends StatelessWidget{
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
         child: SizedBox(
         width: MediaQuery.of(context).size.width,
-        child: const Center(
+        child: Center(
             child: EmojiRichText(
-              text: "🥳Szabadnap!🥳",
-              defaultStyle: TextStyle(
+              text: AppStrings.getLanguagePack().calendarPage_FreeDay,
+              defaultStyle: const TextStyle(
                 color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
                 fontWeight: FontWeight.w900,
                 fontSize: 34.0,
               ),
-              emojiStyle: TextStyle(
+              emojiStyle: const TextStyle(
                   color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
                   fontSize: 34.0,
                   fontFamily: "Noto Color Emoji"
@@ -207,22 +208,22 @@ class WeekoffseterElementWidget extends StatelessWidget{
     final endMonth = api.Generic.monthToText(to.month);
     final endDay = to.day;
 
-    displayString = "$week. oktatási hét";
+    displayString = AppStrings.getStringWithParams(AppStrings.getLanguagePack().calendarPage_weekNav_StudyWeek, [week]);
 
     if(isLoading){
-      displayString2 = "Gondolkodunk... 🤔";
+      displayString2 = AppStrings.getLanguagePack().calendarPage_weekNav_ClassesThisWeekLoading;
       return;
     }
 
     if(startMonth == "_"){
-      displayString2 = "Üres ez a heted! 🥳";
+      displayString2 = AppStrings.getLanguagePack().calendarPage_weekNav_ClassesThisWeekEmpty;
       return;
     }
     if("$startMonth $startDay" == "$endMonth $endDay"){
-      displayString2 = "Óráid ezen a héten: $endMonth $endDay. (${api.Generic.dayToText(to.weekday)})";
+      displayString2 = AppStrings.getStringWithParams(AppStrings.getLanguagePack().calendarPage_weekNav_ClassesThisWeekOneDay, [endMonth, endDay, api.Generic.dayToText(to.weekday)]);
     }
     else{
-      displayString2 = "Óráid ezen a héten: $startMonth $startDay. - $endMonth $endDay.";
+      displayString2 = AppStrings.getStringWithParams(AppStrings.getLanguagePack().calendarPage_weekNav_ClassesThisWeekFull, [startMonth, startDay, endMonth, endDay]);
     }
   }
 

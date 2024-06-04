@@ -468,32 +468,32 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     final currentTimeHour = DateTime.now().hour;
     if(currentTimeHour > 1 && currentTimeHour <= 6){
       setState(() {
-        calendarGreetText = "Boldog hajnalt! 🍼";
+        calendarGreetText = AppStrings.getLanguagePack().topheader_calendar_greetMessage_1to6;
       });
     }
     else if(currentTimeHour > 6 && currentTimeHour <= 9){
       setState(() {
-        calendarGreetText = "Jó reggelt! ☕";
+        calendarGreetText = AppStrings.getLanguagePack().topheader_calendar_greetMessage_6to9;
       });
     }
     else if(currentTimeHour > 9 && currentTimeHour <= 13){
       setState(() {
-        calendarGreetText = "Szép napot! 🍷";
+        calendarGreetText = AppStrings.getLanguagePack().topheader_calendar_greetMessage_9to13;
       });
     }
     else if(currentTimeHour > 13 && currentTimeHour <= 17){
       setState(() {
-        calendarGreetText = "Kellemes délutánt! 🥂";
+        calendarGreetText = AppStrings.getLanguagePack().topheader_calendar_greetMessage_13to17;
       });
     }
     else if(currentTimeHour > 17 && currentTimeHour <= 21){
       setState(() {
-        calendarGreetText = "Szép estét! 🍻";
+        calendarGreetText = AppStrings.getLanguagePack().topheader_calendar_greetMessage_17to21;
       });
     }
     else if(currentTimeHour > 21 || currentTimeHour <= 1){
       setState(() {
-        calendarGreetText = "Jó éjszakát! 🍹";
+        calendarGreetText = AppStrings.getLanguagePack().topheader_calendar_greetMessage_21to1;
       });
     }
   }
@@ -989,15 +989,15 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       markbookList.add(Container(
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-        child: const Center(
+        child: Center(
           child: EmojiRichText(
-            text: '🤪Nincs Tantárgyad🤪',
-            defaultStyle: TextStyle(
+            text: AppStrings.getLanguagePack().markbookPage_Empty,
+            defaultStyle: const TextStyle(
               color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
               fontWeight: FontWeight.w900,
               fontSize: 26.0,
             ),
-            emojiStyle: TextStyle(
+            emojiStyle: const TextStyle(
                 color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
                 fontSize: 26.0,
                 fontFamily: "Noto Color Emoji"
@@ -1047,11 +1047,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     if(hasCompleted) {
       if(hasIncomplete){
         markbookList.add(
-            Container(
-              height: 2,
-              margin: const EdgeInsets.symmetric(horizontal: 30),
-              color: Colors.white.withOpacity(0.3),
-            )
+            _getSeparatorLine(AppStrings.getLanguagePack().markbookPage_CompletedLine)
         );
         idx++;
       }
@@ -1158,15 +1154,15 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       paymentsList.add(Container(
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-        child: const Center(
+        child: Center(
           child: EmojiRichText(
-            text: '😇Nem Tartozol😇',
-            defaultStyle: TextStyle(
+            text: AppStrings.getLanguagePack().paymentPage_Empty,
+            defaultStyle: const TextStyle(
               color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
               fontWeight: FontWeight.w900,
               fontSize: 26.0,
             ),
-            emojiStyle: TextStyle(
+            emojiStyle: const TextStyle(
                 color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
                 fontSize: 26.0,
                 fontFamily: "Noto Color Emoji"
@@ -1238,7 +1234,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
               const Padding(padding: EdgeInsets.only(top: 10))
           );
           periodList.add(
-              _getSeparatorLine('Jövőbeli')
+              _getSeparatorLine(AppStrings.getLanguagePack().topheader_periods_FutureText)
           );
         }
         countFuturePeriods++;
@@ -1260,7 +1256,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
             const Padding(padding: EdgeInsets.only(top: 10))
         );
         periodList.add(
-            _getSeparatorLine('Aktuális')
+            _getSeparatorLine(AppStrings.getLanguagePack().topheader_periods_ActiveText)
         );
       }
       else if(item.partofSemester != prevSemester){
@@ -1294,7 +1290,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     );
 
     periodList.add(
-        _getSeparatorLine('Lejárt', expired: true)
+        _getSeparatorLine(AppStrings.getLanguagePack().topheader_periods_ExpiredText, expired: true)
     );
     
     for(var item in expiredPeriods){
@@ -1324,15 +1320,15 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       periodList.add(Container(
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-        child: const Center(
+        child: Center(
           child: EmojiRichText(
-            text: '🤩Szünet Van🤩',
-            defaultStyle: TextStyle(
+            text: AppStrings.getLanguagePack().periodPage_Empty,
+            defaultStyle: const TextStyle(
               color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
               fontWeight: FontWeight.w900,
               fontSize: 26.0,
             ),
-            emojiStyle: TextStyle(
+            emojiStyle: const TextStyle(
                 color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
                 fontSize: 26.0,
                 fontFamily: "Noto Color Emoji"
@@ -1968,7 +1964,7 @@ class CalendarPageWidget extends StatelessWidget{
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              topnav.TopNavigatorWidget(homePage: homePage, displayString: "Órarend", smallHintText: greetText, loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
+              topnav.TopNavigatorWidget(homePage: homePage, displayString: AppStrings.getLanguagePack().view_header_Calendar, smallHintText: greetText, loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
               Container(
                 padding: const EdgeInsets.fromLTRB(0, 0, 0, 6),
                 color: const Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
@@ -2057,7 +2053,7 @@ class MarkbookPageWidget extends StatelessWidget{
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              topnav.TopNavigatorWidget(homePage: homePage, displayString: "Tantárgyak", smallHintText: "Kredited ebben a félévben: $totalCredits🎖️", loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
+              topnav.TopNavigatorWidget(homePage: homePage, displayString: AppStrings.getLanguagePack().view_header_Subjects, smallHintText: AppStrings.getStringWithParams(AppStrings.getLanguagePack().topheader_subjects_CreditsInSemester, [totalCredits]), loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
               HomePageState.getSeparatorLine(context),
               Expanded(
                   child: RefreshIndicator(
@@ -2087,7 +2083,7 @@ class MarkbookPageWidget extends StatelessWidget{
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     EmojiRichText(
-                                      text: 'Átlagod: ${totalAvg.isNaN ? "nincs jegyed" : totalAvg.toStringAsFixed(2)} ${api.Generic.reactionForAvg(totalAvg)}',
+                                      text: AppStrings.getStringWithParams(AppStrings.getLanguagePack().markbookPage_AverageDisplay, [totalAvg.isNaN ? AppStrings.getLanguagePack().markbookPage_NoGrades : totalAvg.toStringAsFixed(2), api.Generic.reactionForAvg(totalAvg)]),
                                       defaultStyle: const TextStyle(
                                         color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
                                         fontWeight: FontWeight.w600,
@@ -2100,7 +2096,7 @@ class MarkbookPageWidget extends StatelessWidget{
                                       ),
                                     ),
                                     EmojiRichText(
-                                      text: 'Ösztöndíj indexed: ${totalAvg30.isNaN || totalAvg30 <= 0 ? "nincs jegyed" : totalAvg30.toStringAsFixed(2)} ${api.Generic.reactionForAvg(totalAvg30)}',
+                                      text: AppStrings.getStringWithParams(AppStrings.getLanguagePack().markbookPage_AverageScholarshipDisplay, [totalAvg30.isNaN || totalAvg30 <= 0 ? AppStrings.getLanguagePack().markbookPage_NoGrades : totalAvg30.toStringAsFixed(2), api.Generic.reactionForAvg(totalAvg30)]),
                                       defaultStyle: const TextStyle(
                                         color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
                                         fontWeight: FontWeight.w600,
@@ -2183,7 +2179,7 @@ class PaymentsPageWidget extends StatelessWidget{
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               //topnav.TopNavigatorWidget(homePage: homePage, displayString: "Befizetendők", smallHintText: "$totalMoney Ft Van A Számládon 💸"),
-              topnav.TopNavigatorWidget(homePage: homePage, displayString: "Befizetendők", smallHintText: "${totalMoney}Ft-ot költöttél az egyetemre 💸", loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
+              topnav.TopNavigatorWidget(homePage: homePage, displayString: AppStrings.getLanguagePack().view_header_Payments, smallHintText: AppStrings.getStringWithParams(AppStrings.getLanguagePack().topheader_payments_TotalMoneySpent, [totalMoney]), loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
               HomePageState.getSeparatorLine(context),
               Expanded(
                   child: RefreshIndicator(
@@ -2248,7 +2244,7 @@ class PeriodsPageWidget extends StatelessWidget{
     homePage.onPeriodsRefresh();
   }
 
-  String aOrAzDeterminer(int semester){
+  /*String aOrAzDeterminer(int semester){
     switch(semester){
       case 0:
         return '';
@@ -2259,7 +2255,7 @@ class PeriodsPageWidget extends StatelessWidget{
       default:
         return 'A';
     }
-  }
+  }*/
 
   @override
   Widget build(BuildContext context){
@@ -2270,7 +2266,7 @@ class PeriodsPageWidget extends StatelessWidget{
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 //topnav.TopNavigatorWidget(homePage: homePage, displayString: "Időszakok", smallHintText: "Jelenleg ${currentSemester != -1 ? "${aOrAzDeterminer(currentSemester)} $currentSemester." : "gondolkodunk mi is van..."} ${currentSemester != -1 ? 'félév van' : ''} 🗓️", loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
-                topnav.TopNavigatorWidget(homePage: homePage, displayString: "Időszakok", smallHintText: "${homePage.countActivePeriods} aktív, ${homePage.countFuturePeriods} jövőbeli, ${homePage.countExpiredPeriods} lejárt 🗓️", loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
+                topnav.TopNavigatorWidget(homePage: homePage, displayString: AppStrings.getLanguagePack().view_header_Periods, smallHintText: AppStrings.getStringWithParams(AppStrings.getLanguagePack().topheader_periods_MainHeader, [homePage.countActivePeriods, AppStrings.getLanguagePack().topheader_periods_ActiveText, homePage.countFuturePeriods, AppStrings.getLanguagePack().topheader_periods_FutureText, homePage.countExpiredPeriods, AppStrings.getLanguagePack().topheader_periods_ExpiredText]), loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
                 HomePageState.getSeparatorLine(context),
                 Expanded(
                     child: RefreshIndicator(
@@ -2341,7 +2337,7 @@ class MailsPageWidget extends StatelessWidget{
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                topnav.TopNavigatorWidget(homePage: homePage, displayString: "Üzenetek", smallHintText: "${homePage.unreadMailCount} olvasatlan üzeneted van 💌", loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
+                topnav.TopNavigatorWidget(homePage: homePage, displayString: AppStrings.getLanguagePack().view_header_Messages, smallHintText: AppStrings.getStringWithParams(AppStrings.getLanguagePack().topheader_messages_UnreadMessages, [homePage.unreadMailCount]), loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
                 HomePageState.getSeparatorLine(context),
                 Expanded(
                     child: RefreshIndicator(

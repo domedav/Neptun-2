@@ -400,41 +400,31 @@ import '../storage.dart' as storage;
         return 0;
       }
 
-      int best = 0;
+      int latest = 0; // we need the latest grade, as that is what counts (idk why)
       for(var match in matches){
         final result = (match.group(1) ?? '').trim().toLowerCase();
         if(result.isEmpty){
-          return 0;
+          break;
         }
         switch (result){
           case 'jeles':
-            if(best < 5){
-              best = 5;
-            }
+            latest = 5;
             break;
           case 'jó':
-            if(best < 4){
-              best = 4;
-            }
+            latest = 4;
             break;
           case 'közepes':
-            if(best < 3){
-              best = 3;
-            }
+            latest = 3;
             break;
           case 'elégséges':
-            if(best < 2){
-              best = 2;
-            }
+            latest = 2;
             break;
           case 'elégtelen':
-            if(best < 1){
-              best = 1;
-            }
+            latest = 1;
             break;
         }
       }
-      return best;
+      return latest;
     }
   }
   
@@ -719,7 +709,7 @@ import '../storage.dart' as storage;
         subjectCode = match2.group(1)!.trim().replaceAll('(', '').replaceAll(')', '');
       }
       else{
-        subjectCode = 'Nincs Adat';
+        subjectCode = AppStrings.getLanguagePack().api_generic_NoData;
       }
 
       var regex3 = RegExp(r'\([^)]+\)(?=\s*\([^)]+\)*$)'); //igen... egy jéghideg olyat kérünk
@@ -735,7 +725,7 @@ import '../storage.dart' as storage;
           teacher = match3.group(1)!.trim().replaceAll('(', '').replaceAll(')', '');
         }
         else{
-          teacher = 'Nincs Adat';
+          teacher = AppStrings.getLanguagePack().api_generic_NoData;
         }
       }
     }
@@ -1082,13 +1072,13 @@ import '../storage.dart' as storage;
         final gen = Random().nextInt(100) % 4;
         switch (gen) {
           case 0:
-            return 'Egy pillanat...';
+            return AppStrings.getLanguagePack().api_loadingScreenHintFriendlyMini1_Universal;
           case 1:
-            return 'Alakul a molekula...';
+            return AppStrings.getLanguagePack().api_loadingScreenHintFriendlyMini2_Universal;
           case 2:
-            return 'Csak szépen lassan...';
+            return AppStrings.getLanguagePack().api_loadingScreenHintFriendlyMini3_Universal;
           case 3:
-            return 'Tölt valamit nagyon...';
+            return AppStrings.getLanguagePack().api_loadingScreenHintFriendlyMini4_Universal;
           default:
             return 'Neptun 2';
         }
@@ -1096,11 +1086,11 @@ import '../storage.dart' as storage;
       final gen = Random().nextInt(100) % 3;
       switch (gen) {
         case 0:
-          return 'Na, megvan?...';
+          return AppStrings.getLanguagePack().api_loadingScreenHintMini1_Universal;
         case 1:
-          return 'Várjál! Nem megy ez ilyen gyorsan...';
+          return AppStrings.getLanguagePack().api_loadingScreenHintMini2_Universal;
         case 2:
-          return 'Nem emlékszel mit olvastál? Szedj B6 vitamint!...';
+          return AppStrings.getLanguagePack().api_loadingScreenHintMini3_Universal;
         default:
           return 'Neptun 2';
       }

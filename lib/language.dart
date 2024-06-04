@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 class AppStrings{
   static bool _hasInit = false;
@@ -77,6 +78,61 @@ class AppStrings{
       api_loadingScreenHint5_Universal: 'Neptun szerverei olyan megbízhatóak, bankolni is lehet rajtuk...',
       api_loadingScreenHint6_Universal: 'SDA jelentése: Sok Dagadt Analfabéta. Egy normális mobilappot nem sikerült összehoziuk...',
       api_loadingScreenHint7_Universal: 'Fogadni merek, mire ezt elolvasod, még mindíg a Neptun szervereire vársz...',
+      api_loadingScreenHintFriendlyMini1_Universal: 'Egy pillanat...',
+      api_loadingScreenHintFriendlyMini2_Universal: 'Alakul a molekula...',
+      api_loadingScreenHintFriendlyMini3_Universal: 'Csak szépen lassan...',
+      api_loadingScreenHintFriendlyMini4_Universal: 'Tölt valamit nagyon...',
+      api_loadingScreenHintMini1_Universal: 'Na, megvan?...',
+      api_loadingScreenHintMini2_Universal: 'Várjál! Nem megy ez ilyen gyorsan...',
+      api_loadingScreenHintMini3_Universal: 'Nem emlékszel mit olvastál? Szedj B6 vitamint!...',
+      api_generic_NoData: 'Nincs Adat',
+      view_header_Calendar: 'Órarend',
+      view_header_Messages: 'Üzenetek',
+      view_header_Payments: 'Befizetendők',
+      view_header_Periods: 'Időszakok',
+      view_header_Subjects: 'Tárgyak',
+      topheader_calendar_greetMessage_1to6: 'Boldog hajnalt! 🍼',
+      topheader_calendar_greetMessage_6to9: 'Jó reggelt! ☕',
+      topheader_calendar_greetMessage_9to13: 'Szép napot! 🍷',
+      topheader_calendar_greetMessage_13to17: 'Kellemes délutánt! 🥂',
+      topheader_calendar_greetMessage_17to21: 'Szép estét! 🍻',
+      topheader_calendar_greetMessage_21to1: 'Jó éjszakát! 🍹',
+      topheader_subjects_CreditsInSemester: 'Kredited ebben a félévben: %0🎖️',
+      topheader_payments_TotalMoneySpent: '%0Ft-ot költöttél az egyetemre 💸',
+      topheader_periods_ActiveText: 'Aktuális',
+      topheader_periods_ExpiredText: 'Lejárt',
+      topheader_periods_FutureText: 'Jövőbeli',
+      topheader_periods_MainHeader: '%0 %1, %2 %3, %4 %5 🗓️',
+      topheader_messages_UnreadMessages: '%0 olvasatlan üzeneted van 💌',
+      topmenu_Greet: 'Szia %0! 👋',
+      topmenu_LoginPlace: 'Ide vagy bejelentkezve: 🔗\n%0',
+      topmenu_buttons_Settings: '⚙ Beállítások',
+      topmenu_buttons_SupportDev: '🎁 Fejlesztés támogatása',
+      topmenu_buttons_Bugreport: '🐞 Hibabejelentés',
+      topmenu_buttons_Logout: '🚪 Kijelentkezés',
+      topmenu_buttons_LogoutSuccessToast: 'Sikeresen kijelentkeztél! 🚪',
+      calendarPage_FreeDay: '🥳Szabadnap!🥳',
+      calendarPage_weekNav_ClassesThisWeekFull: 'Óráid ezen a héten: %0 %1. - %2 %3.',
+      calendarPage_weekNav_ClassesThisWeekOneDay: 'Órád ezen a héten: %0 %1. (%2)',
+      calendarPage_weekNav_ClassesThisWeekEmpty: 'Üres ez a heted! 🥳',
+      calendarPage_weekNav_ClassesThisWeekLoading: 'Gondolkodunk... 🤔',
+      calendarPage_weekNav_StudyWeek: '%0. oktatási hét',
+      markbookPage_AverageDisplay: 'Átlagod: %0',
+      markbookPage_AverageScholarshipDisplay: 'Ösztöndíj indexed: %0',
+      markbookPage_NoGrades: 'nincs jegyed',
+      markbookPage_Empty: '🤪Nincs Tantárgyad🤪',
+      markbookPage_CompletedLine: 'Elvégezve',
+      paymentPage_Empty: '😇Nem Tartozol😇',
+      paymentPage_MoneyDisplay: '%0Ft',
+      paymentPage_PaymentDeadlineTime: '(%0 nap van hátra)',
+      paymentPage_PaymentMissedTime: '(%0 nappal lekésve)',
+      periodPage_Empty: '🤩Szünet Van🤩',
+      periodPage_Expired: 'Lejárt: ',
+      periodPage_Starts: 'Kezdődik: ',
+      periodPage_ActiveDays: '(%0 nap van hátra)',
+      periodPage_StartDays: '(%0 nap múlva)',
+      periodPage_ExpiredDays: '(%0 napja)',
+      messagePage_SentBy: 'Küldte: %0',
     )});
     _languages.addAll({_supportedLanguages[1]: LanguagePack(
         setupPage_selectLoginTypeHeader_RootPage: 'Select login method',
@@ -132,8 +188,8 @@ class AppStrings{
       api_daySat_Universal: 'Saturday',
       api_daySun_Universal: 'Sunday',
       api_loadingScreenHintFriendly1_Universal: 'Your phone would go up in flames, if this was faster...',
-      api_loadingScreenHintFriendly2_Universal: 'Still better, than the non existent Neptun mobileapp...',
-      api_loadingScreenHintFriendly3_Universal: 'Loading in any millenium now...',
+      api_loadingScreenHintFriendly2_Universal: 'Still better, than the non existent Neptun mobile app...',
+      api_loadingScreenHintFriendly3_Universal: 'Loading in any millennium now...',
       api_loadingScreenHintFriendly4_Universal: 'Theres a power outage at SDA informatics...',
       api_loadingScreenHintFriendly5_Universal: 'SDA informatics is an amazing company...',
       api_loadingScreenHintFriendly6_Universal: 'Did you know? "Neptun 2" was created in about 1 week...',
@@ -143,8 +199,63 @@ class AppStrings{
       api_loadingScreenHint3_Universal: 'Be patient, the servers are down, because a rat went into them...',
       api_loadingScreenHint4_Universal: 'Im more likely to believe, that there are penguins at the North pole, than SDA informatics has spent money on Neptun servers...',
       api_loadingScreenHint5_Universal: 'Neptun servers are so reliable, I would do my banking on them...',
-      api_loadingScreenHint6_Universal: 'SDA meaning: Sok Dagadt Analfabéta, aka: Many Fat Analfabetics. They couldnt create a usable mobileapp...',
+      api_loadingScreenHint6_Universal: 'SDA meaning: Sok Dagadt Analfabéta, aka: Many Fat Analfabetics. They couldnt create a usable mobile app...',
       api_loadingScreenHint7_Universal: 'I would bet my house on that, you are still reading this, because it is still loading...',
+      api_loadingScreenHintFriendlyMini1_Universal: 'Just a second...',
+      api_loadingScreenHintFriendlyMini2_Universal: 'We are getting there...',
+      api_loadingScreenHintFriendlyMini3_Universal: 'Easy does it...',
+      api_loadingScreenHintFriendlyMini4_Universal: 'Its really loading something...',
+      api_loadingScreenHintMini1_Universal: 'So, found it?...',
+      api_loadingScreenHintMini2_Universal: 'Hold up! It cant do it that fast...',
+      api_loadingScreenHintMini3_Universal: 'Forgot what you just read? Try taking B6 vitamins!...',
+      api_generic_NoData: 'No Data',
+      view_header_Calendar: 'Calendar',
+      view_header_Messages: 'Messages',
+      view_header_Payments: 'Payments',
+      view_header_Periods: 'Periods',
+      view_header_Subjects: 'Subjects',
+      topheader_calendar_greetMessage_1to6: 'Merry midnight! 🍼',
+      topheader_calendar_greetMessage_6to9: 'Good morning! ☕',
+      topheader_calendar_greetMessage_9to13: 'Good day! 🍷',
+      topheader_calendar_greetMessage_13to17: 'Good afternoon! 🥂',
+      topheader_calendar_greetMessage_17to21: 'Good evening! 🍻',
+      topheader_calendar_greetMessage_21to1: 'Good night! 🍹',
+      topheader_subjects_CreditsInSemester: 'Your credits in this semester: %0🎖️',
+      topheader_payments_TotalMoneySpent: 'You have spent %0Huf on university 💸',
+      topheader_periods_ActiveText: 'Actual',
+      topheader_periods_ExpiredText: 'Expired',
+      topheader_periods_FutureText: 'Future',
+      topheader_periods_MainHeader: '%0 %1, %2 %3, %4 %5 🗓️',
+      topheader_messages_UnreadMessages: 'You have %0 unread messages 💌',
+      topmenu_Greet: 'Hello %0! 👋',
+      topmenu_LoginPlace: 'You are logged into here: 🔗\n%0',
+      topmenu_buttons_Settings: '⚙ Settings',
+      topmenu_buttons_SupportDev: '🎁 Support developer',
+      topmenu_buttons_Bugreport: '🐞 Bugreport',
+      topmenu_buttons_Logout: '🚪 Log out',
+      topmenu_buttons_LogoutSuccessToast: 'You have logged out successfully! 🚪',
+      calendarPage_FreeDay: '🥳Free Day!🥳',
+      calendarPage_weekNav_ClassesThisWeekFull: 'Classes this week: %0 %1. - %2 %3.',
+      calendarPage_weekNav_ClassesThisWeekOneDay: 'Class this week: %0 %1. (%2)',
+      calendarPage_weekNav_ClassesThisWeekEmpty: 'This week is empty! 🥳',
+      calendarPage_weekNav_ClassesThisWeekLoading: 'Thinking... 🤔',
+      calendarPage_weekNav_StudyWeek: '%0. education week',
+      markbookPage_AverageDisplay: 'Average: %0 %1',
+      markbookPage_AverageScholarshipDisplay: 'Scholarship index: %0 %1',
+      markbookPage_NoGrades: 'you have no grades',
+      markbookPage_Empty: '🤪You dont have any subjects🤪',
+      markbookPage_CompletedLine: 'Completed',
+      paymentPage_Empty: '😇All payed😇',
+      paymentPage_MoneyDisplay: '%0Huf',
+      paymentPage_PaymentDeadlineTime: '(%0 days remaining)',
+      paymentPage_PaymentMissedTime: '(%0 days since deadline)',
+      periodPage_Empty: '🤩Break time🤩',
+      periodPage_Expired: 'Expired: ',
+      periodPage_Starts: 'Starts: ',
+      periodPage_ActiveDays: '(%0 days remaining)',
+      periodPage_StartDays: '(in %0 days)',
+      periodPage_ExpiredDays: '(%0 days ago)',
+      messagePage_SentBy: 'Sent by: %0',
     )});
     _hasInit = true;
   }
@@ -167,7 +278,7 @@ class AppStrings{
   static String getStringWithParams(String base, List<dynamic> params){
     String result = "" + base;
     for(int i = 0; i < params.length; i++){
-      result.replaceAll('%$i', '${params[i].toString()}');
+      result = result.replaceAll('%$i', '${params[i].toString()}');
     }
     return result;
   }
@@ -258,17 +369,72 @@ class LanguagePack{
   final String api_loadingScreenHintFriendlyMini2_Universal;
   final String api_loadingScreenHintFriendlyMini3_Universal;
   final String api_loadingScreenHintFriendlyMini4_Universal;
-  final String api_loadingScreenHintFriendlyMini5_Universal;
-  final String api_loadingScreenHintFriendlyMini6_Universal;
-  final String api_loadingScreenHintFriendlyMini7_Universal;
 
   final String api_loadingScreenHintMini1_Universal;
   final String api_loadingScreenHintMini2_Universal;
   final String api_loadingScreenHintMini3_Universal;
-  final String api_loadingScreenHintMini4_Universal;
-  final String api_loadingScreenHintMini5_Universal;
-  final String api_loadingScreenHintMini6_Universal;
-  final String api_loadingScreenHintMini7_Universal;
+
+  final String api_generic_NoData;
+
+  final String view_header_Calendar;
+  final String view_header_Subjects;
+  final String view_header_Payments;
+  final String view_header_Periods;
+  final String view_header_Messages;
+
+  final String topheader_calendar_greetMessage_1to6;
+  final String topheader_calendar_greetMessage_6to9;
+  final String topheader_calendar_greetMessage_9to13;
+  final String topheader_calendar_greetMessage_13to17;
+  final String topheader_calendar_greetMessage_17to21;
+  final String topheader_calendar_greetMessage_21to1;
+
+  final String topheader_subjects_CreditsInSemester;
+
+  final String topheader_payments_TotalMoneySpent;
+
+  final String topheader_periods_ActiveText;
+  final String topheader_periods_ExpiredText;
+  final String topheader_periods_FutureText;
+  final String topheader_periods_MainHeader;
+
+  final String topheader_messages_UnreadMessages;
+
+  final String topmenu_Greet;
+  final String topmenu_LoginPlace;
+  final String topmenu_buttons_Settings;
+  final String topmenu_buttons_SupportDev;
+  final String topmenu_buttons_Bugreport;
+  final String topmenu_buttons_Logout;
+  final String topmenu_buttons_LogoutSuccessToast;
+
+  final String calendarPage_weekNav_StudyWeek;
+  final String calendarPage_weekNav_ClassesThisWeekFull;
+  final String calendarPage_weekNav_ClassesThisWeekOneDay;
+  final String calendarPage_weekNav_ClassesThisWeekLoading;
+  final String calendarPage_weekNav_ClassesThisWeekEmpty;
+  final String calendarPage_FreeDay;
+
+  final String markbookPage_AverageDisplay;
+  final String markbookPage_AverageScholarshipDisplay;
+  final String markbookPage_NoGrades;
+  final String markbookPage_Empty;
+  final String markbookPage_CompletedLine;
+
+  final String paymentPage_Empty;
+  final String paymentPage_MoneyDisplay;
+  final String paymentPage_PaymentMissedTime;
+  final String paymentPage_PaymentDeadlineTime;
+
+  final String periodPage_Empty;
+  final String periodPage_Expired;
+  final String periodPage_Starts;
+  final String periodPage_ExpiredDays;
+  final String periodPage_StartDays;
+  final String periodPage_ActiveDays;
+
+  final String messagePage_SentBy;
+
   LanguagePack({
     required this.setupPage_selectLoginTypeHeader_RootPage,
     required this.setupPage_institutesSelection_RootPage,
@@ -340,15 +506,56 @@ class LanguagePack{
     required this.api_loadingScreenHintFriendlyMini2_Universal,
     required this.api_loadingScreenHintFriendlyMini3_Universal,
     required this.api_loadingScreenHintFriendlyMini4_Universal,
-    required this.api_loadingScreenHintFriendlyMini5_Universal,
-    required this.api_loadingScreenHintFriendlyMini6_Universal,
-    required this.api_loadingScreenHintFriendlyMini7_Universal,
     required this.api_loadingScreenHintMini1_Universal,
     required this.api_loadingScreenHintMini2_Universal,
     required this.api_loadingScreenHintMini3_Universal,
-    required this.api_loadingScreenHintMini4_Universal,
-    required this.api_loadingScreenHintMini5_Universal,
-    required this.api_loadingScreenHintMini6_Universal,
-    required this.api_loadingScreenHintMini7_Universal,
+    required this.api_generic_NoData,
+    required this.view_header_Calendar,
+    required this.view_header_Messages,
+    required this.view_header_Payments,
+    required this.view_header_Periods,
+    required this.view_header_Subjects,
+    required this.topheader_calendar_greetMessage_1to6,
+    required this.topheader_calendar_greetMessage_6to9,
+    required this.topheader_calendar_greetMessage_9to13,
+    required this.topheader_calendar_greetMessage_13to17,
+    required this.topheader_calendar_greetMessage_17to21,
+    required this.topheader_calendar_greetMessage_21to1,
+    required this.topheader_subjects_CreditsInSemester,
+    required this.topheader_payments_TotalMoneySpent,
+    required this.topheader_periods_ActiveText,
+    required this.topheader_periods_ExpiredText,
+    required this.topheader_periods_FutureText,
+    required this.topheader_periods_MainHeader,
+    required this.topheader_messages_UnreadMessages,
+    required this.topmenu_buttons_Bugreport,
+    required this.topmenu_buttons_Logout,
+    required this.topmenu_buttons_Settings,
+    required this.topmenu_buttons_SupportDev,
+    required this.topmenu_Greet,
+    required this.topmenu_LoginPlace,
+    required this.topmenu_buttons_LogoutSuccessToast,
+    required this.calendarPage_FreeDay,
+    required this.calendarPage_weekNav_ClassesThisWeekFull,
+    required this.calendarPage_weekNav_ClassesThisWeekOneDay,
+    required this.calendarPage_weekNav_StudyWeek,
+    required this.calendarPage_weekNav_ClassesThisWeekEmpty,
+    required this.calendarPage_weekNav_ClassesThisWeekLoading,
+    required this.markbookPage_AverageDisplay,
+    required this.markbookPage_AverageScholarshipDisplay,
+    required this.markbookPage_NoGrades,
+    required this.markbookPage_Empty,
+    required this.markbookPage_CompletedLine,
+    required this.paymentPage_Empty,
+    required this.paymentPage_MoneyDisplay,
+    required this.paymentPage_PaymentDeadlineTime,
+    required this.paymentPage_PaymentMissedTime,
+    required this.periodPage_ActiveDays,
+    required this.periodPage_Empty,
+    required this.periodPage_Expired,
+    required this.periodPage_ExpiredDays,
+    required this.periodPage_StartDays,
+    required this.periodPage_Starts,
+    required this.messagePage_SentBy
   });
 }
