@@ -188,6 +188,7 @@ import '../storage.dart' as storage;
       if(storage.DataCache.getIsDemoAccount()!){
         final now = DateTime.now();
         return <CalendarEntry>[
+          CalendarEntry(DateTime(now.year, now.month, now.day, now.hour + 2, now.minute, 0).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, now.day, now.hour + 2, now.minute + 45, 0).millisecondsSinceEpoch.toString(), 'Aktív óra', 'Jelenlegi', false),
           //CalendarEntry(DateTime(now.year, now.month, 1, 0, 0, 0).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 1, 23, 23, 23).millisecondsSinceEpoch.toString(), 'DEMO helyszín 1', 'DEMO név', false),
           CalendarEntry(DateTime(now.year, now.month, 2, 1, 1, 1).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 2, 22, 22, 22).millisecondsSinceEpoch.toString(), 'DEMO helyszín 2', 'DEMO név', false),
           //CalendarEntry(DateTime(now.year, now.month, 3, 2, 2, 2).millisecondsSinceEpoch.toString(), DateTime(now.year, now.month, 3, 11, 11, 11).millisecondsSinceEpoch.toString(), 'DEMO helyszín 3', 'DEMO név', false),

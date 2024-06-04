@@ -133,6 +133,7 @@ class AppStrings{
       periodPage_StartDays: '(%0 nap múlva)',
       periodPage_ExpiredDays: '(%0 napja)',
       messagePage_SentBy: 'Küldte: %0',
+      messagePage_Empty: '😥Nincs Üzeneted😥',
     )});
     _languages.addAll({_supportedLanguages[1]: LanguagePack(
         setupPage_selectLoginTypeHeader_RootPage: 'Select login method',
@@ -222,7 +223,7 @@ class AppStrings{
       topheader_calendar_greetMessage_21to1: 'Good night! 🍹',
       topheader_subjects_CreditsInSemester: 'Your credits in this semester: %0🎖️',
       topheader_payments_TotalMoneySpent: 'You have spent %0Huf on university 💸',
-      topheader_periods_ActiveText: 'Actual',
+      topheader_periods_ActiveText: 'Active',
       topheader_periods_ExpiredText: 'Expired',
       topheader_periods_FutureText: 'Future',
       topheader_periods_MainHeader: '%0 %1, %2 %3, %4 %5 🗓️',
@@ -256,6 +257,7 @@ class AppStrings{
       periodPage_StartDays: '(in %0 days)',
       periodPage_ExpiredDays: '(%0 days ago)',
       messagePage_SentBy: 'Sent by: %0',
+      messagePage_Empty: '😥You dont have any messages😥',
     )});
     _hasInit = true;
   }
@@ -434,6 +436,7 @@ class LanguagePack{
   final String periodPage_ActiveDays;
 
   final String messagePage_SentBy;
+  final String messagePage_Empty;
 
   LanguagePack({
     required this.setupPage_selectLoginTypeHeader_RootPage,
@@ -556,6 +559,7 @@ class LanguagePack{
     required this.periodPage_ExpiredDays,
     required this.periodPage_StartDays,
     required this.periodPage_Starts,
-    required this.messagePage_SentBy
+    required this.messagePage_SentBy,
+    required this.messagePage_Empty,
   });
 }

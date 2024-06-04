@@ -754,48 +754,56 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
           mondayCalendar.add(t_table.TimetableElementWidget(
             entry: item,
             position: idx,
+            isCurrent: false, // exam is an exam, not the current class, but even if this is true, nothing would change
           ));
           break;
         case 2:
           tuesdayCalendar.add(t_table.TimetableElementWidget(
             entry: item,
             position: idx,
+            isCurrent: false,
           ));
           break;
         case 3:
           wednessdayCalendar.add(t_table.TimetableElementWidget(
             entry: item,
             position: idx,
+            isCurrent: false,
           ));
           break;
         case 4:
           thursdayCalendar.add(t_table.TimetableElementWidget(
             entry: item,
             position: idx,
+            isCurrent: false,
           ));
           break;
         case 5:
           fridayCalendar.add(t_table.TimetableElementWidget(
             entry: item,
             position: idx,
+            isCurrent: false,
           ));
           break;
         case 6:
           saturdayCalendar.add(t_table.TimetableElementWidget(
             entry: item,
             position: idx,
+            isCurrent: false,
           ));
           break;
         case 7:
           sundayCalendar.add(t_table.TimetableElementWidget(
             entry: item,
             position: idx,
+            isCurrent: false,
           ));
           break;
       }
       idx++;
     }
 
+    final now = DateTime.now();
     for(var item in calendarEntries){
       if(item.isExam){
         continue;
@@ -812,51 +820,59 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       if(idx == 2 && item.startEpoch == prevEntry!.startEpoch){
         idx--;
       }
+      final isCurrent = now.millisecondsSinceEpoch >= item.startEpoch && now.millisecondsSinceEpoch <= item.endEpoch && wkday == currWeekday && currentWeekOffset == 1; // if we are on the homepage, and the day is the same as today, and the event is not expired => it is currently active
       switch(wkday){
         case 1:
           mondayCalendar.add(t_table.TimetableElementWidget(
             entry: item,
             position: idx,
+            isCurrent: isCurrent,
           ));
           break;
         case 2:
           tuesdayCalendar.add(t_table.TimetableElementWidget(
             entry: item,
             position: idx,
+            isCurrent: isCurrent,
           ));
           break;
         case 3:
           wednessdayCalendar.add(t_table.TimetableElementWidget(
             entry: item,
             position: idx,
+            isCurrent: isCurrent,
           ));
           break;
         case 4:
           thursdayCalendar.add(t_table.TimetableElementWidget(
             entry: item,
             position: idx,
+            isCurrent: isCurrent,
           ));
           break;
         case 5:
           fridayCalendar.add(t_table.TimetableElementWidget(
             entry: item,
             position: idx,
+            isCurrent: isCurrent,
           ));
           break;
         case 6:
           saturdayCalendar.add(t_table.TimetableElementWidget(
             entry: item,
             position: idx,
+            isCurrent: isCurrent,
           ));
           break;
         case 7:
           sundayCalendar.add(t_table.TimetableElementWidget(
             entry: item,
             position: idx,
+            isCurrent: isCurrent,
           ));
           break;
       }
-      if(idx == 1 || item.startEpoch != prevEntry!.startEpoch){
+      if(idx == 1 || prevEntry == null || item.startEpoch != prevEntry.startEpoch){
         prevEntry = item;
         idx++;
       }
@@ -1285,13 +1301,15 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       }
     }
 
-    periodList.add(
-        const Padding(padding: EdgeInsets.only(top: 10))
-    );
+    if(expiredPeriods.isNotEmpty){
+      periodList.add(
+          const Padding(padding: EdgeInsets.only(top: 10))
+      );
 
-    periodList.add(
-        _getSeparatorLine(AppStrings.getLanguagePack().topheader_periods_ExpiredText, expired: true)
-    );
+      periodList.add(
+          _getSeparatorLine(AppStrings.getLanguagePack().topheader_periods_ExpiredText, expired: true)
+      );
+    }
     
     for(var item in expiredPeriods){
       final starttime = DateTime.fromMillisecondsSinceEpoch(item.startEpoch);
@@ -1344,15 +1362,15 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       mailList.add(Container(
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-        child: const Center(
+        child: Center(
           child: EmojiRichText(
-            text: '😥Nincs Üzeneted😥',
-            defaultStyle: TextStyle(
+            text: AppStrings.getLanguagePack().messagePage_Empty,
+            defaultStyle: const TextStyle(
               color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
               fontWeight: FontWeight.w900,
               fontSize: 26.0,
             ),
-            emojiStyle: TextStyle(
+            emojiStyle: const TextStyle(
                 color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
                 fontSize: 26.0,
                 fontFamily: "Noto Color Emoji"
@@ -2083,7 +2101,7 @@ class MarkbookPageWidget extends StatelessWidget{
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     EmojiRichText(
-                                      text: AppStrings.getStringWithParams(AppStrings.getLanguagePack().markbookPage_AverageDisplay, [totalAvg.isNaN ? AppStrings.getLanguagePack().markbookPage_NoGrades : totalAvg.toStringAsFixed(2), api.Generic.reactionForAvg(totalAvg)]),
+                                      text: AppStrings.getStringWithParams(AppStrings.getLanguagePack().markbookPage_AverageDisplay, [totalAvg.isNaN || totalAvg <= 0 ? AppStrings.getLanguagePack().markbookPage_NoGrades : totalAvg.toStringAsFixed(2), api.Generic.reactionForAvg(totalAvg)]),
                                       defaultStyle: const TextStyle(
                                         color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
                                         fontWeight: FontWeight.w600,

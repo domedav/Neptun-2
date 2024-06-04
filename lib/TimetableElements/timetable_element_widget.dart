@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:neptun2/language.dart';
 import '../API/api_coms.dart' as api;
@@ -18,8 +20,9 @@ class TimetableElementWidget extends StatelessWidget{
   late final String displayStartTime;
   late final String displayEndTime;
   late final bool isExam;
+  final bool isCurrent;
 
-  TimetableElementWidget({super.key, required this.entry, required this.position}){
+  TimetableElementWidget({super.key, required this.entry, required this.position, required this.isCurrent}){
     title = entry.title;
     location = entry.location;
 
@@ -72,11 +75,11 @@ class TimetableElementWidget extends StatelessWidget{
         PopupWidgetHandler.doPopup(context);
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
-        padding: isExam ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10) : null,
-        decoration: isExam ? BoxDecoration(
+        margin: EdgeInsets.symmetric(horizontal: 15, vertical: isCurrent ? 10 : 25),
+        padding: isExam || isCurrent ? const EdgeInsets.symmetric(vertical: 20, horizontal: 15) : null,
+        decoration: isExam || isCurrent ? BoxDecoration(
           border: Border.all(
-            color: const Color.fromRGBO(0xBF, 0x86, 0x86, .5),
+            color: isExam ? Color.fromRGBO(0xBF, 0x86, 0x86, .5) : Color.fromRGBO(0xB0, 0xD4, 0xA1, 0.5),
             width: .75
           ),
           borderRadius: const BorderRadius.all(Radius.circular(20.0)),
