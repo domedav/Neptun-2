@@ -23,6 +23,9 @@ Töltsd le másmilyen áruházból!
 - https://apkpure.com/p/com.domedav.neptun2
 - ...
 
+## 1.6.0
+Nyelvek
+
 ## 1.5.4
 Bugfixek, haptikai javítások
 
