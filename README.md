@@ -4,7 +4,7 @@ Egy alternatív alkalmazás, a hivatalos Neptun mobilapp helyett. 📱
 Minden lényeges funkció benne van, ami csak kellhet az egyetemi évek során, így nem kell a webes neptunt sem használni! 🥳
 
 Funkciók:
--  Szellemjegyek 👻 Könnyebben megy majd az átlagszámítás!
+- Szellemjegyek 👻 Könnyebben megy majd az átlagszámítás!
 - Értesítések 🫨 Nem maradsz le az órákról, vizsgákról, de még a befizetésekről sem!
 - Átlátható órarend 📆 Mindig tudni fogod, hogy a héten milyen órád lesz!
 - Jegyek, átlagok, kreditek, beérkezett üzenetek, befizetések és még sok más
