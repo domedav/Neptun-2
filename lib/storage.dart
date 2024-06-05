@@ -68,6 +68,7 @@ class DataCache{
     setNeedClassNotifications(_persistentSetting_showPaymentsNotifications! ? 1 : 0);
     setNeedClassNotifications(_persistentSetting_showPeriodsNotifications! ? 1 : 0);
     setUserWeekOffset(_persistentSetting_weekOffset!);
+    setUserSelectedLanguage(_persistentSetting_userSelectedLanguage!);
     setNeedsHaptics(_persistentSetting_needBetterHaptics! ? 1 : 0);
     setAnalyticsFirstAppOpenTime(_persistentAnalytics_firstAppOpenTimeMs!);
     setAnalyticsNextRatePopupTime(_persistentAnalytics_nextRatePopupShowMs!);
@@ -99,6 +100,7 @@ class DataCache{
   late bool? _persistentSetting_showPeriodsNotifications = true;
   late int? _persistentSetting_weekOffset = 0;
   late bool? _persistentSetting_needBetterHaptics = true;
+  late int? _persistentSetting_userSelectedLanguage = -1;
 
   late int? _permanentConfiguration_isInstalledFromGooglePlay = 0;
 
@@ -189,6 +191,8 @@ class DataCache{
     tmp = await getInt('SETTING_UserWeekOffset');
     _persistentSetting_weekOffset = tmp ?? 0;
 
+    tmp = await getInt('SETTING_UserSelectedLanguage');
+    _persistentSetting_userSelectedLanguage = tmp ?? -1;
 
     tmp = await getInt('CONFIG_IsInstalledFromGPlay');
     _permanentConfiguration_isInstalledFromGooglePlay = tmp ?? 0;
@@ -321,6 +325,12 @@ class DataCache{
   static Future<void> setUserWeekOffset(int? value)async{
     _instance._persistentSetting_weekOffset = value ?? 0;
     await saveInt('SETTING_UserWeekOffset', value ?? 0);
+  }
+
+  static int? getUserSelectedLanguage(){return _instance._persistentSetting_userSelectedLanguage;}
+  static Future<void> setUserSelectedLanguage(int? value)async{
+    _instance._persistentSetting_userSelectedLanguage = value ?? -1;
+    await saveInt('SETTING_UserSelectedLanguage', value ?? -1);
   }
 
   static bool? getNeedsHaptics(){return _instance._persistentSetting_needBetterHaptics;}

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
@@ -10,6 +11,7 @@ import 'package:neptun2/storage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../API/api_coms.dart';
 import '../MailElements/mail_element_widget.dart';
+import '../Pages/startup_page.dart';
 import '../TimetableElements/timetable_element_widget.dart';
 import 'emojirich_text.dart';
 
@@ -35,6 +37,9 @@ class PopupWidgetHandler{
 
   late EdgeInsets topPadding;
 
+  int? _settingsLanguagePrevious;
+  int? _settingsLanguageCurrent;
+
   PopupWidgetHandler({required this.mode, required this.callback, this.onCloseCallback}){
     _instance = this;
     Future.delayed(Duration.zero, ()async{
@@ -50,6 +55,8 @@ class PopupWidgetHandler{
     }
     _instance!._inUse = true;
     _instance!._prevContext = context;
+    _instance!._settingsLanguagePrevious = DataCache.getUserSelectedLanguage()!;
+    _instance!._settingsLanguageCurrent = DataCache.getUserSelectedLanguage()!;
     //_instance!.homePage.setBlurComplex(true);
     HomePageState.showBlurPopup(true);
     AppHaptics.lightImpact();
@@ -65,25 +72,19 @@ class PopupWidgetHandler{
         reverseTransitionDuration: animTime,
         fullscreenDialog: true,
         transitionsBuilder: (_, anim1, __, widget){
-          return animateTransition(anim1, widget);
+          return animateTransition(anim1, widget, context);
         }
       )
     );
   }
 
-  static void _anim(Animation<double> anim1){
-    if(anim1.isCompleted){
-      _instance!.animValue = 0.0;
-      _instance!.pwidget = null;
-    }
-  }
-
-  static Widget animateTransition(Animation<double> anim1, Widget widget){
+  static Widget animateTransition(Animation<double> anim1, Widget widget, BuildContext context){
     if(!_instance!.hasListener){
       _instance!.hasListener = true;
       anim1.addStatusListener((status) {
         if(anim1.isCompleted){
-          _anim(anim1);
+          _instance!.pwidget = null;
+          _instance!.animValue = 1.0;
         }
       });
     }
@@ -98,7 +99,7 @@ class PopupWidgetHandler{
     if(_instance!.pwidget == null){
       return widget;
     }
-    return _instance!.pwidget!.getPopup(_instance!.animValue);
+    return _instance!.pwidget!.getPopup(_instance!.animValue, context);
   }
 
   static closePopup(bool needPop){
@@ -115,6 +116,14 @@ class PopupWidgetHandler{
       PopupWidgetHandler._instance!.onCloseCallback!();
     }
 
+    if(_instance!._settingsLanguageCurrent != _instance!._settingsLanguagePrevious){
+      Navigator.popUntil(_instance!._prevContext!, (route) => route.willHandlePopInternally);
+      Navigator.push(
+        _instance!._prevContext!,
+        MaterialPageRoute(builder: (context) => const Splitter()),
+      );
+    }
+
     if(_instance!.pwidget == null || !_instance!.pwidget!.mounted){
       return;
     }
@@ -122,7 +131,6 @@ class PopupWidgetHandler{
     _instance!.pwidget!.setState(() { //jóvanazúgy
       _instance!.pwidget!._shouldShowSnackbar = false;
     });
-
   }
 
 }
@@ -151,6 +159,8 @@ class PopupWidget extends State<PopupWidgetState>{
   }
 
   int selectionValue = -1;
+  int _settingsLanguageItemsIdx = -1;
+  GlobalKey _settingsLanguageWidgetGlobalKey = GlobalKey();
 
   List<Widget> getWidgets(int mode){
     List<Widget> list = <Widget>[];
@@ -339,6 +349,7 @@ class PopupWidget extends State<PopupWidgetState>{
 
         return list;
       case 1:
+        _settingsLanguageItemsIdx = -1;
         list.add(EmojiRichText(
           text: AppStrings.getLanguagePack().popup_case1_SettingsHeader,
           defaultStyle: const TextStyle(
@@ -752,6 +763,124 @@ class PopupWidget extends State<PopupWidgetState>{
             )
           ],
         ));*/
+        list.add(Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(flex: 3, child: Container(
+              margin: const EdgeInsets.all(10),
+              child: Text(
+                AppStrings.getLanguagePack().popup_case1_settingOption8_LangaugeSelection,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white
+                ),
+              ),
+            )),
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(90)),
+                  color: Colors.white.withOpacity(.06)
+              ),
+              child: IconButton(
+                onPressed: (){
+                  _showSnackbar(AppStrings.getLanguagePack().popup_case1_settingOption8_LangaugeSelectionDescription, 4);
+                  AppHaptics.attentionLightImpact();
+                },
+                icon: Icon(
+                  Icons.question_mark_rounded,
+                  color: Colors.white.withOpacity(.4),
+                ),
+                enableFeedback: true,
+                iconSize: 24,
+              ),
+            ),
+            GestureDetector(
+              key: _settingsLanguageWidgetGlobalKey,
+              onTap: (){
+                if(!mounted){
+                  return;
+                }
+                AppHaptics.lightImpact();
+                showMenu(
+                  context: context,
+                  position: RelativeRect.fromLTRB(
+                    (_settingsLanguageWidgetGlobalKey.currentContext!.findRenderObject() as RenderBox).localToGlobal(Offset.zero).dx + 13,
+                    (_settingsLanguageWidgetGlobalKey.currentContext!.findRenderObject() as RenderBox).localToGlobal(Offset.zero).dy + (_settingsLanguageWidgetGlobalKey.currentContext!.findRenderObject() as RenderBox).size.height,
+                    (_settingsLanguageWidgetGlobalKey.currentContext!.findRenderObject() as RenderBox).localToGlobal(Offset.zero).dx + (_settingsLanguageWidgetGlobalKey.currentContext!.findRenderObject() as RenderBox).size.width,
+                    (_settingsLanguageWidgetGlobalKey.currentContext!.findRenderObject() as RenderBox).localToGlobal(Offset.zero).dy,
+                  ),
+                  items: AppStrings.getAllLangFlags().map<PopupMenuEntry<int>>((String value){
+                    return PopupMenuItem(
+                      value: ++_settingsLanguageItemsIdx,
+                      child: EmojiRichText(
+                        text: value,
+                        defaultStyle: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 18.0,
+                        ),
+                        emojiStyle: const TextStyle(
+                            color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                            fontSize: 22.0,
+                            fontFamily: "Noto Color Emoji"
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                  color: Color.fromRGBO(0x2F, 0x2F, 0x2F, 1.0)
+                ).then((val){
+                  _settingsLanguageItemsIdx = -1;
+                  if(val == null){
+                    return;
+                  }
+                  AppHaptics.lightImpact();
+                  DataCache.setUserSelectedLanguage(val);
+
+                  setState(() {
+                    PopupWidgetHandler._instance!._settingsLanguageCurrent = val;
+                  });
+                });
+              },
+              child: Container(
+                width: 120,
+                padding: const EdgeInsets.all(10),
+                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(.05),
+                  borderRadius: const BorderRadius.all(Radius.circular(12)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: EmojiRichText(
+                        text: AppStrings.getLanguagePack().language_flag,
+                        defaultStyle: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 18.0,
+                        ),
+                        emojiStyle: const TextStyle(
+                          color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                          fontSize: 22.0,
+                          fontFamily: "Noto Color Emoji"
+                        ),
+                      ),
+                    ),
+                    Icon(
+                      Icons.arrow_drop_down_rounded,
+                      color: Colors.white.withOpacity(.5),
+                    )
+                  ],
+                )
+              ),
+            )
+          ],
+        ));
         list.add(Container(
           height: 1,
           color: Colors.white.withOpacity(.1),
@@ -921,6 +1050,31 @@ class PopupWidget extends State<PopupWidgetState>{
               fontWeight: FontWeight.w300,
               fontSize: 9,
               color: Colors.white.withOpacity(.3)
+            ),
+          ),
+        ));
+        list.add(const SizedBox(height: 20));
+        list.add(TextButton(
+          onPressed: (){
+            if(!PopupWidgetHandler._instance!._inUse || !mounted){
+              return;
+            }
+            PopupWidgetHandler._instance!.callback(null);
+            PopupWidgetHandler.closePopup(true);
+            AppHaptics.lightImpact();
+          },
+          style: ButtonStyle(
+            backgroundColor: WidgetStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),
+            overlayColor: WidgetStateProperty.all(Colors.white.withOpacity(.05)),
+          ),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 15),
+            child: Text(AppStrings.getLanguagePack().popup_caseAll_OkButton,
+              style: const TextStyle(
+                color: Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0),
+                fontWeight: FontWeight.w900,
+                fontSize: 18.0,
+              ),
             ),
           ),
         ));
@@ -1473,7 +1627,8 @@ class PopupWidget extends State<PopupWidgetState>{
     });
   }
 
-  Widget getPopup(double scale){
+  Widget getPopup(double scale, BuildContext context){
+    PopupWidgetHandler._instance!.pwidget = null; // ha ez nincs itt, akkor 2+ popup nyitásnál a 2. language select nyitástól anyfaszt kap az app
     return Transform.scale(
       scale: scale,
       child: Material(
@@ -1537,6 +1692,6 @@ class PopupWidget extends State<PopupWidgetState>{
 
   @override
   Widget build(BuildContext context) {
-    return getPopup(PopupWidgetHandler._instance!.animValue);
+    return getPopup(PopupWidgetHandler._instance!.animValue, context);
   }
 }

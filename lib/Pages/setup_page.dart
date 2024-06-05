@@ -575,7 +575,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                                       color: Colors.white.withOpacity(.6),
                                       fontWeight: FontWeight.w400
                                   ),
-                                  border: OutlineInputBorder(
+                                  border: const OutlineInputBorder(
                                       borderRadius: BorderRadius.all(Radius.circular(12)),
                                       borderSide: BorderSide.none
                                   ),

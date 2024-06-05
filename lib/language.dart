@@ -1,8 +1,11 @@
 import 'dart:io';
+
+import 'package:neptun2/storage.dart';
 class AppStrings{
   static bool _hasInit = false;
   static late final String _defaultLocale;
   static List<String> _supportedLanguages = ['hu', 'en'];
+  static List<String> _supportedLanguagesFlags = ['🇭🇺', '🇺🇸/🇬🇧'];
   static final Map<String, LanguagePack> _languages = {};
 
   static void initialize(){
@@ -11,6 +14,7 @@ class AppStrings{
     }
     _defaultLocale = Platform.localeName.split('_')[0].toLowerCase();
     _languages.addAll({_supportedLanguages[0]: LanguagePack(
+      language_flag: '🇭🇺',
       rootpage_setupPage_SelectLoginTypeHeader: 'Válassz bejelentkezési módot',
       rootpage_setupPage_InstitutesSelection: 'Intézmény választás',
       rootpage_setupPage_InstitutesSelectionDescription: 'Ez a legkényelmesebb opció. Egy szimpla lista, amiben meg tudod keresni az egyetemedet, viszont nem minden intézmény található meg a listában!',
@@ -170,10 +174,13 @@ class AppStrings{
       popup_case6_AccountError: '🤷 Probléma van a fiókoddal 🤷',
       popup_case6_AccountErrorDescription: 'Úgy tűnik nem tudjuk lekérni az adatokat a neptunodból.\nKérlek jelentkezz ki, majd vissza.',
       popup_case6_AccountErrorLogoutButton: 'Kijelentkezés',
+      popup_case1_settingOption8_LangaugeSelection: 'App Nyelv',
+      popup_case1_settingOption8_LangaugeSelectionDescription: 'Válaszd ki milyen nyelven szóljon hozzád az app.'
     )});
     //---
     _languages.addAll({_supportedLanguages[1]: LanguagePack(
-        rootpage_setupPage_SelectLoginTypeHeader: 'Select login method',
+      language_flag: '🇺🇸/🇬🇧',
+      rootpage_setupPage_SelectLoginTypeHeader: 'Select login method',
       rootpage_setupPage_InstitutesSelection: 'Institute selection',
       rootpage_setupPage_InstitutesSelectionDescription: 'This is the simplest way. It is a list, where you can search for your university, however not all institutes can be found here!',
       rootpage_setupPage_UrlLogin: 'Neptun URL',
@@ -332,6 +339,8 @@ class AppStrings{
       popup_case6_AccountError: '🤷 There is an issue with your account 🤷',
       popup_case6_AccountErrorDescription: 'It seems like we cant fetch data from your neptun.\nPlease log out, and log right back in.',
       popup_case6_AccountErrorLogoutButton: 'Logout',
+      popup_case1_settingOption8_LangaugeSelection: 'App Language',
+      popup_case1_settingOption8_LangaugeSelectionDescription: 'Select, what language the app shall spoke to you.'
     )});
     _hasInit = true;
   }
@@ -341,7 +350,11 @@ class AppStrings{
   }
 
   static String _getCurrentLang(){
-    return _defaultLocale;
+    final currLangId = DataCache.getUserSelectedLanguage();
+    if(currLangId == null || currLangId >= _supportedLanguages.length || currLangId == -1){
+      return _defaultLocale;
+    }
+    return _supportedLanguages[currLangId];
   }
 
   static LanguagePack _getLangPack(String id){
@@ -363,9 +376,15 @@ class AppStrings{
     return determiner <= 0 ? one : multiple;
   }
 
+  static List<String> getAllLangFlags(){
+    return _supportedLanguagesFlags;
+  }
+
 }
 
 class LanguagePack{
+  final String language_flag;
+
   final String rootpage_setupPage_SelectLoginTypeHeader;
   final String rootpage_setupPage_InstitutesSelection;
   final String rootpage_setupPage_InstitutesSelectionDescription;
@@ -535,6 +554,8 @@ class LanguagePack{
   final String popup_case1_settingBottomText_InstallOrigin;
   final String popup_case1_settingBottomText_InstallOriginGPlay;
   final String popup_case1_settingBottomText_InstallOrigin3rdParty;
+  final String popup_case1_settingOption8_LangaugeSelection;
+  final String popup_case1_settingOption8_LangaugeSelectionDescription;
 
   final String popup_case2_RateAppPopup;
   final String popup_case2_RateAppPopupDescription;
@@ -557,6 +578,7 @@ class LanguagePack{
   final String popup_case6_AccountErrorLogoutButton;
 
   LanguagePack({
+    required this.language_flag,
     required this.rootpage_setupPage_SelectLoginTypeHeader,
     required this.rootpage_setupPage_InstitutesSelection,
     required this.rootpage_setupPage_InstitutesSelectionDescription,
@@ -715,6 +737,8 @@ class LanguagePack{
     required this.popup_case5_ExamStartTime,
     required this.popup_case6_AccountError,
     required this.popup_case6_AccountErrorDescription,
-    required this.popup_case6_AccountErrorLogoutButton
+    required this.popup_case6_AccountErrorLogoutButton,
+    required this.popup_case1_settingOption8_LangaugeSelection,
+    required this.popup_case1_settingOption8_LangaugeSelectionDescription,
   });
 }
