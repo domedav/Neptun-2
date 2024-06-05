@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 class AppStrings{
   static bool _hasInit = false;
@@ -12,39 +11,39 @@ class AppStrings{
     }
     _defaultLocale = Platform.localeName.split('_')[0].toLowerCase();
     _languages.addAll({_supportedLanguages[0]: LanguagePack(
-      setupPage_selectLoginTypeHeader_RootPage: 'Válassz bejelentkezési módot',
-      setupPage_institutesSelection_RootPage: 'Intézény választás',
-      setupPage_institutesSelectionDescription_RootPage: 'Ez a legkényelmesebb opció. Egy szimpla lista, amiben meg tudod keresni az egyetemedet, viszont nem minden intézmény található meg a listában!',
-      setupPage_urlLogin_RootPage: 'Neptun URL',
-      setupPage_urlLoginDescription_RootPage: 'Ha nincs az iskolád a listában, akkor az egyetemed neptun URL-jét használva is be tudsz lépni. Nem minden egyetemmel működik!',
-      setupPage_appProblemReporting_RootPage: 'Probléma van az appal?\nÍrd meg nekem! 👉',
-      setupPage_loadingText_InstituteSelection: 'Betöltés...',
-      setupPage_noNetwork_InstituteSelection: 'Nincs internet...',
-      setupPage_selectValidInstitute_InstituteSelection: 'Válassz ki egy érvényes egyetemet! 😡',
-      setupPage_selectInstitute_InstituteSelection: 'Válassz intézményt',
-      setupPage_search_InstituteSelection: 'Keresés',
-      setupPage_searchNotFound_InstituteSelection: 'Nincs találat...',
-      setupPage_instituteCantFindHelpText_InstituteSelection: 'Nem találod az iskolád a listában?',
-      setupPage_instituteCantFindHelpTextDescription_InstituteSelection: 'A fenti listában szereplő elemek manuálisan lettek felvéve! 😅 Így előfordulhat, hogy egyes iskolák nincsenek benne a listában.\nJelentkezz be URL használatával, ha nem találod a sulid. 😉',
-      setupPage_goBack_Universal: 'Vissza',
-      setupPage_proceedLogin_Universal: 'Tovább',
-      setupPage_invalidUrl_UrlLogin: 'Írj be egy érvényes neptun URL-t! 😡',
-      setupPage_loginViaURlHeader_UrlLogin: 'Belépés URL-el',
-      setupPage_instituteNeptunUrl_UrlLogin: 'Egyetem neptun URL-je',
-      setupPage_instituteNeptunUrlInvalid_UrlLogin: 'Ez nem egy jó neptun URL! 😡\n\nValami ilyesmit másolj ide:\nhttps://neptun-ws01.uni-pannon.hu/hallgato/login.aspx 🤫',
-      setupPage_whereIsURLHelper_UrlLogin: 'Hol találom meg az URL-t?',
-      setupPage_whereIsURLHelperDescription_UrlLogin: 'Keresd meg weben az egyetemed neptun weboldalát és másold be ide a fenti linket. 🔗\n\nPld: https://neptun-ws01.uni-pannon.hu/hallgato/login.aspx',
-      setupPage_invalidCredentials_LoginPage: 'Érvényes adatokat adj meg! 😡',
-      setupPage_loginHeaderText_LoginPage: 'Jelentkezz be',
-      setupPage_activityCacheInvalidHelper_LoginPage: 'HIBA! Lépj egyet vissza!',
-      setupPage_neptunCode_LoginPage: 'Neptun kód',
-      setupPage_password_LoginPage: 'Jelszó',
-      setupPage_invalidCredentialsEntered_LoginPage: 'Hibás felhasználónév vagy jelszó!',
-      setupPage_2faWarning_LoginPage: 'Ha két lépcsős azonosítás van a fiókodon, nem fogsz tudni bejelenzkezni!',
-      setupPage_2faWarningDescription_LoginPage: '❌ A Neptun2 a régi Neptun mobilapp API-jait használja, amiben nem volt 2 lépcsős azonosítás. Így, ha a fiókod 2 lépcsős azonosítással van védve, a Neptun2 nem fog tudni bejelentkeztetni.\n\n🤓 Viszont, ha kikapcsolod, hiba nélkül tudod használni a Neptun2-t.\nKikapcsolni a webes neptunban, a "Saját Adatok/Beállítások"-ban tudod.',
-      setupPage_logInButton_LoginPage: 'Belépés',
-      setupPage_loginInProgress_LoginPage: 'Bejelentkezés...',
-      setupPage_loginInProgressSlow_LoginPage: 'Neptun szervereivel lehet problémák vannak...',
+      rootpage_setupPage_SelectLoginTypeHeader: 'Válassz bejelentkezési módot',
+      rootpage_setupPage_InstitutesSelection: 'Intézmény választás',
+      rootpage_setupPage_InstitutesSelectionDescription: 'Ez a legkényelmesebb opció. Egy szimpla lista, amiben meg tudod keresni az egyetemedet, viszont nem minden intézmény található meg a listában!',
+      rootpage_setupPage_UrlLogin: 'Neptun URL',
+      rootpage_setupPage_UrlLoginDescription: 'Ha nincs az iskolád a listában, akkor az egyetemed neptun URL-jét használva is be tudsz lépni. Nem minden egyetemmel működik!',
+      rootpage_setupPage_AppProblemReporting: 'Probléma van az appal?\nÍrd meg nekem! 👉',
+      instituteSelection_setupPage_LoadingText: 'Betöltés...',
+      instituteSelection_setupPage_NoNetwork: 'Nincs internet...',
+      instituteSelection_setupPage_SelectValidInstitute: 'Válassz ki egy érvényes egyetemet! 😡',
+      instituteSelection_setupPage_SelectInstitute: 'Válassz intézményt',
+      instituteSelection_setupPage_Search: 'Keresés',
+      instituteSelection_setupPage_SearchNotFound: 'Nincs találat...',
+      instituteSelection_setupPage_InstituteCantFindHelpText: 'Nem találod az iskolád a listában?',
+      instituteSelection_setupPage_InstituteCantFindHelpTextDescription: 'A fenti listában szereplő elemek manuálisan lettek felvéve! 😅 Így előfordulhat, hogy egyes iskolák nincsenek benne a listában.\nJelentkezz be URL használatával, ha nem találod a sulid. 😉',
+      any_setupPage_GoBack: 'Vissza',
+      any_setupPage_ProceedLogin: 'Tovább',
+      urlLogin_setupPage_InvalidUrl: 'Írj be egy érvényes neptun URL-t! 😡',
+      urlLogin_setupPage_LoginViaURlHeader: 'Belépés URL-el',
+      urlLogin_setupPage_InstituteNeptunUrl: 'Egyetem neptun URL-je',
+      urlLogin_setupPage_InstituteNeptunUrlInvalid: 'Ez nem egy jó neptun URL! 😡\n\nValami ilyesmit másolj ide:\nhttps://neptun-ws01.uni-pannon.hu/hallgato/login.aspx 🤫',
+      urlLogin_setupPage_WhereIsURLHelper: 'Hol találom meg az URL-t?',
+      urlLogin_setupPage_WhereIsURLHelperDescription: 'Keresd meg weben az egyetemed neptun weboldalát és másold be ide a fenti linket. 🔗\n\nPld: https://neptun-ws01.uni-pannon.hu/hallgato/login.aspx',
+      loginPage_setupPage_InvalidCredentials: 'Érvényes adatokat adj meg! 😡',
+      loginPage_setupPage_LoginHeaderText: 'Jelentkezz be',
+      loginPage_setupPage_ActivityCacheInvalidHelper: 'HIBA! Lépj egyet vissza!',
+      loginPage_setupPage_NeptunCode: 'Neptun kód',
+      loginPage_setupPage_Password: 'Jelszó',
+      loginPage_setupPage_InvalidCredentialsEntered: 'Hibás felhasználónév vagy jelszó!',
+      loginPage_setupPage_2faWarning: 'Ha két lépcsős azonosítás van a fiókodon, nem fogsz tudni bejelenzkezni!',
+      loginPage_setupPage_2faWarningDescription: '❌ A Neptun2 a régi Neptun mobilapp API-jait használja, amiben nem volt 2 lépcsős azonosítás. Így, ha a fiókod 2 lépcsős azonosítással van védve, a Neptun2 nem fog tudni bejelentkeztetni.\n\n🤓 Viszont, ha kikapcsolod, hiba nélkül tudod használni a Neptun2-t.\nKikapcsolni a webes neptunban, a "Saját Adatok/Beállítások"-ban tudod.',
+      loginPage_setupPage_LogInButton: 'Belépés',
+      loginPage_setupPage_LoginInProgress: 'Bejelentkezés...',
+      loginPage_setupPage_LoginInProgressSlow: 'Neptun szervereivel lehet problémák vannak...',
       api_monthJan_Universal: 'január',
       api_monthFeb_Universal: 'február',
       api_monthMar_Universal: 'március',
@@ -85,7 +84,7 @@ class AppStrings{
       api_loadingScreenHintMini1_Universal: 'Na, megvan?...',
       api_loadingScreenHintMini2_Universal: 'Várjál! Nem megy ez ilyen gyorsan...',
       api_loadingScreenHintMini3_Universal: 'Nem emlékszel mit olvastál? Szedj B6 vitamint!...',
-      api_generic_NoData: 'Nincs Adat',
+      api_noData_Universal: 'Nincs Adat',
       view_header_Calendar: 'Órarend',
       view_header_Messages: 'Üzenetek',
       view_header_Payments: 'Befizetendők',
@@ -134,41 +133,79 @@ class AppStrings{
       periodPage_ExpiredDays: '(%0 napja)',
       messagePage_SentBy: 'Küldte: %0',
       messagePage_Empty: '😥Nincs Üzeneted😥',
+      popup_case0_GhostGradeHeader: '👻 Szellemjegy 👻',
+      popup_case0_SelectGrade: 'Válassz jegyet...',
+      popup_caseAll_OkButton: 'Ok',
+      popup_case1_SettingsHeader: '⚙ Beállítások ⚙',
+      popup_case1_settingOption1_FamilyFriendlyLoadingText: 'Szókimondó betöltőszövegek',
+      popup_case1_settingOption1_FamilyFriendlyLoadingTextDescription: 'Ha bekapcsolod, lecseréli a betöltő szövegeket szókimondóra.',
+      popup_case1_settingOption2_ExamNotifications: 'Vizsga értesítők',
+      popup_case1_settingOption2_ExamNotificationsDescription: 'Vizsgaértesítő értesítéseket küld neked a vizsga előtti 2 hétben. Hasznos, ha szereted halogatni a tanulást, vagy szimplán feledékeny vagy.',
+      popup_case1_settingOption3_ClassNotifications: 'Órák előtti értesítések',
+      popup_case1_settingOption3_ClassNotificationsDescription: 'Órák kezdete előtt 10 percel; 5 percel; és a kezdetük időpontjában, küld neked értesítést, hogy ne késd le őket. Hasznos, ha tudni akarod milyen órád lesz, anélkül, hogy a telódon lecsekkolnád. (pl: Okosórád van, és értesítésként látod a kövi órádat.)',
+      popup_case1_settingOption4_PaymentNotifications: 'Befizetés értesítők',
+      popup_case1_settingOption4_PaymentNotificationsDescription: 'Ha van befizetnivalód, értesíteni fog az app, minden nap, amíg nem fizeted be. Hasznos, ha feledékeny vagy, vagy nem szeretnéd lekésni a határidőt.',
+      popup_case1_settingOption5_PeriodsNotifications: 'Időszak értesítők',
+      popup_case1_settingOption5_PeriodsNotificationsDescription: 'Ha valamilyen új időszak lesz, értesíteni fog az app, az adott időszak előtt 1 nappal, és aznap fogsz értesítést kapni. Hasznos, ha nem akarsz lemaradni az adott időszakokról. (pl: tárgyfelvételi időszak)',
+      popup_case1_settingOption6_AppHaptics: 'App haptika',
+      popup_case1_settingOption6_AppHapticsDescription: 'Beállíthatod, hogy kapj haptikai visszajelzést az appban történő dolgokról. (Rezgés)',
+      popup_case1_settingOption7_WeekOffset: 'Tanulmányi hét eltolás',
+      popup_case1_settingOption7_WeekOffsetDescription: 'Ha nem jól írja ki az app az aktuális heted, itt át tudod állítani!',
+      popup_case1_settingOption7_WeekOffsetAuto: 'Auto',
+      popup_case1_settingBottomText_InstallOrigin: '%0 - Telepítve innen: ',
+      popup_case1_settingBottomText_InstallOrigin3rdParty: 'Csomagtelepítő',
+      popup_case1_settingBottomText_InstallOriginGPlay: 'Play Áruház',
+      popup_case2_RateAppPopup: '⭐ Értékeld Az Appot! ⭐',
+      popup_case2_RateAppPopupDescription: 'Tetszik az app? Esetleg nem? Értékeld a Play Áruházban!\n10 másodpercet vesz igénybe, és ezzel információt nyújthatsz nekem, és másoknak.',
+      popup_case2_RateButton: 'Értékelem',
+      popup_case3_MessagesHeader: '💌 Üzenet 💌',
+      clickableText_OnCopy: 'Másolva! 📋',
+      popup_case4_SubjectInfo: '📢 Óra Infó 📢',
+      popup_case4_TeachedBy: 'Tanítja:',
+      popup_case4_5_SubjectCode: 'Tárgykód:',
+      popup_case4_5_SubjectLocation: 'Helyszín:',
+      popup_case4_SubjectStartTime: 'Órakezdés:',
+      popup_case5_ExamInfo: '⚠️ Vizsga Infó ⚠️',
+      popup_case5_ExamStartTime: 'Vizsgaidőpont:',
+      popup_case6_AccountError: '🤷 Probléma van a fiókoddal 🤷',
+      popup_case6_AccountErrorDescription: 'Úgy tűnik nem tudjuk lekérni az adatokat a neptunodból.\nKérlek jelentkezz ki, majd vissza.',
+      popup_case6_AccountErrorLogoutButton: 'Kijelentkezés',
     )});
+    //---
     _languages.addAll({_supportedLanguages[1]: LanguagePack(
-        setupPage_selectLoginTypeHeader_RootPage: 'Select login method',
-      setupPage_institutesSelection_RootPage: 'Institute selection',
-      setupPage_institutesSelectionDescription_RootPage: 'This is the simplest way. It is a list, where you can search for your university, however not all institutes can be found here!',
-      setupPage_urlLogin_RootPage: 'Neptun URL',
-      setupPage_urlLoginDescription_RootPage: 'If you cant find your university inside the list, you can enter the neptun URL of your school to log in. This might not work with all universities!',
-      setupPage_appProblemReporting_RootPage: 'Is there a problem with the app?\nTell me! 👉',
-      setupPage_loadingText_InstituteSelection: 'Loading...',
-      setupPage_noNetwork_InstituteSelection: 'No network...',
-      setupPage_selectValidInstitute_InstituteSelection: 'Select a valid institute! 😡',
-      setupPage_selectInstitute_InstituteSelection: 'Select institute',
-      setupPage_search_InstituteSelection: 'Search',
-      setupPage_searchNotFound_InstituteSelection: 'Nothing found...',
-      setupPage_instituteCantFindHelpText_InstituteSelection: 'Cant find your school in the list?',
-      setupPage_instituteCantFindHelpTextDescription_InstituteSelection: 'Items in the list above were added manually! 😅 It is possible, that some institutes are missing from it.\nYou can login via URL if you cant find your school. 😉',
-      setupPage_goBack_Universal: 'Back',
-      setupPage_proceedLogin_Universal: 'Proceed',
-      setupPage_invalidUrl_UrlLogin: 'Enter a valid neptun URL! 😡',
-      setupPage_loginViaURlHeader_UrlLogin: 'Login via URL',
-      setupPage_instituteNeptunUrl_UrlLogin: 'Institute neptun URL',
-      setupPage_instituteNeptunUrlInvalid_UrlLogin: 'This is not a valid neptun URL! 😡\n\nPaste something similar here:\nhttps://neptun-ws01.uni-pannon.hu/hallgato/login.aspx 🤫',
-      setupPage_whereIsURLHelper_UrlLogin: 'Where do I find the URL?',
-      setupPage_whereIsURLHelperDescription_UrlLogin: 'Go to your schools neptun website, and paste the link from up top. 🔗\n\nEx: https://neptun-ws01.uni-pannon.hu/hallgato/login.aspx',
-      setupPage_invalidCredentials_LoginPage: 'Provide valid credentials! 😡',
-      setupPage_loginHeaderText_LoginPage: 'Log in',
-      setupPage_activityCacheInvalidHelper_LoginPage: 'ERROR! Please go back!',
-      setupPage_neptunCode_LoginPage: 'Neptun code',
-      setupPage_password_LoginPage: 'Password',
-      setupPage_invalidCredentialsEntered_LoginPage: 'Invalid username or password!',
-      setupPage_2faWarning_LoginPage: 'If you have multi factor authentication enabled on your account, you wont be able to login!',
-      setupPage_2faWarningDescription_LoginPage: '❌ Neptun2 uses the old Neptun mobileapp API, which didnt contain multi factor authentication. If your account if protected by it, you wont be able to login via Neptun2.\n\n🤓 But you can turn it off, and you will be able to use Neptun2 without a problem.\nTo turn it off, go to "My Data/Settings" in neptun web.',
-      setupPage_logInButton_LoginPage: 'Login',
-      setupPage_loginInProgress_LoginPage: 'Logging in...',
-      setupPage_loginInProgressSlow_LoginPage: 'Neptun servers are having a hard time...',
+        rootpage_setupPage_SelectLoginTypeHeader: 'Select login method',
+      rootpage_setupPage_InstitutesSelection: 'Institute selection',
+      rootpage_setupPage_InstitutesSelectionDescription: 'This is the simplest way. It is a list, where you can search for your university, however not all institutes can be found here!',
+      rootpage_setupPage_UrlLogin: 'Neptun URL',
+      rootpage_setupPage_UrlLoginDescription: 'If you cant find your university inside the list, you can enter the neptun URL of your school to log in. This might not work with all universities!',
+      rootpage_setupPage_AppProblemReporting: 'Is there a problem with the app?\nTell me! 👉',
+      instituteSelection_setupPage_LoadingText: 'Loading...',
+      instituteSelection_setupPage_NoNetwork: 'No network...',
+      instituteSelection_setupPage_SelectValidInstitute: 'Select a valid institute! 😡',
+      instituteSelection_setupPage_SelectInstitute: 'Select institute',
+      instituteSelection_setupPage_Search: 'Search',
+      instituteSelection_setupPage_SearchNotFound: 'Nothing found...',
+      instituteSelection_setupPage_InstituteCantFindHelpText: 'Cant find your school in the list?',
+      instituteSelection_setupPage_InstituteCantFindHelpTextDescription: 'Items in the list above were added manually! 😅 It is possible, that some institutes are missing from it.\nYou can login via URL if you cant find your school. 😉',
+      any_setupPage_GoBack: 'Back',
+      any_setupPage_ProceedLogin: 'Proceed',
+      urlLogin_setupPage_InvalidUrl: 'Enter a valid neptun URL! 😡',
+      urlLogin_setupPage_LoginViaURlHeader: 'Login via URL',
+      urlLogin_setupPage_InstituteNeptunUrl: 'Institute neptun URL',
+      urlLogin_setupPage_InstituteNeptunUrlInvalid: 'This is not a valid neptun URL! 😡\n\nPaste something similar here:\nhttps://neptun-ws01.uni-pannon.hu/hallgato/login.aspx 🤫',
+      urlLogin_setupPage_WhereIsURLHelper: 'Where do I find the URL?',
+      urlLogin_setupPage_WhereIsURLHelperDescription: 'Go to your schools neptun website, and paste the link from up top. 🔗\n\nEx: https://neptun-ws01.uni-pannon.hu/hallgato/login.aspx',
+      loginPage_setupPage_InvalidCredentials: 'Provide valid credentials! 😡',
+      loginPage_setupPage_LoginHeaderText: 'Log in',
+      loginPage_setupPage_ActivityCacheInvalidHelper: 'ERROR! Please go back!',
+      loginPage_setupPage_NeptunCode: 'Neptun code',
+      loginPage_setupPage_Password: 'Password',
+      loginPage_setupPage_InvalidCredentialsEntered: 'Invalid username or password!',
+      loginPage_setupPage_2faWarning: 'If you have multi factor authentication enabled on your account, you wont be able to login!',
+      loginPage_setupPage_2faWarningDescription: '❌ Neptun2 uses the old Neptun mobileapp API, which didnt contain multi factor authentication. If your account if protected by it, you wont be able to login via Neptun2.\n\n🤓 But you can turn it off, and you will be able to use Neptun2 without a problem.\nTo turn it off, go to "My Data/Settings" in neptun web.',
+      loginPage_setupPage_LogInButton: 'Login',
+      loginPage_setupPage_LoginInProgress: 'Logging in...',
+      loginPage_setupPage_LoginInProgressSlow: 'Neptun servers are having a hard time...',
       api_monthJan_Universal: 'january',
       api_monthFeb_Universal: 'february',
       api_monthMar_Universal: 'march',
@@ -209,7 +246,7 @@ class AppStrings{
       api_loadingScreenHintMini1_Universal: 'So, found it?...',
       api_loadingScreenHintMini2_Universal: 'Hold up! It cant do it that fast...',
       api_loadingScreenHintMini3_Universal: 'Forgot what you just read? Try taking B6 vitamins!...',
-      api_generic_NoData: 'No Data',
+      api_noData_Universal: 'No Data',
       view_header_Calendar: 'Calendar',
       view_header_Messages: 'Messages',
       view_header_Payments: 'Payments',
@@ -258,6 +295,43 @@ class AppStrings{
       periodPage_ExpiredDays: '(%0 days ago)',
       messagePage_SentBy: 'Sent by: %0',
       messagePage_Empty: '😥You dont have any messages😥',
+      popup_case0_GhostGradeHeader: '👻 Ghost grade 👻',
+      popup_case0_SelectGrade: 'Select grade...',
+      popup_caseAll_OkButton: 'Ok',
+      popup_case1_SettingsHeader: '⚙ Settings ⚙',
+      popup_case1_settingOption1_FamilyFriendlyLoadingText: 'Outspoken loading texts',
+      popup_case1_settingOption1_FamilyFriendlyLoadingTextDescription: 'If you turn this on, loading texts will become outspoken ones.',
+      popup_case1_settingOption2_ExamNotifications: 'Exam notifications',
+      popup_case1_settingOption2_ExamNotificationsDescription: 'Exam notifications will send you notifications in the span of 2 weeks beforehand. It is useful, if you like procrastinating studying, or you tend to forget.',
+      popup_case1_settingOption3_ClassNotifications: 'Notifications before classes',
+      popup_case1_settingOption3_ClassNotificationsDescription: 'It will send you notifications 10 minutes; 5 minutes; and at the start of the class, so you wont miss them. Useful if you want to know what class are you going to have beforehand, without the need to check on your phone (ex: You have a smartwatch)',
+      popup_case1_settingOption4_PaymentNotifications: 'Payment notifications',
+      popup_case1_settingOption4_PaymentNotificationsDescription: 'If you have payments due, the app will be notifying you every day, until they are paid. Useful if you tend to forget, or just dont want to miss a due date.',
+      popup_case1_settingOption5_PeriodsNotifications: 'Period notifications',
+      popup_case1_settingOption5_PeriodsNotificationsDescription: 'If a new period is about to become active, the app will notify you, 1 day before the given period, and the they when they are active. Useful if you dont want to miss something important tied to periods. (ex: class registration period)',
+      popup_case1_settingOption6_AppHaptics: 'App haptics',
+      popup_case1_settingOption6_AppHapticsDescription: 'You can set, if you want the app to give you haptic feedback. (Vibrate)',
+      popup_case1_settingOption7_WeekOffset: 'Study week offset',
+      popup_case1_settingOption7_WeekOffsetDescription: 'If you have issues with the current study week, you can offset it to the correct week!',
+      popup_case1_settingOption7_WeekOffsetAuto: 'Auto',
+      popup_case1_settingBottomText_InstallOrigin: '%0 - Installed from: ',
+      popup_case1_settingBottomText_InstallOrigin3rdParty: 'Package Installer',
+      popup_case1_settingBottomText_InstallOriginGPlay: 'Google Play',
+      popup_case2_RateAppPopup: '⭐ Rate The App! ⭐',
+      popup_case2_RateAppPopupDescription: 'Do you like the app? Do you hate it? Rate it on Google Play!\nIt takes about 10 seconds, and it gives me, and other users feedback.',
+      popup_case2_RateButton: 'Rate it',
+      popup_case3_MessagesHeader: '💌 Message 💌',
+      clickableText_OnCopy: 'Copied! 📋',
+      popup_case4_SubjectInfo: '📢 Subject Info 📢',
+      popup_case4_TeachedBy: 'Taught by:',
+      popup_case4_5_SubjectCode: 'Subject code:',
+      popup_case4_5_SubjectLocation: 'Location:',
+      popup_case4_SubjectStartTime: 'Subject start time:',
+      popup_case5_ExamInfo: '⚠️ Exam Info ⚠️',
+      popup_case5_ExamStartTime: 'Exam start time:',
+      popup_case6_AccountError: '🤷 There is an issue with your account 🤷',
+      popup_case6_AccountErrorDescription: 'It seems like we cant fetch data from your neptun.\nPlease log out, and log right back in.',
+      popup_case6_AccountErrorLogoutButton: 'Logout',
     )});
     _hasInit = true;
   }
@@ -272,7 +346,7 @@ class AppStrings{
 
   static LanguagePack _getLangPack(String id){
     if(!_languages.containsKey(id)){
-      return _languages[_supportedLanguages[0]]!;
+      return _languages[_supportedLanguages[1]]!; // default to english, if user device lang is not supported
     }
     return _languages[id]!;
   }
@@ -292,43 +366,43 @@ class AppStrings{
 }
 
 class LanguagePack{
-  final String setupPage_selectLoginTypeHeader_RootPage;
-  final String setupPage_institutesSelection_RootPage;
-  final String setupPage_institutesSelectionDescription_RootPage;
-  final String setupPage_urlLogin_RootPage;
-  final String setupPage_urlLoginDescription_RootPage;
-  final String setupPage_appProblemReporting_RootPage;
+  final String rootpage_setupPage_SelectLoginTypeHeader;
+  final String rootpage_setupPage_InstitutesSelection;
+  final String rootpage_setupPage_InstitutesSelectionDescription;
+  final String rootpage_setupPage_UrlLogin;
+  final String rootpage_setupPage_UrlLoginDescription;
+  final String rootpage_setupPage_AppProblemReporting;
 
-  final String setupPage_loadingText_InstituteSelection;
-  final String setupPage_noNetwork_InstituteSelection;
-  final String setupPage_selectValidInstitute_InstituteSelection;
-  final String setupPage_selectInstitute_InstituteSelection;
-  final String setupPage_search_InstituteSelection;
-  final String setupPage_searchNotFound_InstituteSelection;
-  final String setupPage_instituteCantFindHelpText_InstituteSelection;
-  final String setupPage_instituteCantFindHelpTextDescription_InstituteSelection;
+  final String instituteSelection_setupPage_LoadingText;
+  final String instituteSelection_setupPage_NoNetwork;
+  final String instituteSelection_setupPage_SelectValidInstitute;
+  final String instituteSelection_setupPage_SelectInstitute;
+  final String instituteSelection_setupPage_Search;
+  final String instituteSelection_setupPage_SearchNotFound;
+  final String instituteSelection_setupPage_InstituteCantFindHelpText;
+  final String instituteSelection_setupPage_InstituteCantFindHelpTextDescription;
 
-  final String setupPage_goBack_Universal;
-  final String setupPage_proceedLogin_Universal;
+  final String any_setupPage_GoBack;
+  final String any_setupPage_ProceedLogin;
 
-  final String setupPage_invalidUrl_UrlLogin;
-  final String setupPage_loginViaURlHeader_UrlLogin;
-  final String setupPage_instituteNeptunUrl_UrlLogin;
-  final String setupPage_instituteNeptunUrlInvalid_UrlLogin;
-  final String setupPage_whereIsURLHelper_UrlLogin;
-  final String setupPage_whereIsURLHelperDescription_UrlLogin;
+  final String urlLogin_setupPage_InvalidUrl;
+  final String urlLogin_setupPage_LoginViaURlHeader;
+  final String urlLogin_setupPage_InstituteNeptunUrl;
+  final String urlLogin_setupPage_InstituteNeptunUrlInvalid;
+  final String urlLogin_setupPage_WhereIsURLHelper;
+  final String urlLogin_setupPage_WhereIsURLHelperDescription;
 
-  final String setupPage_invalidCredentials_LoginPage;
-  final String setupPage_loginHeaderText_LoginPage;
-  final String setupPage_activityCacheInvalidHelper_LoginPage;
-  final String setupPage_neptunCode_LoginPage;
-  final String setupPage_password_LoginPage;
-  final String setupPage_invalidCredentialsEntered_LoginPage;
-  final String setupPage_2faWarning_LoginPage;
-  final String setupPage_2faWarningDescription_LoginPage;
-  final String setupPage_logInButton_LoginPage;
-  final String setupPage_loginInProgress_LoginPage;
-  final String setupPage_loginInProgressSlow_LoginPage;
+  final String loginPage_setupPage_InvalidCredentials;
+  final String loginPage_setupPage_LoginHeaderText;
+  final String loginPage_setupPage_ActivityCacheInvalidHelper;
+  final String loginPage_setupPage_NeptunCode;
+  final String loginPage_setupPage_Password;
+  final String loginPage_setupPage_InvalidCredentialsEntered;
+  final String loginPage_setupPage_2faWarning;
+  final String loginPage_setupPage_2faWarningDescription;
+  final String loginPage_setupPage_LogInButton;
+  final String loginPage_setupPage_LoginInProgress;
+  final String loginPage_setupPage_LoginInProgressSlow;
 
   final String api_monthJan_Universal;
   final String api_monthFeb_Universal;
@@ -376,7 +450,7 @@ class LanguagePack{
   final String api_loadingScreenHintMini2_Universal;
   final String api_loadingScreenHintMini3_Universal;
 
-  final String api_generic_NoData;
+  final String api_noData_Universal;
 
   final String view_header_Calendar;
   final String view_header_Subjects;
@@ -438,40 +512,84 @@ class LanguagePack{
   final String messagePage_SentBy;
   final String messagePage_Empty;
 
+  final String popup_case0_GhostGradeHeader;
+  final String popup_caseAll_OkButton;
+  final String popup_case0_SelectGrade;
+
+  final String popup_case1_SettingsHeader;
+  final String popup_case1_settingOption1_FamilyFriendlyLoadingText;
+  final String popup_case1_settingOption1_FamilyFriendlyLoadingTextDescription;
+  final String popup_case1_settingOption2_ExamNotifications;
+  final String popup_case1_settingOption2_ExamNotificationsDescription;
+  final String popup_case1_settingOption3_ClassNotifications;
+  final String popup_case1_settingOption3_ClassNotificationsDescription;
+  final String popup_case1_settingOption4_PaymentNotifications;
+  final String popup_case1_settingOption4_PaymentNotificationsDescription;
+  final String popup_case1_settingOption5_PeriodsNotifications;
+  final String popup_case1_settingOption5_PeriodsNotificationsDescription;
+  final String popup_case1_settingOption6_AppHaptics;
+  final String popup_case1_settingOption6_AppHapticsDescription;
+  final String popup_case1_settingOption7_WeekOffset;
+  final String popup_case1_settingOption7_WeekOffsetDescription;
+  final String popup_case1_settingOption7_WeekOffsetAuto;
+  final String popup_case1_settingBottomText_InstallOrigin;
+  final String popup_case1_settingBottomText_InstallOriginGPlay;
+  final String popup_case1_settingBottomText_InstallOrigin3rdParty;
+
+  final String popup_case2_RateAppPopup;
+  final String popup_case2_RateAppPopupDescription;
+  final String popup_case2_RateButton;
+
+  final String popup_case3_MessagesHeader;
+  final String clickableText_OnCopy;
+
+  final String popup_case4_SubjectInfo;
+  final String popup_case4_TeachedBy;
+  final String popup_case4_5_SubjectCode;
+  final String popup_case4_5_SubjectLocation;
+  final String popup_case4_SubjectStartTime;
+
+  final String popup_case5_ExamInfo;
+  final String popup_case5_ExamStartTime;
+
+  final String popup_case6_AccountError;
+  final String popup_case6_AccountErrorDescription;
+  final String popup_case6_AccountErrorLogoutButton;
+
   LanguagePack({
-    required this.setupPage_selectLoginTypeHeader_RootPage,
-    required this.setupPage_institutesSelection_RootPage,
-    required this.setupPage_institutesSelectionDescription_RootPage,
-    required this.setupPage_urlLogin_RootPage,
-    required this.setupPage_urlLoginDescription_RootPage,
-    required this.setupPage_appProblemReporting_RootPage,
-    required this.setupPage_loadingText_InstituteSelection,
-    required this.setupPage_noNetwork_InstituteSelection,
-    required this.setupPage_selectValidInstitute_InstituteSelection,
-    required this.setupPage_selectInstitute_InstituteSelection,
-    required this.setupPage_search_InstituteSelection,
-    required this.setupPage_searchNotFound_InstituteSelection,
-    required this.setupPage_instituteCantFindHelpText_InstituteSelection,
-    required this.setupPage_instituteCantFindHelpTextDescription_InstituteSelection,
-    required this.setupPage_goBack_Universal,
-    required this.setupPage_proceedLogin_Universal,
-    required this.setupPage_invalidUrl_UrlLogin,
-    required this.setupPage_loginViaURlHeader_UrlLogin,
-    required this.setupPage_instituteNeptunUrl_UrlLogin,
-    required this.setupPage_instituteNeptunUrlInvalid_UrlLogin,
-    required this.setupPage_whereIsURLHelper_UrlLogin,
-    required this.setupPage_whereIsURLHelperDescription_UrlLogin,
-    required this.setupPage_invalidCredentials_LoginPage,
-    required this.setupPage_loginHeaderText_LoginPage,
-    required this.setupPage_activityCacheInvalidHelper_LoginPage,
-    required this.setupPage_neptunCode_LoginPage,
-    required this.setupPage_password_LoginPage,
-    required this.setupPage_invalidCredentialsEntered_LoginPage,
-    required this.setupPage_2faWarning_LoginPage,
-    required this.setupPage_2faWarningDescription_LoginPage,
-    required this.setupPage_logInButton_LoginPage,
-    required this.setupPage_loginInProgress_LoginPage,
-    required this.setupPage_loginInProgressSlow_LoginPage,
+    required this.rootpage_setupPage_SelectLoginTypeHeader,
+    required this.rootpage_setupPage_InstitutesSelection,
+    required this.rootpage_setupPage_InstitutesSelectionDescription,
+    required this.rootpage_setupPage_UrlLogin,
+    required this.rootpage_setupPage_UrlLoginDescription,
+    required this.rootpage_setupPage_AppProblemReporting,
+    required this.instituteSelection_setupPage_LoadingText,
+    required this.instituteSelection_setupPage_NoNetwork,
+    required this.instituteSelection_setupPage_SelectValidInstitute,
+    required this.instituteSelection_setupPage_SelectInstitute,
+    required this.instituteSelection_setupPage_Search,
+    required this.instituteSelection_setupPage_SearchNotFound,
+    required this.instituteSelection_setupPage_InstituteCantFindHelpText,
+    required this.instituteSelection_setupPage_InstituteCantFindHelpTextDescription,
+    required this.any_setupPage_GoBack,
+    required this.any_setupPage_ProceedLogin,
+    required this.urlLogin_setupPage_InvalidUrl,
+    required this.urlLogin_setupPage_LoginViaURlHeader,
+    required this.urlLogin_setupPage_InstituteNeptunUrl,
+    required this.urlLogin_setupPage_InstituteNeptunUrlInvalid,
+    required this.urlLogin_setupPage_WhereIsURLHelper,
+    required this.urlLogin_setupPage_WhereIsURLHelperDescription,
+    required this.loginPage_setupPage_InvalidCredentials,
+    required this.loginPage_setupPage_LoginHeaderText,
+    required this.loginPage_setupPage_ActivityCacheInvalidHelper,
+    required this.loginPage_setupPage_NeptunCode,
+    required this.loginPage_setupPage_Password,
+    required this.loginPage_setupPage_InvalidCredentialsEntered,
+    required this.loginPage_setupPage_2faWarning,
+    required this.loginPage_setupPage_2faWarningDescription,
+    required this.loginPage_setupPage_LogInButton,
+    required this.loginPage_setupPage_LoginInProgress,
+    required this.loginPage_setupPage_LoginInProgressSlow,
     required this.api_monthJan_Universal,
     required this.api_monthFeb_Universal,
     required this.api_monthMar_Universal,
@@ -512,7 +630,7 @@ class LanguagePack{
     required this.api_loadingScreenHintMini1_Universal,
     required this.api_loadingScreenHintMini2_Universal,
     required this.api_loadingScreenHintMini3_Universal,
-    required this.api_generic_NoData,
+    required this.api_noData_Universal,
     required this.view_header_Calendar,
     required this.view_header_Messages,
     required this.view_header_Payments,
@@ -561,5 +679,42 @@ class LanguagePack{
     required this.periodPage_Starts,
     required this.messagePage_SentBy,
     required this.messagePage_Empty,
+    required this.popup_case0_GhostGradeHeader,
+    required this.popup_case0_SelectGrade,
+    required this.popup_caseAll_OkButton,
+    required this.popup_case1_settingBottomText_InstallOrigin,
+    required this.popup_case1_settingBottomText_InstallOrigin3rdParty,
+    required this.popup_case1_settingBottomText_InstallOriginGPlay,
+    required this.popup_case1_settingOption1_FamilyFriendlyLoadingText,
+    required this.popup_case1_settingOption1_FamilyFriendlyLoadingTextDescription,
+    required this.popup_case1_settingOption2_ExamNotifications,
+    required this.popup_case1_settingOption2_ExamNotificationsDescription,
+    required this.popup_case1_settingOption3_ClassNotifications,
+    required this.popup_case1_settingOption3_ClassNotificationsDescription,
+    required this.popup_case1_settingOption4_PaymentNotifications,
+    required this.popup_case1_settingOption4_PaymentNotificationsDescription,
+    required this.popup_case1_settingOption5_PeriodsNotifications,
+    required this.popup_case1_settingOption5_PeriodsNotificationsDescription,
+    required this.popup_case1_settingOption6_AppHaptics,
+    required this.popup_case1_settingOption6_AppHapticsDescription,
+    required this.popup_case1_settingOption7_WeekOffset,
+    required this.popup_case1_settingOption7_WeekOffsetDescription,
+    required this.popup_case1_settingOption7_WeekOffsetAuto,
+    required this.popup_case1_SettingsHeader,
+    required this.popup_case2_RateAppPopup,
+    required this.popup_case2_RateAppPopupDescription,
+    required this.popup_case2_RateButton,
+    required this.popup_case3_MessagesHeader,
+    required this.clickableText_OnCopy,
+    required this.popup_case4_5_SubjectCode,
+    required this.popup_case4_5_SubjectLocation,
+    required this.popup_case4_SubjectStartTime,
+    required this.popup_case4_SubjectInfo,
+    required this.popup_case4_TeachedBy,
+    required this.popup_case5_ExamInfo,
+    required this.popup_case5_ExamStartTime,
+    required this.popup_case6_AccountError,
+    required this.popup_case6_AccountErrorDescription,
+    required this.popup_case6_AccountErrorLogoutButton
   });
 }

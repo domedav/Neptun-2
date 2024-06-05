@@ -58,7 +58,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
               children: [
                 const SizedBox(height: 40),
                 Text(
-                  AppStrings.getLanguagePack().setupPage_selectLoginTypeHeader_RootPage,
+                  AppStrings.getLanguagePack().rootpage_setupPage_SelectLoginTypeHeader,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 24,
@@ -108,7 +108,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                                 ),
                                 Flexible(
                                   child: Text(
-                                    AppStrings.getLanguagePack().setupPage_institutesSelection_RootPage,
+                                    AppStrings.getLanguagePack().rootpage_setupPage_InstitutesSelection,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         color: Colors.white,
@@ -121,7 +121,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                             ),
                             const SizedBox(height: 20),
                             Text(
-                              AppStrings.getLanguagePack().setupPage_institutesSelectionDescription_RootPage,
+                              AppStrings.getLanguagePack().rootpage_setupPage_InstitutesSelectionDescription,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Colors.white.withOpacity(.6),
@@ -169,7 +169,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                                 ),
                                 Flexible(
                                   child: Text(
-                                    AppStrings.getLanguagePack().setupPage_urlLogin_RootPage,
+                                    AppStrings.getLanguagePack().rootpage_setupPage_UrlLogin,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         color: Colors.white,
@@ -182,7 +182,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                             ),
                             const SizedBox(height: 20),
                             Text(
-                              AppStrings.getLanguagePack().setupPage_urlLoginDescription_RootPage,
+                              AppStrings.getLanguagePack().rootpage_setupPage_UrlLoginDescription,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Colors.white.withOpacity(.6),
@@ -206,7 +206,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                       children: [
                         Flexible(
                           child: EmojiRichText(
-                            text: AppStrings.getLanguagePack().setupPage_appProblemReporting_RootPage,
+                            text: AppStrings.getLanguagePack().rootpage_setupPage_AppProblemReporting,
                             defaultStyle: TextStyle(
                               color: Colors.white.withOpacity(.6),
                               fontWeight: FontWeight.w700,
@@ -279,7 +279,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
 
   final List<String> _filteredValues = [];
   late List<api.Institute> _institutes = [];
-  String _selectedValue = AppStrings.getLanguagePack().setupPage_loadingText_InstituteSelection;
+  String _selectedValue = AppStrings.getLanguagePack().instituteSelection_setupPage_LoadingText;
 
   @override
   void initState() {
@@ -400,7 +400,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
               physics: const AlwaysScrollableScrollPhysics(),
               child: _drawNoInternet ?
               Text(
-                AppStrings.getLanguagePack().setupPage_noNetwork_InstituteSelection,
+                AppStrings.getLanguagePack().instituteSelection_setupPage_NoNetwork,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,
@@ -413,7 +413,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Text(
-                    AppStrings.getLanguagePack().setupPage_loadingText_InstituteSelection,
+                    AppStrings.getLanguagePack().instituteSelection_setupPage_LoadingText,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         color: Colors.white,
@@ -456,7 +456,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
               _dragDebounce = true;
 
               if(!_canProceed){
-                _showSnackbar(AppStrings.getLanguagePack().setupPage_selectValidInstitute_InstituteSelection, 5);
+                _showSnackbar(AppStrings.getLanguagePack().instituteSelection_setupPage_SelectValidInstitute, 5);
                 AppHaptics.attentionLightImpact();
                 return;
               }
@@ -487,7 +487,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                     children: [
                       const SizedBox(height: 40),
                       Text(
-                        AppStrings.getLanguagePack().setupPage_selectInstitute_InstituteSelection,
+                        AppStrings.getLanguagePack().instituteSelection_setupPage_SelectInstitute,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 28,
@@ -508,7 +508,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                               decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.all(18),
                                   suffixIcon: Icon(Icons.search_rounded),
-                                  labelText: AppStrings.getLanguagePack().setupPage_search_InstituteSelection,
+                                  labelText: AppStrings.getLanguagePack().instituteSelection_setupPage_Search,
                                   labelStyle: TextStyle(
                                       fontSize: 14,
                                       color: Colors.white.withOpacity(.6),
@@ -543,7 +543,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                                     _canProceed = true;
                                   } else{
                                     AppHaptics.attentionLightImpact();
-                                    _filteredValues.add(AppStrings.getLanguagePack().setupPage_searchNotFound_InstituteSelection);
+                                    _filteredValues.add(AppStrings.getLanguagePack().instituteSelection_setupPage_SearchNotFound);
                                     _selectedValue = _filteredValues[0];
                                     _canProceed = false;
                                   }
@@ -638,7 +638,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                             child: Container(
                               margin: const EdgeInsets.all(15),
                               child: Text(
-                                AppStrings.getLanguagePack().setupPage_instituteCantFindHelpText_InstituteSelection,
+                                AppStrings.getLanguagePack().instituteSelection_setupPage_InstituteCantFindHelpText,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     fontSize: 12,
@@ -656,7 +656,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                             ),
                             child: IconButton(
                               onPressed: (){
-                                _showSnackbar(AppStrings.getLanguagePack().setupPage_instituteCantFindHelpTextDescription_InstituteSelection, 12);
+                                _showSnackbar(AppStrings.getLanguagePack().instituteSelection_setupPage_InstituteCantFindHelpTextDescription, 12);
                                 AppHaptics.attentionLightImpact();
                               },
                               icon: Icon(
@@ -697,7 +697,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                                       color: Colors.white.withOpacity(.6),
                                     ),
                                     Text(
-                                      AppStrings.getLanguagePack().setupPage_goBack_Universal,
+                                      AppStrings.getLanguagePack().any_setupPage_GoBack,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontWeight: FontWeight.w400,
@@ -714,7 +714,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                                   AppHaptics.lightImpact();
                                   proceedToLogin();
                                 } : (){
-                                  _showSnackbar(AppStrings.getLanguagePack().setupPage_selectValidInstitute_InstituteSelection, 5);
+                                  _showSnackbar(AppStrings.getLanguagePack().instituteSelection_setupPage_SelectValidInstitute, 5);
                                   AppHaptics.attentionLightImpact();
                                 },
                                 style: ButtonStyle(
@@ -727,7 +727,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
-                                      AppStrings.getLanguagePack().setupPage_proceedLogin_Universal,
+                                      AppStrings.getLanguagePack().any_setupPage_ProceedLogin,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           fontWeight: FontWeight.w400,
@@ -840,7 +840,7 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
             _dragDebounce = true;
 
             if(!_canProceed){
-              _showSnackbar(AppStrings.getLanguagePack().setupPage_invalidUrl_UrlLogin, 5);
+              _showSnackbar(AppStrings.getLanguagePack().urlLogin_setupPage_InvalidUrl, 5);
               AppHaptics.attentionLightImpact();
               return;
             }
@@ -871,7 +871,7 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                     children: [
                       const SizedBox(height: 40),
                       Text(
-                        AppStrings.getLanguagePack().setupPage_loginViaURlHeader_UrlLogin,
+                        AppStrings.getLanguagePack().urlLogin_setupPage_LoginViaURlHeader,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 28,
@@ -887,7 +887,7 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.all(18),
                             suffixIcon: Icon(Icons.link_rounded),
-                            labelText: AppStrings.getLanguagePack().setupPage_instituteNeptunUrl_UrlLogin,
+                            labelText: AppStrings.getLanguagePack().urlLogin_setupPage_InstituteNeptunUrl,
                             labelStyle: TextStyle(
                               fontSize: 14,
                               color: Colors.white.withOpacity(.6),
@@ -931,7 +931,7 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                               return;
                             }
                             _warnTimer = Timer(const Duration(seconds: 2),(){
-                              _showSnackbar(AppStrings.getLanguagePack().setupPage_instituteNeptunUrlInvalid_UrlLogin, 18);
+                              _showSnackbar(AppStrings.getLanguagePack().urlLogin_setupPage_InstituteNeptunUrlInvalid, 18);
                               AppHaptics.attentionLightImpact();
                             });
                           },
@@ -965,7 +965,7 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                                       color: Colors.white.withOpacity(.6),
                                     ),
                                     Text(
-                                      AppStrings.getLanguagePack().setupPage_goBack_Universal,
+                                      AppStrings.getLanguagePack().any_setupPage_GoBack,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           fontWeight: FontWeight.w400,
@@ -982,7 +982,7 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                                   AppHaptics.lightImpact();
                                   proceedToLogin();
                                 } : (){
-                                  _showSnackbar(AppStrings.getLanguagePack().setupPage_invalidUrl_UrlLogin, 5);
+                                  _showSnackbar(AppStrings.getLanguagePack().urlLogin_setupPage_InvalidUrl, 5);
                                   AppHaptics.attentionLightImpact();
                                 },
                                 style: ButtonStyle(
@@ -995,7 +995,7 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
-                                      AppStrings.getLanguagePack().setupPage_proceedLogin_Universal,
+                                      AppStrings.getLanguagePack().any_setupPage_ProceedLogin,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           fontWeight: FontWeight.w400,
@@ -1023,7 +1023,7 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                             child: Container(
                               margin: const EdgeInsets.all(15),
                               child: Text(
-                                AppStrings.getLanguagePack().setupPage_whereIsURLHelper_UrlLogin,
+                                AppStrings.getLanguagePack().urlLogin_setupPage_WhereIsURLHelper,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     fontSize: 12,
@@ -1041,7 +1041,7 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                             ),
                             child: IconButton(
                               onPressed: (){
-                                _showSnackbar(AppStrings.getLanguagePack().setupPage_whereIsURLHelperDescription_UrlLogin, 18);
+                                _showSnackbar(AppStrings.getLanguagePack().urlLogin_setupPage_WhereIsURLHelperDescription, 18);
                                 AppHaptics.attentionLightImpact();
                               },
                               icon: Icon(
@@ -1236,7 +1236,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
             _dragDebounce = true;
 
             if(!_canProceed){
-              _showSnackbar(AppStrings.getLanguagePack().setupPage_invalidCredentials_LoginPage, 5);
+              _showSnackbar(AppStrings.getLanguagePack().loginPage_setupPage_InvalidCredentials, 5);
               AppHaptics.attentionLightImpact();
               return;
             }
@@ -1267,7 +1267,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                     children: [
                       const SizedBox(height: 40),
                       Text(
-                        AppStrings.getLanguagePack().setupPage_loginHeaderText_LoginPage,
+                        AppStrings.getLanguagePack().loginPage_setupPage_LoginHeaderText,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 28,
@@ -1289,7 +1289,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                           const SizedBox(width: 4),
                           Flexible(
                             child: Text(
-                              PageDTO.validatedURL ? PageDTO.customURL!.replaceAll(RegExp(r'/hallgato/login\.aspx'), '').replaceAll(RegExp(r'/hallgato/MobileService\.svc'), "").replaceAll("https://", '') : (PageDTO.selected ?? AppStrings.getLanguagePack().setupPage_activityCacheInvalidHelper_LoginPage),
+                              PageDTO.validatedURL ? PageDTO.customURL!.replaceAll(RegExp(r'/hallgato/login\.aspx'), '').replaceAll(RegExp(r'/hallgato/MobileService\.svc'), "").replaceAll("https://", '') : (PageDTO.selected ?? AppStrings.getLanguagePack().loginPage_setupPage_ActivityCacheInvalidHelper),
                               textAlign: TextAlign.start,
                               style: TextStyle(
                                   color: Colors.white.withOpacity(.2),
@@ -1313,7 +1313,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                 suffixIcon: Icon(
                                     Icons.person_2_rounded,
                                     color: _paintRed ? Colors.red : Colors.white),
-                                labelText: AppStrings.getLanguagePack().setupPage_neptunCode_LoginPage,
+                                labelText: AppStrings.getLanguagePack().loginPage_setupPage_NeptunCode,
                                 labelStyle: TextStyle(
                                     fontSize: 14,
                                     color: Colors.white.withOpacity(.6),
@@ -1360,7 +1360,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                         _obscureText = !_obscureText; // Toggle the password visibility
                                       });
                                     }),
-                                labelText: AppStrings.getLanguagePack().setupPage_password_LoginPage,
+                                labelText: AppStrings.getLanguagePack().loginPage_setupPage_Password,
                                 labelStyle: TextStyle(
                                     fontSize: 14,
                                     color: Colors.white.withOpacity(.6),
@@ -1394,7 +1394,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            _paintRed ? AppStrings.getLanguagePack().setupPage_invalidCredentialsEntered_LoginPage : "",
+                            _paintRed ? AppStrings.getLanguagePack().loginPage_setupPage_InvalidCredentialsEntered : "",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 color: _paintRed ? Colors.red : Colors.white,
@@ -1412,7 +1412,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                 child: Container(
                                   margin: const EdgeInsets.all(15),
                                   child: Text(
-                                    AppStrings.getLanguagePack().setupPage_2faWarning_LoginPage,
+                                    AppStrings.getLanguagePack().loginPage_setupPage_2faWarning,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontSize: 12,
@@ -1430,7 +1430,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                 ),
                                 child: IconButton(
                                   onPressed: (){
-                                    _showSnackbar(AppStrings.getLanguagePack().setupPage_2faWarningDescription_LoginPage, 18);
+                                    _showSnackbar(AppStrings.getLanguagePack().loginPage_setupPage_2faWarningDescription, 18);
                                     AppHaptics.attentionLightImpact();
                                   },
                                   icon: Icon(
@@ -1471,7 +1471,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                           color: Colors.white.withOpacity(.6),
                                         ),
                                         Text(
-                                          AppStrings.getLanguagePack().setupPage_goBack_Universal,
+                                          AppStrings.getLanguagePack().any_setupPage_GoBack,
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                               fontWeight: FontWeight.w400,
@@ -1488,7 +1488,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                       AppHaptics.lightImpact();
                                       finishLogin();
                                     } : (){
-                                      _showSnackbar(AppStrings.getLanguagePack().setupPage_invalidCredentials_LoginPage, 5);
+                                      _showSnackbar(AppStrings.getLanguagePack().loginPage_setupPage_InvalidCredentials, 5);
                                       AppHaptics.attentionLightImpact();
                                     },
                                     style: ButtonStyle(
@@ -1501,7 +1501,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text(
-                                          AppStrings.getLanguagePack().setupPage_logInButton_LoginPage,
+                                          AppStrings.getLanguagePack().loginPage_setupPage_LogInButton,
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                               fontWeight: FontWeight.w400,
@@ -1553,7 +1553,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: Text(
-                              AppStrings.getLanguagePack().setupPage_loginInProgress_LoginPage,
+                              AppStrings.getLanguagePack().loginPage_setupPage_LoginInProgress,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Colors.white,
@@ -1587,7 +1587,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                             child: Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 20),
                               child: Text(
-                                AppStrings.getLanguagePack().setupPage_loginInProgressSlow_LoginPage,
+                                AppStrings.getLanguagePack().loginPage_setupPage_LoginInProgressSlow,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: Colors.white.withOpacity(.3),

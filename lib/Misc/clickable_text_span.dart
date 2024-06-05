@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:neptun2/haptics.dart';
+import 'package:neptun2/language.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ClickableTextSpan extends StatelessWidget{
@@ -30,7 +31,7 @@ class ClickableTextSpan extends StatelessWidget{
           return;
         }
         Fluttertoast.showToast(
-          msg: 'Másolva! 📋',
+          msg: AppStrings.getLanguagePack().clickableText_OnCopy,
           toastLength: Toast.LENGTH_SHORT,
           fontSize: 14,
           gravity: ToastGravity.SNACKBAR,

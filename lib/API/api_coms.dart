@@ -710,7 +710,7 @@ import '../storage.dart' as storage;
         subjectCode = match2.group(1)!.trim().replaceAll('(', '').replaceAll(')', '');
       }
       else{
-        subjectCode = AppStrings.getLanguagePack().api_generic_NoData;
+        subjectCode = AppStrings.getLanguagePack().api_noData_Universal;
       }
 
       var regex3 = RegExp(r'\([^)]+\)(?=\s*\([^)]+\)*$)'); //igen... egy jéghideg olyat kérünk
@@ -726,7 +726,7 @@ import '../storage.dart' as storage;
           teacher = match3.group(1)!.trim().replaceAll('(', '').replaceAll(')', '');
         }
         else{
-          teacher = AppStrings.getLanguagePack().api_generic_NoData;
+          teacher = AppStrings.getLanguagePack().api_noData_Universal;
         }
       }
     }

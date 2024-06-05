@@ -5,6 +5,7 @@ import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:neptun2/Misc/custom_snackbar.dart';
 import 'package:neptun2/Pages/main_page.dart';
 import 'package:neptun2/haptics.dart';
+import 'package:neptun2/language.dart';
 import 'package:neptun2/storage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../API/api_coms.dart';
@@ -155,14 +156,14 @@ class PopupWidget extends State<PopupWidgetState>{
     List<Widget> list = <Widget>[];
     switch (mode){
       case 0:
-        list.add(const EmojiRichText(
-          text: "👻 Szellemjegy 👻",
-          defaultStyle: TextStyle(
+        list.add(EmojiRichText(
+          text: AppStrings.getLanguagePack().popup_case0_GhostGradeHeader,
+          defaultStyle: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w500,
             fontSize: 22.0,
           ),
-          emojiStyle: TextStyle(
+          emojiStyle: const TextStyle(
               color: Colors.white,
               fontSize: 19.0,
               fontFamily: "Noto Color Emoji"
@@ -177,7 +178,7 @@ class PopupWidget extends State<PopupWidgetState>{
         list.add(const SizedBox(height: 20));
         if(selectionValue == -1) {
           list.add(Text(
-            'Válassz jegyet...',
+            AppStrings.getLanguagePack().popup_case0_SelectGrade,
             style: TextStyle(
                 color: Colors.white.withOpacity(.4),
                 fontSize: 15,
@@ -326,8 +327,8 @@ class PopupWidget extends State<PopupWidgetState>{
           ),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 15),
-            child: const Text('Ok',
-              style: TextStyle(
+            child: Text(AppStrings.getLanguagePack().popup_caseAll_OkButton,
+              style: const TextStyle(
                 color: Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0),
                 fontWeight: FontWeight.w900,
                 fontSize: 18.0,
@@ -338,14 +339,14 @@ class PopupWidget extends State<PopupWidgetState>{
 
         return list;
       case 1:
-        list.add(const EmojiRichText(
-          text: "⚙ Beállítások ⚙",
-          defaultStyle: TextStyle(
+        list.add(EmojiRichText(
+          text: AppStrings.getLanguagePack().popup_case1_SettingsHeader,
+          defaultStyle: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w500,
             fontSize: 22.0,
           ),
-          emojiStyle: TextStyle(
+          emojiStyle: const TextStyle(
               color: Colors.white,
               fontSize: 19.0,
               fontFamily: "Noto Color Emoji"
@@ -364,10 +365,10 @@ class PopupWidget extends State<PopupWidgetState>{
           children: [
             Expanded(flex: 2, child: Container(
               margin: const EdgeInsets.all(10),
-              child: const Text(
-                'Szókimondó betöltőszövegek',
+              child: Text(
+                AppStrings.getLanguagePack().popup_case1_settingOption1_FamilyFriendlyLoadingText,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: Colors.white
@@ -381,7 +382,7 @@ class PopupWidget extends State<PopupWidgetState>{
               ),
               child: IconButton(
                 onPressed: (){
-                  _showSnackbar('Ha bekapcsolod, lecseréli a betöltő szövegeket szókimondóra.', 8);
+                  _showSnackbar(AppStrings.getLanguagePack().popup_case1_settingOption1_FamilyFriendlyLoadingTextDescription, 8);
                   AppHaptics.attentionLightImpact();
                 },
                 icon: Icon(
@@ -419,10 +420,10 @@ class PopupWidget extends State<PopupWidgetState>{
           children: [
             Expanded(flex: 2, child: Container(
               margin: const EdgeInsets.all(10),
-              child: const Text(
-                'Vizsga értesítők',
+              child: Text(
+                AppStrings.getLanguagePack().popup_case1_settingOption2_ExamNotifications,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: Colors.white
@@ -436,7 +437,7 @@ class PopupWidget extends State<PopupWidgetState>{
               ),
               child: IconButton(
                 onPressed: (){
-                  _showSnackbar('Vizsgaértesítő értesítéseket küld neked a vizsga előtti 2 hétben. Hasznos, ha szereted halogatni a tanulást, vagy szimplán feledékeny vagy.', 12);
+                  _showSnackbar(AppStrings.getLanguagePack().popup_case1_settingOption2_ExamNotificationsDescription, 12);
                   AppHaptics.attentionLightImpact();
                 },
                 icon: Icon(
@@ -476,10 +477,10 @@ class PopupWidget extends State<PopupWidgetState>{
           children: [
             Expanded(flex: 2, child: Container(
               margin: const EdgeInsets.all(10),
-              child: const Text(
-                'Órák előtti értesítések',
+              child: Text(
+                AppStrings.getLanguagePack().popup_case1_settingOption3_ClassNotifications,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: Colors.white
@@ -493,7 +494,7 @@ class PopupWidget extends State<PopupWidgetState>{
               ),
               child: IconButton(
                 onPressed: (){
-                  _showSnackbar('Órák kezdete előtt 10 percel; 5 percel; és a kezdetük időpontjában, küld neked értesítést, hogy ne késd le őket. Hasznos, ha tudni akarod milyen órád lesz, anélkül, hogy a telódon lecsekkolnád. (pl: Okosórád van, és értesítésként látod a kövi órádat.)', 12);
+                  _showSnackbar(AppStrings.getLanguagePack().popup_case1_settingOption3_ClassNotificationsDescription, 12);
                   AppHaptics.attentionLightImpact();
                 },
                 icon: Icon(
@@ -533,10 +534,10 @@ class PopupWidget extends State<PopupWidgetState>{
           children: [
             Expanded(flex: 2, child: Container(
               margin: const EdgeInsets.all(10),
-              child: const Text(
-                'Befizetés értesítők',
+              child: Text(
+                AppStrings.getLanguagePack().popup_case1_settingOption4_PaymentNotifications,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: Colors.white
@@ -550,7 +551,7 @@ class PopupWidget extends State<PopupWidgetState>{
               ),
               child: IconButton(
                 onPressed: (){
-                  _showSnackbar('Ha van befizetnivalód, értesíteni fog az app, minden nap, amíg nem fizeted be. Hasznos, ha feledékeny vagy, vagy nem szeretnéd lekésni a határidőt.', 8);
+                  _showSnackbar(AppStrings.getLanguagePack().popup_case1_settingOption4_PaymentNotificationsDescription, 8);
                   AppHaptics.attentionLightImpact();
                 },
                 icon: Icon(
@@ -590,10 +591,10 @@ class PopupWidget extends State<PopupWidgetState>{
           children: [
             Expanded(flex: 2, child: Container(
               margin: const EdgeInsets.all(10),
-              child: const Text(
-                'Időszak értesítők',
+              child: Text(
+                AppStrings.getLanguagePack().popup_case1_settingOption5_PeriodsNotifications,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: Colors.white
@@ -607,7 +608,7 @@ class PopupWidget extends State<PopupWidgetState>{
               ),
               child: IconButton(
                 onPressed: (){
-                  _showSnackbar('Ha valamilyen új időszak lesz, értesíteni fog az app, az adott időszak előtt 1 nappal, és aznap fogsz értesítést kapni. Hasznos, ha nem akarsz lemaradni az adott időszakokról. (pl: tárgyfelvételi időszak)', 8);
+                  _showSnackbar(AppStrings.getLanguagePack().popup_case1_settingOption5_PeriodsNotificationsDescription, 8);
                   AppHaptics.attentionLightImpact();
                 },
                 icon: Icon(
@@ -651,10 +652,10 @@ class PopupWidget extends State<PopupWidgetState>{
           children: [
             Expanded(flex: 2, child: Container(
               margin: const EdgeInsets.all(10),
-              child: const Text(
-                'App haptika',
+              child: Text(
+                AppStrings.getLanguagePack().popup_case1_settingOption6_AppHaptics,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: Colors.white
@@ -668,7 +669,7 @@ class PopupWidget extends State<PopupWidgetState>{
               ),
               child: IconButton(
                 onPressed: (){
-                  _showSnackbar('Beállíthatod, hogy kapj haptikai visszajelzést az appban történő dolgokról. (Rezgés)', 6);
+                  _showSnackbar(AppStrings.getLanguagePack().popup_case1_settingOption6_AppHapticsDescription, 6);
                   AppHaptics.attentionLightImpact();
                 },
                 icon: Icon(
@@ -766,8 +767,8 @@ class PopupWidget extends State<PopupWidgetState>{
                 children: [
                   Expanded(flex: 4, child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: const Text(
-                      'Tanulmányi hét eltolás',
+                    child: Text(
+                      AppStrings.getLanguagePack().popup_case1_settingOption7_WeekOffset,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontSize: 14,
@@ -783,7 +784,7 @@ class PopupWidget extends State<PopupWidgetState>{
                     ),
                     child: IconButton(
                       onPressed: (){
-                        _showSnackbar('Ha nem jól írja ki az app az aktuális heted, itt át tudod állítani!', 6);
+                        _showSnackbar(AppStrings.getLanguagePack().popup_case1_settingOption7_WeekOffsetDescription, 6);
                         AppHaptics.attentionLightImpact();
                       },
                       icon: Icon(
@@ -822,7 +823,7 @@ class PopupWidget extends State<PopupWidgetState>{
                             decoration: InputDecoration(
                               isCollapsed: true,
                               isDense: true,
-                              hintText: 'Auto',
+                              hintText: AppStrings.getLanguagePack().popup_case1_settingOption7_WeekOffsetAuto,
                               hintStyle: TextStyle(
                                   color: Colors.white.withOpacity(.4),
                                   fontSize: 14,
@@ -914,7 +915,7 @@ class PopupWidget extends State<PopupWidgetState>{
           alignment: Alignment.bottomLeft,
           margin: const EdgeInsets.all(10),
           child: Text(
-            'v${pinfo.version} (${pinfo.buildNumber}) - Telepítve innen: ${DataCache.getIsInstalledFromGPlay()! != 0 ? "Play Áruház" : "Csomagteleíptő"}',
+            AppStrings.getStringWithParams(AppStrings.getLanguagePack().popup_case1_settingBottomText_InstallOrigin, ['v${pinfo.version} (${pinfo.buildNumber})']) + (DataCache.getIsInstalledFromGPlay()! != 0 ? AppStrings.getLanguagePack().popup_case1_settingBottomText_InstallOriginGPlay : AppStrings.getLanguagePack().popup_case1_settingBottomText_InstallOrigin3rdParty),
             textAlign: TextAlign.center,
             style: TextStyle(
               fontWeight: FontWeight.w300,
@@ -926,14 +927,14 @@ class PopupWidget extends State<PopupWidgetState>{
         return list;
 
       case 2:
-        list.add(const EmojiRichText(
-          text: "⭐ Értékeld Az Appot! ⭐",
-          defaultStyle: TextStyle(
+        list.add(EmojiRichText(
+          text: AppStrings.getLanguagePack().popup_case2_RateAppPopup,
+          defaultStyle: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w500,
             fontSize: 22.0,
           ),
-          emojiStyle: TextStyle(
+          emojiStyle: const TextStyle(
               color: Colors.white,
               fontSize: 19.0,
               fontFamily: "Noto Color Emoji"
@@ -945,10 +946,10 @@ class PopupWidget extends State<PopupWidgetState>{
           margin: const EdgeInsets.symmetric(vertical: 10),
           height: 2,
         ));
-        list.add(const Text(
-          'Tetszik az app? Esetleg nem? Értékeld a Play Áruházban!\n10 másodpercet vesz igénybe, és ezzel információt nyújthatsz nekem, és másoknak.',
+        list.add(Text(
+          AppStrings.getLanguagePack().popup_case2_RateAppPopupDescription,
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 14,
             fontWeight: FontWeight.w400
@@ -970,8 +971,8 @@ class PopupWidget extends State<PopupWidgetState>{
           ),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 15),
-            child: const Text('Értékelem',
-              style: TextStyle(
+            child: Text(AppStrings.getLanguagePack().popup_case2_RateButton,
+              style: const TextStyle(
                 color: Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0),
                 fontWeight: FontWeight.w900,
                 fontSize: 18.0,
@@ -981,14 +982,14 @@ class PopupWidget extends State<PopupWidgetState>{
         ));
         return list;
       case 3:
-        list.add(const EmojiRichText(
-          text: "💌 Üzenet 💌",
-          defaultStyle: TextStyle(
+        list.add(EmojiRichText(
+          text: AppStrings.getLanguagePack().popup_case3_MessagesHeader,
+          defaultStyle: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w500,
             fontSize: 22.0,
           ),
-          emojiStyle: TextStyle(
+          emojiStyle: const TextStyle(
               color: Colors.white,
               fontSize: 19.0,
               fontFamily: "Noto Color Emoji"
@@ -1045,8 +1046,8 @@ class PopupWidget extends State<PopupWidgetState>{
           ),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 15),
-            child: const Text('Ok',
-              style: TextStyle(
+            child: Text(AppStrings.getLanguagePack().popup_caseAll_OkButton,
+              style: const TextStyle(
                 color: Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0),
                 fontWeight: FontWeight.w900,
                 fontSize: 18.0,
@@ -1056,14 +1057,14 @@ class PopupWidget extends State<PopupWidgetState>{
         ));
         return list;
       case 4:
-        list.add(const EmojiRichText(
-          text: "📢 Óra Infó 📢",
-          defaultStyle: TextStyle(
+        list.add(EmojiRichText(
+          text: AppStrings.getLanguagePack().popup_case4_SubjectInfo,
+          defaultStyle: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w500,
             fontSize: 22.0,
           ),
-          emojiStyle: TextStyle(
+          emojiStyle: const TextStyle(
               color: Colors.white,
               fontSize: 19.0,
               fontFamily: "Noto Color Emoji"
@@ -1092,11 +1093,11 @@ class PopupWidget extends State<PopupWidgetState>{
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Flexible(
+            Flexible(
               child: Text(
-                'Tanítja:',
+                AppStrings.getLanguagePack().popup_case4_TeachedBy,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                     color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
                     fontWeight: FontWeight.w700,
                     fontSize: 14.5
@@ -1124,11 +1125,11 @@ class PopupWidget extends State<PopupWidgetState>{
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Flexible(
+            Flexible(
               child: Text(
-                'Tárgykód:',
+                AppStrings.getLanguagePack().popup_case4_5_SubjectCode,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                     color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
                     fontWeight: FontWeight.w700,
                     fontSize: 14.5
@@ -1156,11 +1157,11 @@ class PopupWidget extends State<PopupWidgetState>{
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Flexible(
+            Flexible(
               child: Text(
-                'Helyszín:',
+                AppStrings.getLanguagePack().popup_case4_5_SubjectLocation,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                     color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
                     fontWeight: FontWeight.w700,
                     fontSize: 14.5
@@ -1189,11 +1190,11 @@ class PopupWidget extends State<PopupWidgetState>{
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Flexible(
+            Flexible(
               child: Text(
-                'Órakezdés:',
+                AppStrings.getLanguagePack().popup_case4_SubjectStartTime,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                     color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
                     fontWeight: FontWeight.w700,
                     fontSize: 14.5
@@ -1231,8 +1232,8 @@ class PopupWidget extends State<PopupWidgetState>{
           ),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 15),
-            child: const Text('Ok',
-              style: TextStyle(
+            child: Text(AppStrings.getLanguagePack().popup_caseAll_OkButton,
+              style: const TextStyle(
                 color: Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0),
                 fontWeight: FontWeight.w900,
                 fontSize: 18.0,
@@ -1242,14 +1243,14 @@ class PopupWidget extends State<PopupWidgetState>{
         ));
         return list;
       case 5:
-        list.add(const EmojiRichText(
-          text: "⚠️ Vizsga Infó ⚠️",
-          defaultStyle: TextStyle(
+        list.add(EmojiRichText(
+          text: AppStrings.getLanguagePack().popup_case5_ExamInfo,
+          defaultStyle: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w500,
             fontSize: 22.0,
           ),
-          emojiStyle: TextStyle(
+          emojiStyle: const TextStyle(
               color: Colors.white,
               fontSize: 19.0,
               fontFamily: "Noto Color Emoji"
@@ -1272,17 +1273,17 @@ class PopupWidget extends State<PopupWidgetState>{
               ),
             )
         ));
-        list.add(const SizedBox(height: 4));
+        list.add(const SizedBox(height: 20));
         list.add(Row(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Flexible(
+            Flexible(
               child: Text(
-                'Tárgykód:',
+                AppStrings.getLanguagePack().popup_case4_TeachedBy,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                     color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
                     fontWeight: FontWeight.w700,
                     fontSize: 14.5
@@ -1310,11 +1311,11 @@ class PopupWidget extends State<PopupWidgetState>{
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Flexible(
+            Flexible(
               child: Text(
-                'Helyszín:',
+                AppStrings.getLanguagePack().popup_case4_5_SubjectLocation,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                     color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
                     fontWeight: FontWeight.w700,
                     fontSize: 14.5
@@ -1343,11 +1344,11 @@ class PopupWidget extends State<PopupWidgetState>{
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Flexible(
+            Flexible(
               child: Text(
-                'Vizsgaidőpont:',
+                AppStrings.getLanguagePack().popup_case5_ExamStartTime,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                     color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
                     fontWeight: FontWeight.w700,
                     fontSize: 14.5
@@ -1385,8 +1386,8 @@ class PopupWidget extends State<PopupWidgetState>{
           ),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 15),
-            child: const Text('Ok',
-              style: TextStyle(
+            child: Text(AppStrings.getLanguagePack().popup_caseAll_OkButton,
+              style: const TextStyle(
                 color: Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0),
                 fontWeight: FontWeight.w900,
                 fontSize: 18.0,
@@ -1396,14 +1397,14 @@ class PopupWidget extends State<PopupWidgetState>{
         ));
         return list;
       case 6:
-        list.add(const EmojiRichText(
-          text: "🤷 Probléma van a fiókoddal 🤷",
-          defaultStyle: TextStyle(
+        list.add(EmojiRichText(
+          text: AppStrings.getLanguagePack().popup_case6_AccountError,
+          defaultStyle: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w500,
             fontSize: 22.0,
           ),
-          emojiStyle: TextStyle(
+          emojiStyle: const TextStyle(
               color: Colors.white,
               fontSize: 19.0,
               fontFamily: "Noto Color Emoji"
@@ -1415,10 +1416,10 @@ class PopupWidget extends State<PopupWidgetState>{
           margin: const EdgeInsets.symmetric(vertical: 10),
           height: 2,
         ));
-        list.add(const Text(
-          'Úgy tűnik nem tudjuk lekérni az adatokat a neptunodból.\nKérlek jelentkezz ki, majd vissza.',
+        list.add(Text(
+          AppStrings.getLanguagePack().popup_case6_AccountErrorDescription,
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: const TextStyle(
               color: Colors.white,
               fontSize: 14,
               fontWeight: FontWeight.w400
@@ -1440,8 +1441,8 @@ class PopupWidget extends State<PopupWidgetState>{
           ),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 15),
-            child: const Text('Kijelentkezés',
-              style: TextStyle(
+            child: Text(AppStrings.getLanguagePack().popup_case6_AccountErrorLogoutButton,
+              style: const TextStyle(
                 color: Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0),
                 fontWeight: FontWeight.w900,
                 fontSize: 18.0,
