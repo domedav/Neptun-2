@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
@@ -19,31 +20,23 @@ typedef Callback = void Function(dynamic);
 class PopupWidgetHandler{
   static PopupWidgetHandler? _instance;
   bool _inUse = false;
-  BuildContext? _prevContext;
-  final int mode;
-  static const Duration animTime = Duration(milliseconds: 400);
-
-  double animValue = 0.0;
-
-  PopupWidget? pwidget;
-  PackageInfo? pinfo;
-
   final linkedScroller = LinkedScrollControllerGroup();
-  ScrollController? scrollController;
+  late ScrollController scrollController;
 
   final Callback callback;
   final VoidCallback? onCloseCallback;
 
-  late EdgeInsets topPadding;
-
   int? _settingsLanguagePrevious;
   int? _settingsLanguageCurrent;
 
+  final int mode;
+
+  AnimationController? widgetAnimController;
+
+  static Duration animDuration = Duration(milliseconds: 300);
+
   PopupWidgetHandler({required this.mode, required this.callback, this.onCloseCallback}){
     _instance = this;
-    Future.delayed(Duration.zero, ()async{
-      pinfo = await PackageInfo.fromPlatform();
-    });
     scrollController = linkedScroller.addAndGet();
   }
 
@@ -53,31 +46,32 @@ class PopupWidgetHandler{
       return;
     }
     _instance!._inUse = true;
-    _instance!._prevContext = context;
     _instance!._settingsLanguagePrevious = DataCache.getUserSelectedLanguage()!;
     _instance!._settingsLanguageCurrent = DataCache.getUserSelectedLanguage()!;
     //_instance!.homePage.setBlurComplex(true);
     HomePageState.showBlurPopup(true);
     AppHaptics.lightImpact();
 
-    _instance!.topPadding = MediaQuery.of(context).padding;
-
-    Navigator.of(context).push(
-      PageRouteBuilder(
-        pageBuilder: (context, anim, anim2) => const PopupWidgetState(),
-        opaque: false,
-        barrierDismissible: true,
-        transitionDuration: animTime,
-        reverseTransitionDuration: animTime,
-        fullscreenDialog: true,
-        transitionsBuilder: (_, anim1, __, widget){
-          return animateTransition(anim1, widget, context);
-        }
-      )
-    );
+    Future<PackageInfo>.delayed(Duration.zero, ()async{
+      return await PackageInfo.fromPlatform();
+    }).then((value){
+      Navigator.of(context).push(
+          PageRouteBuilder(
+              pageBuilder: (context, anim, anim2) => PopupWidgetState(topPadding: MediaQuery.of(context).padding, mode: _instance!.mode, pinfo: value),
+              opaque: false,
+              barrierDismissible: true,
+              transitionDuration: PopupWidgetHandler.animDuration,
+              reverseTransitionDuration: PopupWidgetHandler.animDuration,
+              fullscreenDialog: true,
+              transitionsBuilder: (_, __, ___, widget){
+                return widget;
+              }
+          )
+      );
+    });
   }
 
-  static Widget animateTransition(Animation<double> anim1, Widget widget, BuildContext context){
+  /*static Widget animateTransition(Animation<double> anim1, Widget widget, BuildContext context){
     if(!_instance!.hasListener){
       _instance!.hasListener = true;
       anim1.addStatusListener((status) {
@@ -99,53 +93,50 @@ class PopupWidgetHandler{
       return widget;
     }
     return _instance!.pwidget!.getPopup(_instance!.animValue, context);
-  }
+  }*/
 
-  static closePopup(bool needPop){
+  static closePopup(bool needPop, BuildContext context){
     if(!_instance!._inUse){
       return;
     }
     _instance!._inUse = false;
-    if(needPop){
-      Navigator.of(_instance!._prevContext!).pop();
+    if(_instance!.widgetAnimController != null){
+      _instance!.widgetAnimController!.reverse(from: 1).whenComplete((){
+        if(needPop){
+          Navigator.of(context).pop();
+        }
+        if(_instance!._settingsLanguageCurrent != _instance!._settingsLanguagePrevious){
+          Navigator.popUntil(context, (route) => route.willHandlePopInternally);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const Splitter()),
+          );
+        }
+      });
     }
     HomePageState.showBlurPopup(false);
 
     if(PopupWidgetHandler._instance!.onCloseCallback != null){
       PopupWidgetHandler._instance!.onCloseCallback!();
     }
-
-    if(_instance!._settingsLanguageCurrent != _instance!._settingsLanguagePrevious){
-      Navigator.popUntil(_instance!._prevContext!, (route) => route.willHandlePopInternally);
-      Navigator.push(
-        _instance!._prevContext!,
-        MaterialPageRoute(builder: (context) => const Splitter()),
-      );
-    }
-
-    if(_instance!.pwidget == null || !_instance!.pwidget!.mounted){
-      return;
-    }
-
-    _instance!.pwidget!.setState(() { //jóvanazúgy
-      _instance!.pwidget!._shouldShowSnackbar = false;
-    });
   }
-
 }
 
 class PopupWidgetState extends StatefulWidget{
-  const PopupWidgetState({super.key});
+  PopupWidgetState({super.key, required this.topPadding, required this.mode, required this.pinfo});
+
+  final EdgeInsets topPadding;
+  final int mode;
+  final PackageInfo? pinfo;
 
   @override
   State<StatefulWidget> createState() => PopupWidget();
 }
 
-class PopupWidget extends State<PopupWidgetState>{
+class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
 
-  PopupWidget(){
-    PopupWidgetHandler._instance!.pwidget = this;
-  }
+  late AnimationController popupController;
+  late Animation<double> poppuAnimation;
 
   @override
   void initState() {
@@ -155,6 +146,17 @@ class PopupWidget extends State<PopupWidgetState>{
       systemNavigationBarColor: Color.fromRGBO(0x0C, 0x0C, 0x0C, 1.0), // navigation bar color
       statusBarColor: Color.fromRGBO(0x1A, 0x1A, 0x1A, 1.0), // status bar color
     ));
+
+    popupController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    poppuAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+          parent: popupController, curve: Curves.easeInOutCubic),
+    );
+    PopupWidgetHandler._instance!.widgetAnimController = popupController;
+    popupController.forward(from: 0);
   }
 
   int selectionValue = -1;
@@ -327,7 +329,7 @@ class PopupWidget extends State<PopupWidgetState>{
               return;
             }
             PopupWidgetHandler._instance!.callback(selectionValue);
-            PopupWidgetHandler.closePopup(true);
+            PopupWidgetHandler.closePopup(true, context);
             AppHaptics.lightImpact();
           },
           style: ButtonStyle(
@@ -1038,7 +1040,7 @@ class PopupWidget extends State<PopupWidgetState>{
           )
         );
         list.add(const SizedBox(height: 6));
-        final pinfo = PopupWidgetHandler._instance!.pinfo ?? PackageInfo(appName: 'neptun2', packageName: 'com.domedav.neptun2', version: '1.1.2', buildNumber: '7', buildSignature: '');
+        final pinfo = widget.pinfo ?? PackageInfo(appName: 'neptun2', packageName: 'com.domedav.neptun2', version: '1.1.2', buildNumber: '7', buildSignature: '');
         list.add(Container(
           alignment: Alignment.bottomLeft,
           margin: const EdgeInsets.all(10),
@@ -1059,7 +1061,7 @@ class PopupWidget extends State<PopupWidgetState>{
               return;
             }
             PopupWidgetHandler._instance!.callback(null);
-            PopupWidgetHandler.closePopup(true);
+            PopupWidgetHandler.closePopup(true, context);
             AppHaptics.lightImpact();
           },
           style: ButtonStyle(
@@ -1115,7 +1117,7 @@ class PopupWidget extends State<PopupWidgetState>{
               return;
             }
             PopupWidgetHandler._instance!.callback(null);
-            PopupWidgetHandler.closePopup(true);
+            PopupWidgetHandler.closePopup(true, context);
             AppHaptics.lightImpact();
           },
           style: ButtonStyle(
@@ -1187,7 +1189,7 @@ class PopupWidget extends State<PopupWidgetState>{
               return;
             }
             PopupWidgetHandler._instance!.callback(null);
-            PopupWidgetHandler.closePopup(true);
+            PopupWidgetHandler.closePopup(true, context);
             AppHaptics.lightImpact();
             Future.delayed(Duration.zero, ()async{
               await MailRequest.setMailRead(MailPopupDisplayTexts.mailID);
@@ -1376,7 +1378,7 @@ class PopupWidget extends State<PopupWidgetState>{
               return;
             }
             PopupWidgetHandler._instance!.callback(null);
-            PopupWidgetHandler.closePopup(true);
+            PopupWidgetHandler.closePopup(true, context);
             AppHaptics.lightImpact();
           },
           style: ButtonStyle(
@@ -1530,7 +1532,7 @@ class PopupWidget extends State<PopupWidgetState>{
               return;
             }
             PopupWidgetHandler._instance!.callback(null);
-            PopupWidgetHandler.closePopup(true);
+            PopupWidgetHandler.closePopup(true, context);
             AppHaptics.lightImpact();
           },
           style: ButtonStyle(
@@ -1585,7 +1587,7 @@ class PopupWidget extends State<PopupWidgetState>{
               return;
             }
             PopupWidgetHandler._instance!.callback(null);
-            PopupWidgetHandler.closePopup(true);
+            PopupWidgetHandler.closePopup(true, context);
             AppHaptics.lightImpact();
           },
           style: ButtonStyle(
@@ -1626,63 +1628,60 @@ class PopupWidget extends State<PopupWidgetState>{
     });
   }
 
-  Widget getPopup(double scale, BuildContext context){
-    PopupWidgetHandler._instance!.pwidget = null; // ha ez nincs itt, akkor 2+ popup nyitásnál a 2. language select nyitástól anyfaszt kap az app
-    return Transform.scale(
-      scale: scale,
-      child: Material(
-        type: MaterialType.transparency,
-        child: GestureDetector(
-          onTap: (){
-            PopupWidgetHandler.closePopup(true);
+
+  Widget getPopup(BuildContext context){
+    return Material(
+      type: MaterialType.transparency,
+      child: GestureDetector(
+        onTap: (){
+          PopupWidgetHandler.closePopup(true, context);
+        },
+        behavior: HitTestBehavior.deferToChild,
+        child: PopScope(
+          onPopInvoked: (_) {
+            PopupWidgetHandler.closePopup(false, context);
           },
-          behavior: HitTestBehavior.deferToChild,
-          child: PopScope(
-            onPopInvoked: (_) {
-              PopupWidgetHandler.closePopup(false);
-            },
-            child: Stack(
-              alignment: Alignment.bottomCenter,
-              children: [
-                Container(
-                  alignment: Alignment.center,
-                  color: Colors.transparent,
-                  padding: PopupWidgetHandler._instance!.topPadding,
-                  margin: EdgeInsets.only(bottom: mounted ? MediaQuery.of(context).viewInsets.bottom : 0),
-                  child: SingleChildScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    controller: PopupWidgetHandler._instance!.scrollController,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 10),
-                      margin: const EdgeInsets.all(15),
-                      decoration: const BoxDecoration(
-                        color: Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: getWidgets(PopupWidgetHandler._instance!.mode),
-                      ),
+          child: Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              Container(
+                alignment: Alignment.center,
+                color: Colors.transparent,
+                padding: widget.topPadding,
+                margin: EdgeInsets.only(bottom: mounted ? MediaQuery.of(context).viewInsets.bottom : 0),
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  controller: PopupWidgetHandler._instance!.scrollController,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 10),
+                    margin: const EdgeInsets.all(15),
+                    decoration: const BoxDecoration(
+                      color: Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
-                  )
-                ),
-                Visibility(
-                  visible: _shouldShowSnackbar,
-                  child: AppSnackbar(text: _snackbarMessage, displayDuration: _displayDuration, /*dragAmmount: _snackbarDelta,*/ changer: (){
-                    if(!mounted){
-                      return;
-                    }
-                    AppSnackbar.cancelTimer();
-                    setState(() {
-                      _shouldShowSnackbar = false;
-                    });
-                  }, state: _shouldShowSnackbar,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: getWidgets(PopupWidgetHandler._instance!.mode),
+                    ),
                   ),
                 )
-              ],
-            ),
+              ),
+              Visibility(
+                visible: _shouldShowSnackbar,
+                child: AppSnackbar(text: _snackbarMessage, displayDuration: _displayDuration, /*dragAmmount: _snackbarDelta,*/ changer: (){
+                  if(!mounted){
+                    return;
+                  }
+                  AppSnackbar.cancelTimer();
+                  setState(() {
+                    _shouldShowSnackbar = false;
+                  });
+                }, state: _shouldShowSnackbar,
+                ),
+              )
+            ],
           ),
         ),
       ),
@@ -1691,6 +1690,14 @@ class PopupWidget extends State<PopupWidgetState>{
 
   @override
   Widget build(BuildContext context) {
-    return getPopup(PopupWidgetHandler._instance!.animValue, context);
+    return AnimatedBuilder(
+      animation: popupController,
+      builder: (context, _) {
+        return Transform.scale(
+          scale: poppuAnimation.value,
+          child: getPopup(context)
+        );
+      }
+    );
   }
 }
