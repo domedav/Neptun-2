@@ -102,7 +102,7 @@ class PopupWidgetHandler{
     _instance!._inUse = false;
     if(_instance!.widgetAnimController != null){
       _instance!.widgetAnimController!.reverse(from: 1).whenComplete((){
-        Future.delayed(Duration.zero, (){
+        Future.delayed(Duration.zero, (){ // needed, so when the user spams the back button, the app doesnt get a brainfuck, and turns black
           if(needPop){
             Navigator.of(context).pop();
           }
