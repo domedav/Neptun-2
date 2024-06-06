@@ -120,8 +120,8 @@ class AppStrings{
       calendarPage_weekNav_ClassesThisWeekEmpty: 'Üres ez a heted! 🥳',
       calendarPage_weekNav_ClassesThisWeekLoading: 'Gondolkodunk... 🤔',
       calendarPage_weekNav_StudyWeek: '%0. oktatási hét',
-      markbookPage_AverageDisplay: 'Átlagod: %0',
-      markbookPage_AverageScholarshipDisplay: 'Ösztöndíj indexed: %0',
+      markbookPage_AverageDisplay: 'Átlagod: %0 %1',
+      markbookPage_AverageScholarshipDisplay: 'Ösztöndíj indexed: %0 %1',
       markbookPage_NoGrades: 'nincs jegyed',
       markbookPage_Empty: '🤪Nincs Tantárgyad🤪',
       markbookPage_CompletedLine: 'Elvégezve',
@@ -175,7 +175,11 @@ class AppStrings{
       popup_case6_AccountErrorDescription: 'Úgy tűnik nem tudjuk lekérni az adatokat a neptunodból.\nKérlek jelentkezz ki, majd vissza.',
       popup_case6_AccountErrorLogoutButton: 'Kijelentkezés',
       popup_case1_settingOption8_LangaugeSelection: 'App Nyelv',
-      popup_case1_settingOption8_LangaugeSelectionDescription: 'Válaszd ki milyen nyelven szóljon hozzád az app.'
+      popup_case1_settingOption8_LangaugeSelectionDescription: 'Válaszd ki milyen nyelven szóljon hozzád az app.',
+      popup_case7_ObsolteAppVersion: '🫵 Régi App Verzió 🫵',
+      popup_case7_ObsolteAppVersionDescription: 'Ez a app verzió elavult.\nA legjobb felhasználói élmény érdekében, javasoljuk, hogy frissítsd le! 😌',
+      popup_case7_ButtonUpdateNow: 'Frissítés',
+      popup_caseDefault_InvalidPopupState: 'Hiányos Adatok...'
     )});
     //---
     _languages.addAll({_supportedLanguages[1]: LanguagePack(
@@ -340,7 +344,11 @@ class AppStrings{
       popup_case6_AccountErrorDescription: 'It seems like we cant fetch data from your neptun.\nPlease log out, and log right back in.',
       popup_case6_AccountErrorLogoutButton: 'Logout',
       popup_case1_settingOption8_LangaugeSelection: 'App Language',
-      popup_case1_settingOption8_LangaugeSelectionDescription: 'Select, what language the app shall spoke to you.'
+      popup_case1_settingOption8_LangaugeSelectionDescription: 'Select, what language the app shall spoke to you.',
+      popup_case7_ObsolteAppVersion: '🫵 Old App Version 🫵',
+      popup_case7_ObsolteAppVersionDescription: 'This version of the app is outdated.\nPlease consider updating the app for the best user experience! 😌',
+      popup_case7_ButtonUpdateNow: 'Update',
+      popup_caseDefault_InvalidPopupState: 'Missing Data...'
     )});
     _hasInit = true;
   }
@@ -577,6 +585,12 @@ class LanguagePack{
   final String popup_case6_AccountErrorDescription;
   final String popup_case6_AccountErrorLogoutButton;
 
+  final String popup_case7_ObsolteAppVersion;
+  final String popup_case7_ObsolteAppVersionDescription;
+  final String popup_case7_ButtonUpdateNow;
+
+  final String popup_caseDefault_InvalidPopupState;
+
   LanguagePack({
     required this.language_flag,
     required this.rootpage_setupPage_SelectLoginTypeHeader,
@@ -740,5 +754,9 @@ class LanguagePack{
     required this.popup_case6_AccountErrorLogoutButton,
     required this.popup_case1_settingOption8_LangaugeSelection,
     required this.popup_case1_settingOption8_LangaugeSelectionDescription,
+    required this.popup_case7_ButtonUpdateNow,
+    required this.popup_case7_ObsolteAppVersion,
+    required this.popup_case7_ObsolteAppVersionDescription,
+    required this.popup_caseDefault_InvalidPopupState,
   });
 }

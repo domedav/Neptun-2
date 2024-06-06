@@ -18,6 +18,7 @@ import 'emojirich_text.dart';
 typedef Callback = void Function(dynamic);
 
 class PopupWidgetHandler{
+  static bool _hasPopupActive = false;
   static PopupWidgetHandler? _instance;
   bool _inUse = false;
   final linkedScroller = LinkedScrollControllerGroup();
@@ -36,15 +37,19 @@ class PopupWidgetHandler{
   static Duration animDuration = Duration(milliseconds: 350);
 
   PopupWidgetHandler({required this.mode, required this.callback, this.onCloseCallback}){
+    if(_hasPopupActive){
+      return;
+    }
     _instance = this;
     scrollController = linkedScroller.addAndGet();
   }
 
   bool hasListener = false;
   static void doPopup(BuildContext context){
-    if(_instance!._inUse){
+    if(_instance!._inUse || PopupWidgetHandler._hasPopupActive){
       return;
     }
+    PopupWidgetHandler._hasPopupActive = true;
     _instance!._inUse = true;
     _instance!._settingsLanguagePrevious = DataCache.getUserSelectedLanguage()!;
     _instance!._settingsLanguageCurrent = DataCache.getUserSelectedLanguage()!;
@@ -102,6 +107,7 @@ class PopupWidgetHandler{
     _instance!._inUse = false;
     if(_instance!.widgetAnimController != null){
       _instance!.widgetAnimController!.reverse(from: 1).whenComplete((){
+        PopupWidgetHandler._hasPopupActive = false;
         Future.delayed(Duration.zero, (){ // needed, so when the user spams the back button, the app doesnt get a brainfuck, and turns black
           Navigator.of(context).pop();
         });
@@ -1608,7 +1614,104 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
           ),
         ));
         return list;
+      case 7:
+        list.add(EmojiRichText(
+          text: AppStrings.getLanguagePack().popup_case7_ObsolteAppVersion,
+          defaultStyle: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+            fontSize: 22.0,
+          ),
+          emojiStyle: const TextStyle(
+              color: Colors.white,
+              fontSize: 19.0,
+              fontFamily: "Noto Color Emoji"
+          ),
+        ));
+        list.add(const SizedBox(height: 3));
+        list.add(Container(
+          color: Colors.white.withOpacity(0.3),
+          margin: const EdgeInsets.symmetric(vertical: 10),
+          height: 2,
+        ));
+        list.add(EmojiRichText(
+          text: AppStrings.getLanguagePack().popup_case7_ObsolteAppVersionDescription,
+          defaultStyle: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+            fontSize: 14.0,
+          ),
+          emojiStyle: const TextStyle(
+              color: Colors.white,
+              fontSize: 14.0,
+              fontFamily: "Noto Color Emoji"
+          ),
+        ));
+        list.add(const SizedBox(height: 20));
+        list.add(TextButton(
+          onPressed: (){
+            if(!PopupWidgetHandler._instance!._inUse || !mounted){
+              return;
+            }
+            PopupWidgetHandler._instance!.callback(null);
+            PopupWidgetHandler.closePopup(context);
+            AppHaptics.lightImpact();
+          },
+          style: ButtonStyle(
+            backgroundColor: WidgetStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),
+            overlayColor: WidgetStateProperty.all(Colors.white.withOpacity(.05)),
+          ),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 15),
+            child: Text(AppStrings.getLanguagePack().popup_case7_ButtonUpdateNow,
+              style: const TextStyle(
+                color: Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0),
+                fontWeight: FontWeight.w900,
+                fontSize: 18.0,
+              ),
+            ),
+          ),
+        ));
+        return list;
       default:
+        list.add(EmojiRichText(
+          text: AppStrings.getLanguagePack().popup_caseDefault_InvalidPopupState,
+          defaultStyle: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+            fontSize: 22.0,
+          ),
+          emojiStyle: const TextStyle(
+              color: Colors.white,
+              fontSize: 19.0,
+              fontFamily: "Noto Color Emoji"
+          ),
+        ));
+        list.add(const SizedBox(height: 20));
+        list.add(TextButton(
+          onPressed: (){
+            if(!PopupWidgetHandler._instance!._inUse || !mounted){
+              return;
+            }
+            PopupWidgetHandler._instance!.callback(null);
+            PopupWidgetHandler.closePopup(context);
+            AppHaptics.lightImpact();
+          },
+          style: ButtonStyle(
+            backgroundColor: WidgetStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),
+            overlayColor: WidgetStateProperty.all(Colors.white.withOpacity(.05)),
+          ),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 15),
+            child: Text(AppStrings.getLanguagePack().popup_caseAll_OkButton,
+              style: const TextStyle(
+                color: Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0),
+                fontWeight: FontWeight.w900,
+                fontSize: 18.0,
+              ),
+            ),
+          ),
+        ));
         return list;
     }
   }

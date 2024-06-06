@@ -1168,6 +1168,21 @@ import '../storage.dart' as storage;
       return (daylightSavingsTimeFrom.microsecondsSinceEpoch < time.microsecondsSinceEpoch && time.microsecondsSinceEpoch < daylightSavingsTimeTo.microsecondsSinceEpoch);
     }
   }
+
+  class Language{
+    static Future<int?> getMinimumAllowedAppBuildVersion() async{
+      final url = Uri.parse('https://raw.githubusercontent.com/domedav/Neptun-2/main/appMinimumAllowedVersion.json');
+      final response = await http.get(url);
+
+      if (response.statusCode != 200) {
+        AppAnalitics.sendAnaliticsData(AppAnalitics.ERROR, 'api_coms.dart => InstitudesRequest.getRawJsonWithNameUrlPairs() Error: Failed to fetch appMinimumAllowedVersion.json');
+        return null;
+      }
+
+      Map<String, dynamic> jsonMap = conv.json.decode(response.body);
+      return jsonMap["latestMinimumAllowedVerBuildNum"];
+    }
+  }
   
   class NeptunCerts extends HttpOverrides {
     static NeptunCerts? _instance;
