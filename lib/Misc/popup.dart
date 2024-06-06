@@ -33,7 +33,7 @@ class PopupWidgetHandler{
 
   AnimationController? widgetAnimController;
 
-  static Duration animDuration = Duration(milliseconds: 300);
+  static Duration animDuration = Duration(milliseconds: 350);
 
   PopupWidgetHandler({required this.mode, required this.callback, this.onCloseCallback}){
     _instance = this;
@@ -61,7 +61,7 @@ class PopupWidgetHandler{
               opaque: false,
               barrierDismissible: true,
               transitionDuration: PopupWidgetHandler.animDuration,
-              reverseTransitionDuration: PopupWidgetHandler.animDuration,
+              reverseTransitionDuration: Duration.zero,
               fullscreenDialog: true,
               transitionsBuilder: (_, __, ___, widget){
                 return widget;
@@ -102,9 +102,11 @@ class PopupWidgetHandler{
     _instance!._inUse = false;
     if(_instance!.widgetAnimController != null){
       _instance!.widgetAnimController!.reverse(from: 1).whenComplete((){
-        if(needPop){
-          Navigator.of(context).pop();
-        }
+        Future.delayed(Duration.zero, (){
+          if(needPop){
+            Navigator.of(context).pop();
+          }
+        });
         if(_instance!._settingsLanguageCurrent != _instance!._settingsLanguagePrevious){
           Navigator.popUntil(context, (route) => route.willHandlePopInternally);
           Navigator.push(
@@ -112,8 +114,10 @@ class PopupWidgetHandler{
             MaterialPageRoute(builder: (context) => const Splitter()),
           );
         }
+        _instance!.widgetAnimController!.dispose();
       });
     }
+
     HomePageState.showBlurPopup(false);
 
     if(PopupWidgetHandler._instance!.onCloseCallback != null){
