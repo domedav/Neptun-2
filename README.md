@@ -23,6 +23,9 @@ Töltsd le másmilyen áruházból!
 - https://apkpure.com/p/com.domedav.neptun2
 - ...
 
+## 1.6.1
+Apró popup átdolgozás, a felhasználót nem érinti
+
 ## 1.6.0
 Nyelvek
 
