@@ -95,7 +95,7 @@ class PopupWidgetHandler{
     return _instance!.pwidget!.getPopup(_instance!.animValue, context);
   }*/
 
-  static closePopup(bool needPop, BuildContext context){
+  static closePopup(BuildContext context){
     if(!_instance!._inUse){
       return;
     }
@@ -103,9 +103,7 @@ class PopupWidgetHandler{
     if(_instance!.widgetAnimController != null){
       _instance!.widgetAnimController!.reverse(from: 1).whenComplete((){
         Future.delayed(Duration.zero, (){ // needed, so when the user spams the back button, the app doesnt get a brainfuck, and turns black
-          if(needPop){
-            Navigator.of(context).pop();
-          }
+          Navigator.of(context).pop();
         });
         if(_instance!._settingsLanguageCurrent != _instance!._settingsLanguagePrevious){
           Navigator.popUntil(context, (route) => route.willHandlePopInternally);
@@ -333,7 +331,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
               return;
             }
             PopupWidgetHandler._instance!.callback(selectionValue);
-            PopupWidgetHandler.closePopup(true, context);
+            PopupWidgetHandler.closePopup(context);
             AppHaptics.lightImpact();
           },
           style: ButtonStyle(
@@ -1065,7 +1063,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
               return;
             }
             PopupWidgetHandler._instance!.callback(null);
-            PopupWidgetHandler.closePopup(true, context);
+            PopupWidgetHandler.closePopup(context);
             AppHaptics.lightImpact();
           },
           style: ButtonStyle(
@@ -1121,7 +1119,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
               return;
             }
             PopupWidgetHandler._instance!.callback(null);
-            PopupWidgetHandler.closePopup(true, context);
+            PopupWidgetHandler.closePopup(context);
             AppHaptics.lightImpact();
           },
           style: ButtonStyle(
@@ -1193,7 +1191,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
               return;
             }
             PopupWidgetHandler._instance!.callback(null);
-            PopupWidgetHandler.closePopup(true, context);
+            PopupWidgetHandler.closePopup(context);
             AppHaptics.lightImpact();
             Future.delayed(Duration.zero, ()async{
               await MailRequest.setMailRead(MailPopupDisplayTexts.mailID);
@@ -1382,7 +1380,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
               return;
             }
             PopupWidgetHandler._instance!.callback(null);
-            PopupWidgetHandler.closePopup(true, context);
+            PopupWidgetHandler.closePopup(context);
             AppHaptics.lightImpact();
           },
           style: ButtonStyle(
@@ -1536,7 +1534,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
               return;
             }
             PopupWidgetHandler._instance!.callback(null);
-            PopupWidgetHandler.closePopup(true, context);
+            PopupWidgetHandler.closePopup(context);
             AppHaptics.lightImpact();
           },
           style: ButtonStyle(
@@ -1591,7 +1589,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
               return;
             }
             PopupWidgetHandler._instance!.callback(null);
-            PopupWidgetHandler.closePopup(true, context);
+            PopupWidgetHandler.closePopup(context);
             AppHaptics.lightImpact();
           },
           style: ButtonStyle(
@@ -1638,12 +1636,13 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
       type: MaterialType.transparency,
       child: GestureDetector(
         onTap: (){
-          PopupWidgetHandler.closePopup(true, context);
+          PopupWidgetHandler.closePopup(context);
         },
         behavior: HitTestBehavior.deferToChild,
         child: PopScope(
+          canPop: false,
           onPopInvoked: (_) {
-            PopupWidgetHandler.closePopup(false, context);
+            PopupWidgetHandler.closePopup(context);
           },
           child: Stack(
             alignment: Alignment.bottomCenter,
