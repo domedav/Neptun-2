@@ -1,12 +1,12 @@
 {
   "langIds":[
-    "TS"
+    "P0"
   ]
   "languagesMap": [
     {
-      "langName":"TestLang",
-      "langId":"TS",
-      "langURL":"https://raw.githubusercontent.com/domedav/Neptun-2/main/Languages/LanExtentions/TestLang.json"
+      "langName":"Pirate",
+      "langId":"P0",
+      "langURL":"https://raw.githubusercontent.com/domedav/Neptun-2/main/Languages/LangExtentions/Pirate.json"
     }
   ]
 }
