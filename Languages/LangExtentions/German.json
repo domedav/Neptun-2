@@ -167,5 +167,7 @@
   "popup_caseDefault_InvalidPopupState":"Fehlende Daten...",
   "popup_case8_AcceptLanguageSuggestion":"🗣️ App-Sprache 🗣️",
   "popup_case8_AcceptLanguageSuggestionDescription":"Die App unterstützt die Sprache, die du sprichst.\nÄndere sie, wenn du möchtest.",
-  "popup_case8_ButtonAcceptLang":"Ändern"
+  "popup_case8_ButtonAcceptLang":"Ändern",
+  "popup_case1_langSwap_DownloadingLang":"Sprache wird heruntergeladen",
+  "popup_case1_langSwap_DownloadingLangFail":"Kann nicht heruntergeladen werden, kein Internet"
 }
