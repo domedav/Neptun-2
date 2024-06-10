@@ -29,7 +29,7 @@
   "loginPage_setupPage_Password":"Passwort",
   "loginPage_setupPage_InvalidCredentialsEntered":"Ungültiger Benutzername oder ungültiges Passwort!",
   "loginPage_setupPage_2faWarning":"Wenn du die Zwei-Faktor-Authentifizierung für dein Konto aktiviert hast, kannst du dich nicht anmelden!",
-  "loginPage_setupPage_2faWarningDescription":"❌ Neptun2 verwendet die alte Neptun-Mobile-App-API, die keine Zwei-Faktor-Authentifizierung enthielt. Wenn dein Konto geschützt ist, kannst du dich über Neptun2 nicht anmelden.\n\n🤓 Aber du kannst sie ausschalten und Neptun2 ohne Probleme verwenden.\nUm sie auszuschalten, gehe zu "Meine Daten/Einstellungen" im Neptun-Web.",
+  "loginPage_setupPage_2faWarningDescription":"❌ Neptun2 verwendet die alte Neptun-Mobile-App-API, die keine Zwei-Faktor-Authentifizierung enthielt. Wenn dein Konto geschützt ist, kannst du dich über Neptun2 nicht anmelden.\n\n🤓 Aber du kannst sie ausschalten und Neptun2 ohne Probleme verwenden.\nUm sie auszuschalten, gehe zu \"Meine Daten/Einstellungen\" im Neptun-Web.",
   "loginPage_setupPage_LogInButton":"Anmelden",
   "loginPage_setupPage_LoginInProgress":"Anmeldung läuft...",
   "loginPage_setupPage_LoginInProgressSlow":"Neptun-Server haben Schwierigkeiten...",
