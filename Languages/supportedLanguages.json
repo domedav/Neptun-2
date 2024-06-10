@@ -11,6 +11,11 @@
       "langURL":""
     },
     {
+      "langName":"Deutsch",
+      "langId":"de",
+      "langURL":""
+    },
+    {
       "langName":"Pirate",
       "langId":"7s",
       "langURL":"https://raw.githubusercontent.com/domedav/Neptun-2/main/Languages/LangExtentions/Pirate.json"
