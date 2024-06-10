@@ -164,5 +164,8 @@
   "popup_case7_ButtonUpdateNow":"Update",
   "popup_case7_ObsolteAppVersion":"🫵 Old App Version 🫵",
   "popup_case7_ObsolteAppVersionDescription":"This version o' th' app be outdated.\nPlease consider updatin' th' app fer th' best user experience! 😌",
-  "popup_caseDefault_InvalidPopupState":"Missin' Data..."
+  "popup_caseDefault_InvalidPopupState":"Missin' Data...",
+  "popup_case8_AcceptLanguageSuggestion":"🗣️ App Language 🗣️",
+  "popup_case8_AcceptLanguageSuggestionDescription":"The app be speakin' the language ye be usin'.\nChange it if ye want to.",
+  "popup_case8_ButtonAcceptLang":"Change"
 }
