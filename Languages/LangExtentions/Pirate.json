@@ -98,7 +98,7 @@
   "topmenu_buttons_SupportDev":"🎁 Support developer",
   "topmenu_Greet":"Ahoy %0! 👋",
   "topmenu_LoginPlace":"Ye be logged into here: 🔗\n%0",
-  "topmenu_buttons_LogoutSuccessToast":"Ye have logged out successfully! 🚪",
+  "topmenu_buttons_LogoutSuccessToast":"Ye have left the ship! 🚪",
   "calendarPage_FreeDay":"🥳Free Day!🥳",
   "calendarPage_weekNav_ClassesThisWeekFull":"Classes this week: %0 %1. - %2 %3.",
   "calendarPage_weekNav_ClassesThisWeekOneDay":"Class this week: %0 %1. (%2)",
@@ -164,5 +164,8 @@
   "popup_case7_ButtonUpdateNow":"Update",
   "popup_case7_ObsolteAppVersion":"🫵 Old App Version 🫵",
   "popup_case7_ObsolteAppVersionDescription":"This version o' th' app be outdated.\nPlease consider updatin' th' app fer th' best user experience! 😌",
-  "popup_caseDefault_InvalidPopupState":"Missin' Data..."
+  "popup_caseDefault_InvalidPopupState":"Missin' Data...",
+  "popup_case8_AcceptLanguageSuggestion":"🗣️ App Language 🗣️",
+  "popup_case8_AcceptLanguageSuggestionDescription":"The app be speakin' the language ye be usin'.\nChange it if ye want to.",
+  "popup_case8_ButtonAcceptLang":"Change"
 }
