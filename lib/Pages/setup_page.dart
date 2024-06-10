@@ -23,10 +23,41 @@ class SetupPageLoginTypeSelection extends StatefulWidget{
   @override
   State<StatefulWidget> createState() => _SetupPageLoginTypeSelectionState();
 }
-class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelection>{
+class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelection> with TickerProviderStateMixin{
   bool _obtainFreshData = true;
 
   void changeFreshDataVal(bool val) => _obtainFreshData = val;
+
+  late AnimationController blurController;
+  late Animation<double> blurAnimation;
+  bool _showBlur = false;
+
+  void blurPage(bool state){
+    setState(() {
+      if(state) {
+        SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+          statusBarIconBrightness: Brightness.light,
+          systemNavigationBarColor: Color.fromRGBO(0x0C, 0x0C, 0x0C, 1.0), // navigation bar color
+          statusBarColor: Color.fromRGBO(0x1A, 0x1A, 0x1A, 1.0), // status bar color
+        ));
+        blurController.forward();
+        _showBlur = true;
+        return;
+      }
+      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        statusBarIconBrightness: Brightness.light,
+        systemNavigationBarColor: Color.fromRGBO(0x22, 0x22, 0x22, 1.0), // navigation bar color
+        statusBarColor: Color.fromRGBO(0x22, 0x22, 0x22, 1.0), // status bar color
+      ));
+      blurController.reverse().whenComplete((){
+        setState(() {
+          _showBlur = false;
+        });
+      });
+    });
+  }
+
+  bool _hasAskedLang = false;
 
   @override
   void initState() {
@@ -38,7 +69,22 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
       statusBarColor: Color.fromRGBO(0x17, 0x17, 0x17, 1.0), // status bar color
     ));
 
+    blurController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 350),
+    );
+    blurAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: blurController, curve: Curves.linear),
+    );
+
     FlutterNativeSplash.remove();
+
+    if(!_hasAskedLang){
+      Future.delayed(Duration(seconds: 1),()async{
+        _hasAskedLang = true;
+        await LanguageManager.suggestLang(context, ()=>blurPage(true), ()=>blurPage(false));
+      });
+    }
   }
 
   bool _analiticsDebounce = false;
@@ -46,208 +92,229 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Container(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 40),
-                Text(
-                  AppStrings.getLanguagePack().rootpage_setupPage_SelectLoginTypeHeader,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.white
-                  ),
-                ),
-                const SizedBox(height: 50),
-                Column(
+      body: Stack(
+        alignment: Alignment.center,
+        children: [
+          Center(
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    GestureDetector(
-                      onTap: (){
-                        AppHaptics.lightImpact();
-                        if(!_analiticsDebounce){
-                          _analiticsDebounce = true;
-                          AppAnalitics.sendAnaliticsData(AppAnalitics.INFO, 'setup_page.dart => _SetupPageLoginTypeSelectionState.build() Info: Institude selection login');
-                        }
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => SetupPageInstitudeSelection(fetchData: _obtainFreshData, callback: changeFreshDataVal)));
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(20),
-                        margin: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: const Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
-                          borderRadius: const BorderRadius.all(Radius.circular(30)),
-                          border: Border.all(
-                            color: Colors.white.withOpacity(.3),
-                            width: 1
-                          )
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                Icon(
-                                  Icons.list_rounded,
-                                  color: Colors.white,
-                                  size: 40,
-                                ),
-                                Flexible(
-                                  child: Text(
-                                    AppStrings.getLanguagePack().rootpage_setupPage_InstitutesSelection,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 20),
-                            Text(
-                              AppStrings.getLanguagePack().rootpage_setupPage_InstitutesSelectionDescription,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: Colors.white.withOpacity(.6),
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400
-                              ),
-                            ),
-                          ],
-                        ),
+                    const SizedBox(height: 40),
+                    Text(
+                      AppStrings.getLanguagePack().rootpage_setupPage_SelectLoginTypeHeader,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white
                       ),
                     ),
-                    GestureDetector(
-                      onTap: (){
-                        AppHaptics.lightImpact();
-                        if(!_analiticsDebounce){
-                          _analiticsDebounce = true;
-                          AppAnalitics.sendAnaliticsData(AppAnalitics.INFO, 'setup_page.dart => _SetupPageLoginTypeSelectionState.build() Info: URL input login');
-                        }
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const SetupPageURLInput()));
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(20),
-                        margin: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                            color: const Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
-                            borderRadius: const BorderRadius.all(Radius.circular(30)),
-                            border: Border.all(
+                    const SizedBox(height: 50),
+                    Column(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: (){
+                            AppHaptics.lightImpact();
+                            if(!_analiticsDebounce){
+                              _analiticsDebounce = true;
+                              AppAnalitics.sendAnaliticsData(AppAnalitics.INFO, 'setup_page.dart => _SetupPageLoginTypeSelectionState.build() Info: Institude selection login');
+                            }
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => SetupPageInstitudeSelection(fetchData: _obtainFreshData, callback: changeFreshDataVal)));
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(20),
+                            margin: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: const Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
+                              borderRadius: const BorderRadius.all(Radius.circular(30)),
+                              border: Border.all(
                                 color: Colors.white.withOpacity(.3),
                                 width: 1
-                            )
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Row(
+                              )
+                            ),
+                            child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.max,
                               children: [
-                                Icon(
-                                  Icons.link_rounded,
-                                  color: Colors.white,
-                                  size: 40,
-                                ),
-                                Flexible(
-                                  child: Text(
-                                    AppStrings.getLanguagePack().rootpage_setupPage_UrlLogin,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Icon(
+                                      Icons.list_rounded,
+                                      color: Colors.white,
+                                      size: 40,
                                     ),
+                                    Flexible(
+                                      child: Text(
+                                        AppStrings.getLanguagePack().rootpage_setupPage_InstitutesSelection,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 20),
+                                Text(
+                                  AppStrings.getLanguagePack().rootpage_setupPage_InstitutesSelectionDescription,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.white.withOpacity(.6),
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400
                                   ),
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 20),
-                            Text(
-                              AppStrings.getLanguagePack().rootpage_setupPage_UrlLoginDescription,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: Colors.white.withOpacity(.6),
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                const SizedBox(height: 50),
-                Container(
-                    margin: const EdgeInsets.all(20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Flexible(
-                          child: EmojiRichText(
-                            text: AppStrings.getLanguagePack().rootpage_setupPage_AppProblemReporting,
-                            defaultStyle: TextStyle(
-                              color: Colors.white.withOpacity(.6),
-                              fontWeight: FontWeight.w700,
-                              fontSize: 14.0,
-                            ),
-                            emojiStyle: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 14.0,
-                                fontFamily: "Noto Color Emoji"
-                            ),
                           ),
                         ),
-                        const SizedBox(width: 20),
-                        Container(
-                          decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(.06),
-                              borderRadius: const BorderRadius.all(Radius.circular(90))
-                          ),
-                          child: IconButton(
-                            onPressed: (){
-                              if(!Platform.isAndroid){
-                                return;
-                              }
-
-                              final url = Uri.parse('https://github.com/domedav/Neptun-2/issues/new/choose');
-                              launchUrl(url);
-                            },
-                            icon: Icon(
-                              Icons.feed_rounded,
-                              color: Colors.white.withOpacity(.4),
-                              size: 32,
+                        GestureDetector(
+                          onTap: (){
+                            AppHaptics.lightImpact();
+                            if(!_analiticsDebounce){
+                              _analiticsDebounce = true;
+                              AppAnalitics.sendAnaliticsData(AppAnalitics.INFO, 'setup_page.dart => _SetupPageLoginTypeSelectionState.build() Info: URL input login');
+                            }
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const SetupPageURLInput()));
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(20),
+                            margin: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                                color: const Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
+                                borderRadius: const BorderRadius.all(Radius.circular(30)),
+                                border: Border.all(
+                                    color: Colors.white.withOpacity(.3),
+                                    width: 1
+                                )
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Icon(
+                                      Icons.link_rounded,
+                                      color: Colors.white,
+                                      size: 40,
+                                    ),
+                                    Flexible(
+                                      child: Text(
+                                        AppStrings.getLanguagePack().rootpage_setupPage_UrlLogin,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 20),
+                                Text(
+                                  AppStrings.getLanguagePack().rootpage_setupPage_UrlLoginDescription,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.white.withOpacity(.6),
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         )
                       ],
-                    )
+                    ),
+                    const SizedBox(height: 50),
+                    Container(
+                        margin: const EdgeInsets.all(20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Flexible(
+                              child: EmojiRichText(
+                                text: AppStrings.getLanguagePack().rootpage_setupPage_AppProblemReporting,
+                                defaultStyle: TextStyle(
+                                  color: Colors.white.withOpacity(.6),
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 14.0,
+                                ),
+                                emojiStyle: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14.0,
+                                    fontFamily: "Noto Color Emoji"
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 20),
+                            Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(.06),
+                                  borderRadius: const BorderRadius.all(Radius.circular(90))
+                              ),
+                              child: IconButton(
+                                onPressed: (){
+                                  if(!Platform.isAndroid){
+                                    return;
+                                  }
+
+                                  final url = Uri.parse('https://github.com/domedav/Neptun-2/issues/new/choose');
+                                  launchUrl(url);
+                                },
+                                icon: Icon(
+                                  Icons.feed_rounded,
+                                  color: Colors.white.withOpacity(.4),
+                                  size: 32,
+                                ),
+                              ),
+                            )
+                          ],
+                        )
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
+          Visibility(
+            visible: _showBlur,
+            child: AnimatedBuilder(
+              animation: blurController,
+              builder: (context, widget) {
+                return Positioned.fill(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: blurAnimation.value * 15, sigmaY: blurAnimation.value * 15),
+                    child: Container(
+                      color: Colors.black.withOpacity(blurAnimation.value * 0.4),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

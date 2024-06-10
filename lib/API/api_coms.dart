@@ -1183,6 +1183,13 @@ import 'dart:developer' as debug;
   }
 
   class Language{
+    static Future<bool> checkSupportedUserLanguage()async{
+      final deviceLang = Platform.localeName.split('_')[0].toLowerCase();
+      // check language
+      final allLang = await Language.getAllLanguages();
+      return Language.getHasLanguageById(allLang, deviceLang);
+    }
+
     static bool getHasLanguageById(List<LangPackMap>? languages, String neededId){
       if(languages == null){
         return false;
@@ -1216,7 +1223,11 @@ import 'dart:developer' as debug;
       return LanguagePack.fromJson(neededID, response.body, (){}); // auto registers itself, as its downloaded, no need for the callback, def not invalid as it has just been downloaded
     }
 
+    static List<LangPackMap>? _langMapCache;
     static Future<List<LangPackMap>?> getAllLanguages()async{
+      if(_langMapCache != null){
+        return _langMapCache;
+      }
       final url = Uri.parse('https://raw.githubusercontent.com/domedav/Neptun-2/main/Languages/supportedLanguages.json');
       final response = await http.get(url);
 
@@ -1231,6 +1242,7 @@ import 'dart:developer' as debug;
       for (var item in allLangItems){
         langPacksRoot.add(LangPackMap.fromMap(item));
       }
+      _langMapCache = langPacksRoot;
       return langPacksRoot;
     }
   }

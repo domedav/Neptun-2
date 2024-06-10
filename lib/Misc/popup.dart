@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -45,16 +46,24 @@ class PopupWidgetHandler{
   }
 
   bool hasListener = false;
-  static void doPopup(BuildContext context){
+  VoidCallback? _closeBlurCallback;
+
+  static void doPopup(BuildContext context, {VoidCallback? blur = null, VoidCallback? closeBlur = null}){
     if(_instance!._inUse || PopupWidgetHandler._hasPopupActive){
       return;
     }
+    _instance!._closeBlurCallback = closeBlur;
     PopupWidgetHandler._hasPopupActive = true;
     _instance!._inUse = true;
     _instance!._settingsLanguagePrevious = DataCache.getUserSelectedLanguage()!;
     _instance!._settingsLanguageCurrent = DataCache.getUserSelectedLanguage()!;
     //_instance!.homePage.setBlurComplex(true);
-    HomePageState.showBlurPopup(true);
+    if(blur == null){
+      HomePageState.showBlurPopup(true);
+    }
+    else{
+      blur();
+    }
     AppHaptics.lightImpact();
 
     Future<PackageInfo>.delayed(Duration.zero, ()async{
@@ -122,7 +131,12 @@ class PopupWidgetHandler{
       });
     }
 
-    HomePageState.showBlurPopup(false);
+    if(_instance!._closeBlurCallback == null){
+      HomePageState.showBlurPopup(false);
+    }
+    else{
+      _instance!._closeBlurCallback!();
+    }
 
     if(PopupWidgetHandler._instance!.onCloseCallback != null){
       PopupWidgetHandler._instance!.onCloseCallback!();
@@ -1664,6 +1678,65 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 15),
             child: Text(AppStrings.getLanguagePack().popup_case7_ButtonUpdateNow,
+              style: const TextStyle(
+                color: Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0),
+                fontWeight: FontWeight.w900,
+                fontSize: 18.0,
+              ),
+            ),
+          ),
+        ));
+        return list;
+      case 8:
+        list.add(EmojiRichText(
+          text: AppStrings.popupLangPrev_Header,
+          defaultStyle: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+            fontSize: 22.0,
+          ),
+          emojiStyle: const TextStyle(
+              color: Colors.white,
+              fontSize: 19.0,
+              fontFamily: "Noto Color Emoji"
+          ),
+        ));
+        list.add(const SizedBox(height: 3));
+        list.add(Container(
+          color: Colors.white.withOpacity(0.3),
+          margin: const EdgeInsets.symmetric(vertical: 10),
+          height: 2,
+        ));
+        list.add(EmojiRichText(
+          text: AppStrings.popupLangPrev_Description,
+          defaultStyle: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+            fontSize: 14.0,
+          ),
+          emojiStyle: const TextStyle(
+              color: Colors.white,
+              fontSize: 14.0,
+              fontFamily: "Noto Color Emoji"
+          ),
+        ));
+        list.add(const SizedBox(height: 20));
+        list.add(TextButton(
+          onPressed: (){
+            if(!PopupWidgetHandler._instance!._inUse || !mounted){
+              return;
+            }
+            PopupWidgetHandler._instance!.callback(null);
+            PopupWidgetHandler.closePopup(context);
+            AppHaptics.lightImpact();
+          },
+          style: ButtonStyle(
+            backgroundColor: WidgetStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),
+            overlayColor: WidgetStateProperty.all(Colors.white.withOpacity(.05)),
+          ),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 15),
+            child: Text(AppStrings.popupLangPrev_Button,
               style: const TextStyle(
                 color: Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0),
                 fontWeight: FontWeight.w900,

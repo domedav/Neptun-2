@@ -1,10 +1,14 @@
-import 'dart:developer';
 import 'dart:io';
 import 'dart:convert' as conv;
 import 'dart:ui';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:neptun2/storage.dart';
 
 import 'API/api_coms.dart';
+import 'Misc/popup.dart';
+import 'Pages/startup_page.dart';
+import 'haptics.dart';
 class AppStrings{
   static bool _hasInit = false;
   static late final String _defaultLocale;
@@ -188,7 +192,10 @@ class AppStrings{
       popup_case7_ObsolteAppVersion: '🫵 Régi App Verzió 🫵',
       popup_case7_ObsolteAppVersionDescription: 'Ez a app verzió elavult.\nA legjobb felhasználói élmény érdekében, javasoljuk, hogy frissítsd le! 😌',
       popup_case7_ButtonUpdateNow: 'Frissítés',
-      popup_caseDefault_InvalidPopupState: 'Hiányos Adatok...'
+      popup_caseDefault_InvalidPopupState: 'Hiányos Adatok...',
+      popup_case8_AcceptLanguageSuggestion: '🗣️ App Nyelvezet 🗣️',
+      popup_case8_AcceptLanguageSuggestionDescription: 'Az app támogatja az általad beszélt nyelvet.\nHa gondolod állítsd be.',
+      popup_case8_ButtonAcceptLang: 'Beállít',
     )});
     //---
     _languages.addAll({_supportedLanguages[1]: LanguagePack(
@@ -298,9 +305,7 @@ class AppStrings{
     calendarPage_weekNav_ClassesThisWeekEmpty: 'This week is empty! 🥳',
     calendarPage_weekNav_ClassesThisWeekLoading: 'Thinking... 🤔',
     calendarPage_weekNav_StudyWeek: '%0. education week',
-    markbookPage_AverageDisplay: 'Average:
-
-    %0 %1',
+    markbookPage_AverageDisplay: 'Average: %0 %1',
     markbookPage_AverageScholarshipDisplay: 'Scholarship index: %0 %1',
     markbookPage_NoGrades: 'You have no grades',
     markbookPage_Empty: '🤪You don\'t have any subjects🤪',
@@ -359,9 +364,22 @@ class AppStrings{
     popup_case7_ObsolteAppVersion: '🫵 Old App Version 🫵',
     popup_case7_ObsolteAppVersionDescription: 'This version of the app is outdated.\nPlease consider updating the app for the best user experience! 😌',
     popup_case7_ButtonUpdateNow: 'Update',
-    popup_caseDefault_InvalidPopupState: 'Missing Data...'
+    popup_caseDefault_InvalidPopupState: 'Missing Data...',
+    popup_case8_AcceptLanguageSuggestion: '🗣️ App Language 🗣️',
+    popup_case8_AcceptLanguageSuggestionDescription: 'The app supports the language you are speaking.\nChange it if you want to.',
+    popup_case8_ButtonAcceptLang: 'Change',
     )});
     _hasInit = true;
+  }
+
+  static String popupLangPrev_Header = "ERROR";
+  static String popupLangPrev_Description = "ERROR";
+  static String popupLangPrev_Button = "ERROR";
+
+  static void setupPopupPreviews(LanguagePack pack){
+    popupLangPrev_Header = pack.popup_case8_AcceptLanguageSuggestion;
+    popupLangPrev_Description = pack.popup_case8_AcceptLanguageSuggestionDescription;
+    popupLangPrev_Button = pack.popup_case8_ButtonAcceptLang;
   }
 
   static LanguagePack getLanguagePack(){
@@ -371,7 +389,7 @@ class AppStrings{
   static String _getCurrentLang(){
     final currLangId = DataCache.getUserSelectedLanguage();
     final selectonList = _supportedLanguages + _downloadedSupportedLanguages;
-    if(currLangId == null || currLangId == -1){
+    if(currLangId == null || currLangId == -1 || currLangId >= selectonList.length){
       return _defaultLocale;
     }
     return selectonList[currLangId];
@@ -400,6 +418,10 @@ class AppStrings{
 
   static List<String> getAllLangFlags(){
     return _supportedLanguagesFlags + _downloadedSupportedLanguagesFlags;
+  }
+
+  static List<String> getAllLangCodes(){
+    return _supportedLanguages + _downloadedSupportedLanguages;
   }
 
   static void saveDownloadedLanguageData(){
@@ -626,6 +648,10 @@ class LanguagePack{
   final String popup_case7_ObsolteAppVersionDescription;
   final String popup_case7_ButtonUpdateNow;
 
+  final String popup_case8_AcceptLanguageSuggestion;
+  final String popup_case8_AcceptLanguageSuggestionDescription;
+  final String popup_case8_ButtonAcceptLang;
+
   final String popup_caseDefault_InvalidPopupState;
 
   LanguagePack({
@@ -795,6 +821,9 @@ class LanguagePack{
     required this.popup_case7_ObsolteAppVersion,
     required this.popup_case7_ObsolteAppVersionDescription,
     required this.popup_caseDefault_InvalidPopupState,
+    required this.popup_case8_AcceptLanguageSuggestion,
+    required this.popup_case8_AcceptLanguageSuggestionDescription,
+    required this.popup_case8_ButtonAcceptLang,
   });
 
   static LanguagePack fromJson(String countryId, String json, VoidCallback onLanguageOutdated){
@@ -968,6 +997,9 @@ class LanguagePack{
         popup_case7_ObsolteAppVersion:lang['popup_case7_ObsolteAppVersion'],
         popup_case7_ObsolteAppVersionDescription:lang['popup_case7_ObsolteAppVersionDescription'],
         popup_caseDefault_InvalidPopupState:lang['popup_caseDefault_InvalidPopupState'],
+        popup_case8_AcceptLanguageSuggestion:lang['popup_case8_AcceptLanguageSuggestion'],
+        popup_case8_AcceptLanguageSuggestionDescription:lang['popup_case8_AcceptLanguageSuggestionDescription'],
+        popup_case8_ButtonAcceptLang:lang['popup_case8_ButtonAcceptLang'],
       );
     }
     catch(_){
@@ -1159,7 +1191,36 @@ class LanguagePack{
       'popup_case7_ObsolteAppVersion':lang.popup_case7_ObsolteAppVersion,
       'popup_case7_ObsolteAppVersionDescription':lang.popup_case7_ObsolteAppVersionDescription,
       'popup_caseDefault_InvalidPopupState':lang.popup_caseDefault_InvalidPopupState,
+      'popup_case8_AcceptLanguageSuggestion':lang.popup_case8_AcceptLanguageSuggestion,
+      'popup_case8_AcceptLanguageSuggestionDescription':lang.popup_case8_AcceptLanguageSuggestionDescription,
+      'popup_case8_ButtonAcceptLang':lang.popup_case8_ButtonAcceptLang,
     });
     return json;
+  }
+}
+
+class LanguageManager{
+  static Future<void> suggestLang(BuildContext context, VoidCallback? blur, VoidCallback? closeBlur)async{
+    final supportedUserLang = await Language.checkSupportedUserLanguage();
+    final preferedLang = DataCache.getUserSelectedLanguage()!;
+    if(!supportedUserLang || preferedLang != -1){
+      // applied via native, or has a language preference
+      return;
+    }
+    final deviceLang = Platform.localeName.split('_')[0].toLowerCase();
+    var langPack = await Language.getLanguagePackById(await Language.getAllLanguages(), deviceLang);
+    if(langPack == null){
+      return;
+    }
+    AppHaptics.attentionImpact();
+    AppStrings.saveDownloadedLanguageData();
+    AppStrings.setupPopupPreviews(langPack);
+    PopupWidgetHandler(mode: 8, callback: (_)async{
+      final idx = AppStrings.getAllLangCodes().indexOf(deviceLang);
+      await DataCache.setUserSelectedLanguage(idx);
+      Navigator.popUntil(context, (route) => route.willHandlePopInternally);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const Splitter()));
+    });
+    PopupWidgetHandler.doPopup(context, blur: blur, closeBlur: closeBlur);
   }
 }

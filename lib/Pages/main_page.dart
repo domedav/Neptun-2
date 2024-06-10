@@ -190,9 +190,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     });
 
     Future.delayed(Duration(seconds: 4),()async{
-      // check language
-      await api.Language.getLanguagePackById(await api.Language.getAllLanguages(), '7S');
-      AppStrings.saveDownloadedLanguageData();
+      await LanguageManager.suggestLang(context, null, null);
     });
 
     if(Platform.isAndroid){
