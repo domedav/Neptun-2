@@ -1,6 +1,16 @@
 {
   "languagesMap": [
     {
+      "langName":"Magyar",
+      "langId":"hu",
+      "langURL":""
+    },
+    {
+      "langName":"English",
+      "langId":"en",
+      "langURL":""
+    },
+    {
       "langName":"Pirate",
       "langId":"7s",
       "langURL":"https://raw.githubusercontent.com/domedav/Neptun-2/main/Languages/LangExtentions/Pirate.json"
