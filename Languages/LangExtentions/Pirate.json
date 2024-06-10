@@ -167,5 +167,7 @@
   "popup_caseDefault_InvalidPopupState":"Missin' Data...",
   "popup_case8_AcceptLanguageSuggestion":"🗣️ App Language 🗣️",
   "popup_case8_AcceptLanguageSuggestionDescription":"The app be speakin' the language ye be usin'.\nChange it if ye want to.",
-  "popup_case8_ButtonAcceptLang":"Change"
+  "popup_case8_ButtonAcceptLang":"Change",
+  "popup_case1_langSwap_DownloadingLang":"Downloadin' language",
+  "popup_case1_langSwap_DownloadingLangFail":"Can't download, no internet, ye scallywag"
 }
