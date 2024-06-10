@@ -43,6 +43,8 @@ class _SplitterState extends State<Splitter>{
         final pinfo = await PackageInfo.fromPlatform();
         DataCache.setIsInstalledFromGPlay(pinfo.installerStore == 'com.android.vending' ? 2 : 1);
       }
+    }).then((value)async{
+      await AppStrings.loadDownloadedLanguageData();
     }).then((value) {
       Navigator.popUntil(context, (route) => route.willHandlePopInternally);
       if (DataCache.getHasLogin() != null && DataCache.getHasLogin()!) {

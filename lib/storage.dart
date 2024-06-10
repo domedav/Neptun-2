@@ -75,6 +75,8 @@ class DataCache{
     setAnalyticsRateNudgedAmount(_persistentAnalytics_userRateNudgedAmount!);
     setAnalyticsHasRatedApp(_persistentAnalytics_hasRatedApp! ? 1 : 0);
     setIsInstalledFromGPlay(_permanentConfiguration_isInstalledFromGooglePlay!);
+    setDownloadedSupportedLanguages(_languageJsonSupportedLangs);
+    setDownloadedSupportedLanguagesData(_languageJsonBatch);
   }
 
   static final DataCache _instance = DataCache();
@@ -110,6 +112,9 @@ class DataCache{
   late bool? _persistentAnalytics_hasRatedApp = false;
 
   late bool? _persistentAnalytics_enrolledInSendingAnaliticsData = true;
+
+  late List<String> _languageJsonSupportedLangs;
+  late List<String> _languageJsonBatch;
 
   static Future<void> loadData() async{return _instance._loadData();}
 
@@ -215,6 +220,9 @@ class DataCache{
     if(tmp == null){
       _persistentAnalytics_enrolledInSendingAnaliticsData = true;  // this is the default value, not false
     }
+
+    _languageJsonSupportedLangs = await getStringList('LANGUAGE_DownloadedSupportedLangs') ?? [];
+    _languageJsonBatch = await getStringList('LANGUAGE_DownloadedLanguagesJsonBatch') ?? [];
   }
 
   static String? getUsername(){return _instance._username;}
@@ -373,5 +381,17 @@ class DataCache{
   static Future<void> setAnalyticsEnrolledState(int? value) async{
     _instance._persistentAnalytics_enrolledInSendingAnaliticsData = value != null && value != 0;
     await saveInt('ANALYTICS_EnrolledInSendingAnaliticsData', value ?? 1);
+  }
+
+  static List<String> getDownloadedSupportedLanguages(){return _instance._languageJsonSupportedLangs;}
+  static Future<void> setDownloadedSupportedLanguages(List<String>? value)async{
+    _instance._languageJsonSupportedLangs = value ?? [];
+    await saveStringList('LANGUAGE_DownloadedSupportedLangs', value ?? []);
+  }
+
+  static List<String> getDownloadedSupportedLanguagesData(){return _instance._languageJsonBatch;}
+  static Future<void> setDownloadedSupportedLanguagesData(List<String>? value)async{
+    _instance._languageJsonBatch = value ?? [];
+    await saveStringList('LANGUAGE_DownloadedLanguagesJsonBatch', value ?? []);
   }
 }

@@ -160,6 +160,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     api.Generic.setupDaylightSavingsTime();
 
     Future.delayed(Duration(seconds: 4), ()async{
+      if(storage.DataCache.getIsInstalledFromGPlay() != 0){
+        return; // app is from gplay, and gplay updates are handled differently
+      }
       final cacheTime = await storage.getInt('ObsolteAppVerUpdateCacheTime') ?? -1;
       if(cacheTime <= 0){ // fresh app version
         storage.saveInt('ObsolteAppVerUpdateCacheTime', DateTime.now().microsecondsSinceEpoch);
@@ -170,7 +173,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
           await Connectivity().checkConnectivity() == ConnectivityResult.none) // only check for updates, if there is internet
       {return;}
 
-      final minBuildVer = await api.Language.getMinimumAllowedAppBuildVersion() ?? 0;
+      final minBuildVer = await api.Generic.getMinimumAllowedAppBuildVersion() ?? 0;
       final currentBuildNumber = int.parse((await PackageInfo.fromPlatform()).buildNumber);
       // akik nem szeretnek frissíteni, kicsit erőltetős módon perszuáljuk őket
       if(minBuildVer > currentBuildNumber){
@@ -178,19 +181,18 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
           if(!Platform.isAndroid){
             return;
           }
-          if(storage.DataCache.getIsInstalledFromGPlay() == 0){
-            // get update from github
-            launchUrl(Uri.parse('https://github.com/domedav/Neptun-2/releases'), mode: LaunchMode.externalApplication);
-          }
-          else{
-            // get update from gplay
-            launchUrl(Uri.parse('market://details?id=com.domedav.neptun2'), mode: LaunchMode.externalNonBrowserApplication);
-          }
+          launchUrl(Uri.parse('https://github.com/domedav/Neptun-2/releases'), mode: LaunchMode.externalApplication);
         });
         PopupWidgetHandler.doPopup(context);
         await storage.saveInt('ObsolteAppVerUpdateCacheTime', DateTime.now().microsecondsSinceEpoch); // save last checked update time
         return;
       }
+    });
+
+    Future.delayed(Duration(seconds: 4),()async{
+      // check language
+      await api.Language.getLanguagePackById(await api.Language.getAllLanguages(), '7S');
+      AppStrings.saveDownloadedLanguageData();
     });
 
     if(Platform.isAndroid){
@@ -202,7 +204,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     }
 
     if(Platform.isAndroid && storage.DataCache.getIsInstalledFromGPlay() != 0){
-      Future.delayed(const Duration(seconds: 2), ()async{
+      Future.delayed(const Duration(seconds: 4), ()async{
         final cacheTime = await storage.getInt('UpdateCacheTime') ?? -1;
         if(cacheTime <= 0){ // fresh app version
           storage.saveInt('UpdateCacheTime', DateTime.now().microsecondsSinceEpoch);

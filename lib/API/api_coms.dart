@@ -8,6 +8,7 @@ import 'package:neptun2/Misc/clickable_text_span.dart';
 import 'package:neptun2/language.dart';
 import '../app_analitics.dart';
 import '../storage.dart' as storage;
+import 'dart:developer' as debug;
   
   class URLs{
     static const String INSTITUTIONS_URL = "https://mobilecloudservice.cloudapp.net/MobileServiceLib/MobileCloudService.svc/GetAllNeptunMobileUrls";
@@ -1167,20 +1168,82 @@ import '../storage.dart' as storage;
     static bool isDaylightSavings(DateTime time){
       return (daylightSavingsTimeFrom.microsecondsSinceEpoch < time.microsecondsSinceEpoch && time.microsecondsSinceEpoch < daylightSavingsTimeTo.microsecondsSinceEpoch);
     }
-  }
-
-  class Language{
     static Future<int?> getMinimumAllowedAppBuildVersion() async{
       final url = Uri.parse('https://raw.githubusercontent.com/domedav/Neptun-2/main/appMinimumAllowedVersion.json');
       final response = await http.get(url);
 
       if (response.statusCode != 200) {
-        AppAnalitics.sendAnaliticsData(AppAnalitics.ERROR, 'api_coms.dart => InstitudesRequest.getRawJsonWithNameUrlPairs() Error: Failed to fetch appMinimumAllowedVersion.json');
+        AppAnalitics.sendAnaliticsData(AppAnalitics.ERROR, 'api_coms.dart => Generic.getMinimumAllowedAppBuildVersion() Error: Failed to fetch appMinimumAllowedVersion.json');
         return null;
       }
 
       Map<String, dynamic> jsonMap = conv.json.decode(response.body);
       return jsonMap["latestMinimumAllowedVerBuildNum"];
+    }
+  }
+
+  class Language{
+    static bool getHasLanguageById(List<LangPackMap>? languages, String neededId){
+      if(languages == null){
+        return false;
+      }
+      for(var item in languages){
+        if(item.langId == neededId){
+          return true;
+        }
+      }
+      return false;
+    }
+
+    static Future<LanguagePack?> getLanguagePackById(List<LangPackMap>? languages, String neededID)async{
+      if(languages == null){
+        return null;
+      }
+      String? langUrl;
+      for(var item in languages){
+        if(item.langId == neededID){
+          langUrl = item.langURL;
+          break;
+        }
+      }
+      if(langUrl == null){
+        return null;
+      }
+
+      final url = Uri.parse(langUrl);
+      final response = await http.get(url);
+
+      return LanguagePack.fromJson(neededID, response.body, (){}); // auto registers itself, as its downloaded, no need for the callback, def not invalid as it has just been downloaded
+    }
+
+    static Future<List<LangPackMap>?> getAllLanguages()async{
+      final url = Uri.parse('https://raw.githubusercontent.com/domedav/Neptun-2/main/Languages/supportedLanguages.json');
+      final response = await http.get(url);
+
+      if (response.statusCode != 200) {
+        AppAnalitics.sendAnaliticsData(AppAnalitics.ERROR, 'api_coms.dart => Language.getUserLanguageFromServer() Error: Failed to fetch supportedLanguages.json');
+        return null;
+      }
+
+      Map<String, dynamic> jsonMap = conv.json.decode(response.body);
+      final allLangItems = jsonMap['languagesMap'] as List<dynamic>;
+      final List<LangPackMap> langPacksRoot = [];
+      for (var item in allLangItems){
+        langPacksRoot.add(LangPackMap.fromMap(item));
+      }
+      return langPacksRoot;
+    }
+  }
+
+  class LangPackMap{
+    final String langName;
+    final String langId;
+    final String langURL;
+
+    LangPackMap({required this.langName, required this.langId, required this.langURL});
+
+    static LangPackMap fromMap(Map<String, dynamic> json){
+      return LangPackMap(langName: json['langName'], langId: json['langId'], langURL: json['langURL']);
     }
   }
   

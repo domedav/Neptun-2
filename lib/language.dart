@@ -1,12 +1,21 @@
+import 'dart:developer';
 import 'dart:io';
-
+import 'dart:convert' as conv;
+import 'dart:ui';
 import 'package:neptun2/storage.dart';
+
+import 'API/api_coms.dart';
 class AppStrings{
   static bool _hasInit = false;
   static late final String _defaultLocale;
+
   static List<String> _supportedLanguages = ['hu', 'en'];
   static List<String> _supportedLanguagesFlags = ['🇭🇺', '🇺🇸/🇬🇧'];
   static final Map<String, LanguagePack> _languages = {};
+
+  static List<String> _downloadedSupportedLanguages = [];
+  static List<String> _downloadedSupportedLanguagesFlags = [];
+  static final Map<String, LanguagePack> _downloadedLanguages = {};
 
   static void initialize(){
     if(_hasInit){
@@ -359,17 +368,20 @@ class AppStrings{
 
   static String _getCurrentLang(){
     final currLangId = DataCache.getUserSelectedLanguage();
-    if(currLangId == null || currLangId >= _supportedLanguages.length || currLangId == -1){
+    final selectonList = _supportedLanguages + _downloadedSupportedLanguages;
+    if(currLangId == null || currLangId == -1){
       return _defaultLocale;
     }
-    return _supportedLanguages[currLangId];
+    return selectonList[currLangId];
   }
 
   static LanguagePack _getLangPack(String id){
-    if(!_languages.containsKey(id)){
+    final selectonList = _languages;
+    selectonList.addAll(_downloadedLanguages);
+    if(!selectonList.containsKey(id)){
       return _languages[_supportedLanguages[1]]!; // default to english, if user device lang is not supported
     }
-    return _languages[id]!;
+    return selectonList[id]!;
   }
 
   static String getStringWithParams(String base, List<dynamic> params){
@@ -385,9 +397,32 @@ class AppStrings{
   }
 
   static List<String> getAllLangFlags(){
-    return _supportedLanguagesFlags;
+    return _supportedLanguagesFlags + _downloadedSupportedLanguagesFlags;
   }
 
+  static void saveDownloadedLanguageData(){
+    DataCache.setDownloadedSupportedLanguages(_downloadedSupportedLanguages);
+    final List<String> converted = [];
+    for(var item in _downloadedLanguages.values){
+      converted.add(LanguagePack.toJson(item));
+    }
+    DataCache.setDownloadedSupportedLanguagesData(converted);
+  }
+
+  static Future<void> loadDownloadedLanguageData()async{
+    final downloadedSupportedLanguages = DataCache.getDownloadedSupportedLanguages();
+    final List<String> converted = DataCache.getDownloadedSupportedLanguagesData();
+    for(int i = 0; i < downloadedSupportedLanguages.length; i++){
+      await Future.delayed(Duration.zero, (){
+        LanguagePack.fromJson(downloadedSupportedLanguages[i], converted[i], ()async{
+          if(!DataCache.getHasNetwork()){
+            return;
+          }
+          await Language.getLanguagePackById(await Language.getAllLanguages(), downloadedSupportedLanguages[i]); // redownload language
+        });
+      });
+    }
+  }
 }
 
 class LanguagePack{
@@ -759,4 +794,370 @@ class LanguagePack{
     required this.popup_case7_ObsolteAppVersionDescription,
     required this.popup_caseDefault_InvalidPopupState,
   });
+
+  static LanguagePack fromJson(String countryId, String json, VoidCallback onLanguageOutdated){
+    var decodedLangPack;
+    try{
+      final lang = conv.json.decode(json);
+      decodedLangPack = LanguagePack(
+        language_flag:lang['language_flag'],
+        rootpage_setupPage_SelectLoginTypeHeader:lang['rootpage_setupPage_SelectLoginTypeHeader'],
+        rootpage_setupPage_InstitutesSelection:lang['rootpage_setupPage_InstitutesSelection'],
+        rootpage_setupPage_InstitutesSelectionDescription:lang['rootpage_setupPage_InstitutesSelectionDescription'],
+        rootpage_setupPage_UrlLogin:lang['rootpage_setupPage_UrlLogin'],
+        rootpage_setupPage_UrlLoginDescription:lang['rootpage_setupPage_UrlLoginDescription'],
+        rootpage_setupPage_AppProblemReporting:lang['rootpage_setupPage_AppProblemReporting'],
+        instituteSelection_setupPage_LoadingText:lang['instituteSelection_setupPage_LoadingText'],
+        instituteSelection_setupPage_NoNetwork:lang['instituteSelection_setupPage_NoNetwork'],
+        instituteSelection_setupPage_SelectValidInstitute:lang['instituteSelection_setupPage_SelectValidInstitute'],
+        instituteSelection_setupPage_SelectInstitute:lang['instituteSelection_setupPage_SelectInstitute'],
+        instituteSelection_setupPage_Search:lang['instituteSelection_setupPage_Search'],
+        instituteSelection_setupPage_SearchNotFound:lang['instituteSelection_setupPage_SearchNotFound'],
+        instituteSelection_setupPage_InstituteCantFindHelpText:lang['instituteSelection_setupPage_InstituteCantFindHelpText'],
+        instituteSelection_setupPage_InstituteCantFindHelpTextDescription:lang['instituteSelection_setupPage_InstituteCantFindHelpTextDescription'],
+        any_setupPage_GoBack:lang['any_setupPage_GoBack'],
+        any_setupPage_ProceedLogin:lang['any_setupPage_ProceedLogin'],
+        urlLogin_setupPage_InvalidUrl:lang['urlLogin_setupPage_InvalidUrl'],
+        urlLogin_setupPage_LoginViaURlHeader:lang['urlLogin_setupPage_LoginViaURlHeader'],
+        urlLogin_setupPage_InstituteNeptunUrl:lang['urlLogin_setupPage_InstituteNeptunUrl'],
+        urlLogin_setupPage_InstituteNeptunUrlInvalid:lang['urlLogin_setupPage_InstituteNeptunUrlInvalid'],
+        urlLogin_setupPage_WhereIsURLHelper:lang['urlLogin_setupPage_WhereIsURLHelper'],
+        urlLogin_setupPage_WhereIsURLHelperDescription:lang['urlLogin_setupPage_WhereIsURLHelperDescription'],
+        loginPage_setupPage_InvalidCredentials:lang['loginPage_setupPage_InvalidCredentials'],
+        loginPage_setupPage_LoginHeaderText:lang['loginPage_setupPage_LoginHeaderText'],
+        loginPage_setupPage_ActivityCacheInvalidHelper:lang['loginPage_setupPage_ActivityCacheInvalidHelper'],
+        loginPage_setupPage_NeptunCode:lang['loginPage_setupPage_NeptunCode'],
+        loginPage_setupPage_Password:lang['loginPage_setupPage_Password'],
+        loginPage_setupPage_InvalidCredentialsEntered:lang['loginPage_setupPage_InvalidCredentialsEntered'],
+        loginPage_setupPage_2faWarning:lang['loginPage_setupPage_2faWarning'],
+        loginPage_setupPage_2faWarningDescription:lang['loginPage_setupPage_2faWarningDescription'],
+        loginPage_setupPage_LogInButton:lang['loginPage_setupPage_LogInButton'],
+        loginPage_setupPage_LoginInProgress:lang['loginPage_setupPage_LoginInProgress'],
+        loginPage_setupPage_LoginInProgressSlow:lang['loginPage_setupPage_LoginInProgressSlow'],
+        api_monthJan_Universal:lang['api_monthJan_Universal'],
+        api_monthFeb_Universal:lang['api_monthFeb_Universal'],
+        api_monthMar_Universal:lang['api_monthMar_Universal'],
+        api_monthApr_Universal:lang['api_monthApr_Universal'],
+        api_monthJun_Universal:lang['api_monthJun_Universal'],
+        api_monthMay_Universal:lang['api_monthMay_Universal'],
+        api_monthJul_Universal:lang['api_monthJul_Universal'],
+        api_monthAug_Universal:lang['api_monthAug_Universal'],
+        api_monthSep_Universal:lang['api_monthSep_Universal'],
+        api_monthOkt_Universal:lang['api_monthOkt_Universal'],
+        api_monthNov_Universal:lang['api_monthNov_Universal'],
+        api_monthDec_Universal:lang['api_monthDec_Universal'],
+        api_dayMon_Universal:lang['api_dayMon_Universal'],
+        api_dayTue_Universal:lang['api_dayTue_Universal'],
+        api_dayWed_Universal:lang['api_dayWed_Universal'],
+        api_dayThu_Universal:lang['api_dayThu_Universal'],
+        api_dayFri_Universal:lang['api_dayFri_Universal'],
+        api_daySat_Universal:lang['api_daySat_Universal'],
+        api_daySun_Universal:lang['api_daySun_Universal'],
+        api_loadingScreenHintFriendly1_Universal:lang['api_loadingScreenHintFriendly1_Universal'],
+        api_loadingScreenHintFriendly2_Universal:lang['api_loadingScreenHintFriendly2_Universal'],
+        api_loadingScreenHintFriendly3_Universal:lang['api_loadingScreenHintFriendly3_Universal'],
+        api_loadingScreenHintFriendly4_Universal:lang['api_loadingScreenHintFriendly4_Universal'],
+        api_loadingScreenHintFriendly5_Universal:lang['api_loadingScreenHintFriendly5_Universal'],
+        api_loadingScreenHintFriendly6_Universal:lang['api_loadingScreenHintFriendly6_Universal'],
+        api_loadingScreenHintFriendly7_Universal:lang['api_loadingScreenHintFriendly7_Universal'],
+        api_loadingScreenHint1_Universal:lang['api_loadingScreenHint1_Universal'],
+        api_loadingScreenHint2_Universal:lang['api_loadingScreenHint2_Universal'],
+        api_loadingScreenHint3_Universal:lang['api_loadingScreenHint3_Universal'],
+        api_loadingScreenHint4_Universal:lang['api_loadingScreenHint4_Universal'],
+        api_loadingScreenHint5_Universal:lang['api_loadingScreenHint5_Universal'],
+        api_loadingScreenHint6_Universal:lang['api_loadingScreenHint6_Universal'],
+        api_loadingScreenHint7_Universal:lang['api_loadingScreenHint7_Universal'],
+        api_loadingScreenHintFriendlyMini1_Universal:lang['api_loadingScreenHintFriendlyMini1_Universal'],
+        api_loadingScreenHintFriendlyMini2_Universal:lang['api_loadingScreenHintFriendlyMini2_Universal'],
+        api_loadingScreenHintFriendlyMini3_Universal:lang['api_loadingScreenHintFriendlyMini3_Universal'],
+        api_loadingScreenHintFriendlyMini4_Universal:lang['api_loadingScreenHintFriendlyMini4_Universal'],
+        api_loadingScreenHintMini1_Universal:lang['api_loadingScreenHintMini1_Universal'],
+        api_loadingScreenHintMini2_Universal:lang['api_loadingScreenHintMini2_Universal'],
+        api_loadingScreenHintMini3_Universal:lang['api_loadingScreenHintMini3_Universal'],
+        api_noData_Universal:lang['api_noData_Universal'],
+        view_header_Calendar:lang['view_header_Calendar'],
+        view_header_Messages:lang['view_header_Messages'],
+        view_header_Payments:lang['view_header_Payments'],
+        view_header_Periods:lang['view_header_Periods'],
+        view_header_Subjects:lang['view_header_Subjects'],
+        topheader_calendar_greetMessage_1to6:lang['topheader_calendar_greetMessage_1to6'],
+        topheader_calendar_greetMessage_6to9:lang['topheader_calendar_greetMessage_6to9'],
+        topheader_calendar_greetMessage_9to13:lang['topheader_calendar_greetMessage_9to13'],
+        topheader_calendar_greetMessage_13to17:lang['topheader_calendar_greetMessage_13to17'],
+        topheader_calendar_greetMessage_17to21:lang['topheader_calendar_greetMessage_17to21'],
+        topheader_calendar_greetMessage_21to1:lang['topheader_calendar_greetMessage_21to1'],
+        topheader_subjects_CreditsInSemester:lang['topheader_subjects_CreditsInSemester'],
+        topheader_payments_TotalMoneySpent:lang['topheader_payments_TotalMoneySpent'],
+        topheader_periods_ActiveText:lang['topheader_periods_ActiveText'],
+        topheader_periods_ExpiredText:lang['topheader_periods_ExpiredText'],
+        topheader_periods_FutureText:lang['topheader_periods_FutureText'],
+        topheader_periods_MainHeader:lang['topheader_periods_MainHeader'],
+        topheader_messages_UnreadMessages:lang['topheader_messages_UnreadMessages'],
+        topmenu_buttons_Bugreport:lang['topmenu_buttons_Bugreport'],
+        topmenu_buttons_Logout:lang['topmenu_buttons_Logout'],
+        topmenu_buttons_Settings:lang['topmenu_buttons_Settings'],
+        topmenu_buttons_SupportDev:lang['topmenu_buttons_SupportDev'],
+        topmenu_Greet:lang['topmenu_Greet'],
+        topmenu_LoginPlace:lang['topmenu_LoginPlace'],
+        topmenu_buttons_LogoutSuccessToast:lang['topmenu_buttons_LogoutSuccessToast'],
+        calendarPage_FreeDay:lang['calendarPage_FreeDay'],
+        calendarPage_weekNav_ClassesThisWeekFull:lang['calendarPage_weekNav_ClassesThisWeekFull'],
+        calendarPage_weekNav_ClassesThisWeekOneDay:lang['calendarPage_weekNav_ClassesThisWeekOneDay'],
+        calendarPage_weekNav_StudyWeek:lang['calendarPage_weekNav_StudyWeek'],
+        calendarPage_weekNav_ClassesThisWeekEmpty:lang['calendarPage_weekNav_ClassesThisWeekEmpty'],
+        calendarPage_weekNav_ClassesThisWeekLoading:lang['calendarPage_weekNav_ClassesThisWeekLoading'],
+        markbookPage_AverageDisplay:lang['markbookPage_AverageDisplay'],
+        markbookPage_AverageScholarshipDisplay:lang['markbookPage_AverageScholarshipDisplay'],
+        markbookPage_NoGrades:lang['markbookPage_NoGrades'],
+        markbookPage_Empty:lang['markbookPage_Empty'],
+        markbookPage_CompletedLine:lang['markbookPage_CompletedLine'],
+        paymentPage_Empty:lang['paymentPage_Empty'],
+        paymentPage_MoneyDisplay:lang['paymentPage_MoneyDisplay'],
+        paymentPage_PaymentDeadlineTime:lang['paymentPage_PaymentDeadlineTime'],
+        paymentPage_PaymentMissedTime:lang['paymentPage_PaymentMissedTime'],
+        periodPage_ActiveDays:lang['periodPage_ActiveDays'],
+        periodPage_Empty:lang['periodPage_Empty'],
+        periodPage_Expired:lang['periodPage_Expired'],
+        periodPage_ExpiredDays:lang['periodPage_ExpiredDays'],
+        periodPage_StartDays:lang['periodPage_StartDays'],
+        periodPage_Starts:lang['periodPage_Starts'],
+        messagePage_SentBy:lang['messagePage_SentBy'],
+        messagePage_Empty:lang['messagePage_Empty'],
+        popup_case0_GhostGradeHeader:lang['popup_case0_GhostGradeHeader'],
+        popup_case0_SelectGrade:lang['popup_case0_SelectGrade'],
+        popup_caseAll_OkButton:lang['popup_caseAll_OkButton'],
+        popup_case1_settingBottomText_InstallOrigin:lang['popup_case1_settingBottomText_InstallOrigin'],
+        popup_case1_settingBottomText_InstallOrigin3rdParty:lang['popup_case1_settingBottomText_InstallOrigin3rdParty'],
+        popup_case1_settingBottomText_InstallOriginGPlay:lang['popup_case1_settingBottomText_InstallOriginGPlay'],
+        popup_case1_settingOption1_FamilyFriendlyLoadingText:lang['popup_case1_settingOption1_FamilyFriendlyLoadingText'],
+        popup_case1_settingOption1_FamilyFriendlyLoadingTextDescription:lang['popup_case1_settingOption1_FamilyFriendlyLoadingTextDescription'],
+        popup_case1_settingOption2_ExamNotifications:lang['popup_case1_settingOption2_ExamNotifications'],
+        popup_case1_settingOption2_ExamNotificationsDescription:lang['popup_case1_settingOption2_ExamNotificationsDescription'],
+        popup_case1_settingOption3_ClassNotifications:lang['popup_case1_settingOption3_ClassNotifications'],
+        popup_case1_settingOption3_ClassNotificationsDescription:lang['popup_case1_settingOption3_ClassNotificationsDescription'],
+        popup_case1_settingOption4_PaymentNotifications:lang['popup_case1_settingOption4_PaymentNotifications'],
+        popup_case1_settingOption4_PaymentNotificationsDescription:lang['popup_case1_settingOption4_PaymentNotificationsDescription'],
+        popup_case1_settingOption5_PeriodsNotifications:lang['popup_case1_settingOption5_PeriodsNotifications'],
+        popup_case1_settingOption5_PeriodsNotificationsDescription:lang['popup_case1_settingOption5_PeriodsNotificationsDescription'],
+        popup_case1_settingOption6_AppHaptics:lang['popup_case1_settingOption6_AppHaptics'],
+        popup_case1_settingOption6_AppHapticsDescription:lang['popup_case1_settingOption6_AppHapticsDescription'],
+        popup_case1_settingOption7_WeekOffset:lang['popup_case1_settingOption7_WeekOffset'],
+        popup_case1_settingOption7_WeekOffsetDescription:lang['popup_case1_settingOption7_WeekOffsetDescription'],
+        popup_case1_settingOption7_WeekOffsetAuto:lang['popup_case1_settingOption7_WeekOffsetAuto'],
+        popup_case1_SettingsHeader:lang['popup_case1_SettingsHeader'],
+        popup_case2_RateAppPopup:lang['popup_case2_RateAppPopup'],
+        popup_case2_RateAppPopupDescription:lang['popup_case2_RateAppPopupDescription'],
+        popup_case2_RateButton:lang['popup_case2_RateButton'],
+        popup_case3_MessagesHeader:lang['popup_case3_MessagesHeader'],
+        clickableText_OnCopy:lang['clickableText_OnCopy'],
+        popup_case4_5_SubjectCode:lang['popup_case4_5_SubjectCode'],
+        popup_case4_5_SubjectLocation:lang['popup_case4_5_SubjectLocation'],
+        popup_case4_SubjectStartTime:lang['popup_case4_SubjectStartTime'],
+        popup_case4_SubjectInfo:lang['popup_case4_SubjectInfo'],
+        popup_case4_TeachedBy:lang['popup_case4_TeachedBy'],
+        popup_case5_ExamInfo:lang['popup_case5_ExamInfo'],
+        popup_case5_ExamStartTime:lang['popup_case5_ExamStartTime'],
+        popup_case6_AccountError:lang['popup_case6_AccountError'],
+        popup_case6_AccountErrorDescription:lang['popup_case6_AccountErrorDescription'],
+        popup_case6_AccountErrorLogoutButton:lang['popup_case6_AccountErrorLogoutButton'],
+        popup_case1_settingOption8_LangaugeSelection:lang['popup_case1_settingOption8_LangaugeSelection'],
+        popup_case1_settingOption8_LangaugeSelectionDescription:lang['popup_case1_settingOption8_LangaugeSelectionDescription'],
+        popup_case7_ButtonUpdateNow:lang['popup_case7_ButtonUpdateNow'],
+        popup_case7_ObsolteAppVersion:lang['popup_case7_ObsolteAppVersion'],
+        popup_case7_ObsolteAppVersionDescription:lang['popup_case7_ObsolteAppVersionDescription'],
+        popup_caseDefault_InvalidPopupState:lang['popup_caseDefault_InvalidPopupState'],
+      );
+    }
+    catch(_){
+      Future.delayed(Duration.zero,(){
+        onLanguageOutdated();
+      });
+      return AppStrings.getLanguagePack(); // language invalid
+    }
+    if(AppStrings._downloadedSupportedLanguages.contains(countryId)){
+      // overwrite
+      final duplicateIdx = AppStrings._downloadedSupportedLanguages.indexOf(countryId);
+      AppStrings._downloadedSupportedLanguages.removeAt(duplicateIdx);
+      AppStrings._downloadedSupportedLanguagesFlags.removeAt(duplicateIdx);
+      AppStrings._downloadedLanguages.remove(duplicateIdx);
+    }
+    // add to db
+    AppStrings._downloadedSupportedLanguagesFlags.add(decodedLangPack.language_flag);
+    AppStrings._downloadedSupportedLanguages.add(countryId);
+    AppStrings._downloadedLanguages.addAll({countryId:decodedLangPack});
+
+    return decodedLangPack;
+  }
+
+  static String toJson(LanguagePack lang){
+    final json = conv.json.encode({
+      'language_flag':lang.language_flag,
+      'rootpage_setupPage_SelectLoginTypeHeader':lang.rootpage_setupPage_SelectLoginTypeHeader,
+      'rootpage_setupPage_InstitutesSelection':lang.rootpage_setupPage_InstitutesSelection,
+      'rootpage_setupPage_InstitutesSelectionDescription':lang.rootpage_setupPage_InstitutesSelectionDescription,
+      'rootpage_setupPage_UrlLogin':lang.rootpage_setupPage_UrlLogin,
+      'rootpage_setupPage_UrlLoginDescription':lang.rootpage_setupPage_UrlLoginDescription,
+      'rootpage_setupPage_AppProblemReporting':lang.rootpage_setupPage_AppProblemReporting,
+      'instituteSelection_setupPage_LoadingText':lang.instituteSelection_setupPage_LoadingText,
+      'instituteSelection_setupPage_NoNetwork':lang.instituteSelection_setupPage_NoNetwork,
+      'instituteSelection_setupPage_SelectValidInstitute':lang.instituteSelection_setupPage_SelectValidInstitute,
+      'instituteSelection_setupPage_SelectInstitute':lang.instituteSelection_setupPage_SelectInstitute,
+      'instituteSelection_setupPage_Search':lang.instituteSelection_setupPage_Search,
+      'instituteSelection_setupPage_SearchNotFound':lang.instituteSelection_setupPage_SearchNotFound,
+      'instituteSelection_setupPage_InstituteCantFindHelpText':lang.instituteSelection_setupPage_InstituteCantFindHelpText,
+      'instituteSelection_setupPage_InstituteCantFindHelpTextDescription':lang.instituteSelection_setupPage_InstituteCantFindHelpTextDescription,
+      'any_setupPage_GoBack':lang.any_setupPage_GoBack,
+      'any_setupPage_ProceedLogin':lang.any_setupPage_ProceedLogin,
+      'urlLogin_setupPage_InvalidUrl':lang.urlLogin_setupPage_InvalidUrl,
+      'urlLogin_setupPage_LoginViaURlHeader':lang.urlLogin_setupPage_LoginViaURlHeader,
+      'urlLogin_setupPage_InstituteNeptunUrl':lang.urlLogin_setupPage_InstituteNeptunUrl,
+      'urlLogin_setupPage_InstituteNeptunUrlInvalid':lang.urlLogin_setupPage_InstituteNeptunUrlInvalid,
+      'urlLogin_setupPage_WhereIsURLHelper':lang.urlLogin_setupPage_WhereIsURLHelper,
+      'urlLogin_setupPage_WhereIsURLHelperDescription':lang.urlLogin_setupPage_WhereIsURLHelperDescription,
+      'loginPage_setupPage_InvalidCredentials':lang.loginPage_setupPage_InvalidCredentials,
+      'loginPage_setupPage_LoginHeaderText':lang.loginPage_setupPage_LoginHeaderText,
+      'loginPage_setupPage_ActivityCacheInvalidHelper':lang.loginPage_setupPage_ActivityCacheInvalidHelper,
+      'loginPage_setupPage_NeptunCode':lang.loginPage_setupPage_NeptunCode,
+      'loginPage_setupPage_Password':lang.loginPage_setupPage_Password,
+      'loginPage_setupPage_InvalidCredentialsEntered':lang.loginPage_setupPage_InvalidCredentialsEntered,
+      'loginPage_setupPage_2faWarning':lang.loginPage_setupPage_2faWarning,
+      'loginPage_setupPage_2faWarningDescription':lang.loginPage_setupPage_2faWarningDescription,
+      'loginPage_setupPage_LogInButton':lang.loginPage_setupPage_LogInButton,
+      'loginPage_setupPage_LoginInProgress':lang.loginPage_setupPage_LoginInProgress,
+      'loginPage_setupPage_LoginInProgressSlow':lang.loginPage_setupPage_LoginInProgressSlow,
+      'api_monthJan_Universal':lang.api_monthJan_Universal,
+      'api_monthFeb_Universal':lang.api_monthFeb_Universal,
+      'api_monthMar_Universal':lang.api_monthMar_Universal,
+      'api_monthApr_Universal':lang.api_monthApr_Universal,
+      'api_monthJun_Universal':lang.api_monthJun_Universal,
+      'api_monthMay_Universal':lang.api_monthMay_Universal,
+      'api_monthJul_Universal':lang.api_monthJul_Universal,
+      'api_monthAug_Universal':lang.api_monthAug_Universal,
+      'api_monthSep_Universal':lang.api_monthSep_Universal,
+      'api_monthOkt_Universal':lang.api_monthOkt_Universal,
+      'api_monthNov_Universal':lang.api_monthNov_Universal,
+      'api_monthDec_Universal':lang.api_monthDec_Universal,
+      'api_dayMon_Universal':lang.api_dayMon_Universal,
+      'api_dayTue_Universal':lang.api_dayTue_Universal,
+      'api_dayWed_Universal':lang.api_dayWed_Universal,
+      'api_dayThu_Universal':lang.api_dayThu_Universal,
+      'api_dayFri_Universal':lang.api_dayFri_Universal,
+      'api_daySat_Universal':lang.api_daySat_Universal,
+      'api_daySun_Universal':lang.api_daySun_Universal,
+      'api_loadingScreenHintFriendly1_Universal':lang.api_loadingScreenHintFriendly1_Universal,
+      'api_loadingScreenHintFriendly2_Universal':lang.api_loadingScreenHintFriendly2_Universal,
+      'api_loadingScreenHintFriendly3_Universal':lang.api_loadingScreenHintFriendly3_Universal,
+      'api_loadingScreenHintFriendly4_Universal':lang.api_loadingScreenHintFriendly4_Universal,
+      'api_loadingScreenHintFriendly5_Universal':lang.api_loadingScreenHintFriendly5_Universal,
+      'api_loadingScreenHintFriendly6_Universal':lang.api_loadingScreenHintFriendly6_Universal,
+      'api_loadingScreenHintFriendly7_Universal':lang.api_loadingScreenHintFriendly7_Universal,
+      'api_loadingScreenHint1_Universal':lang.api_loadingScreenHint1_Universal,
+      'api_loadingScreenHint2_Universal':lang.api_loadingScreenHint2_Universal,
+      'api_loadingScreenHint3_Universal':lang.api_loadingScreenHint3_Universal,
+      'api_loadingScreenHint4_Universal':lang.api_loadingScreenHint4_Universal,
+      'api_loadingScreenHint5_Universal':lang.api_loadingScreenHint5_Universal,
+      'api_loadingScreenHint6_Universal':lang.api_loadingScreenHint6_Universal,
+      'api_loadingScreenHint7_Universal':lang.api_loadingScreenHint7_Universal,
+      'api_loadingScreenHintFriendlyMini1_Universal':lang.api_loadingScreenHintFriendlyMini1_Universal,
+      'api_loadingScreenHintFriendlyMini2_Universal':lang.api_loadingScreenHintFriendlyMini2_Universal,
+      'api_loadingScreenHintFriendlyMini3_Universal':lang.api_loadingScreenHintFriendlyMini3_Universal,
+      'api_loadingScreenHintFriendlyMini4_Universal':lang.api_loadingScreenHintFriendlyMini4_Universal,
+      'api_loadingScreenHintMini1_Universal':lang.api_loadingScreenHintMini1_Universal,
+      'api_loadingScreenHintMini2_Universal':lang.api_loadingScreenHintMini2_Universal,
+      'api_loadingScreenHintMini3_Universal':lang.api_loadingScreenHintMini3_Universal,
+      'api_noData_Universal':lang.api_noData_Universal,
+      'view_header_Calendar':lang.view_header_Calendar,
+      'view_header_Messages':lang.view_header_Messages,
+      'view_header_Payments':lang.view_header_Payments,
+      'view_header_Periods':lang.view_header_Periods,
+      'view_header_Subjects':lang.view_header_Subjects,
+      'topheader_calendar_greetMessage_1to6':lang.topheader_calendar_greetMessage_1to6,
+      'topheader_calendar_greetMessage_6to9':lang.topheader_calendar_greetMessage_6to9,
+      'topheader_calendar_greetMessage_9to13':lang.topheader_calendar_greetMessage_9to13,
+      'topheader_calendar_greetMessage_13to17':lang.topheader_calendar_greetMessage_13to17,
+      'topheader_calendar_greetMessage_17to21':lang.topheader_calendar_greetMessage_17to21,
+      'topheader_calendar_greetMessage_21to1':lang.topheader_calendar_greetMessage_21to1,
+      'topheader_subjects_CreditsInSemester':lang.topheader_subjects_CreditsInSemester,
+      'topheader_payments_TotalMoneySpent':lang.topheader_payments_TotalMoneySpent,
+      'topheader_periods_ActiveText':lang.topheader_periods_ActiveText,
+      'topheader_periods_ExpiredText':lang.topheader_periods_ExpiredText,
+      'topheader_periods_FutureText':lang.topheader_periods_FutureText,
+      'topheader_periods_MainHeader':lang.topheader_periods_MainHeader,
+      'topheader_messages_UnreadMessages':lang.topheader_messages_UnreadMessages,
+      'topmenu_buttons_Bugreport':lang.topmenu_buttons_Bugreport,
+      'topmenu_buttons_Logout':lang.topmenu_buttons_Logout,
+      'topmenu_buttons_Settings':lang.topmenu_buttons_Settings,
+      'topmenu_buttons_SupportDev':lang.topmenu_buttons_SupportDev,
+      'topmenu_Greet':lang.topmenu_Greet,
+      'topmenu_LoginPlace':lang.topmenu_LoginPlace,
+      'topmenu_buttons_LogoutSuccessToast':lang.topmenu_buttons_LogoutSuccessToast,
+      'calendarPage_FreeDay':lang.calendarPage_FreeDay,
+      'calendarPage_weekNav_ClassesThisWeekFull':lang.calendarPage_weekNav_ClassesThisWeekFull,
+      'calendarPage_weekNav_ClassesThisWeekOneDay':lang.calendarPage_weekNav_ClassesThisWeekOneDay,
+      'calendarPage_weekNav_StudyWeek':lang.calendarPage_weekNav_StudyWeek,
+      'calendarPage_weekNav_ClassesThisWeekEmpty':lang.calendarPage_weekNav_ClassesThisWeekEmpty,
+      'calendarPage_weekNav_ClassesThisWeekLoading':lang.calendarPage_weekNav_ClassesThisWeekLoading,
+      'markbookPage_AverageDisplay':lang.markbookPage_AverageDisplay,
+      'markbookPage_AverageScholarshipDisplay':lang.markbookPage_AverageScholarshipDisplay,
+      'markbookPage_NoGrades':lang.markbookPage_NoGrades,
+      'markbookPage_Empty':lang.markbookPage_Empty,
+      'markbookPage_CompletedLine':lang.markbookPage_CompletedLine,
+      'paymentPage_Empty':lang.paymentPage_Empty,
+      'paymentPage_MoneyDisplay':lang.paymentPage_MoneyDisplay,
+      'paymentPage_PaymentDeadlineTime':lang.paymentPage_PaymentDeadlineTime,
+      'paymentPage_PaymentMissedTime':lang.paymentPage_PaymentMissedTime,
+      'periodPage_ActiveDays':lang.periodPage_ActiveDays,
+      'periodPage_Empty':lang.periodPage_Empty,
+      'periodPage_Expired':lang.periodPage_Expired,
+      'periodPage_ExpiredDays':lang.periodPage_ExpiredDays,
+      'periodPage_StartDays':lang.periodPage_StartDays,
+      'periodPage_Starts':lang.periodPage_Starts,
+      'messagePage_SentBy':lang.messagePage_SentBy,
+      'messagePage_Empty':lang.messagePage_Empty,
+      'popup_case0_GhostGradeHeader':lang.popup_case0_GhostGradeHeader,
+      'popup_case0_SelectGrade':lang.popup_case0_SelectGrade,
+      'popup_caseAll_OkButton':lang.popup_caseAll_OkButton,
+      'popup_case1_settingBottomText_InstallOrigin':lang.popup_case1_settingBottomText_InstallOrigin,
+      'popup_case1_settingBottomText_InstallOrigin3rdParty':lang.popup_case1_settingBottomText_InstallOrigin3rdParty,
+      'popup_case1_settingBottomText_InstallOriginGPlay':lang.popup_case1_settingBottomText_InstallOriginGPlay,
+      'popup_case1_settingOption1_FamilyFriendlyLoadingText':lang.popup_case1_settingOption1_FamilyFriendlyLoadingText,
+      'popup_case1_settingOption1_FamilyFriendlyLoadingTextDescription':lang.popup_case1_settingOption1_FamilyFriendlyLoadingTextDescription,
+      'popup_case1_settingOption2_ExamNotifications':lang.popup_case1_settingOption2_ExamNotifications,
+      'popup_case1_settingOption2_ExamNotificationsDescription':lang.popup_case1_settingOption2_ExamNotificationsDescription,
+      'popup_case1_settingOption3_ClassNotifications':lang.popup_case1_settingOption3_ClassNotifications,
+      'popup_case1_settingOption3_ClassNotificationsDescription':lang.popup_case1_settingOption3_ClassNotificationsDescription,
+      'popup_case1_settingOption4_PaymentNotifications':lang.popup_case1_settingOption4_PaymentNotifications,
+      'popup_case1_settingOption4_PaymentNotificationsDescription':lang.popup_case1_settingOption4_PaymentNotificationsDescription,
+      'popup_case1_settingOption5_PeriodsNotifications':lang.popup_case1_settingOption5_PeriodsNotifications,
+      'popup_case1_settingOption5_PeriodsNotificationsDescription':lang.popup_case1_settingOption5_PeriodsNotificationsDescription,
+      'popup_case1_settingOption6_AppHaptics':lang.popup_case1_settingOption6_AppHaptics,
+      'popup_case1_settingOption6_AppHapticsDescription':lang.popup_case1_settingOption6_AppHapticsDescription,
+      'popup_case1_settingOption7_WeekOffset':lang.popup_case1_settingOption7_WeekOffset,
+      'popup_case1_settingOption7_WeekOffsetDescription':lang.popup_case1_settingOption7_WeekOffsetDescription,
+      'popup_case1_settingOption7_WeekOffsetAuto':lang.popup_case1_settingOption7_WeekOffsetAuto,
+      'popup_case1_SettingsHeader':lang.popup_case1_SettingsHeader,
+      'popup_case2_RateAppPopup':lang.popup_case2_RateAppPopup,
+      'popup_case2_RateAppPopupDescription':lang.popup_case2_RateAppPopupDescription,
+      'popup_case2_RateButton':lang.popup_case2_RateButton,
+      'popup_case3_MessagesHeader':lang.popup_case3_MessagesHeader,
+      'clickableText_OnCopy':lang.clickableText_OnCopy,
+      'popup_case4_5_SubjectCode':lang.popup_case4_5_SubjectCode,
+      'popup_case4_5_SubjectLocation':lang.popup_case4_5_SubjectLocation,
+      'popup_case4_SubjectStartTime':lang.popup_case4_SubjectStartTime,
+      'popup_case4_SubjectInfo':lang.popup_case4_SubjectInfo,
+      'popup_case4_TeachedBy':lang.popup_case4_TeachedBy,
+      'popup_case5_ExamInfo':lang.popup_case5_ExamInfo,
+      'popup_case5_ExamStartTime':lang.popup_case5_ExamStartTime,
+      'popup_case6_AccountError':lang.popup_case6_AccountError,
+      'popup_case6_AccountErrorDescription':lang.popup_case6_AccountErrorDescription,
+      'popup_case6_AccountErrorLogoutButton':lang.popup_case6_AccountErrorLogoutButton,
+      'popup_case1_settingOption8_LangaugeSelection':lang.popup_case1_settingOption8_LangaugeSelection,
+      'popup_case1_settingOption8_LangaugeSelectionDescription':lang.popup_case1_settingOption8_LangaugeSelectionDescription,
+      'popup_case7_ButtonUpdateNow':lang.popup_case7_ButtonUpdateNow,
+      'popup_case7_ObsolteAppVersion':lang.popup_case7_ObsolteAppVersion,
+      'popup_case7_ObsolteAppVersionDescription':lang.popup_case7_ObsolteAppVersionDescription,
+      'popup_caseDefault_InvalidPopupState':lang.popup_caseDefault_InvalidPopupState,
+    });
+    return json;
+  }
 }
