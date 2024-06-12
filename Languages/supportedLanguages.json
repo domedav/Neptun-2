@@ -47,6 +47,12 @@
       "langId":"es",
       "langURL":"https://raw.githubusercontent.com/domedav/Neptun-2/main/Languages/LangExtentions/Spanish.json",
       "langFlag":"🇪🇸"
+    },
+    {
+      "langName":"中国人",
+      "langId":"zh",
+      "langURL":"https://raw.githubusercontent.com/domedav/Neptun-2/main/Languages/LangExtentions/Chinese.json",
+      "langFlag":"🇨🇳"
     }
   ]
 }
