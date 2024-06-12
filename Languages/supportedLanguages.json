@@ -13,6 +13,12 @@
       "langFlag":"🇷🇴"
     },
     {
+      "langName":"Русский",
+      "langId":"ru",
+      "langURL":"https://raw.githubusercontent.com/domedav/Neptun-2/main/Languages/LangExtentions/Russian.json",
+      "langFlag":"🇷🇺"
+    },
+    {
       "langName":"Pirate",
       "langId":"7s",
       "langURL":"https://raw.githubusercontent.com/domedav/Neptun-2/main/Languages/LangExtentions/Pirate.json",
