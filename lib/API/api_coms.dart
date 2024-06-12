@@ -1170,18 +1170,25 @@ import '../storage.dart';
     static bool isDaylightSavings(DateTime time){
       return (daylightSavingsTimeFrom.microsecondsSinceEpoch < time.microsecondsSinceEpoch && time.microsecondsSinceEpoch < daylightSavingsTimeTo.microsecondsSinceEpoch);
     }
-    static Future<int?> getMinimumAllowedAppBuildVersion() async{
+    static Future<AppUpdateHelper?> getAppUpdateHelper() async{
       final url = Uri.parse('https://raw.githubusercontent.com/domedav/Neptun-2/main/appMinimumAllowedVersion.json');
       final response = await http.get(url);
 
       if (response.statusCode != 200) {
-        AppAnalitics.sendAnaliticsData(AppAnalitics.ERROR, 'api_coms.dart => Generic.getMinimumAllowedAppBuildVersion() Error: Failed to fetch appMinimumAllowedVersion.json');
+        AppAnalitics.sendAnaliticsData(AppAnalitics.ERROR, 'api_coms.dart => Generic.getAppUpdateHelper() Error: Failed to fetch appMinimumAllowedVersion.json');
         return null;
       }
 
       Map<String, dynamic> jsonMap = conv.json.decode(response.body);
-      return jsonMap["latestMinimumAllowedVerBuildNum"];
+      return AppUpdateHelper(minAppVer: jsonMap["latestMinimumAllowedVerBuildNum"], minDisableVer: jsonMap["disableAppMinimumVersion"], updateUrl: jsonMap["updatePageJumper"]);
     }
+  }
+
+  class AppUpdateHelper{
+    final int? minAppVer;
+    final int? minDisableVer;
+    final String? updateUrl;
+    const AppUpdateHelper({required this.minAppVer, required this.minDisableVer, required this.updateUrl});
   }
 
   class Language{
@@ -1221,6 +1228,10 @@ import '../storage.dart';
 
       final url = Uri.parse(langUrl);
       final response = await http.get(url);
+      if (response.statusCode != 200) {
+        AppAnalitics.sendAnaliticsData(AppAnalitics.ERROR, 'api_coms.dart => Generic.getLanguagePackById() Error: Failed to fetch $langUrl $neededID');
+        return null;
+      }
       return LanguagePack.fromJson(neededID, response.body, (){}); // auto registers itself, as its downloaded, no need for the callback, def not invalid as it has just been downloaded
     }
 

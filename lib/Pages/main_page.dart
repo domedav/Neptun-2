@@ -18,6 +18,7 @@ import 'package:neptun2/PaymentsElements/payment_element_widget.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../API/api_coms.dart' as api;
+import '../app_update.dart';
 import '../haptics.dart';
 import '../storage.dart' as storage;
 import '../TimetableElements/timetable_element_widget.dart' as t_table;
@@ -160,33 +161,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     api.Generic.setupDaylightSavingsTime();
 
     Future.delayed(Duration(seconds: 4), ()async{
-      if(storage.DataCache.getIsInstalledFromGPlay() != 0){
-        return; // app is from gplay, and gplay updates are handled differently
-      }
-      final cacheTime = await storage.getInt('ObsolteAppVerUpdateCacheTime') ?? -1;
-      if(cacheTime <= 0){ // fresh app version
-        storage.saveInt('ObsolteAppVerUpdateCacheTime', DateTime.now().microsecondsSinceEpoch);
-        return;
-      }
-
-      if((DateTime.now().millisecondsSinceEpoch - cacheTime) > const Duration(hours: 24).inMilliseconds || // once a day update check
-          await Connectivity().checkConnectivity() == ConnectivityResult.none) // only check for updates, if there is internet
-      {return;}
-
-      final minBuildVer = await api.Generic.getMinimumAllowedAppBuildVersion() ?? 0;
-      final currentBuildNumber = int.parse((await PackageInfo.fromPlatform()).buildNumber);
-      // akik nem szeretnek frissíteni, kicsit erőltetős módon perszuáljuk őket
-      if(minBuildVer > currentBuildNumber){
-        PopupWidgetHandler(mode: 7, callback: (_){
-          if(!Platform.isAndroid){
-            return;
-          }
-          launchUrl(Uri.parse('https://github.com/domedav/Neptun-2/releases'), mode: LaunchMode.externalApplication);
-        });
-        PopupWidgetHandler.doPopup(context);
-        await storage.saveInt('ObsolteAppVerUpdateCacheTime', DateTime.now().microsecondsSinceEpoch); // save last checked update time
-        return;
-      }
+      await AppUpdate.doUpdateRequest(context, null, null);
     });
 
     Future.delayed(Duration(seconds: 4),()async{
@@ -205,7 +180,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       Future.delayed(const Duration(seconds: 4), ()async{
         final cacheTime = await storage.getInt('UpdateCacheTime') ?? -1;
         if(cacheTime <= 0){ // fresh app version
-          storage.saveInt('UpdateCacheTime', DateTime.now().microsecondsSinceEpoch);
+          storage.saveInt('UpdateCacheTime', DateTime.now().millisecondsSinceEpoch);
           return;
         }
 
@@ -214,7 +189,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         {return;}
 
         final appupdateInfo = await InAppUpdate.checkForUpdate();
-        storage.saveInt('UpdateCacheTime', DateTime.now().microsecondsSinceEpoch); // save last checked update time
+        storage.saveInt('UpdateCacheTime', DateTime.now().millisecondsSinceEpoch); // save last checked update time
         if(appupdateInfo.updateAvailability == UpdateAvailability.updateAvailable){ // has new version
           AppHaptics.attentionImpact();
           await InAppUpdate.startFlexibleUpdate().then((value) async { // install update

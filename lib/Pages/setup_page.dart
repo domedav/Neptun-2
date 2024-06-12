@@ -14,6 +14,7 @@ import '../API/api_coms.dart' as api;
 import '../Misc/custom_snackbar.dart';
 import '../Misc/emojirich_text.dart';
 import '../app_analitics.dart';
+import '../app_update.dart';
 import '../storage.dart' as storage;
 import '../storage.dart';
 import 'main_page.dart' as main_page;
@@ -85,6 +86,9 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
         await LanguageManager.suggestLang(context, ()=>blurPage(true), ()=>blurPage(false));
       });
     }
+    Future.delayed(Duration(seconds: 1),()async{
+      await AppUpdate.doUpdateRequest(context, ()=>blurPage(true), ()=>blurPage(false));
+    });
   }
 
   bool _analiticsDebounce = false;

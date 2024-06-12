@@ -1243,6 +1243,12 @@ class LanguagePack{
 
 class LanguageManager{
   static Future<void> suggestLang(BuildContext context, VoidCallback? blur, VoidCallback? closeBlur)async{
+    final cacheTime = await getInt('SuggestLangUpdateCacheTime') ?? -1;
+    final nudgeAmount = await getInt('SuggestLangNudgeTime') ?? 0;
+    if((DateTime.now().millisecondsSinceEpoch - cacheTime) > const Duration(hours: 24).inMilliseconds ||
+      nudgeAmount >= 3){
+      return;
+    }
     final supportedUserLang = await Language.checkSupportedUserLanguage();
     final preferedLang = DataCache.getUserSelectedLanguage()!;
     if(!supportedUserLang || preferedLang != -1 || !DataCache.getHasNetwork()){
@@ -1257,6 +1263,8 @@ class LanguageManager{
     //AppHaptics.attentionImpact();
     AppStrings.saveDownloadedLanguageData();
     AppStrings.setupPopupPreviews(langPack);
+    saveInt('SuggestLangUpdateCacheTime', DateTime.now().millisecondsSinceEpoch);
+    saveInt('SuggestLangNudgeTime', nudgeAmount + 1);
     PopupWidgetHandler(mode: 8, callback: (_)async{
       final idx = AppStrings.getAllLangCodes().indexOf(deviceLang);
       await DataCache.setUserSelectedLanguage(idx);
