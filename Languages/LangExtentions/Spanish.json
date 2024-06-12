@@ -169,5 +169,6 @@
   "popup_case8_AcceptLanguageSuggestionDescription":"La aplicación admite el idioma que estás hablando.\nCámbialo si quieres.",
   "popup_case8_ButtonAcceptLang":"Cambiar",
   "popup_case1_langSwap_DownloadingLang":"Descargando idioma",
-  "popup_case1_langSwap_DownloadingLangFail":"No se puede descargar, no hay internet"
+  "popup_case1_langSwap_DownloadingLangFail":"No se puede descargar, no hay internet",
+  "freshTest":"Fresco"
 }
