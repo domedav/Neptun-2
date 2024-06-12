@@ -27,7 +27,7 @@ Töltsd le másmilyen áruházból!
 Nyelvezeti bugfixek
 
 ## 1.6.2
-Korlátlan nyelvezet, app update system, ha nem playről van az app
+Korlátlan nyelvezet support, app update system, ha nem playről van az app
 
 ## 1.6.1
 Apró popup átdolgozás, a felhasználót nem érinti
