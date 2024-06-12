@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:developer';
+import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:neptun2/Misc/custom_snackbar.dart';
 import 'package:neptun2/Pages/main_page.dart';
@@ -159,6 +162,9 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
 
   late AnimationController popupController;
   late Animation<double> poppuAnimation;
+  int _languageDropdownMenuIndexer = -1;
+  int _languageCurrSelect = 0;
+  GlobalKey _languageDropdownGlobalKey = GlobalKey();
 
   @override
   void initState() {
@@ -179,13 +185,17 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
     );
     PopupWidgetHandler._instance!.widgetAnimController = popupController;
     popupController.forward(from: 0);
+
+    _languageCurrSelect = DataCache.getUserSelectedLanguage()!;
+    if(_languageCurrSelect == -1){
+      _languageCurrSelect = AppStrings.getAllLangCodes().indexOf(Platform.localeName.split('_')[0].toLowerCase());
+    }
   }
 
   int selectionValue = -1;
-  int _settingsLanguageItemsIdx = -1;
-  GlobalKey _settingsLanguageWidgetGlobalKey = GlobalKey();
 
   List<Widget> getWidgets(int mode){
+    _languageDropdownMenuIndexer = -1;
     List<Widget> list = <Widget>[];
     switch (mode){
       case 0:
@@ -372,7 +382,6 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
 
         return list;
       case 1:
-        _settingsLanguageItemsIdx = -1;
         list.add(EmojiRichText(
           text: AppStrings.getLanguagePack().popup_case1_SettingsHeader,
           defaultStyle: const TextStyle(
@@ -791,7 +800,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Expanded(flex: 3, child: Container(
+            Expanded(flex: 2, child: Container(
               margin: const EdgeInsets.all(10),
               child: Text(
                 AppStrings.getLanguagePack().popup_case1_settingOption8_LangaugeSelection,
@@ -821,7 +830,136 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
                 iconSize: 24,
               ),
             ),
-            GestureDetector(
+            Expanded(
+              flex: 3,
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                child: DropdownButtonFormField<int>(
+                    key: _languageDropdownGlobalKey,
+                    borderRadius: BorderRadius.circular(12),
+                    value: _languageCurrSelect, // The currently selected value.
+                    icon: const SizedBox(),
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600
+                    ),
+                    enableFeedback: true,
+                    onTap: AppHaptics.lightImpact,
+                    focusColor: Colors.transparent,
+                    dropdownColor: Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
+                    decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.all(18),
+                        suffixIcon: const Icon(Icons.arrow_drop_down_rounded),
+                        labelStyle: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white.withOpacity(.6),
+                            fontWeight: FontWeight.w400
+                        ),
+                        border: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                            borderSide: BorderSide.none
+                        ),
+                        filled: true,
+                        fillColor: Colors.white.withOpacity(.05)
+                    ),
+                    items: AppStrings.getLanguageNamesWithFlag().map<DropdownMenuItem<int>>((String value) {
+                      return DropdownMenuItem<int>(
+                          value: ++_languageDropdownMenuIndexer,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 2),
+                            child: EmojiRichText(
+                              text: value,
+                              defaultStyle: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14.0,
+                              ),
+                              emojiStyle: const TextStyle(
+                                  color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                                  fontSize: 18.0,
+                                  fontFamily: "Noto Color Emoji"
+                              ),
+                            ),
+                          )
+                      );
+                    }).toList(),
+                    selectedItemBuilder: (context){
+                      return AppStrings.getLanguageNamesWithFlag().map<Widget>((String value){
+                        return Container(
+                          constraints: BoxConstraints(maxWidth: _languageDropdownGlobalKey.currentContext?.findRenderObject() == null ? MediaQuery.of(context).size.width : ((_languageDropdownGlobalKey.currentContext!.findRenderObject() as RenderBox).size.width - 60) < 0 ? 0 : ((_languageDropdownGlobalKey.currentContext!.findRenderObject() as RenderBox).size.width - 60)),
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            child: EmojiRichText(
+                              text: value,
+                              defaultStyle: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16.0,
+                              ),
+                              emojiStyle: const TextStyle(
+                                  color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                                  fontSize: 20.0,
+                                  fontFamily: "Noto Color Emoji"
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList();
+                    },
+                    onChanged: (int? value) {
+                      AppHaptics.lightImpact();
+                      if(value == null){
+                        return;
+                      }
+                      DataCache.setUserSelectedLanguage(value);
+                      final langPackId = Language.getAllLanguagesWithNative()[value].langId;
+                      if(!AppStrings.hasLanguageDownloaded(langPackId)){
+                        Future.delayed(Duration.zero, ()async{
+                          if(!DataCache.getHasNetwork()){
+                            if(Platform.isAndroid){
+                              Fluttertoast.showToast(
+                                msg: AppStrings.popupLangPrev_ObtainingLangError,
+                                toastLength: Toast.LENGTH_SHORT,
+                                fontSize: 14,
+                                gravity: ToastGravity.SNACKBAR,
+                                backgroundColor: const Color.fromRGBO(0x1A, 0x1A, 0x1A, 1.0),
+                                textColor: Colors.white,
+                              );
+                            }
+                            return;
+                          }
+                          if(Platform.isAndroid){
+                            Fluttertoast.showToast(
+                              msg: AppStrings.popupLangPrev_ObtainingLang,
+                              toastLength: Toast.LENGTH_SHORT,
+                              fontSize: 14,
+                              gravity: ToastGravity.SNACKBAR,
+                              backgroundColor: const Color.fromRGBO(0x1A, 0x1A, 0x1A, 1.0),
+                              textColor: Colors.white,
+                            );
+                          }
+                          final pack = await Language.getAllLanguages();
+                          await Language.getLanguagePackById(pack, langPackId).whenComplete(()async{
+                            AppStrings.saveDownloadedLanguageData();
+                            Navigator.popUntil(context, (route) => route.willHandlePopInternally);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const Splitter()),
+                            );
+                          });
+                          return;
+                        });
+                      }
+                      setState(() {
+                        _languageCurrSelect = value;
+                        PopupWidgetHandler._instance!._settingsLanguageCurrent = value;
+                      });
+                    }
+                ),
+              ),
+            ),
+            /*GestureDetector(
               key: _settingsLanguageWidgetGlobalKey,
               onTap: (){
                 if(!mounted){
@@ -901,7 +1039,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
                   ],
                 )
               ),
-            )
+            )*/
           ],
         ));
         list.add(Container(
@@ -1093,6 +1231,29 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 15),
             child: Text(AppStrings.getLanguagePack().popup_caseAll_OkButton,
+              style: const TextStyle(
+                color: Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0),
+                fontWeight: FontWeight.w900,
+                fontSize: 18.0,
+              ),
+            ),
+          ),
+        ));
+        list.add(TextButton(
+          onPressed: (){
+            if(!PopupWidgetHandler._instance!._inUse || !mounted){
+              return;
+            }
+            AppHaptics.lightImpact();
+            DataCache.dataWipeNoKeep();
+          },
+          style: ButtonStyle(
+            backgroundColor: WidgetStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),
+            overlayColor: WidgetStateProperty.all(Colors.white.withOpacity(.05)),
+          ),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 15),
+            child: Text('dev_WipeAll',
               style: const TextStyle(
                 color: Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0),
                 fontWeight: FontWeight.w900,

@@ -49,6 +49,12 @@ class DataCache{
     _instance._localWipe();
   }
 
+  static Future<void> dataWipeNoKeep()async{
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+    await prefs.reload();
+  }
+
   void _localWipe(){
     _username = '';
     _password = '';

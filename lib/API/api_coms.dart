@@ -9,6 +9,8 @@ import 'package:neptun2/language.dart';
 import '../app_analitics.dart';
 import '../storage.dart' as storage;
 import 'dart:developer' as debug;
+
+import '../storage.dart';
   
   class URLs{
     static const String INSTITUTIONS_URL = "https://mobilecloudservice.cloudapp.net/MobileServiceLib/MobileCloudService.svc/GetAllNeptunMobileUrls";
@@ -1219,11 +1221,21 @@ import 'dart:developer' as debug;
 
       final url = Uri.parse(langUrl);
       final response = await http.get(url);
-
       return LanguagePack.fromJson(neededID, response.body, (){}); // auto registers itself, as its downloaded, no need for the callback, def not invalid as it has just been downloaded
     }
 
     static List<LangPackMap>? _langMapCache;
+    static List<LangPackMap> getAllLanguagesWithNative(){
+      final nativeList = <LangPackMap>[
+        LangPackMap(langName: 'Magyar', langId: 'hu', langURL: '', langFlag: '🇭🇺'),
+        LangPackMap(langName: 'English', langId: 'en', langURL: '', langFlag: '🇺🇸/🇬🇧')];
+
+      if(!DataCache.getHasNetwork()){
+        return nativeList;
+      }
+      return nativeList + (_langMapCache == null ? <LangPackMap>[].toList() : _langMapCache!);
+    }
+
     static Future<List<LangPackMap>?> getAllLanguages()async{
       if(_langMapCache != null){
         return _langMapCache;
@@ -1249,13 +1261,14 @@ import 'dart:developer' as debug;
 
   class LangPackMap{
     final String langName;
+    final String langFlag;
     final String langId;
     final String langURL;
 
-    LangPackMap({required this.langName, required this.langId, required this.langURL});
+    LangPackMap({required this.langName, required this.langId, required this.langURL, required this.langFlag});
 
     static LangPackMap fromMap(Map<String, dynamic> json){
-      return LangPackMap(langName: json['langName'], langId: json['langId'], langURL: json['langURL']);
+      return LangPackMap(langName: json['langName'], langId: json['langId'], langURL: json['langURL'], langFlag: json['langFlag']);
     }
   }
   

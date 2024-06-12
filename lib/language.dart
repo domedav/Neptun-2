@@ -1,14 +1,11 @@
+import 'dart:developer';
 import 'dart:io';
 import 'dart:convert' as conv;
-import 'dart:ui';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neptun2/storage.dart';
-
 import 'API/api_coms.dart';
 import 'Misc/popup.dart';
 import 'Pages/startup_page.dart';
-import 'haptics.dart';
 class AppStrings{
   static bool _hasInit = false;
   static late final String _defaultLocale;
@@ -196,6 +193,8 @@ class AppStrings{
       popup_case8_AcceptLanguageSuggestion: '🗣️ App Nyelvezet 🗣️',
       popup_case8_AcceptLanguageSuggestionDescription: 'Az app támogatja az általad beszélt nyelvet.\nHa gondolod állítsd be.',
       popup_case8_ButtonAcceptLang: 'Beállít',
+      popup_case1_langSwap_DownloadingLang: 'Nyelv letöltése',
+      popup_case1_langSwap_DownloadingLangFail: 'Nem lehet letölteni, nincs internet'
     )});
     //---
     _languages.addAll({_supportedLanguages[1]: LanguagePack(
@@ -368,6 +367,8 @@ class AppStrings{
     popup_case8_AcceptLanguageSuggestion: '🗣️ App Language 🗣️',
     popup_case8_AcceptLanguageSuggestionDescription: 'The app supports the language you are speaking.\nChange it if you want to.',
     popup_case8_ButtonAcceptLang: 'Change',
+    popup_case1_langSwap_DownloadingLang: 'Downloading language',
+    popup_case1_langSwap_DownloadingLangFail: 'Can\'t download, no internet'
     )});
     _hasInit = true;
   }
@@ -375,11 +376,15 @@ class AppStrings{
   static String popupLangPrev_Header = "ERROR";
   static String popupLangPrev_Description = "ERROR";
   static String popupLangPrev_Button = "ERROR";
+  static String popupLangPrev_ObtainingLang = "ERROR";
+  static String popupLangPrev_ObtainingLangError = "ERROR";
 
   static void setupPopupPreviews(LanguagePack pack){
     popupLangPrev_Header = pack.popup_case8_AcceptLanguageSuggestion;
     popupLangPrev_Description = pack.popup_case8_AcceptLanguageSuggestionDescription;
     popupLangPrev_Button = pack.popup_case8_ButtonAcceptLang;
+    popupLangPrev_ObtainingLang = pack.popup_case1_langSwap_DownloadingLang;
+    popupLangPrev_ObtainingLangError = pack.popup_case1_langSwap_DownloadingLangFail;
   }
 
   static LanguagePack getLanguagePack(){
@@ -422,6 +427,20 @@ class AppStrings{
 
   static List<String> getAllLangCodes(){
     return _supportedLanguages + _downloadedSupportedLanguages;
+  }
+
+  static List<String> getLanguageNamesWithFlag(){
+    final List<String> list = [];
+    final List<LangPackMap> langNames = Language.getAllLanguagesWithNative();
+    for(var item in langNames){
+      list.add("${item.langFlag} ${item.langName}");
+    }
+    return list;
+  }
+
+  static bool hasLanguageDownloaded(String id){
+    final list = _supportedLanguages + _downloadedSupportedLanguages;
+    return list.contains(id);
   }
 
   static void saveDownloadedLanguageData(){
@@ -652,6 +671,9 @@ class LanguagePack{
   final String popup_case8_AcceptLanguageSuggestionDescription;
   final String popup_case8_ButtonAcceptLang;
 
+  final String popup_case1_langSwap_DownloadingLang;
+  final String popup_case1_langSwap_DownloadingLangFail;
+
   final String popup_caseDefault_InvalidPopupState;
 
   LanguagePack({
@@ -824,6 +846,8 @@ class LanguagePack{
     required this.popup_case8_AcceptLanguageSuggestion,
     required this.popup_case8_AcceptLanguageSuggestionDescription,
     required this.popup_case8_ButtonAcceptLang,
+    required this.popup_case1_langSwap_DownloadingLang,
+    required this.popup_case1_langSwap_DownloadingLangFail
   });
 
   static LanguagePack fromJson(String countryId, String json, VoidCallback onLanguageOutdated){
@@ -1000,9 +1024,11 @@ class LanguagePack{
         popup_case8_AcceptLanguageSuggestion:lang['popup_case8_AcceptLanguageSuggestion'],
         popup_case8_AcceptLanguageSuggestionDescription:lang['popup_case8_AcceptLanguageSuggestionDescription'],
         popup_case8_ButtonAcceptLang:lang['popup_case8_ButtonAcceptLang'],
+        popup_case1_langSwap_DownloadingLang: lang['popup_case1_langSwap_DownloadingLang'],
+        popup_case1_langSwap_DownloadingLangFail: lang['popup_case1_langSwap_DownloadingLangFail']
       );
     }
-    catch(_){
+    catch(error){
       Future.delayed(Duration.zero,(){
         onLanguageOutdated();
       });
@@ -1194,6 +1220,8 @@ class LanguagePack{
       'popup_case8_AcceptLanguageSuggestion':lang.popup_case8_AcceptLanguageSuggestion,
       'popup_case8_AcceptLanguageSuggestionDescription':lang.popup_case8_AcceptLanguageSuggestionDescription,
       'popup_case8_ButtonAcceptLang':lang.popup_case8_ButtonAcceptLang,
+      'popup_case1_langSwap_DownloadingLang':lang.popup_case1_langSwap_DownloadingLang,
+      'popup_case1_langSwap_DownloadingLangFail':lang.popup_case1_langSwap_DownloadingLangFail
     });
     return json;
   }
@@ -1203,8 +1231,8 @@ class LanguageManager{
   static Future<void> suggestLang(BuildContext context, VoidCallback? blur, VoidCallback? closeBlur)async{
     final supportedUserLang = await Language.checkSupportedUserLanguage();
     final preferedLang = DataCache.getUserSelectedLanguage()!;
-    if(!supportedUserLang || preferedLang != -1){
-      // applied via native, or has a language preference
+    if(!supportedUserLang || preferedLang != -1 || !DataCache.getHasNetwork()){
+      // applied via native, or has a language preference, or no network
       return;
     }
     final deviceLang = Platform.localeName.split('_')[0].toLowerCase();
@@ -1212,7 +1240,7 @@ class LanguageManager{
     if(langPack == null){
       return;
     }
-    AppHaptics.attentionImpact();
+    //AppHaptics.attentionImpact();
     AppStrings.saveDownloadedLanguageData();
     AppStrings.setupPopupPreviews(langPack);
     PopupWidgetHandler(mode: 8, callback: (_)async{
