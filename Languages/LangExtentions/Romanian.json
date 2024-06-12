@@ -93,7 +93,7 @@
   "topheader_periods_MainHeader":"%0 %1, %2 %3, %4 %5 🗓️",
   "topheader_messages_UnreadMessages":"Ai %0 mesaje necitite 💌",
   "topmenu_Greet":"Salut %0! 👋",
-  "topmenu_LoginPlace":"Ești autentificat aic",
+  "topmenu_LoginPlace":"Ești autentificat aic 🔗\n%0",
   "topmenu_buttons_Settings":"⚙ Setări",
   "topmenu_buttons_SupportDev":"🎁 Suport dezvoltator",
   "topmenu_buttons_Bugreport":"🐞 Raportare erori",
