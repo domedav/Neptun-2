@@ -85,7 +85,7 @@
   "topheader_calendar_greetMessage_13to17":"Добрый вечер! 🥂",
   "topheader_calendar_greetMessage_17to21":"Добрый вечер! 🍻",
   "topheader_calendar_greetMessage_21to1":"Спокойной ночи! 🍹",
-  "topheader_subjects_CreditsInSemester":"Ваши кредиты в этом семестр",
+  "topheader_subjects_CreditsInSemester":"Ваши кредиты в этом семестр %0🎖️",
   "topheader_payments_TotalMoneySpent":"Вы потратили %0Huf на университет 💸",
   "topheader_periods_ActiveText":"Активный",
   "topheader_periods_ExpiredText":"Истек",
