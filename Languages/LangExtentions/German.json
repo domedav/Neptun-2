@@ -140,7 +140,7 @@
   "popup_case1_settingOption6_AppHapticsDescription":"Du kannst festlegen, ob die App dir haptisches Feedback (Vibration) geben soll.",
   "popup_case1_settingOption7_WeekOffset":"Studienwochen-Versatz",
   "popup_case1_settingOption7_WeekOffsetDescription":"Wenn du Probleme mit der aktuellen Studienwoche hast, kannst du sie auf die richtige Woche verschieben!",
-  "popup_case1_settingOption7_WeekOffsetAuto":"Automatisch",
+  "popup_case1_settingOption7_WeekOffsetAuto":"Auto",
   "popup_case1_settingBottomText_InstallOrigin":"%0 - Installiert vo",
   "popup_case1_settingBottomText_InstallOrigin3rdParty":"Paket-Installer",
   "popup_case1_settingBottomText_InstallOriginGPlay":"Google Play",
