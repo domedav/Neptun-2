@@ -169,5 +169,6 @@
   "popup_case8_AcceptLanguageSuggestionDescription":"Додаток підтримує мову, якою ви розмовляєте.\nЗмініть її, якщо бажаєте.",
   "popup_case8_ButtonAcceptLang":"Змінити",
   "popup_case1_langSwap_DownloadingLang":"Завантаження мови",
-  "popup_case1_langSwap_DownloadingLangFail":"Не вдалося завантажити, немає Інтернету"
+  "popup_case1_langSwap_DownloadingLangFail":"Не вдалося завантажити, немає Інтернету",
+  "freshTest":"Свіжий"
 }
