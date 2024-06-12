@@ -167,6 +167,9 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     Future.delayed(Duration(seconds: 4),()async{
       await LanguageManager.suggestLang(context, null, null);
     });
+    Future.delayed(Duration(seconds: 1),()async{
+      await LanguageManager.refreshAllDownloadedLangs();
+    });
 
     if(Platform.isAndroid){
       Future.delayed(Duration.zero, ()async{

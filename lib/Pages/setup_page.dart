@@ -89,6 +89,9 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
     Future.delayed(Duration(seconds: 1),()async{
       await AppUpdate.doUpdateRequest(context, ()=>blurPage(true), ()=>blurPage(false));
     });
+    Future.delayed(Duration(seconds: 1),()async{
+      await LanguageManager.refreshAllDownloadedLangs();
+    });
   }
 
   bool _analiticsDebounce = false;
