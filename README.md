@@ -22,6 +22,7 @@ Töltsd le a Play Áruházból!
 Töltsd le másmilyen áruházból!
 - https://apkpure.com/p/com.domedav.neptun2
 - https://neptun-2.en.uptodown.com/android
+- https://neptun-2.bd.aptoide.com/app
 - ...
 
 # 1.6.4
