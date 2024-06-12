@@ -169,5 +169,6 @@
   "popup_case8_AcceptLanguageSuggestionDescription":"Die App unterstützt die Sprache, die du sprichst.\nÄndere sie, wenn du möchtest.",
   "popup_case8_ButtonAcceptLang":"Ändern",
   "popup_case1_langSwap_DownloadingLang":"Sprache herunterladen",
-  "popup_case1_langSwap_DownloadingLangFail":"Kann nicht heruntergeladen werden, kein Internet"
+  "popup_case1_langSwap_DownloadingLangFail":"Kann nicht heruntergeladen werden, kein Internet",
+  "freshTest":"Frisch"
 }
