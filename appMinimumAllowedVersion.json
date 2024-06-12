@@ -1,3 +1,4 @@
 {
-  "latestMinimumAllowedVerBuildNum": 35
+  "latestMinimumAllowedVerBuildNum": 35,
+  "disableAppMinimumVersion": 35
 }
