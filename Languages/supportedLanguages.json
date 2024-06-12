@@ -29,6 +29,18 @@
       "langId":"7s",
       "langURL":"https://raw.githubusercontent.com/domedav/Neptun-2/main/Languages/LangExtentions/Pirate.json",
       "langFlag":"🏴‍☠️"
+    },
+    {
+      "langName":"Україна",
+      "langId":"ua",
+      "langURL":"https://raw.githubusercontent.com/domedav/Neptun-2/main/Languages/LangExtentions/Ukranian.json",
+      "langFlag":"🇺🇦"
+    },
+    {
+      "langName":"عربي",
+      "langId":"ar",
+      "langURL":"https://raw.githubusercontent.com/domedav/Neptun-2/main/Languages/LangExtentions/UnitedArabEmirates.json",
+      "langFlag":"🇦🇪"
     }
   ]
 }
