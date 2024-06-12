@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 class EmojiRichText extends StatelessWidget {
@@ -54,9 +56,11 @@ class EmojiRichText extends StatelessWidget {
 
   // Check if the given Unicode code points represent an emoji
   bool isEmoji(String str){
-    final hungarianAndAsciiRegex = RegExp(r"[\x00-\x7FáéíóöőúüűÁÉÍÓÖŐÚÜŰ]");
-
-    return !hungarianAndAsciiRegex.hasMatch(str);
+    final languagePattern = RegExp(
+      r'\p{L}|[\x00-\x7F]',
+      unicode: true,
+    );
+    return !languagePattern.hasMatch(str);
   }
 }
 
