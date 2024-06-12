@@ -41,6 +41,12 @@
       "langId":"ar",
       "langURL":"https://raw.githubusercontent.com/domedav/Neptun-2/main/Languages/LangExtentions/UnitedArabEmirates.json",
       "langFlag":"🇦🇪"
+    },
+    {
+      "langName":"España",
+      "langId":"es",
+      "langURL":"https://raw.githubusercontent.com/domedav/Neptun-2/main/Languages/LangExtentions/Spanish.json",
+      "langFlag":"🇪🇸"
     }
   ]
 }
