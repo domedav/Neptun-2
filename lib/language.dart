@@ -433,11 +433,13 @@ class AppStrings{
     final List<String> list = [];
     final List<LangPackMap> langNames = Language.getAllLanguagesWithNative();
     final obtainedList = _supportedLanguages + _downloadedSupportedLanguages;
-    for(var item in langNames){
-      if(!obtainedList.contains(item.langId)){
-        continue;
+    for(var item in obtainedList){
+      for(var item2 in langNames){
+        if(item2.langId == item){
+          list.add("${item2.langFlag} ${item2.langName}");
+          break;
+        }
       }
-      list.add("${item.langFlag} ${item.langName}");
     }
     for(var item in langNames){
       if(obtainedList.contains(item.langId)){

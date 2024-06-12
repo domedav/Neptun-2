@@ -917,7 +917,6 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
                       }
                       final flagWeLookFor = value.split(' ')[0];
                       final languageIdx = AppStrings.getAllLangFlags().indexOf(flagWeLookFor);
-                      DataCache.setUserSelectedLanguage(languageIdx <= -1 ? AppStrings.getAllLangFlags().length : languageIdx);
 
                       var selectedLangCode = '';
                       for(var item in Language.getAllLanguagesWithNative()){
@@ -926,7 +925,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
                           break;
                         }
                       }
-
+                      DataCache.setUserSelectedLanguage(languageIdx <= -1 ? AppStrings.getAllLangFlags().length : languageIdx);
                       if(!AppStrings.hasLanguageDownloaded(selectedLangCode)){
                         Future.delayed(Duration.zero, ()async{
                           if(!DataCache.getHasNetwork()){
@@ -1253,7 +1252,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
             ),
           ),
         ));
-        /*list.add(TextButton(
+        list.add(TextButton(
           onPressed: (){
             if(!PopupWidgetHandler._instance!._inUse || !mounted){
               return;
@@ -1275,7 +1274,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
               ),
             ),
           ),
-        ));*/
+        ));
         return list;
 
       case 2:
