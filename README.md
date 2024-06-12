@@ -20,10 +20,9 @@ Töltsd le a Play Áruházból!
 - https://play.google.com/store/apps/details?id=com.domedav.neptun2
 
 Töltsd le másmilyen áruházból!
-- https://apkpure.com/p/com.domedav.neptun2
-- https://neptun-2.en.uptodown.com/android
-- https://neptun-2.bd.aptoide.com/app
-- ...
+- https://apkpure.com/p/com.domedav.neptun2 • Apkpure
+- https://neptun-2.en.uptodown.com/android • Uptodown
+- https://neptun-2.bd.aptoide.com/app • Apptoide
 
 # 1.6.4
 Autó nyelv refresh
