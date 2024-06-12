@@ -169,5 +169,6 @@
   "popup_case8_AcceptLanguageSuggestionDescription":"Aplicația suportă limba pe care o vorbiți.\nSchimbați-o dacă doriți.",
   "popup_case8_ButtonAcceptLang":"Schimbare",
   "popup_case1_langSwap_DownloadingLang":"Se descarcă limba",
-  "popup_case1_langSwap_DownloadingLangFail":"Nu se poate descărca, fără internet"
+  "popup_case1_langSwap_DownloadingLangFail":"Nu se poate descărca, fără internet",
+  "freshTest":"Proaspăt"
 }
