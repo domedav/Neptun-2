@@ -85,7 +85,7 @@
   "topheader_calendar_greetMessage_13to17":"Guten Nachmittag! 🥂",
   "topheader_calendar_greetMessage_17to21":"Guten Abend! 🍻",
   "topheader_calendar_greetMessage_21to1":"Gute Nacht! 🍹",
-  "topheader_subjects_CreditsInSemester":"Deine Credits in diesem Semeste",
+  "topheader_subjects_CreditsInSemester":"Deine Credits in diesem Semeste %0🎖️",
   "topheader_payments_TotalMoneySpent":"Du hast %0Huf an der Universität ausgegeben 💸",
   "topheader_periods_ActiveText":"Aktiv",
   "topheader_periods_ExpiredText":"Abgelaufen",
