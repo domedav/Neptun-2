@@ -169,5 +169,6 @@
   "popup_case8_AcceptLanguageSuggestionDescription":"该应用程序支持您所使用的语言。\n如果您愿意，可以更改它。",
   "popup_case8_ButtonAcceptLang":"更改",
   "popup_case1_langSwap_DownloadingLang":"正在下载语言",
-  "popup_case1_langSwap_DownloadingLangFail":"无法下载，没有网络"
+  "popup_case1_langSwap_DownloadingLangFail":"无法下载，没有网络",
+  "freshTest":"新鲜的"
 }
