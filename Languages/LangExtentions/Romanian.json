@@ -167,5 +167,7 @@
   "popup_caseDefault_InvalidPopupState":"Date lipsă...",
   "popup_case8_AcceptLanguageSuggestion":"🗣️ Limba aplicației 🗣️",
   "popup_case8_AcceptLanguageSuggestionDescription":"Aplicația suportă limba pe care o vorbești.\nSchimbă-o dacă vrei.",
-  "popup_case8_ButtonAcceptLang":"Schimbă"
+  "popup_case8_ButtonAcceptLang":"Schimbă",
+  "popup_case1_langSwap_DownloadingLang":"Limba de descărcare",
+  "popup_case1_langSwap_DownloadingLangFail":"Nu se poate descărca, fără internet"
 }
