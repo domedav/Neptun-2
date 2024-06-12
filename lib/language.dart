@@ -432,7 +432,17 @@ class AppStrings{
   static List<String> getLanguageNamesWithFlag(){
     final List<String> list = [];
     final List<LangPackMap> langNames = Language.getAllLanguagesWithNative();
+    final obtainedList = _supportedLanguages + _downloadedSupportedLanguages;
     for(var item in langNames){
+      if(!obtainedList.contains(item.langId)){
+        continue;
+      }
+      list.add("${item.langFlag} ${item.langName}");
+    }
+    for(var item in langNames){
+      if(obtainedList.contains(item.langId)){
+        continue;
+      }
       list.add("${item.langFlag} ${item.langName}");
     }
     return list;
@@ -852,6 +862,13 @@ class LanguagePack{
 
   static LanguagePack fromJson(String countryId, String json, VoidCallback onLanguageOutdated){
     var decodedLangPack;
+    if(AppStrings._downloadedSupportedLanguages.contains(countryId)){
+      // overwrite
+      final duplicateIdx = AppStrings._downloadedSupportedLanguages.indexOf(countryId);
+      AppStrings._downloadedSupportedLanguages.removeAt(duplicateIdx);
+      AppStrings._downloadedSupportedLanguagesFlags.removeAt(duplicateIdx);
+      AppStrings._downloadedLanguages.remove(duplicateIdx);
+    }
     try{
       final lang = conv.json.decode(json);
       decodedLangPack = LanguagePack(
@@ -1024,22 +1041,17 @@ class LanguagePack{
         popup_case8_AcceptLanguageSuggestion:lang['popup_case8_AcceptLanguageSuggestion'],
         popup_case8_AcceptLanguageSuggestionDescription:lang['popup_case8_AcceptLanguageSuggestionDescription'],
         popup_case8_ButtonAcceptLang:lang['popup_case8_ButtonAcceptLang'],
-        popup_case1_langSwap_DownloadingLang: lang['popup_case1_langSwap_DownloadingLang'],
-        popup_case1_langSwap_DownloadingLangFail: lang['popup_case1_langSwap_DownloadingLangFail']
+        popup_case1_langSwap_DownloadingLang:lang['popup_case1_langSwap_DownloadingLang'],
+        popup_case1_langSwap_DownloadingLangFail:lang['popup_case1_langSwap_DownloadingLangFail']
       );
     }
     catch(error){
+      //log(error.toString());
+      //log("${AppStrings._downloadedSupportedLanguages}");
       Future.delayed(Duration.zero,(){
         onLanguageOutdated();
       });
       return AppStrings.getLanguagePack(); // language invalid
-    }
-    if(AppStrings._downloadedSupportedLanguages.contains(countryId)){
-      // overwrite
-      final duplicateIdx = AppStrings._downloadedSupportedLanguages.indexOf(countryId);
-      AppStrings._downloadedSupportedLanguages.removeAt(duplicateIdx);
-      AppStrings._downloadedSupportedLanguagesFlags.removeAt(duplicateIdx);
-      AppStrings._downloadedLanguages.remove(duplicateIdx);
     }
     // add to db
     AppStrings._downloadedSupportedLanguagesFlags.add(decodedLangPack.language_flag);

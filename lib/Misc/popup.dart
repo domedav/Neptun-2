@@ -162,8 +162,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
 
   late AnimationController popupController;
   late Animation<double> poppuAnimation;
-  int _languageDropdownMenuIndexer = -1;
-  int _languageCurrSelect = 0;
+  late String _languageCurrSelect;
   GlobalKey _languageDropdownGlobalKey = GlobalKey();
 
   @override
@@ -186,16 +185,19 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
     PopupWidgetHandler._instance!.widgetAnimController = popupController;
     popupController.forward(from: 0);
 
-    _languageCurrSelect = DataCache.getUserSelectedLanguage()!;
-    if(_languageCurrSelect == -1){
-      _languageCurrSelect = AppStrings.getAllLangCodes().indexOf(Platform.localeName.split('_')[0].toLowerCase());
+    final idx = DataCache.getUserSelectedLanguage()!;
+    if(idx <= -1){
+      final langCodeIdx = AppStrings.getAllLangCodes().indexOf(Platform.localeName.split('_')[0].toLowerCase());
+      _languageCurrSelect = AppStrings.getLanguageNamesWithFlag()[langCodeIdx];
+    }
+    else{
+      _languageCurrSelect = AppStrings.getLanguageNamesWithFlag()[idx];
     }
   }
 
   int selectionValue = -1;
 
   List<Widget> getWidgets(int mode){
-    _languageDropdownMenuIndexer = -1;
     List<Widget> list = <Widget>[];
     switch (mode){
       case 0:
@@ -834,7 +836,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
               flex: 3,
               child: Container(
                 padding: const EdgeInsets.all(10),
-                child: DropdownButtonFormField<int>(
+                child: DropdownButtonFormField<String>(
                     key: _languageDropdownGlobalKey,
                     borderRadius: BorderRadius.circular(12),
                     value: _languageCurrSelect, // The currently selected value.
@@ -863,9 +865,9 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
                         filled: true,
                         fillColor: Colors.white.withOpacity(.05)
                     ),
-                    items: AppStrings.getLanguageNamesWithFlag().map<DropdownMenuItem<int>>((String value) {
-                      return DropdownMenuItem<int>(
-                          value: ++_languageDropdownMenuIndexer,
+                    items: AppStrings.getLanguageNamesWithFlag().map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                          value: AppStrings.getLanguageNamesWithFlag()[AppStrings.getLanguageNamesWithFlag().indexOf(value)],
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 2),
                             child: EmojiRichText(
@@ -907,14 +909,25 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
                         );
                       }).toList();
                     },
-                    onChanged: (int? value) {
+                    onChanged: (String? value) {
+                      // this is not the best solution, but I dont care
                       AppHaptics.lightImpact();
                       if(value == null){
                         return;
                       }
-                      DataCache.setUserSelectedLanguage(value);
-                      final langPackId = Language.getAllLanguagesWithNative()[value].langId;
-                      if(!AppStrings.hasLanguageDownloaded(langPackId)){
+                      final flagWeLookFor = value.split(' ')[0];
+                      final languageIdx = AppStrings.getAllLangFlags().indexOf(flagWeLookFor);
+                      DataCache.setUserSelectedLanguage(languageIdx <= -1 ? AppStrings.getAllLangFlags().length : languageIdx);
+
+                      var selectedLangCode = '';
+                      for(var item in Language.getAllLanguagesWithNative()){
+                        if(item.langFlag == flagWeLookFor){
+                          selectedLangCode = item.langId;
+                          break;
+                        }
+                      }
+
+                      if(!AppStrings.hasLanguageDownloaded(selectedLangCode)){
                         Future.delayed(Duration.zero, ()async{
                           if(!DataCache.getHasNetwork()){
                             if(Platform.isAndroid){
@@ -930,7 +943,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
                             return;
                           }
                           final pack = await Language.getAllLanguages();
-                          await Language.getLanguagePackById(pack, langPackId).then((value)async{
+                          await Language.getLanguagePackById(pack, selectedLangCode).then((value)async{
                             AppStrings.setupPopupPreviews(value!);
                             if(Platform.isAndroid){
                               Fluttertoast.showToast(
@@ -954,7 +967,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
                       }
                       setState(() {
                         _languageCurrSelect = value;
-                        PopupWidgetHandler._instance!._settingsLanguageCurrent = value;
+                        PopupWidgetHandler._instance!._settingsLanguageCurrent = AppStrings.getLanguageNamesWithFlag().indexOf(value);
                       });
                     }
                 ),
