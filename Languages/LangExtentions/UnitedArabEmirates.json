@@ -1,0 +1,173 @@
+{
+  "language_flag":"🇦🇪",
+  "rootpage_setupPage_SelectLoginTypeHeader":"اختر طريقة تسجيل الدخول",
+  "rootpage_setupPage_InstitutesSelection":"اختيار المعهد",
+  "rootpage_setupPage_InstitutesSelectionDescription":"هذه هي الطريقة الأبسط. إنها قائمة يمكنك البحث فيها عن جامعتك، ومع ذلك، قد لا تتوفر جميع المعاهد هنا!",
+  "rootpage_setupPage_UrlLogin":"عنوان URL لنيبتون",
+  "rootpage_setupPage_UrlLoginDescription":"إذا لم تتمكن من العثور على جامعتك في القائمة، يمكنك إدخال عنوان URL لنيبتون لمدرستك لتسجيل الدخول. قد لا يعمل هذا مع جميع الجامعات!",
+  "rootpage_setupPage_AppProblemReporting":"هل هناك مشكلة في التطبيق؟\nأخبرني! 👉",
+  "instituteSelection_setupPage_LoadingText":"جار التحميل...",
+  "instituteSelection_setupPage_NoNetwork":"لا يوجد شبكة...",
+  "instituteSelection_setupPage_SelectValidInstitute":"اختر معهدًا صالحًا! 😡",
+  "instituteSelection_setupPage_SelectInstitute":"اختر معهد",
+  "instituteSelection_setupPage_Search":"بحث",
+  "instituteSelection_setupPage_SearchNotFound":"لا شيء تم العثور عليه...",
+  "instituteSelection_setupPage_InstituteCantFindHelpText":"لا يمكن العثور على مدرستك في القائمة؟",
+  "instituteSelection_setupPage_InstituteCantFindHelpTextDescription":"تمت إضافة العناصر في القائمة أعلاه يدويًا! 😅 قد يكون من الممكن أن ينقص بعض المعاهد منها.\nيمكنك تسجيل الدخول عبر URL إذا لم تتمكن من العثور على مدرستك. 😉",
+  "any_setupPage_GoBack":"عودة",
+  "any_setupPage_ProceedLogin":"متابعة",
+  "urlLogin_setupPage_InvalidUrl":"أدخل عنوان URL صالح لنيبتون! 😡",
+  "urlLogin_setupPage_LoginViaURlHeader":"تسجيل الدخول عبر الرابط",
+  "urlLogin_setupPage_InstituteNeptunUrl":"عنوان URL لنيبتون للمعهد",
+  "urlLogin_setupPage_InstituteNeptunUrlInvalid":"هذا ليس عنوان URL صالح لنيبتون! 😡\n\nالصق شيئًا مشابهًا هنا:\nhttps://neptun-ws01.uni-pannon.hu/hallgato/login.aspx 🤫",
+  "urlLogin_setupPage_WhereIsURLHelper":"أين يمكنني العثور على الرابط؟",
+  "urlLogin_setupPage_WhereIsURLHelperDescription":"انتقل إلى موقع الويب الخاص بمدرستك Neptun، والصق الرابط من أعلى. 🔗\n\nمثال: https://neptun-ws01.uni-pannon.hu/hallgato/login.aspx",
+  "loginPage_setupPage_InvalidCredentials":"قدم بيانات اعتماد صالحة! 😡",
+  "loginPage_setupPage_LoginHeaderText":"تسجيل الدخول",
+  "loginPage_setupPage_ActivityCacheInvalidHelper":"خطأ! يرجى العودة!",
+  "loginPage_setupPage_NeptunCode":"رمز نيبتون",
+  "loginPage_setupPage_Password":"كلمة المرور",
+  "loginPage_setupPage_InvalidCredentialsEntered":"اسم المستخدم أو كلمة المرور غير صحيحة!",
+  "loginPage_setupPage_2faWarning":"إذا كان لديك تفعيل المصادقة الثنائية عامل على حسابك، فلن تتمكن من تسجيل الدخول!",
+  "loginPage_setupPage_2faWarningDescription":"❌ نيبتون2 يستخدم واجهة برمجة تطبيقات تطبيق Neptun القديمة، والتي لم تتضمن المصادقة الثنائية العاملة. إذا كان حسابك محميًا به، فلن تتمكن من تسجيل الدخول عبر Neptun2.\n\n🤓 لكن يمكنك تعطيلها، وستتمكن من استخدام Neptun2 بدون مشكلة.\nلتعطيلها، انتقل إلى \"بياناتي/الإعدادات\" في موقع Neptun الإلكتروني.",
+  "loginPage_setupPage_LogInButton":"تسجيل الدخول",
+  "loginPage_setupPage_LoginInProgress":"تسجيل الدخول...",
+  "loginPage_setupPage_LoginInProgressSlow":"خوادم Neptun تواجه مشكلة...",
+  "api_monthJan_Universal":"يناير",
+  "api_monthFeb_Universal":"فبراير",
+  "api_monthMar_Universal":"مارس",
+  "api_monthApr_Universal":"أبريل",
+  "api_monthMay_Universal":"مايو",
+  "api_monthJun_Universal":"يونيو",
+  "api_monthJul_Universal":"يوليو",
+  "api_monthAug_Universal":"أغسطس",
+  "api_monthSep_Universal":"سبتمبر",
+  "api_monthOkt_Universal":"أكتوبر",
+  "api_monthNov_Universal":"نوفمبر",
+  "api_monthDec_Universal":"ديسمبر",
+  "api_dayMon_Universal":"الاثنين",
+  "api_dayTue_Universal":"الثلاثاء",
+  "api_dayWed_Universal":"الأربعاء",
+  "api_dayThu_Universal":"الخميس",
+  "api_dayFri_Universal":"الجمعة",
+  "api_daySat_Universal":"السبت",
+  "api_daySun_Universal":"الأحد",
+  "api_loadingScreenHintFriendly1_Universal":"هاتفك سينفجر لو كان أسرع...",
+  "api_loadingScreenHintFriendly2_Universal":"لا يزال أفضل من تطبيق Neptun المعدوم...",
+  "api_loadingScreenHintFriendly3_Universal":"يحمل في أي ألفية الآن...",
+  "api_loadingScreenHintFriendly4_Universal":"هناك انقطاع في الطاقة في شركة SDA للمعلوماتية...",
+  "api_loadingScreenHintFriendly5_Universal":"شركة SDA للمعلوماتية هي شركة رائعة...",
+  "api_loadingScreenHintFriendly6_Universal":"هل تعلم؟ \"Neptun 2\" تم إنشاؤه في حوالي أسبوع واحد...",
+  "api_loadingScreenHintFriendly7_Universal":"بطيء جدًا؟ أرسل شكوى إلى شركة SDA للمعلوماتية...",
+  "api_loadingScreenHint1_Universal":"خذات أن أقول أن خوادم نيبتون يعملون بجد كما يعمل عامل البناء المجري العادي..",
+  "api_loadingScreenHint2_Universal":"نحن ننتظر حتى يغرق الرئيس التنفيذي لشركة SDA للمعلوماتية في القهوة...",
+  "api_loadingScreenHint3_Universal":"كن صبورًا، الخوادم توقفت لأن الفأر دخل إليها...",
+  "api_loadingScreenHint4_Universal":"أنا أصدق أن هناك طيور البطريق في القطب الشمالي أكثر من أن شركة SDA للمعلوماتية قد أنفقت مالًا على خوادم نيبتون...",
+  "api_loadingScreenHint5_Universal":"خوادم نيبتون موثوق بها لدرجة أنني سأقوم بعملياتي المصرفية عليها...",
+  "api_loadingScreenHint6_Universal":"معنى SDA: سوك داجادت أنالفابيتا، وتعني: العديد من الأميين البدينين. لم يستطيعوا إنشاء تطبيق محمول قابل للاستخدام...",
+  "api_loadingScreenHint7_Universal":"أضع منزلي رهانًا على أنك لا تزال تقرأ هذا لأنه ما زال يتم التحميل...",
+  "api_loadingScreenHintFriendlyMini1_Universal":"لحظة...",
+  "api_loadingScreenHintFriendlyMini2_Universal":"نحن نقترب...",
+  "api_loadingScreenHintFriendlyMini3_Universal":"تمامًا...",
+  "api_loadingScreenHintFriendlyMini4_Universal":"إنه يقوم حقًا بتحميل شيء...",
+  "api_loadingScreenHintMini1_Universal":"إذن، هل وجدته؟...",
+  "api_loadingScreenHintMini2_Universal":"احتمل! لا يمكنه القيام بذلك بسرعة...",
+  "api_loadingScreenHintMini3_Universal":"نسيت ما قرأته للتو؟ جرب تناول فيتامين B6!...",
+  "api_noData_Universal":"لا توجد بيانات",
+  "view_header_Calendar":"التقويم",
+  "view_header_Messages":"الرسائل",
+  "view_header_Payments":"المدفوعات",
+  "view_header_Periods":"الفترات",
+  "view_header_Subjects":"المواضيع",
+  "topheader_calendar_greetMessage_1to6":"مساء سعيد! 🍼",
+  "topheader_calendar_greetMessage_6to9":"صباح الخير! ☕",
+  "topheader_calendar_greetMessage_9to13":"نهارك سعيد! 🍷",
+  "topheader_calendar_greetMessage_13to17":"مساء الخير! 🥂",
+  "topheader_calendar_greetMessage_17to21":"مساء الخير! 🍻",
+  "topheader_calendar_greetMessage_21to1":"تصبح على خير! 🍹",
+  "topheader_subjects_CreditsInSemester":"عدد الساعات المعتمدة لك في هذا الفصل: %0🎖️",
+  "topheader_payments_TotalMoneySpent":"لقد أنفقت %0Huf على الجامعة 💸",
+  "topheader_periods_ActiveText":"نشط",
+  "topheader_periods_ExpiredText":"انتهت الصلاحية",
+  "topheader_periods_FutureText":"مستقبل",
+  "topheader_periods_MainHeader":"%0 %1، %2 %3، %4 %5 🗓️",
+  "topheader_messages_UnreadMessages":"لديك %0 رسائل غير مقروءة 💌",
+  "topmenu_Greet":"مرحبًا %0! 👋",
+  "topmenu_LoginPlace":"أنت مسجل الدخول هنا: 🔗\n%0",
+  "topmenu_buttons_Settings":"⚙ الإعدادات",
+  "topmenu_buttons_SupportDev":"🎁 دعم المطور",
+  "topmenu_buttons_Bugreport":"🐞 تقرير عن خطأ",
+  "topmenu_buttons_Logout":"🚪 تسجيل الخروج",
+  "topmenu_buttons_LogoutSuccessToast":"لقد قمت بتسجيل الخروج بنجاح! 🚪",
+  "calendarPage_FreeDay":"🥳 يوم عطلة! 🥳",
+  "calendarPage_weekNav_ClassesThisWeekFull":"الحصص هذا الأسبوع: %0 %1. - %2 %3.",
+  "calendarPage_weekNav_ClassesThisWeekOneDay":"حصة هذا الأسبوع: %0 %1. (%2)",
+  "calendarPage_weekNav_ClassesThisWeekEmpty":"هذا الأسبوع فارغ! 🥳",
+  "calendarPage_weekNav_ClassesThisWeekLoading":"تفكير... 🤔",
+  "calendarPage_weekNav_StudyWeek":"الأسبوع التعليمي %0",
+  "markbookPage_AverageDisplay":"المتوسط: %0 %1",
+  "markbookPage_AverageScholarshipDisplay":"مؤشر المنحة: %0 %1",
+  "markbookPage_NoGrades":"ليس لديك أي درجات",
+  "markbookPage_Empty":"🤪 ليس لديك أي مواد دراسية 🤪",
+  "markbookPage_CompletedLine":"تم الانتهاء",
+  "paymentPage_Empty":"😇 كل شيء مدفوع 😇",
+  "paymentPage_MoneyDisplay":"%0Huf",
+  "paymentPage_PaymentDeadlineTime":"(%0 يومًا متبقية)",
+  "paymentPage_PaymentMissedTime":"(%0 أيام منذ الموعد النهائي)",
+  "periodPage_Empty":"🤩 وقت الاستراحة 🤩",
+  "periodPage_Expired":"انتهت الصلاحية: ",
+  "periodPage_Starts":"البدء: ",
+  "periodPage_ActiveDays":"(%0 أيام متبقية)",
+  "periodPage_StartDays":"(في %0 أيام)",
+  "periodPage_ExpiredDays":"(%0 أيام مضت)",
+  "messagePage_SentBy":"أرسلت بواسطة: %0",
+  "messagePage_Empty":"😥 ليس لديك أي رسائل 😥",
+  "popup_case0_GhostGradeHeader":"👻 درجة الشبح 👻",
+  "popup_case0_SelectGrade":"اختر الدرجة...",
+  "popup_caseAll_OkButton":"حسناً",
+  "popup_case1_SettingsHeader":"⚙ الإعدادات ⚙",
+  "popup_case1_settingOption1_FamilyFriendlyLoadingText":"نصوص التحميل المباشرة",
+  "popup_case1_settingOption1_FamilyFriendlyLoadingTextDescription":"إذا قمت بتشغيل هذا، ستصبح نصوص التحميل مباشرة.",
+  "popup_case1_settingOption2_ExamNotifications":"إشعارات الامتحان",
+  "popup_case1_settingOption2_ExamNotificationsDescription":"سيقوم إشعارات الامتحان بإرسال إشعارات لك قبل 2 أسابيع من الموعد. من المفيد إذا كنت تحب تأجيل دراسة المنهج، أو تنسى بسرعة.",
+  "popup_case1_settingOption3_ClassNotifications":"إشعارات قبلة الفصول الدراسي",
+  "popup_case1_settingOption3_ClassNotificationsDescription":"سيقوم بإرسال إشعارات لك قبل 10 دقائق، و5 دقائق، وفي بداية الحصة، حتى لا تفوتها. مفيد إذا كنت ترغب في معرفة الحصص المقررة مسبقًا دون الحاجة للتحقق من هاتفك (مثال: لديك ساعة ذكية)",
+  "popup_case1_settingOption4_PaymentNotifications":"إشعارات الدفع",
+  "popup_case1_settingOption4_PaymentNotificationsDescription":"إذا كانت لديك مدفوعات مستحقة، سيقوم التطبيق بإرسال إشعارات لك كل يوم حتى يتم دفعها. مفيد إذا كنت تنسى بسرعة، أو لا ترغب في تفويت المواعيد النهائية.",
+  "popup_case1_settingOption5_PeriodsNotifications":"إشعارات الفترات",
+  "popup_case1_settingOption5_PeriodsNotificationsDescription":"إذا كانت هناك فترة جديدة على وشك أن تصبح نشطة، سيقوم التطبيق بإرسال إشعارات لك قبل يوم من الفترة المعينة، ويوم تصبح نشطة. مفيد إذا كنت لا ترغب في تفويت شيء مهم مرتبط بالفترات (مثال: فترة التسجيل في الحصص).",
+  "popup_case1_settingOption6_AppHaptics":"تفاعل التطبيق",
+  "popup_case1_settingOption6_AppHapticsDescription":"يمكنك تعيين ما إذا كنت ترغب في أن يقدم لك التطبيق تفاعلًا حسيًا (اهتزاز).",
+  "popup_case1_settingOption7_WeekOffset":"إزاحة الأسبوع التعليمي",
+  "popup_case1_settingOption7_WeekOffsetDescription":"إذا كانت لديك مشاكل مع الأسبوع التعليمي الحالي، يمكنك إزاحته إلى الأسبوع الصحيح!",
+  "popup_case1_settingOption7_WeekOffsetAuto":"تلقائي",
+  "popup_case1_settingBottomText_InstallOrigin":"%0 - تم التثبيت من:",
+  "popup_case1_settingBottomText_InstallOrigin3rdParty":"مثبت الحزم",
+  "popup_case1_settingBottomText_InstallOriginGPlay":"متجر Google Play",
+  "popup_case2_RateAppPopup":"⭐ قيم التطبيق! ⭐",
+  "popup_case2_RateAppPopupDescription":"هل تحب التطبيق؟ هل تكرهه؟ قم بتقييمه على Google Play!\nيستغرق حوالي 10 ثوانٍ، ويوفر لي وللمستخدمين الآخرين ملاحظات.",
+  "popup_case2_RateButton":"قيمه",
+  "popup_case3_MessagesHeader":"💌 رسالة 💌",
+  "clickableText_OnCopy":"تم النسخ! 📋",
+  "popup_case4_SubjectInfo":"📢 معلومات المادة 📢",
+  "popup_case4_TeachedBy":"يُدرس بواسطة:",
+  "popup_case4_5_SubjectCode":"رمز المادة:",
+  "popup_case4_5_SubjectLocation":"الموقع:",
+  "popup_case4_SubjectStartTime":"وقت بدء المادة:",
+  "popup_case5_ExamInfo":"⚠️ معلومات الامتحان ⚠️",
+  "popup_case5_ExamStartTime":"وقت بدء الامتحان:",
+  "popup_case6_AccountError":"🤷 هناك مشكلة في حسابك 🤷",
+  "popup_case6_AccountErrorDescription":"يبدو أننا لا يمكننا جلب البيانات من نيبتون الخاص بك.\nيرجى تسجيل الخروج، ثم تسجيل الدخول مرة أخرى.",
+  "popup_case6_AccountErrorLogoutButton":"تسجيل الخروج",
+  "popup_case1_settingOption8_LangaugeSelection":"لغة التطبيق",
+  "popup_case1_settingOption8_LangaugeSelectionDescription":"حدد اللغة التي يتحدث بها التطبيق إليك.",
+  "popup_case7_ObsolteAppVersion":"🫵 إصدار قديم للتطبيق 🫵",
+  "popup_case7_ObsolteAppVersionDescription":"إن هذا الإصدار من التطبيق قديم.\nيرجى النظر في تحديث التطبيق للحصول على أفضل تجربة مستخدم! 😌",
+  "popup_case7_ButtonUpdateNow":"تحديث الآن",
+  "popup_caseDefault_InvalidPopupState":"بيانات غير صالحة...",
+  "popup_case8_AcceptLanguageSuggestion":"🗣️ لغة التطبيق 🗣️",
+  "popup_case8_AcceptLanguageSuggestionDescription":"يدعم التطبيق اللغة التي تتحدث بها.\nقم بتغييرها إذا كنت ترغب في ذلك.",
+  "popup_case8_ButtonAcceptLang":"تغيير",
+  "popup_case1_langSwap_DownloadingLang":"تحميل اللغة",
+  "popup_case1_langSwap_DownloadingLangFail":"لا يمكن التنزيل، لا يوجد اتصال بالإنترنت",
+}
