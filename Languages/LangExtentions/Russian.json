@@ -169,5 +169,6 @@
   "popup_case8_AcceptLanguageSuggestionDescription":"Приложение поддерживает язык, на котором вы говорите.\nИзмените его, если хотите.",
   "popup_case8_ButtonAcceptLang":"Изменить",
   "popup_case1_langSwap_DownloadingLang":"Загрузка языка",
-  "popup_case1_langSwap_DownloadingLangFail":"Не удается загрузить, нет интернета"
+  "popup_case1_langSwap_DownloadingLangFail":"Не удается загрузить, нет интернета",
+  "freshTest":"Свежий"
 }
