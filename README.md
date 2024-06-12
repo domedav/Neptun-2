@@ -23,6 +23,9 @@ Töltsd le másmilyen áruházból!
 - https://apkpure.com/p/com.domedav.neptun2
 - ...
 
+# 1.6.4
+Autó nyelv refresh
+
 ## 1.6.3
 Nyelvezeti bugfixek
 
