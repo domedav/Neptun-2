@@ -167,5 +167,7 @@
   "popup_caseDefault_InvalidPopupState":"Отсутствуют данные...",
   "popup_case8_AcceptLanguageSuggestion":"🗣️ Язык приложения 🗣️",
   "popup_case8_AcceptLanguageSuggestionDescription":"Приложение поддерживает язык, на котором вы говорите.\nИзмените его, если хотите.",
-  "popup_case8_ButtonAcceptLang":"Изменить"
+  "popup_case8_ButtonAcceptLang":"Изменить",
+  "popup_case1_langSwap_DownloadingLang":"Загрузка языка",
+  "popup_case1_langSwap_DownloadingLangFail":"Не могу скачать, нет интернета"
 }
