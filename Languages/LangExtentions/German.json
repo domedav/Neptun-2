@@ -93,7 +93,7 @@
   "topheader_periods_MainHeader":"%0 %1, %2 %3, %4 %5 🗓️",
   "topheader_messages_UnreadMessages":"Du hast %0 ungelesene Nachrichten 💌",
   "topmenu_Greet":"Hallo %0! 👋",
-  "topmenu_LoginPlace":"Du bist hier angemelde",
+  "topmenu_LoginPlace":"Du bist hier angemelde 🔗\n%0",
   "topmenu_buttons_Settings":"⚙ Einstellungen",
   "topmenu_buttons_SupportDev":"🎁 Entwickler unterstützen",
   "topmenu_buttons_Bugreport":"🐞 Fehler melden",
