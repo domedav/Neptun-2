@@ -169,5 +169,6 @@
   "popup_case8_AcceptLanguageSuggestionDescription":"يدعم التطبيق اللغة التي تتحدث بها.\nقم بتغييرها إذا كنت ترغب في ذلك.",
   "popup_case8_ButtonAcceptLang":"تغيير",
   "popup_case1_langSwap_DownloadingLang":"تحميل اللغة",
-  "popup_case1_langSwap_DownloadingLangFail":"لا يمكن التنزيل، لا يوجد اتصال بالإنترنت"
+  "popup_case1_langSwap_DownloadingLangFail":"لا يمكن التنزيل، لا يوجد اتصال بالإنترنت",
+  "freshTest":"طازج"
 }
