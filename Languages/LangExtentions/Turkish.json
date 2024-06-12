@@ -169,5 +169,6 @@
   "popup_case8_AcceptLanguageSuggestionDescription":"Uygulama, konuştuğunuz dili desteklemektedir.\nİsterseniz değiştirebilirsiniz.",
   "popup_case8_ButtonAcceptLang":"Değiştir",
   "popup_case1_langSwap_DownloadingLang":"Dil indiriliyor",
-  "popup_case1_langSwap_DownloadingLangFail":"İnternet bağlantısı yok, dil indirilemiyor"
+  "popup_case1_langSwap_DownloadingLangFail":"İnternet bağlantısı yok, dil indirilemiyor",
+  "freshTest":"Taze"
 }
