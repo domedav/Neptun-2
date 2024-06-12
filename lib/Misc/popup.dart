@@ -1240,7 +1240,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
             ),
           ),
         ));
-        list.add(TextButton(
+        /*list.add(TextButton(
           onPressed: (){
             if(!PopupWidgetHandler._instance!._inUse || !mounted){
               return;
@@ -1262,7 +1262,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
               ),
             ),
           ),
-        ));
+        ));*/
         return list;
 
       case 2:
