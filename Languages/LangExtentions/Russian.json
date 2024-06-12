@@ -93,7 +93,7 @@
   "topheader_periods_MainHeader":"%0 %1, %2 %3, %4 %5 🗓️",
   "topheader_messages_UnreadMessages":"У вас %0 непрочитанных сообщений 💌",
   "topmenu_Greet":"Здравствуйте, %0! 👋",
-  "topmenu_LoginPlace":"Вы вошли здес",
+  "topmenu_LoginPlace":"Вы вошли здес 🔗\n%0",
   "topmenu_buttons_Settings":"⚙ Настройки",
   "topmenu_buttons_SupportDev":"🎁 Поддержать разработчика",
   "topmenu_buttons_Bugreport":"🐞 Сообщить об ошибке",
