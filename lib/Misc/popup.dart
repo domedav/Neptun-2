@@ -919,7 +919,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
                           if(!DataCache.getHasNetwork()){
                             if(Platform.isAndroid){
                               Fluttertoast.showToast(
-                                msg: AppStrings.popupLangPrev_ObtainingLangError,
+                                msg: AppStrings.getLanguagePack().popup_case1_langSwap_DownloadingLangFail, // dont have the new lang, can speak with it
                                 toastLength: Toast.LENGTH_SHORT,
                                 fontSize: 14,
                                 gravity: ToastGravity.SNACKBAR,
@@ -929,18 +929,19 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
                             }
                             return;
                           }
-                          if(Platform.isAndroid){
-                            Fluttertoast.showToast(
-                              msg: AppStrings.popupLangPrev_ObtainingLang,
-                              toastLength: Toast.LENGTH_SHORT,
-                              fontSize: 14,
-                              gravity: ToastGravity.SNACKBAR,
-                              backgroundColor: const Color.fromRGBO(0x1A, 0x1A, 0x1A, 1.0),
-                              textColor: Colors.white,
-                            );
-                          }
                           final pack = await Language.getAllLanguages();
-                          await Language.getLanguagePackById(pack, langPackId).whenComplete(()async{
+                          await Language.getLanguagePackById(pack, langPackId).then((value)async{
+                            AppStrings.setupPopupPreviews(value!);
+                            if(Platform.isAndroid){
+                              Fluttertoast.showToast(
+                                msg: AppStrings.popupLangPrev_ObtainingLang,
+                                toastLength: Toast.LENGTH_SHORT,
+                                fontSize: 14,
+                                gravity: ToastGravity.SNACKBAR,
+                                backgroundColor: const Color.fromRGBO(0x1A, 0x1A, 0x1A, 1.0),
+                                textColor: Colors.white,
+                              );
+                            }
                             AppStrings.saveDownloadedLanguageData();
                             Navigator.popUntil(context, (route) => route.willHandlePopInternally);
                             Navigator.push(
