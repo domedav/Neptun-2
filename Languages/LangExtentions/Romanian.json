@@ -29,7 +29,7 @@
   "loginPage_setupPage_Password":"Parolă",
   "loginPage_setupPage_InvalidCredentialsEntered":"Nume de utilizator sau parolă nevalide!",
   "loginPage_setupPage_2faWarning":"Dacă ai autentificarea multi-factor activată pe contul tău, nu te vei putea autentifica!",
-  "loginPage_setupPage_2faWarningDescription":"❌ Neptun2 folosește vechiul API al aplicației mobile Neptun, care nu includea autentificarea multi-factor. Dacă contul tău este protejat de aceasta, nu te vei putea autentifica prin Neptun2.\n\n🤓 Dar poți dezactiva această funcție și vei putea folosi Neptun2 fără probleme.\nPentru a o dezactiva, mergi la "Datele Mele/Setări" în Neptun web.",
+  "loginPage_setupPage_2faWarningDescription":"❌ Neptun2 folosește vechiul API al aplicației mobile Neptun, care nu includea autentificarea multi-factor. Dacă contul tău este protejat de aceasta, nu te vei putea autentifica prin Neptun2.\n\n🤓 Dar poți dezactiva această funcție și vei putea folosi Neptun2 fără probleme.\nPentru a o dezactiva, mergi la \"Datele Mele/Setări\" în Neptun web.",
   "loginPage_setupPage_LogInButton":"Autentificare",
   "loginPage_setupPage_LoginInProgress":"Autentificare în curs...",
   "loginPage_setupPage_LoginInProgressSlow":"Serverele Neptun au probleme...",
