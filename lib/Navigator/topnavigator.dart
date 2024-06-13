@@ -6,6 +6,7 @@ import 'package:neptun2/language.dart';
 import 'package:neptun2/notifications.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../Pages/main_page.dart';
+import '../colors.dart';
 import '../haptics.dart';
 import '../storage.dart' as storage;
 import '../Pages/startup_page.dart' as root_page;
@@ -23,7 +24,7 @@ class TopNavigatorWidget extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
+      color: AppColors.getTheme().rootBackground,
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 10),
       child: GestureDetector(
         onHorizontalDragStart: (_){
@@ -80,15 +81,15 @@ class TopNavigatorWidget extends StatelessWidget{
                             enabled: false,
                             child: EmojiRichText(
                               text: AppStrings.getStringWithParams(AppStrings.getLanguagePack().topmenu_Greet, [loggedInUsername]),
-                              defaultStyle: const TextStyle(
-                                color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                              defaultStyle: TextStyle(
+                                color: AppColors.getTheme().onPrimaryContainer,
                                 fontWeight: FontWeight.w700,
-                                fontSize: 16.0,
+                                fontSize: 18.0,
                               ),
-                              emojiStyle: const TextStyle(
-                                  color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
-                                  fontSize: 23.0,
-                                  fontFamily: "Noto Color Emoji"
+                              emojiStyle: TextStyle(
+                                color: AppColors.getTheme().onPrimaryContainer,
+                                fontSize: 23.0,
+                                fontFamily: "Noto Color Emoji"
                               ),
                             ),
                           ),
@@ -97,15 +98,15 @@ class TopNavigatorWidget extends StatelessWidget{
                             enabled: false,
                             child: EmojiRichText(
                               text: AppStrings.getStringWithParams(AppStrings.getLanguagePack().topmenu_LoginPlace, [loggedInURL]),
-                              defaultStyle: const TextStyle(
-                                color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1),
+                              defaultStyle: TextStyle(
+                                color: AppColors.getTheme().onPrimaryContainer,
                                 fontWeight: FontWeight.w700,
-                                fontSize: 12.0,
+                                fontSize: 16.0,
                               ),
-                              emojiStyle: const TextStyle(
-                                  color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1),
-                                  fontSize: 12.0,
-                                  fontFamily: "Noto Color Emoji"
+                              emojiStyle: TextStyle(
+                                color: AppColors.getTheme().onPrimaryContainer,
+                                fontSize: 16.0,
+                                fontFamily: "Noto Color Emoji"
                               ),
                             ),
                           ),
@@ -115,13 +116,13 @@ class TopNavigatorWidget extends StatelessWidget{
                             child: EmojiRichText(
                               text: AppStrings.getLanguagePack().topmenu_buttons_Settings,
                               defaultStyle: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 13.0,
+                                color: AppColors.getTheme().textColor,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 14.0,
                               ),
                               emojiStyle: TextStyle(
-                                  color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1),
-                                  fontSize: 13.0,
+                                  color: AppColors.getTheme().textColor,
+                                  fontSize: 20.0,
                                   fontFamily: "Noto Color Emoji"
                               ),
                             ),
@@ -132,13 +133,13 @@ class TopNavigatorWidget extends StatelessWidget{
                             child: EmojiRichText(
                               text: AppStrings.getLanguagePack().topmenu_buttons_SupportDev,
                               defaultStyle: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 13.0,
+                                color: AppColors.getTheme().textColor,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 14.0,
                               ),
                               emojiStyle: TextStyle(
-                                  color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1),
-                                  fontSize: 13.0,
+                                  color: AppColors.getTheme().textColor,
+                                  fontSize: 20.0,
                                   fontFamily: "Noto Color Emoji"
                               ),
                             ),
@@ -148,13 +149,13 @@ class TopNavigatorWidget extends StatelessWidget{
                             child: EmojiRichText(
                               text: AppStrings.getLanguagePack().topmenu_buttons_Bugreport,
                               defaultStyle: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 13.0,
+                                color: AppColors.getTheme().textColor,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 14.0,
                               ),
                               emojiStyle: TextStyle(
-                                  color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1),
-                                  fontSize: 13.0,
+                                  color: AppColors.getTheme().textColor,
+                                  fontSize: 20.0,
                                   fontFamily: "Noto Color Emoji"
                               ),
                             ),
@@ -165,13 +166,13 @@ class TopNavigatorWidget extends StatelessWidget{
                             child: EmojiRichText(
                               text:  AppStrings.getLanguagePack().topmenu_buttons_Logout,
                               defaultStyle: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 13.0,
+                                color: AppColors.getTheme().textColor,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 14.0,
                               ),
                               emojiStyle: TextStyle(
-                                  color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1),
-                                  fontSize: 13.0,
+                                  color: AppColors.getTheme().textColor,
+                                  fontSize: 20.0,
                                   fontFamily: "Noto Color Emoji"
                               ),
                             ),
@@ -199,8 +200,8 @@ class TopNavigatorWidget extends StatelessWidget{
                             toastLength: Toast.LENGTH_SHORT,
                             fontSize: 14,
                             gravity: ToastGravity.SNACKBAR,
-                            backgroundColor: const Color.fromRGBO(0x1A, 0x1A, 0x1A, 1.0),
-                            textColor: Colors.white,
+                            backgroundColor: AppColors.getTheme().rootBackground,
+                            textColor: AppColors.getTheme().textColor,
                           );
                         }
                         else if(selectedValue == 'donate'){
@@ -215,8 +216,8 @@ class TopNavigatorWidget extends StatelessWidget{
                               toastLength: Toast.LENGTH_SHORT,
                               fontSize: 14,
                               gravity: ToastGravity.SNACKBAR,
-                              backgroundColor: const Color.fromRGBO(0x1A, 0x1A, 0x1A, 1.0),
-                              textColor: Colors.white,
+                              backgroundColor: AppColors.getTheme().rootBackground,
+                              textColor: AppColors.getTheme().textColor,
                             );
                           });
                         }
@@ -240,12 +241,12 @@ class TopNavigatorWidget extends StatelessWidget{
                       });
                     },
                     style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all(const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05)),
+                      backgroundColor: WidgetStateProperty.all(AppColors.getTheme().textColor.withOpacity(.1)),
                       padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 16, vertical: 12)),
                     ),
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.menu_rounded,
-                      color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                      color: AppColors.getTheme().onPrimaryContainer,
                       size: 24,
                     ),
                   ),
@@ -261,8 +262,8 @@ class TopNavigatorWidget extends StatelessWidget{
                         margin: const EdgeInsets.fromLTRB(10, 0, 10, 1),
                         child: Text(
                             displayString,
-                            style: const TextStyle(
-                              color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                            style: TextStyle(
+                              color: AppColors.getTheme().onPrimaryContainer,
                               fontWeight: FontWeight.w600,
                               fontSize: 22.0
                             ),
@@ -271,14 +272,16 @@ class TopNavigatorWidget extends StatelessWidget{
                       Container(
                         margin: const EdgeInsets.fromLTRB(10, 0, 10, 6),
                         child: EmojiRichText(
-                            text: smallHintText,
-                            defaultStyle: const TextStyle(
-                                fontSize: 12.0
-                            ),
-                            emojiStyle: const TextStyle(
-                              fontSize: 13.5,
-                              fontFamily: "Noto Color Emoji"
-                            )
+                          text: smallHintText,
+                          defaultStyle: TextStyle(
+                            fontSize: 12.0,
+                            color: AppColors.getTheme().textColor,
+                          ),
+                          emojiStyle: TextStyle(
+                            fontSize: 13.5,
+                            color: AppColors.getTheme().textColor,
+                            fontFamily: "Noto Color Emoji"
+                          )
                         ),
                       )
                     ],

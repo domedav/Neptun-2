@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:neptun2/API/api_coms.dart' as api;
+import 'package:neptun2/colors.dart';
 import 'package:neptun2/haptics.dart';
 import 'package:neptun2/language.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -17,10 +18,10 @@ class _SplitterState extends State<Splitter>{
   @override
   void initState() {
     super.initState();
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarIconBrightness: Brightness.light,
-      systemNavigationBarColor: Color.fromRGBO(0x22, 0x22, 0x22, 1.0), // navigation bar color
-      statusBarColor: Color.fromRGBO(0x22, 0x22, 0x22, 1.0), // status bar color
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarIconBrightness: AppColors.isDarktheme() ? Brightness.light : Brightness.dark,
+      systemNavigationBarColor: AppColors.getTheme().rootBackground, // navigation bar color
+      statusBarColor: AppColors.getTheme().rootBackground, // status bar color
     ));
 
     DataCache.loadData().then((value) async {
@@ -44,7 +45,8 @@ class _SplitterState extends State<Splitter>{
         DataCache.setIsInstalledFromGPlay(pinfo.installerStore == 'com.android.vending' ? 2 : 1);
       }
     }).then((value)async{
-      await AppStrings.loadDownloadedLanguageData();
+      await AppStrings.loadDownloadedLanguageData(context);
+      await AppColors.loadDownloadedPaletteData(context);
       api.Language.getAllLanguages();
     }).then((value) {
       Navigator.popUntil(context, (route) => route.willHandlePopInternally);
@@ -74,8 +76,8 @@ class _SplitterState extends State<Splitter>{
               child: SizedBox(
                 height: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.20 : MediaQuery.of(context).size.height * 0.20,
                 width: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.20 : MediaQuery.of(context).size.height * 0.20,
-                child: const CircularProgressIndicator(
-                  color: Colors.white,
+                child: CircularProgressIndicator(
+                  color: AppColors.getTheme().textColor,
                 ),
               ),
             ),
@@ -84,7 +86,7 @@ class _SplitterState extends State<Splitter>{
               api.Generic.randomLoadingComment(DataCache.getNeedFamilyFriendlyComments()!),
               textAlign: TextAlign.center,
               style: TextStyle(
-                  color: Colors.white.withOpacity(.2),
+                  color: AppColors.getTheme().textColor.withOpacity(.2),
                   fontWeight: FontWeight.w300,
                   fontSize: 10
               ),

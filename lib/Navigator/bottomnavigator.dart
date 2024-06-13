@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:neptun2/colors.dart';
 import 'package:neptun2/language.dart';
 import '../Pages/main_page.dart';
 import '../haptics.dart';
@@ -11,8 +12,8 @@ class BottomNavigatorWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      decoration: const BoxDecoration(
-        color: Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
+      decoration: BoxDecoration(
+        color: AppColors.getTheme().rootBackground,
         borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
       ),
       child: Center(
@@ -51,8 +52,8 @@ class BottomNavigatorWidget extends StatelessWidget {
               Text(
                 _getNameOfMenu(homePage.currentView),
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                    color: Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0),
+                style: TextStyle(
+                    color: AppColors.getTheme().onPrimaryContainer,
                     fontWeight: FontWeight.w800,
                     fontSize: 12.0
                 ),
@@ -104,12 +105,12 @@ class BottomNavigatorWidget extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 4),
       decoration: BoxDecoration(
           color: homePage.currentView == index
-              ? const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.15)
-              : const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05),
+              ? AppColors.getTheme().textColor.withOpacity(.15)
+              : AppColors.getTheme().textColor.withOpacity(.05),
           borderRadius: const BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(12), bottomRight: Radius.circular(16), bottomLeft: Radius.circular(12)),
           border: Border.all(
             width: 1,
-            color: homePage.currentView == index ? const Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0) : const Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0).withOpacity(0),
+            color: homePage.currentView == index ? AppColors.getTheme().primary : Colors.transparent
           )
       ),
       child: IconButton(
@@ -126,8 +127,8 @@ class BottomNavigatorWidget extends StatelessWidget {
         icon: Icon(
           homePage.currentView == index ? filledIcon : outlinedIcon,
           color: homePage.currentView == index ?
-          const Color.fromRGBO(0x6D, 0xC2, 0xD3, 1.0) :
-          const Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0).withOpacity(.3),
+          AppColors.getTheme().onPrimaryContainer :
+          AppColors.getTheme().onPrimaryContainer.withOpacity(.3),
           size: 28,
         ),
       ),

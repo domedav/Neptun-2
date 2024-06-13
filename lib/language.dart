@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 import 'dart:convert' as conv;
 import 'package:flutter/material.dart';
@@ -196,7 +195,6 @@ class AppStrings{
       popup_case8_ButtonAcceptLang: 'Beállít',
       popup_case1_langSwap_DownloadingLang: 'Nyelv letöltése',
       popup_case1_langSwap_DownloadingLangFail: 'Nem lehet letölteni, nincs internet',
-      freshTest: 'Friss'
     )});
     //---
     _languages.addAll({_supportedLanguages[1]: LanguagePack(
@@ -371,7 +369,6 @@ class AppStrings{
       popup_case8_ButtonAcceptLang: 'Change',
       popup_case1_langSwap_DownloadingLang: 'Downloading language',
       popup_case1_langSwap_DownloadingLangFail: 'Can\'t download, no internet',
-      freshTest: 'Fresh'
     )});
     _hasInit = true;
   }
@@ -473,7 +470,7 @@ class AppStrings{
 
   static Timer _loadDownloadLangTimer = Timer(Duration.zero, () {});
 
-  static Future<void> loadDownloadedLanguageData()async{
+  static Future<void> loadDownloadedLanguageData(BuildContext context)async{
     final downloadedSupportedLanguages = DataCache.getDownloadedSupportedLanguages();
     final List<String> converted = DataCache.getDownloadedSupportedLanguagesData();
     for(int i = 0; i < downloadedSupportedLanguages.length; i++){
@@ -486,6 +483,11 @@ class AppStrings{
           _loadDownloadLangTimer.cancel();
           _loadDownloadLangTimer = Timer(const Duration(seconds: 3), (){
             saveDownloadedLanguageData(); // save after all langs have been fetched
+            Navigator.popUntil(context, (route) => route.willHandlePopInternally);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const Splitter()),
+            );
           });
         });
       });
@@ -701,9 +703,7 @@ class LanguagePack{
 
   final String popup_caseDefault_InvalidPopupState;
 
-  final String freshTest;
-
-  LanguagePack({
+  const LanguagePack({
     required this.language_flag,
     required this.rootpage_setupPage_SelectLoginTypeHeader,
     required this.rootpage_setupPage_InstitutesSelection,
@@ -875,7 +875,6 @@ class LanguagePack{
     required this.popup_case8_ButtonAcceptLang,
     required this.popup_case1_langSwap_DownloadingLang,
     required this.popup_case1_langSwap_DownloadingLangFail,
-    required this.freshTest
   });
 
   static LanguagePack fromJson(String countryId, String json, VoidCallback onLanguageOutdated){
@@ -1061,7 +1060,6 @@ class LanguagePack{
         popup_case8_ButtonAcceptLang:lang['popup_case8_ButtonAcceptLang'],
         popup_case1_langSwap_DownloadingLang:lang['popup_case1_langSwap_DownloadingLang'],
         popup_case1_langSwap_DownloadingLangFail:lang['popup_case1_langSwap_DownloadingLangFail'],
-        freshTest:lang['freshTest']
       );
     }
     catch(error){
@@ -1253,7 +1251,6 @@ class LanguagePack{
       'popup_case8_ButtonAcceptLang':lang.popup_case8_ButtonAcceptLang,
       'popup_case1_langSwap_DownloadingLang':lang.popup_case1_langSwap_DownloadingLang,
       'popup_case1_langSwap_DownloadingLangFail':lang.popup_case1_langSwap_DownloadingLangFail,
-      'freshTest':lang.freshTest
     });
     return json;
   }

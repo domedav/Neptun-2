@@ -6,6 +6,7 @@ import '../API/api_coms.dart' as api;
 import '../Misc/emojirich_text.dart';
 import '../Misc/popup.dart';
 import '../Pages/main_page.dart';
+import '../colors.dart';
 
 typedef Callback = Future<void> Function();
 
@@ -79,11 +80,11 @@ class TimetableElementWidget extends StatelessWidget{
         padding: isExam || isCurrent ? const EdgeInsets.symmetric(vertical: 20, horizontal: 15) : null,
         decoration: isExam || isCurrent ? BoxDecoration(
           border: Border.all(
-            color: isExam ? Color.fromRGBO(0xBF, 0x86, 0x86, .5) : Color.fromRGBO(0xB0, 0xD4, 0xA1, 0.5),
+            color: isExam ? AppColors.getTheme().errorRed.withOpacity(.5) : AppColors.getTheme().currentClassGreen.withOpacity(.5),
             width: .75
           ),
           borderRadius: const BorderRadius.all(Radius.circular(20.0)),
-          color: const Color.fromRGBO(0xBF, 0x86, 0x86, .05)
+          color: isExam ? AppColors.getTheme().errorRed.withOpacity(.05) : AppColors.getTheme().currentClassGreen.withOpacity(.05)
         ) : const BoxDecoration(
           color: Colors.transparent
         ),
@@ -98,15 +99,15 @@ class TimetableElementWidget extends StatelessWidget{
                 child: !isExam ? Text(
                   "$position.",
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                  style: TextStyle(
+                    color: AppColors.getTheme().onPrimaryContainer,
                     fontWeight: FontWeight.w900,
                     fontSize: 26.0,
                   ),
                   maxLines: 1,
-                ) : const Icon(
+                ) : Icon(
                     Icons.warning_rounded,
-                    color: Color.fromRGBO(0xBF, 0x86, 0x86, 1.0),
+                    color: AppColors.getTheme().errorRed,
                     size: 28.0,
                 ),
               ),
@@ -125,7 +126,7 @@ class TimetableElementWidget extends StatelessWidget{
                     Text(
                       location,
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.7),
+                        color: AppColors.getTheme().textColor.withOpacity(0.7),
                         fontSize: 14.0,
                       ),
                     ),
@@ -145,7 +146,7 @@ class TimetableElementWidget extends StatelessWidget{
                       displayStartTime,
                       textAlign: TextAlign.right,
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.7),
+                        color: AppColors.getTheme().textColor.withOpacity(0.7),
                         fontWeight: FontWeight.w600,
                         fontSize: !isExam ? 14.0 : 16.0,
                       ),
@@ -155,7 +156,7 @@ class TimetableElementWidget extends StatelessWidget{
                       displayEndTime,
                       textAlign: TextAlign.right,
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.4),
+                        color: AppColors.getTheme().textColor.withOpacity(0.4),
                         fontWeight: FontWeight.w300,
                         fontSize: 12.0,
                       ),
@@ -184,13 +185,13 @@ class FreedayElementWidget extends StatelessWidget{
         child: Center(
             child: EmojiRichText(
               text: AppStrings.getLanguagePack().calendarPage_FreeDay,
-              defaultStyle: const TextStyle(
-                color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+              defaultStyle: TextStyle(
+                color: AppColors.getTheme().onPrimaryContainer,
                 fontWeight: FontWeight.w900,
                 fontSize: 34.0,
               ),
-              emojiStyle: const TextStyle(
-                  color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+              emojiStyle: TextStyle(
+                  color: AppColors.getTheme().onPrimaryContainer,
                   fontSize: 34.0,
                   fontFamily: "Noto Color Emoji"
               ),
@@ -294,7 +295,7 @@ class WeekoffseterElementWidget extends StatelessWidget{
                 padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
                 margin: const EdgeInsets.only(top: 3),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.03),
+                  color: AppColors.getTheme().textColor.withOpacity(0.03),
                   borderRadius: BorderRadius.circular(21),
                 ),
                 child: Row(
@@ -309,8 +310,8 @@ class WeekoffseterElementWidget extends StatelessWidget{
                       child: Text(
                         displayString,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: AppColors.getTheme().textColor,
                           fontWeight: FontWeight.w700,
                           fontSize: 16.0,
                         ),
@@ -327,18 +328,18 @@ class WeekoffseterElementWidget extends StatelessWidget{
                 padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
                 margin: const EdgeInsets.only(bottom: 3),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.03),
+                  color: AppColors.getTheme().textColor.withOpacity(0.03),
                   borderRadius: BorderRadius.only(bottomRight: Radius.circular(12), bottomLeft: Radius.circular(12)),
                 ),
                 child: EmojiRichText(
                   text: displayString2,
                   defaultStyle: TextStyle(
-                    color: Colors.white.withOpacity(.6),
+                    color: AppColors.getTheme().textColor.withOpacity(.6),
                     fontWeight: FontWeight.w300,
                     fontSize: 12.0,
                   ),
-                  emojiStyle: const TextStyle(
-                      color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                  emojiStyle: TextStyle(
+                      color: AppColors.getTheme().textColor,
                       fontSize: 12.0,
                       fontFamily: "Noto Color Emoji"
                   ),

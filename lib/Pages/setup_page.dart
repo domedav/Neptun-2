@@ -7,6 +7,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:neptun2/colors.dart';
 import 'package:neptun2/haptics.dart';
 import 'package:neptun2/language.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -36,19 +37,19 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
   void blurPage(bool state){
     setState(() {
       if(state) {
-        SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-          statusBarIconBrightness: Brightness.light,
-          systemNavigationBarColor: Color.fromRGBO(0x0C, 0x0C, 0x0C, 1.0), // navigation bar color
-          statusBarColor: Color.fromRGBO(0x1A, 0x1A, 0x1A, 1.0), // status bar color
+        SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+          statusBarIconBrightness: AppColors.isDarktheme() ? Brightness.light : Brightness.dark,
+          systemNavigationBarColor: AppColors.getTheme().navbarNavibarColor, // navigation bar color
+          statusBarColor: AppColors.getTheme().navbarStatusBarColor, // status bar color
         ));
         blurController.forward();
         _showBlur = true;
         return;
       }
-      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarIconBrightness: Brightness.light,
-        systemNavigationBarColor: Color.fromRGBO(0x22, 0x22, 0x22, 1.0), // navigation bar color
-        statusBarColor: Color.fromRGBO(0x22, 0x22, 0x22, 1.0), // status bar color
+        systemNavigationBarColor: AppColors.getTheme().rootBackground, // navigation bar color
+        statusBarColor: AppColors.getTheme().rootBackground, // status bar color
       ));
       blurController.reverse().whenComplete((){
         setState(() {
@@ -64,10 +65,10 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
   void initState() {
     super.initState();
 
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarIconBrightness: Brightness.light,
-      systemNavigationBarColor: Color.fromRGBO(0x17, 0x17, 0x17, 1.0), // navigation bar color
-      statusBarColor: Color.fromRGBO(0x17, 0x17, 0x17, 1.0), // status bar color
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarIconBrightness: AppColors.isDarktheme() ? Brightness.light : Brightness.dark,
+      systemNavigationBarColor: AppColors.getTheme().rootBackground, // navigation bar color
+      statusBarColor: AppColors.getTheme().rootBackground, // status bar color
     ));
 
     blurController = AnimationController(
@@ -119,7 +120,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.w800,
-                        color: Colors.white
+                        color: AppColors.getTheme().textColor
                       ),
                     ),
                     const SizedBox(height: 50),
@@ -141,10 +142,10 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                             padding: const EdgeInsets.all(20),
                             margin: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              color: const Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
+                              color: AppColors.getTheme().rootBackground,
                               borderRadius: const BorderRadius.all(Radius.circular(30)),
                               border: Border.all(
-                                color: Colors.white.withOpacity(.3),
+                                color: AppColors.getTheme().textColor.withOpacity(.3),
                                 width: 1
                               )
                             ),
@@ -159,7 +160,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                                   children: [
                                     Icon(
                                       Icons.list_rounded,
-                                      color: Colors.white,
+                                      color: AppColors.getTheme().textColor,
                                       size: 40,
                                     ),
                                     Flexible(
@@ -167,7 +168,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                                         AppStrings.getLanguagePack().rootpage_setupPage_InstitutesSelection,
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                            color: Colors.white,
+                                            color: AppColors.getTheme().textColor,
                                             fontSize: 18,
                                             fontWeight: FontWeight.w600
                                         ),
@@ -180,7 +181,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                                   AppStrings.getLanguagePack().rootpage_setupPage_InstitutesSelectionDescription,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                      color: Colors.white.withOpacity(.6),
+                                      color: AppColors.getTheme().textColor.withOpacity(.6),
                                       fontSize: 12,
                                       fontWeight: FontWeight.w400
                                   ),
@@ -202,10 +203,10 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                             padding: const EdgeInsets.all(20),
                             margin: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                                color: const Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
+                                color: AppColors.getTheme().rootBackground,
                                 borderRadius: const BorderRadius.all(Radius.circular(30)),
                                 border: Border.all(
-                                    color: Colors.white.withOpacity(.3),
+                                    color: AppColors.getTheme().textColor.withOpacity(.3),
                                     width: 1
                                 )
                             ),
@@ -220,7 +221,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                                   children: [
                                     Icon(
                                       Icons.link_rounded,
-                                      color: Colors.white,
+                                      color: AppColors.getTheme().textColor,
                                       size: 40,
                                     ),
                                     Flexible(
@@ -228,7 +229,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                                         AppStrings.getLanguagePack().rootpage_setupPage_UrlLogin,
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                            color: Colors.white,
+                                            color: AppColors.getTheme().textColor,
                                             fontSize: 18,
                                             fontWeight: FontWeight.w600
                                         ),
@@ -241,7 +242,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                                   AppStrings.getLanguagePack().rootpage_setupPage_UrlLoginDescription,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                      color: Colors.white.withOpacity(.6),
+                                      color: AppColors.getTheme().textColor.withOpacity(.6),
                                       fontSize: 12,
                                       fontWeight: FontWeight.w400
                                   ),
@@ -264,12 +265,12 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                               child: EmojiRichText(
                                 text: AppStrings.getLanguagePack().rootpage_setupPage_AppProblemReporting,
                                 defaultStyle: TextStyle(
-                                  color: Colors.white.withOpacity(.6),
+                                  color: AppColors.getTheme().textColor.withOpacity(.6),
                                   fontWeight: FontWeight.w700,
                                   fontSize: 14.0,
                                 ),
-                                emojiStyle: const TextStyle(
-                                    color: Colors.white,
+                                emojiStyle: TextStyle(
+                                    color: AppColors.getTheme().textColor,
                                     fontSize: 14.0,
                                     fontFamily: "Noto Color Emoji"
                                 ),
@@ -278,7 +279,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                             const SizedBox(width: 20),
                             Container(
                               decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(.06),
+                                  color: AppColors.getTheme().textColor.withOpacity(.06),
                                   borderRadius: const BorderRadius.all(Radius.circular(90))
                               ),
                               child: IconButton(
@@ -292,7 +293,7 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                                 },
                                 icon: Icon(
                                   Icons.feed_rounded,
-                                  color: Colors.white.withOpacity(.4),
+                                  color: AppColors.getTheme().textColor.withOpacity(.4),
                                   size: 32,
                                 ),
                               ),
@@ -358,10 +359,10 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
   @override
   void initState() {
     super.initState();
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarIconBrightness: Brightness.light,
-      systemNavigationBarColor: Color.fromRGBO(0x17, 0x17, 0x17, 1.0), // navigation bar color
-      statusBarColor: Color.fromRGBO(0x17, 0x17, 0x17, 1.0), // status bar color
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarIconBrightness: AppColors.isDarktheme() ? Brightness.light : Brightness.dark,
+      systemNavigationBarColor: AppColors.getTheme().rootBackground, // navigation bar color
+      statusBarColor: AppColors.getTheme().rootBackground, // status bar color
     ));
 
     fetchDataFromStorage();
@@ -477,7 +478,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                 AppStrings.getLanguagePack().instituteSelection_setupPage_NoNetwork,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Colors.white,
+                  color: AppColors.getTheme().textColor,
                   fontWeight: FontWeight.w700,
                   fontSize: 38
                 ),
@@ -490,19 +491,19 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                     AppStrings.getLanguagePack().instituteSelection_setupPage_LoadingText,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                        color: Colors.white,
+                        color: AppColors.getTheme().textColor,
                         fontWeight: FontWeight.w700,
                         fontSize: 24
                     ),
                   ),
                   const SizedBox(height: 50),
-                  const CircularProgressIndicator(color: Colors.white),
+                  CircularProgressIndicator(color: AppColors.getTheme().textColor),
                   const SizedBox(height: 20),
                   Text(
                     api.Generic.randomLoadingComment(storage.DataCache.getNeedFamilyFriendlyComments()!),
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                        color: Colors.white.withOpacity(.2),
+                        color: AppColors.getTheme().textColor.withOpacity(.2),
                         fontWeight: FontWeight.w300,
                         fontSize: 10
                     ),
@@ -566,7 +567,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                         style: TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.w800,
-                            color: Colors.white
+                            color: AppColors.getTheme().textColor
                         ),
                       ),
                       const SizedBox(height: 60),
@@ -585,7 +586,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                                   labelText: AppStrings.getLanguagePack().instituteSelection_setupPage_Search,
                                   labelStyle: TextStyle(
                                       fontSize: 14,
-                                      color: Colors.white.withOpacity(.6),
+                                      color: AppColors.getTheme().textColor.withOpacity(.6),
                                       fontWeight: FontWeight.w400
                                   ),
                                   border: OutlineInputBorder(
@@ -593,11 +594,11 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                                       borderSide: BorderSide.none
                                   ),
                                   filled: true,
-                                  fillColor: Colors.white.withOpacity(.05)
+                                  fillColor: AppColors.getTheme().textColor.withOpacity(.05)
                               ),
                               style: TextStyle(
                                   fontSize: 16,
-                                  color: Colors.white,
+                                  color: AppColors.getTheme().textColor,
                                   fontWeight: FontWeight.w600
                               ),
                               autofocus: true,
@@ -632,21 +633,21 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                               borderRadius: BorderRadius.circular(12),
                               value: _selectedValue, // The currently selected value.
                               icon: const SizedBox(),
-                              style: const TextStyle(
-                                  color: Colors.white,
+                              style: TextStyle(
+                                  color: AppColors.getTheme().textColor,
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600
                               ),
                               enableFeedback: true,
                               onTap: AppHaptics.lightImpact,
                               focusColor: Colors.transparent,
-                              dropdownColor: Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
+                              dropdownColor: AppColors.getTheme().rootBackground,
                               decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.all(18),
                                   suffixIcon: const Icon(Icons.arrow_drop_down_rounded),
                                   labelStyle: TextStyle(
                                       fontSize: 14,
-                                      color: Colors.white.withOpacity(.6),
+                                      color: AppColors.getTheme().textColor.withOpacity(.6),
                                       fontWeight: FontWeight.w400
                                   ),
                                   border: const OutlineInputBorder(
@@ -654,7 +655,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                                       borderSide: BorderSide.none
                                   ),
                                   filled: true,
-                                  fillColor: Colors.white.withOpacity(.05)
+                                  fillColor: AppColors.getTheme().textColor.withOpacity(.05)
                               ),
                               items: _filteredValues.map<DropdownMenuItem<String>>((String value) {
                                 return DropdownMenuItem<String>(
@@ -665,8 +666,8 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                                         value,
                                         overflow: TextOverflow.ellipsis,
                                         textAlign: TextAlign.start,
-                                        style: const TextStyle(
-                                          color: Colors.white,
+                                        style: TextStyle(
+                                          color: AppColors.getTheme().textColor,
                                           fontSize: 14,
                                           fontWeight: FontWeight.w400
                                         ),
@@ -683,8 +684,8 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                                       textAlign: TextAlign.start,
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
-                                      style: const TextStyle(
-                                        color: Colors.white,
+                                      style: TextStyle(
+                                        color: AppColors.getTheme().textColor,
                                         fontSize: 14,
                                         fontWeight: FontWeight.w400
                                       ),
@@ -717,7 +718,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                                 style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w500,
-                                    color: Colors.white.withOpacity(.6)
+                                    color: AppColors.getTheme().textColor.withOpacity(.6)
                                 ),
                               ),
                             ),
@@ -726,7 +727,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                             margin: const EdgeInsets.all(15),
                             decoration: BoxDecoration(
                                 borderRadius: const BorderRadius.all(Radius.circular(90)),
-                                color: Colors.white.withOpacity(.06)
+                                color: AppColors.getTheme().textColor.withOpacity(.06)
                             ),
                             child: IconButton(
                               onPressed: (){
@@ -735,7 +736,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                               },
                               icon: Icon(
                                 Icons.question_mark_rounded,
-                                color: Colors.white.withOpacity(.4),
+                                color: AppColors.getTheme().textColor.withOpacity(.4),
                               ),
                               enableFeedback: true,
                               iconSize: 24,
@@ -758,7 +759,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                                   Navigator.pop(context);
                                 },
                                 style: ButtonStyle(
-                                    backgroundColor: WidgetStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)),
+                                    backgroundColor: WidgetStateProperty.all(AppColors.getTheme().buttonEnabled),
                                     padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
                                 ),
                                 child: Row(
@@ -768,7 +769,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                                   children: [
                                     Icon(
                                       Icons.arrow_back_ios_rounded,
-                                      color: Colors.white.withOpacity(.6),
+                                      color: AppColors.getTheme().textColor.withOpacity(.6),
                                     ),
                                     Text(
                                       AppStrings.getLanguagePack().any_setupPage_GoBack,
@@ -776,7 +777,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                                       style: TextStyle(
                                         fontWeight: FontWeight.w400,
                                         fontSize: 12,
-                                        color: Colors.white
+                                        color: AppColors.getTheme().textColor
                                       ),
                                     )
                                   ],
@@ -792,7 +793,7 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                                   AppHaptics.attentionLightImpact();
                                 },
                                 style: ButtonStyle(
-                                    backgroundColor: _canProceed ? WidgetStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)) : WidgetStateProperty.all(const Color.fromRGBO(0x1B, 0x24, 0x25, 1.0)),
+                                    backgroundColor: _canProceed ? WidgetStateProperty.all(AppColors.getTheme().buttonEnabled) : WidgetStateProperty.all(AppColors.getTheme().buttonDisabled),
                                     padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
                                 ),
                                 child: Row(
@@ -806,12 +807,12 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
                                       style: TextStyle(
                                           fontWeight: FontWeight.w400,
                                           fontSize: 12,
-                                          color: Colors.white
+                                          color: AppColors.getTheme().textColor
                                       ),
                                     ),
                                     Icon(
                                       Icons.arrow_forward_ios_rounded,
-                                      color: Colors.white.withOpacity(.6),
+                                      color: AppColors.getTheme().textColor.withOpacity(.6),
                                     ),
                                   ],
                                 )
@@ -866,10 +867,10 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
   @override
   void initState() {
     super.initState();
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarIconBrightness: Brightness.light,
-      systemNavigationBarColor: Color.fromRGBO(0x17, 0x17, 0x17, 1.0), // navigation bar color
-      statusBarColor: Color.fromRGBO(0x17, 0x17, 0x17, 1.0), // status bar color
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarIconBrightness: AppColors.isDarktheme() ? Brightness.light : Brightness.dark,
+      systemNavigationBarColor: AppColors.getTheme().rootBackground, // navigation bar color
+      statusBarColor: AppColors.getTheme().rootBackground, // status bar color
     ));
 
     FlutterNativeSplash.remove();
@@ -950,7 +951,7 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                         style: TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.w800,
-                            color: Colors.white
+                            color: AppColors.getTheme().textColor
                         ),
                       ),
                       const SizedBox(height: 60),
@@ -964,7 +965,7 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                             labelText: AppStrings.getLanguagePack().urlLogin_setupPage_InstituteNeptunUrl,
                             labelStyle: TextStyle(
                               fontSize: 14,
-                              color: Colors.white.withOpacity(.6),
+                              color: AppColors.getTheme().textColor.withOpacity(.6),
                               fontWeight: FontWeight.w400
                             ),
                             border: OutlineInputBorder(
@@ -972,11 +973,11 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                               borderSide: BorderSide.none
                             ),
                             filled: true,
-                            fillColor: Colors.white.withOpacity(.05)
+                            fillColor: AppColors.getTheme().textColor.withOpacity(.05)
                           ),
                           style: TextStyle(
                             fontSize: 16,
-                            color: Colors.white,
+                            color: AppColors.getTheme().textColor,
                             fontWeight: FontWeight.w600
                           ),
                           autofocus: true,
@@ -1026,7 +1027,7 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                                   Navigator.pop(context);
                                 },
                                 style: ButtonStyle(
-                                    backgroundColor: WidgetStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)),
+                                    backgroundColor: WidgetStateProperty.all(AppColors.getTheme().buttonEnabled),
                                     padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
                                 ),
                                 child: Row(
@@ -1036,7 +1037,7 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                                   children: [
                                     Icon(
                                       Icons.arrow_back_ios_rounded,
-                                      color: Colors.white.withOpacity(.6),
+                                      color: AppColors.getTheme().textColor.withOpacity(.6),
                                     ),
                                     Text(
                                       AppStrings.getLanguagePack().any_setupPage_GoBack,
@@ -1044,7 +1045,7 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                                       style: TextStyle(
                                           fontWeight: FontWeight.w400,
                                           fontSize: 12,
-                                          color: Colors.white
+                                          color: AppColors.getTheme().textColor
                                       ),
                                     )
                                   ],
@@ -1060,7 +1061,7 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                                   AppHaptics.attentionLightImpact();
                                 },
                                 style: ButtonStyle(
-                                    backgroundColor: _canProceed ? WidgetStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)) : WidgetStateProperty.all(const Color.fromRGBO(0x1B, 0x24, 0x25, 1.0)),
+                                    backgroundColor: _canProceed ? WidgetStateProperty.all(AppColors.getTheme().buttonEnabled) : WidgetStateProperty.all(AppColors.getTheme().buttonDisabled),
                                     padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
                                 ),
                                 child: Row(
@@ -1074,12 +1075,12 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                                       style: TextStyle(
                                           fontWeight: FontWeight.w400,
                                           fontSize: 12,
-                                          color: Colors.white
+                                          color: AppColors.getTheme().textColor
                                       ),
                                     ),
                                     Icon(
                                       Icons.arrow_forward_ios_rounded,
-                                      color: Colors.white.withOpacity(.6),
+                                      color: AppColors.getTheme().textColor.withOpacity(.6),
                                     ),
                                   ],
                                 )
@@ -1102,7 +1103,7 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                                 style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w500,
-                                    color: Colors.white.withOpacity(.6)
+                                    color: AppColors.getTheme().textColor.withOpacity(.6)
                                 ),
                               ),
                             ),
@@ -1111,7 +1112,7 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                             margin: const EdgeInsets.all(15),
                             decoration: BoxDecoration(
                                 borderRadius: const BorderRadius.all(Radius.circular(90)),
-                                color: Colors.white.withOpacity(.06)
+                                color: AppColors.getTheme().textColor.withOpacity(.06)
                             ),
                             child: IconButton(
                               onPressed: (){
@@ -1120,7 +1121,7 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
                               },
                               icon: Icon(
                                 Icons.question_mark_rounded,
-                                color: Colors.white.withOpacity(.4),
+                                color: AppColors.getTheme().textColor.withOpacity(.4),
                               ),
                               enableFeedback: true,
                               iconSize: 24,
@@ -1179,10 +1180,10 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
   @override
   void initState() {
     super.initState();
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarIconBrightness: Brightness.light,
-      systemNavigationBarColor: Color.fromRGBO(0x17, 0x17, 0x17, 1.0), // navigation bar color
-      statusBarColor: Color.fromRGBO(0x17, 0x17, 0x17, 1.0), // status bar color
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarIconBrightness: AppColors.isDarktheme() ? Brightness.light : Brightness.dark,
+      systemNavigationBarColor: AppColors.getTheme().rootBackground, // navigation bar color
+      statusBarColor: AppColors.getTheme().rootBackground, // status bar color
     ));
 
     FlutterNativeSplash.remove();
@@ -1345,8 +1346,8 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 28,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.getTheme().textColor
                         ),
                       ),
                       const SizedBox(height: 60),
@@ -1357,7 +1358,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                         children: [
                           Icon(
                             Icons.house_rounded,
-                            color: Colors.white.withOpacity(.2),
+                            color: AppColors.getTheme().textColor.withOpacity(.2),
                             size: 22,
                           ),
                           const SizedBox(width: 4),
@@ -1366,7 +1367,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                               PageDTO.validatedURL ? PageDTO.customURL!.replaceAll(RegExp(r'/hallgato/login\.aspx'), '').replaceAll(RegExp(r'/hallgato/MobileService\.svc'), "").replaceAll("https://", '') : (PageDTO.selected ?? AppStrings.getLanguagePack().loginPage_setupPage_ActivityCacheInvalidHelper),
                               textAlign: TextAlign.start,
                               style: TextStyle(
-                                  color: Colors.white.withOpacity(.2),
+                                  color: AppColors.getTheme().textColor.withOpacity(.2),
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600
                               ),
@@ -1386,11 +1387,11 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                 contentPadding: const EdgeInsets.all(18),
                                 suffixIcon: Icon(
                                     Icons.person_2_rounded,
-                                    color: _paintRed ? Colors.red : Colors.white),
+                                    color: _paintRed ?AppColors.getTheme().errorRed : AppColors.getTheme().textColor),
                                 labelText: AppStrings.getLanguagePack().loginPage_setupPage_NeptunCode,
                                 labelStyle: TextStyle(
                                     fontSize: 14,
-                                    color: Colors.white.withOpacity(.6),
+                                    color: AppColors.getTheme().textColor.withOpacity(.6),
                                     fontWeight: FontWeight.w400
                                 ),
                                 border: OutlineInputBorder(
@@ -1398,14 +1399,14 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                     borderSide: BorderSide.none
                                 ),
                                 filled: true,
-                                fillColor: Colors.white.withOpacity(.05)
+                                fillColor: AppColors.getTheme().textColor.withOpacity(.05)
                             ),
                               autofocus: true,
                               enableSuggestions: false,
                               autocorrect: false,
                               controller: _usernameController,
                               style: TextStyle(
-                                color: _paintRed ? const Color.fromRGBO(0xFF, 0xB0, 0xB0, 1.0) : Colors.white,
+                                color: _paintRed ? AppColors.getTheme().errorRed : AppColors.getTheme().textColor,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
                               ),
@@ -1427,7 +1428,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                 suffixIcon: IconButton(
                                     icon: Icon(
                                         _obscureText ? Icons.visibility_rounded : Icons.visibility_off_rounded,
-                                        color: _paintRed ? Colors.red : Colors.white),
+                                        color: _paintRed ? AppColors.getTheme().errorRed : AppColors.getTheme().textColor),
                                     onPressed: () {
                                       AppHaptics.lightImpact();
                                       setState(() {
@@ -1437,7 +1438,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                 labelText: AppStrings.getLanguagePack().loginPage_setupPage_Password,
                                 labelStyle: TextStyle(
                                     fontSize: 14,
-                                    color: Colors.white.withOpacity(.6),
+                                    color: AppColors.getTheme().textColor.withOpacity(.6),
                                     fontWeight: FontWeight.w400
                                 ),
                                 border: OutlineInputBorder(
@@ -1445,14 +1446,14 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                     borderSide: BorderSide.none
                                 ),
                                 filled: true,
-                                fillColor: Colors.white.withOpacity(.05)
+                                fillColor: AppColors.getTheme().textColor.withOpacity(.05)
                               ),
                               controller: _passwordController,
                               obscureText: _obscureText,
                               enableSuggestions: false,
                               autocorrect: false,
                               style: TextStyle(
-                                color: _paintRed ? const Color.fromRGBO(0xFF, 0xB0, 0xB0, 1.0) : Colors.white,
+                                color: _paintRed ? AppColors.getTheme().errorRed : AppColors.getTheme().textColor,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
                               ),
@@ -1471,7 +1472,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                             _paintRed ? AppStrings.getLanguagePack().loginPage_setupPage_InvalidCredentialsEntered : "",
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                                color: _paintRed ? Colors.red : Colors.white,
+                                color: _paintRed ? AppColors.getTheme().errorRed : AppColors.getTheme().textColor,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 12
                             ),
@@ -1491,7 +1492,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                     style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w500,
-                                        color: Colors.white.withOpacity(.6)
+                                        color: AppColors.getTheme().textColor.withOpacity(.6)
                                     ),
                                   ),
                                 ),
@@ -1500,7 +1501,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                 margin: const EdgeInsets.all(15),
                                 decoration: BoxDecoration(
                                     borderRadius: const BorderRadius.all(Radius.circular(90)),
-                                    color: Colors.white.withOpacity(.06)
+                                    color: AppColors.getTheme().textColor.withOpacity(.06)
                                 ),
                                 child: IconButton(
                                   onPressed: (){
@@ -1509,7 +1510,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                   },
                                   icon: Icon(
                                     Icons.question_mark_rounded,
-                                    color: Colors.white.withOpacity(.4),
+                                    color: AppColors.getTheme().textColor.withOpacity(.4),
                                   ),
                                   enableFeedback: true,
                                   iconSize: 24,
@@ -1532,7 +1533,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                       Navigator.pop(context);
                                     },
                                     style: ButtonStyle(
-                                        backgroundColor: WidgetStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)),
+                                        backgroundColor: WidgetStateProperty.all(AppColors.getTheme().buttonEnabled),
                                         padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
                                     ),
                                     child: Row(
@@ -1542,7 +1543,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                       children: [
                                         Icon(
                                           Icons.arrow_back_ios_rounded,
-                                          color: Colors.white.withOpacity(.6),
+                                          color: AppColors.getTheme().textColor.withOpacity(.6),
                                         ),
                                         Text(
                                           AppStrings.getLanguagePack().any_setupPage_GoBack,
@@ -1550,7 +1551,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                           style: TextStyle(
                                               fontWeight: FontWeight.w400,
                                               fontSize: 12,
-                                              color: Colors.white
+                                              color: AppColors.getTheme().textColor
                                           ),
                                         )
                                       ],
@@ -1566,7 +1567,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                       AppHaptics.attentionLightImpact();
                                     },
                                     style: ButtonStyle(
-                                        backgroundColor: _canProceed ? WidgetStateProperty.all(const Color.fromRGBO(0x25, 0x31, 0x33, 1.0)) : WidgetStateProperty.all(const Color.fromRGBO(0x1B, 0x24, 0x25, 1.0)),
+                                        backgroundColor: _canProceed ? WidgetStateProperty.all(AppColors.getTheme().buttonEnabled) : WidgetStateProperty.all(AppColors.getTheme().buttonDisabled),
                                         padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
                                     ),
                                     child: Row(
@@ -1580,12 +1581,12 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                           style: TextStyle(
                                               fontWeight: FontWeight.w400,
                                               fontSize: 12,
-                                              color: Colors.white
+                                              color: AppColors.getTheme().textColor
                                           ),
                                         ),
                                         Icon(
                                           Icons.arrow_forward_ios_rounded,
-                                          color: Colors.white.withOpacity(.6),
+                                          color: AppColors.getTheme().textColor.withOpacity(.6),
                                         ),
                                       ],
                                     )
@@ -1630,7 +1631,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                               AppStrings.getLanguagePack().loginPage_setupPage_LoginInProgress,
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                  color: Colors.white,
+                                  color: AppColors.getTheme().textColor,
                                   fontWeight: FontWeight.w800,
                                   fontSize: 28
                               ),
@@ -1638,8 +1639,8 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                           ),
                           const SizedBox(height: 60),
                           Center(
-                            child: const CircularProgressIndicator(
-                              color: Colors.white,
+                            child: CircularProgressIndicator(
+                              color: AppColors.getTheme().textColor,
                             ),
                           ),
                           const SizedBox(height: 20),
@@ -1649,7 +1650,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                               api.Generic.randomLoadingComment(DataCache.getNeedFamilyFriendlyComments()!),
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                  color: Colors.white.withOpacity(.6),
+                                  color: AppColors.getTheme().textColor.withOpacity(.6),
                                   fontWeight: FontWeight.w300,
                                   fontSize: 10
                               ),
@@ -1664,7 +1665,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                                 AppStrings.getLanguagePack().loginPage_setupPage_LoginInProgressSlow,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                    color: Colors.white.withOpacity(.3),
+                                    color: AppColors.getTheme().textColor.withOpacity(.3),
                                     fontWeight: FontWeight.w300,
                                     fontSize: 14
                                 ),

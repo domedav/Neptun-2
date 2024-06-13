@@ -1282,6 +1282,10 @@ import '../storage.dart';
       return LangPackMap(langName: json['langName'], langId: json['langId'], langURL: json['langURL'], langFlag: json['langFlag']);
     }
   }
+
+  class Coloring{
+
+  }
   
   class NeptunCerts extends HttpOverrides {
     static NeptunCerts? _instance;

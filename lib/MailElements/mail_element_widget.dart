@@ -5,6 +5,7 @@ import 'package:neptun2/Misc/popup.dart';
 import 'package:neptun2/language.dart';
 
 import '../Misc/emojirich_text.dart';
+import '../colors.dart';
 
 class MailPopupDisplayTexts{
   static String title = "";
@@ -55,13 +56,13 @@ class MailElementWidget extends StatelessWidget{
           children: [
             EmojiRichText(
               text: isRead ? '📭' : '📬',
-              defaultStyle: const TextStyle(
-                color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+              defaultStyle: TextStyle(
+                color: AppColors.getTheme().onPrimaryContainer,
                 fontWeight: FontWeight.w900,
                 fontSize: 20.0,
               ),
-              emojiStyle: const TextStyle(
-                  color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+              emojiStyle: TextStyle(
+                  color: AppColors.getTheme().onPrimaryContainer,
                   fontSize: 20.0,
                   fontFamily: "Noto Color Emoji"
               ),
@@ -84,7 +85,7 @@ class MailElementWidget extends StatelessWidget{
                         child: Text(
                           '$subject',
                           style: TextStyle(
-                            color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                            color: AppColors.getTheme().onPrimaryContainer,
                             fontWeight: !isRead ? FontWeight.w800 : FontWeight.w500,
                             fontSize: 18.0,
                           ),
@@ -102,8 +103,8 @@ class MailElementWidget extends StatelessWidget{
                         flex: 2,
                         child: Text(
                           AppStrings.getStringWithParams(AppStrings.getLanguagePack().messagePage_SentBy, [sender]),
-                          style: const TextStyle(
-                            color: Colors.white,
+                          style: TextStyle(
+                            color: AppColors.getTheme().textColor,
                             fontWeight: FontWeight.w500,
                             fontSize: 13.0,
                           ),
@@ -121,8 +122,8 @@ class MailElementWidget extends StatelessWidget{
                         flex: 2,
                         child: Text(
                           '${(parts.join().toString()).replaceAll('\n', ' ').replaceAll('\t', ' ')}...',
-                          style: const TextStyle(
-                            color: Colors.white,
+                          style: TextStyle(
+                            color: AppColors.getTheme().textColor,
                             fontWeight: FontWeight.w300,
                             fontSize: 13.0,
                           ),

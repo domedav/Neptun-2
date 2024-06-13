@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:neptun2/colors.dart';
 import 'Pages/startup_page.dart';
 import 'language.dart';
 
@@ -7,25 +8,43 @@ void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   AppStrings.initialize();
-  runApp(const NeptunApp());
+  AppColors.initialize();
+  final app = const NeptunApp();
+  runApp(app);
+  WidgetsBinding.instance.addObserver(app);
 }
 
-class NeptunApp extends StatelessWidget {
+class NeptunApp extends StatelessWidget with WidgetsBindingObserver {
   const NeptunApp({super.key});
+
+  @override
+  void didChangePlatformBrightness() {
+    AppColors.changedSystemTheme();
+    super.didChangePlatformBrightness();
+  }
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    AppColors.setCurrentSystemTheme(isDark);
     return MaterialApp(
       title: 'Neptun 2',
       theme: ThemeData(
-        colorScheme: const ColorScheme.dark(
-            primary: Color.fromRGBO(0x6C, 0x8F, 0x96, 1.0),
-            onPrimary: Colors.white,
-            onPrimaryContainer: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
-            secondary: Color.fromRGBO(0x4F, 0x69, 0x6E, 1.0),
-            onSecondary: Color.fromRGBO(0xB6, 0xB6, 0xB6, 1.0),
-            onSecondaryContainer: Color.fromRGBO(0x6C, 0x8F, 0x96, 1.0),
+        colorScheme: isDark ? ColorScheme.dark(
+          primary: AppColors.getTheme().primary,
+          onPrimary: AppColors.getTheme().onPrimary,
+          onPrimaryContainer: AppColors.getTheme().onSecondaryContainer,
+          secondary: AppColors.getTheme().secondary,
+          onSecondary: AppColors.getTheme().onSecondary,
+          onSecondaryContainer: AppColors.getTheme().onSecondaryContainer,
+        ) : ColorScheme.light(
+          primary: AppColors.getTheme().primary,
+          onPrimary: AppColors.getTheme().onPrimary,
+          onPrimaryContainer: AppColors.getTheme().onSecondaryContainer,
+          secondary: AppColors.getTheme().secondary,
+          onSecondary: AppColors.getTheme().onSecondary,
+          onSecondaryContainer: AppColors.getTheme().onSecondaryContainer,
         ),
         useMaterial3: true,
       ),

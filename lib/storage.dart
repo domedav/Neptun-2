@@ -83,6 +83,8 @@ class DataCache{
     setIsInstalledFromGPlay(_permanentConfiguration_isInstalledFromGooglePlay!);
     setDownloadedSupportedLanguages(_languageJsonSupportedLangs);
     setDownloadedSupportedLanguagesData(_languageJsonBatch);
+    setPreferredAppTheme(_themePreference!);
+    setAllDownloadedAppThemes(_themesJsonBatch);
   }
 
   static final DataCache _instance = DataCache();
@@ -121,6 +123,9 @@ class DataCache{
 
   late List<String> _languageJsonSupportedLangs;
   late List<String> _languageJsonBatch;
+
+  late String? _themePreference = 'NONE';
+  late List<String> _themesJsonBatch;
 
   static Future<void> loadData() async{return _instance._loadData();}
 
@@ -229,6 +234,9 @@ class DataCache{
 
     _languageJsonSupportedLangs = await getStringList('LANGUAGE_DownloadedSupportedLangs') ?? [];
     _languageJsonBatch = await getStringList('LANGUAGE_DownloadedLanguagesJsonBatch') ?? [];
+
+    _themePreference = await getString('THEME_AppTheme') ?? 'NONE';
+    _themesJsonBatch = await getStringList('THEME_ThemesJsonBatch') ?? [];
   }
 
   static String? getUsername(){return _instance._username;}
@@ -399,5 +407,17 @@ class DataCache{
   static Future<void> setDownloadedSupportedLanguagesData(List<String>? value)async{
     _instance._languageJsonBatch = value ?? [];
     await saveStringList('LANGUAGE_DownloadedLanguagesJsonBatch', value ?? []);
+  }
+
+  static String? getPreferredAppTheme(){return _instance._themePreference;}
+  static Future<void> setPreferredAppTheme(String? value)async{
+    _instance._themePreference = value ?? 'NONE';
+    await saveString('THEME_AppTheme', value ?? 'NONE');
+  }
+
+  static List<String> getAllDownloadedAppThemes(){return _instance._themesJsonBatch;}
+  static Future<void> setAllDownloadedAppThemes(List<String>? value)async{
+    _instance._themesJsonBatch = value ?? [];
+    await saveStringList('THEME_ThemesJsonBatch', value ?? []);
   }
 }

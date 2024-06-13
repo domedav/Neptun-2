@@ -10,6 +10,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:neptun2/MailElements/mail_element_widget.dart';
+import 'package:neptun2/colors.dart';
 import 'package:neptun2/language.dart';
 import 'package:neptun2/notifications.dart';
 import 'package:neptun2/Misc/emojirich_text.dart';
@@ -66,19 +67,19 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   void setBlurComplex(bool state){
     setState(() {
       if(state) {
-        SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-            statusBarIconBrightness: Brightness.light,
-            systemNavigationBarColor: Color.fromRGBO(0x0C, 0x0C, 0x0C, 1.0), // navigation bar color
-            statusBarColor: Color.fromRGBO(0x1A, 0x1A, 0x1A, 1.0), // status bar color
+        SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+            statusBarIconBrightness: AppColors.isDarktheme() ? Brightness.light : Brightness.dark,
+            systemNavigationBarColor: AppColors.getTheme().navbarNavibarColor, // navigation bar color
+            statusBarColor: AppColors.getTheme().navbarStatusBarColor, // status bar color
         ));
         blurController.forward();
         _showBlur = true;
         return;
       }
-      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-        statusBarIconBrightness: Brightness.light,
-        systemNavigationBarColor: Color.fromRGBO(0x22, 0x22, 0x22, 1.0), // navigation bar color
-        statusBarColor: Color.fromRGBO(0x22, 0x22, 0x22, 1.0), // status bar color
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarIconBrightness: AppColors.isDarktheme() ? Brightness.light : Brightness.dark,
+        systemNavigationBarColor: AppColors.getTheme().rootBackground, // navigation bar color
+        statusBarColor: AppColors.getTheme().rootBackground, // status bar color
       ));
       blurController.reverse().whenComplete((){
         setState(() {
@@ -152,10 +153,10 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     super.initState();
 
     FlutterNativeSplash.remove();
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarIconBrightness: Brightness.light,
-      systemNavigationBarColor: Color.fromRGBO(0x22, 0x22, 0x22, 1.0), // navigation bar color
-      statusBarColor: Color.fromRGBO(0x22, 0x22, 0x22, 1.0), // status bar color
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarIconBrightness: AppColors.isDarktheme() ? Brightness.light : Brightness.dark,
+      systemNavigationBarColor: AppColors.getTheme().rootBackground, // navigation bar color
+      statusBarColor: AppColors.getTheme().rootBackground, // status bar color
     ));
 
     api.Generic.setupDaylightSavingsTime();
@@ -245,15 +246,15 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
             currentMailPage++;
             mailList.add(Column(
               children: [
-                const CircularProgressIndicator(
-                  color: Colors.white,
+                CircularProgressIndicator(
+                  color: AppColors.getTheme().textColor,
                 ),
                 const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
                 Text(
                  api.Generic.randomLoadingCommentMini(storage.DataCache.getNeedFamilyFriendlyComments()!),
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.white.withOpacity(.4),
+                    color: AppColors.getTheme().textColor.withOpacity(.4),
                     fontSize: 11,
                     fontWeight: FontWeight.w300
                   ),
@@ -932,16 +933,16 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         child: Container(
           margin: const EdgeInsets.all(15),
           decoration: BoxDecoration(
-            color: w.isNotEmpty ? Colors.white.withOpacity(0.03) : Colors.transparent,
+            color: w.isNotEmpty ? AppColors.getTheme().textColor.withOpacity(0.03) : Colors.transparent,
             borderRadius: BorderRadius.circular(14),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
             children: w.isNotEmpty ? w : isLoading ? <Widget>[
-              const Center(
+              Center(
                 child: CircularProgressIndicator(
-                  color: Colors.white,
+                  color: AppColors.getTheme().textColor,
                 ),
               ),
               const SizedBox(height: 20),
@@ -949,7 +950,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
                 api.Generic.randomLoadingComment(storage.DataCache.getNeedFamilyFriendlyComments()!),
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Colors.white.withOpacity(.2),
+                  color: AppColors.getTheme().textColor.withOpacity(.2),
                   fontWeight: FontWeight.w300,
                   fontSize: 10
                 ),
@@ -1020,13 +1021,13 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         child: Center(
           child: EmojiRichText(
             text: AppStrings.getLanguagePack().markbookPage_Empty,
-            defaultStyle: const TextStyle(
-              color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+            defaultStyle: TextStyle(
+              color: AppColors.getTheme().onPrimaryContainer,
               fontWeight: FontWeight.w900,
               fontSize: 26.0,
             ),
-            emojiStyle: const TextStyle(
-                color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+            emojiStyle: TextStyle(
+                color: AppColors.getTheme().onPrimaryContainer,
                 fontSize: 26.0,
                 fontFamily: "Noto Color Emoji"
             ),
@@ -1185,13 +1186,13 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         child: Center(
           child: EmojiRichText(
             text: AppStrings.getLanguagePack().paymentPage_Empty,
-            defaultStyle: const TextStyle(
-              color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+            defaultStyle: TextStyle(
+              color: AppColors.getTheme().onPrimaryContainer,
               fontWeight: FontWeight.w900,
               fontSize: 26.0,
             ),
-            emojiStyle: const TextStyle(
-                color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+            emojiStyle: TextStyle(
+                color: AppColors.getTheme().onPrimaryContainer,
                 fontSize: 26.0,
                 fontFamily: "Noto Color Emoji"
             ),
@@ -1211,14 +1212,14 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
           child: Container(
             height: 2,
             margin: const EdgeInsets.symmetric(horizontal: 30),
-            color: expired ? Colors.red.withOpacity(.3) : Colors.white.withOpacity(.3),
+            color: expired ? AppColors.getTheme().errorRed.withOpacity(.3) : AppColors.getTheme().textColor.withOpacity(.3),
           ),
         ),
         Text(
           text,
           textAlign: TextAlign.center,
           style: TextStyle(
-              color: expired ? Colors.red.withOpacity(.6) : Colors.white.withOpacity(.6),
+              color: expired ? AppColors.getTheme().errorRed.withOpacity(.6) : AppColors.getTheme().textColor.withOpacity(.6),
               fontWeight: FontWeight.w600,
               fontSize: 14
           ),
@@ -1227,7 +1228,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
           child: Container(
             height: 2,
             margin: const EdgeInsets.symmetric(horizontal: 30),
-            color: expired ? Colors.red.withOpacity(.3) : Colors.white.withOpacity(.3),
+            color: expired ? AppColors.getTheme().errorRed.withOpacity(.3) : AppColors.getTheme().textColor.withOpacity(.3),
           ),
         ),
       ],
@@ -1353,13 +1354,13 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         child: Center(
           child: EmojiRichText(
             text: AppStrings.getLanguagePack().periodPage_Empty,
-            defaultStyle: const TextStyle(
-              color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+            defaultStyle: TextStyle(
+              color: AppColors.getTheme().onPrimaryContainer,
               fontWeight: FontWeight.w900,
               fontSize: 26.0,
             ),
-            emojiStyle: const TextStyle(
-                color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+            emojiStyle: TextStyle(
+                color: AppColors.getTheme().onPrimaryContainer,
                 fontSize: 26.0,
                 fontFamily: "Noto Color Emoji"
             ),
@@ -1377,13 +1378,13 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         child: Center(
           child: EmojiRichText(
             text: AppStrings.getLanguagePack().messagePage_Empty,
-            defaultStyle: const TextStyle(
-              color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+            defaultStyle: TextStyle(
+              color: AppColors.getTheme().onPrimaryContainer,
               fontWeight: FontWeight.w900,
               fontSize: 26.0,
             ),
-            emojiStyle: const TextStyle(
-                color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+            emojiStyle: TextStyle(
+                color: AppColors.getTheme().onPrimaryContainer,
                 fontSize: 26.0,
                 fontFamily: "Noto Color Emoji"
             ),
@@ -1842,14 +1843,14 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       height: 1,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-            colors: [
-              Colors.white.withOpacity(0),
-              Colors.white.withOpacity(0.2),
-              Colors.white.withOpacity(0.4),
-              Colors.white.withOpacity(0.4),
-              Colors.white.withOpacity(0.2),
-              Colors.white.withOpacity(0),
-            ]
+          colors: [
+            AppColors.getTheme().textColor.withOpacity(0),
+            AppColors.getTheme().textColor.withOpacity(0.2),
+            AppColors.getTheme().textColor.withOpacity(0.4),
+            AppColors.getTheme().textColor.withOpacity(0.4),
+            AppColors.getTheme().textColor.withOpacity(0.2),
+            AppColors.getTheme().textColor.withOpacity(0),
+          ]
         ),
       ),
     );
@@ -1943,13 +1944,13 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
                         currentWeekOffset = 1;
                         await onCalendarRefresh(false);
                       }),
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.home_outlined,
-                        color: Colors.white,
+                        color: AppColors.getTheme().onPrimary,
                       ),
                       style: ButtonStyle(
                         padding: WidgetStateProperty.all(const EdgeInsets.all(15)),
-                        backgroundColor: WidgetStateProperty.all(const Color.fromRGBO(0x4F, 0x69, 0x6E, 1.0))
+                        backgroundColor: WidgetStateProperty.all(AppColors.getTheme().primary)
                       ),
                     ),
                   );
@@ -1997,7 +1998,7 @@ class CalendarPageWidget extends StatelessWidget{
               topnav.TopNavigatorWidget(homePage: homePage, displayString: AppStrings.getLanguagePack().view_header_Calendar, smallHintText: greetText, loggedInUsername: storage.DataCache.getUsername()!, loggedInURL: storage.DataCache.getInstituteUrl()!.replaceAll(RegExp(r'/hallgato/MobileService\.svc'), '').replaceAll("https://", '')),
               Container(
                 padding: const EdgeInsets.fromLTRB(0, 0, 0, 6),
-                color: const Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
+                color: AppColors.getTheme().rootBackground,
                 width: MediaQuery.of(context).size.width,
                 child: TabBar(
                   tabs: calendarTabs,
@@ -2011,7 +2012,7 @@ class CalendarPageWidget extends StatelessWidget{
                     decelerationRate: ScrollDecelerationRate.fast,
                   ),
                   indicator: BoxDecoration(
-                    color: const Color.fromRGBO(0xFF, 0xFF, 0xFF, 0.05),
+                    color: AppColors.getTheme().textColor.withOpacity(.1),
                     borderRadius: const BorderRadius.all(Radius.circular(26))
                   ),
                   onTap: (index){
@@ -2103,7 +2104,7 @@ class MarkbookPageWidget extends StatelessWidget{
                                 padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 12),
                                 width: MediaQuery.of(context).size.width,
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.03),
+                                  color: AppColors.getTheme().textColor.withOpacity(0.03),
                                   borderRadius: BorderRadius.circular(20),
                                   //border: Border.all(color: Colors.white.withOpacity(.2), width: 1)
                                 ),
@@ -2114,26 +2115,26 @@ class MarkbookPageWidget extends StatelessWidget{
                                   children: [
                                     EmojiRichText(
                                       text: AppStrings.getStringWithParams(AppStrings.getLanguagePack().markbookPage_AverageDisplay, [totalAvg.isNaN || totalAvg <= 0 ? AppStrings.getLanguagePack().markbookPage_NoGrades : totalAvg.toStringAsFixed(2), api.Generic.reactionForAvg(totalAvg)]),
-                                      defaultStyle: const TextStyle(
-                                        color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                                      defaultStyle: TextStyle(
+                                        color: AppColors.getTheme().onPrimaryContainer,
                                         fontWeight: FontWeight.w600,
                                         fontSize: 13.0,
                                       ),
-                                      emojiStyle: const TextStyle(
-                                          color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                                      emojiStyle: TextStyle(
+                                          color: AppColors.getTheme().onPrimaryContainer,
                                           fontSize: 14.0,
                                           fontFamily: "Noto Color Emoji"
                                       ),
                                     ),
                                     EmojiRichText(
                                       text: AppStrings.getStringWithParams(AppStrings.getLanguagePack().markbookPage_AverageScholarshipDisplay, [totalAvg30.isNaN || totalAvg30 <= 0 ? AppStrings.getLanguagePack().markbookPage_NoGrades : totalAvg30.toStringAsFixed(2), api.Generic.reactionForAvg(totalAvg30)]),
-                                      defaultStyle: const TextStyle(
-                                        color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                                      defaultStyle: TextStyle(
+                                        color: AppColors.getTheme().onPrimaryContainer,
                                         fontWeight: FontWeight.w600,
                                         fontSize: 13.0,
                                       ),
-                                      emojiStyle: const TextStyle(
-                                          color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                                      emojiStyle: TextStyle(
+                                          color: AppColors.getTheme().onPrimaryContainer,
                                           fontSize: 14.0,
                                           fontFamily: "Noto Color Emoji"
                                       ),
@@ -2145,7 +2146,7 @@ class MarkbookPageWidget extends StatelessWidget{
                             Container(
                               margin: const EdgeInsets.all(15),
                               decoration: BoxDecoration(
-                                color: homePage.markbookList.isNotEmpty ? Colors.white.withOpacity(0.03) : Colors.transparent,
+                                color: homePage.markbookList.isNotEmpty ? AppColors.getTheme().textColor.withOpacity(0.03) : Colors.transparent,
                                 borderRadius: BorderRadius.circular(14),
                               ),
                               child: Column(
@@ -2156,8 +2157,8 @@ class MarkbookPageWidget extends StatelessWidget{
                                     child: SizedBox(
                                       height: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
                                       width: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
-                                      child: const CircularProgressIndicator(
-                                      color: Colors.white,
+                                      child: CircularProgressIndicator(
+                                      color: AppColors.getTheme().textColor,
                                       ),
                                     ),
                                   ),
@@ -2166,7 +2167,7 @@ class MarkbookPageWidget extends StatelessWidget{
                                     api.Generic.randomLoadingComment(storage.DataCache.getNeedFamilyFriendlyComments()!),
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                        color: Colors.white.withOpacity(.2),
+                                        color: AppColors.getTheme().textColor.withOpacity(.2),
                                         fontWeight: FontWeight.w300,
                                         fontSize: 10
                                     ),
@@ -2221,7 +2222,7 @@ class PaymentsPageWidget extends StatelessWidget{
                           margin: const EdgeInsets.all(15),
                           width: MediaQuery.of(context).size.width,
                           decoration: BoxDecoration(
-                            color: homePage.paymentsList.isNotEmpty ? Colors.white.withOpacity(0.03) : Colors.transparent,
+                            color: homePage.paymentsList.isNotEmpty ? AppColors.getTheme().textColor.withOpacity(0.03) : Colors.transparent,
                             borderRadius: BorderRadius.circular(14),
                           ),
                           child: Column(
@@ -2232,8 +2233,8 @@ class PaymentsPageWidget extends StatelessWidget{
                                   child: SizedBox(
                                     height: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
                                     width: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
-                                    child: const CircularProgressIndicator(
-                                      color: Colors.white,
+                                    child: CircularProgressIndicator(
+                                      color: AppColors.getTheme().textColor,
                                     ),
                                   ),
                                 ),
@@ -2242,7 +2243,7 @@ class PaymentsPageWidget extends StatelessWidget{
                                   api.Generic.randomLoadingComment(storage.DataCache.getNeedFamilyFriendlyComments()!),
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                      color: Colors.white.withOpacity(.2),
+                                      color: AppColors.getTheme().textColor.withOpacity(.2),
                                       fontWeight: FontWeight.w300,
                                       fontSize: 10
                                   ),
@@ -2307,7 +2308,7 @@ class PeriodsPageWidget extends StatelessWidget{
                           child: Container(
                             margin: const EdgeInsets.all(15),
                             decoration: BoxDecoration(
-                              color: homePage.periodList.isNotEmpty ? Colors.white.withOpacity(0.03) : Colors.transparent,
+                              color: homePage.periodList.isNotEmpty ? AppColors.getTheme().textColor.withOpacity(0.03) : Colors.transparent,
                               borderRadius: BorderRadius.circular(14),
                             ),
                             child: Column(
@@ -2318,8 +2319,8 @@ class PeriodsPageWidget extends StatelessWidget{
                                     child: SizedBox(
                                       height: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
                                       width: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
-                                      child: const CircularProgressIndicator(
-                                        color: Colors.white,
+                                      child: CircularProgressIndicator(
+                                        color: AppColors.getTheme().textColor,
                                       ),
                                     ),
                                   ),
@@ -2328,7 +2329,7 @@ class PeriodsPageWidget extends StatelessWidget{
                                     api.Generic.randomLoadingComment(storage.DataCache.getNeedFamilyFriendlyComments()!),
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                        color: Colors.white.withOpacity(.2),
+                                        color: AppColors.getTheme().textColor.withOpacity(.2),
                                         fontWeight: FontWeight.w300,
                                         fontSize: 10
                                     ),
@@ -2379,7 +2380,7 @@ class MailsPageWidget extends StatelessWidget{
                           child: Container(
                             margin: const EdgeInsets.all(15),
                             decoration: BoxDecoration(
-                              color: homePage.mailList.isNotEmpty ? Colors.white.withOpacity(0.03) : Colors.transparent,
+                              color: homePage.mailList.isNotEmpty ? AppColors.getTheme().textColor.withOpacity(0.03) : Colors.transparent,
                               borderRadius: BorderRadius.circular(14),
                             ),
                             child: Column(
@@ -2390,8 +2391,8 @@ class MailsPageWidget extends StatelessWidget{
                                     child: SizedBox(
                                       height: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
                                       width: MediaQuery.of(context).size.width < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.height * 0.10,
-                                      child: const CircularProgressIndicator(
-                                        color: Colors.white,
+                                      child: CircularProgressIndicator(
+                                        color: AppColors.getTheme().textColor,
                                       ),
                                     ),
                                   ),
@@ -2400,7 +2401,7 @@ class MailsPageWidget extends StatelessWidget{
                                     api.Generic.randomLoadingComment(storage.DataCache.getNeedFamilyFriendlyComments()!),
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                        color: Colors.white.withOpacity(.2),
+                                        color: AppColors.getTheme().textColor.withOpacity(.2),
                                         fontWeight: FontWeight.w300,
                                         fontSize: 10
                                     ),

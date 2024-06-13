@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:neptun2/API/api_coms.dart';
 import 'package:neptun2/language.dart';
 import '../Misc/emojirich_text.dart';
+import '../colors.dart';
 
 class PaymentElementWidget extends StatelessWidget{
   final int ID;
@@ -22,9 +23,9 @@ class PaymentElementWidget extends StatelessWidget{
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
       decoration: isMissed ? BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(20.0)),
-        color: const Color.fromRGBO(0xBF, 0x86, 0x86, .05),
+        color: AppColors.getTheme().rootBackground,
         border: Border.all(
-          color: Colors.redAccent.withOpacity(.4),
+          color: AppColors.getTheme().errorRed,
           width: 1
         ),
       ) : null,
@@ -33,8 +34,8 @@ class PaymentElementWidget extends StatelessWidget{
         children: [
           Text(
             name,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: AppColors.getTheme().textColor,
               fontWeight: FontWeight.w600,
               fontSize: 15.0,
             ),
@@ -48,13 +49,13 @@ class PaymentElementWidget extends StatelessWidget{
             children: [
               EmojiRichText(
                 text: isMissed ? '🙉' : '💰',
-                defaultStyle: const TextStyle(
-                  color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                defaultStyle: TextStyle(
+                  color: AppColors.getTheme().onPrimaryContainer,
                   fontWeight: FontWeight.w900,
                   fontSize: 20.0,
                 ),
                 emojiStyle: TextStyle(
-                    color: const Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                    color: AppColors.getTheme().onPrimaryContainer,
                     fontSize: isMissed ? 26.1 : 20.0,
                     fontFamily: "Noto Color Emoji"
                 ),
@@ -63,8 +64,8 @@ class PaymentElementWidget extends StatelessWidget{
                   flex: 2,
                   child: Text(
                     AppStrings.getStringWithParams(AppStrings.getLanguagePack().paymentPage_MoneyDisplay, [ammount]),
-                    style: const TextStyle(
-                      color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                    style: TextStyle(
+                      color: AppColors.getTheme().onPrimaryContainer,
                       fontWeight: FontWeight.w800,
                       fontSize: 16.0,
                     ),
@@ -81,7 +82,7 @@ class PaymentElementWidget extends StatelessWidget{
                     Text(
                       dueDate.year.toString(),
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.4),
+                        color: AppColors.getTheme().textColor.withOpacity(0.4),
                         fontWeight: FontWeight.w400,
                         fontSize: 11.0,
                       ),
@@ -89,8 +90,8 @@ class PaymentElementWidget extends StatelessWidget{
                     ),
                     Text(
                       '${Generic.monthToText(dueDate.month)} ${dueDate.day}',
-                      style: const TextStyle(
-                        color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                      style: TextStyle(
+                        color: AppColors.getTheme().onPrimaryContainer,
                         fontWeight: FontWeight.w700,
                         fontSize: 14.0,
                       ),
@@ -104,7 +105,7 @@ class PaymentElementWidget extends StatelessWidget{
           !isNonTimed ? Text(
             isMissed ? AppStrings.getStringWithParams(AppStrings.getLanguagePack().paymentPage_PaymentMissedTime, [-(Duration(milliseconds: dueDateMs - nowMs).inDays + 1)]) : AppStrings.getStringWithParams(AppStrings.getLanguagePack().paymentPage_PaymentDeadlineTime, [Duration(milliseconds: dueDateMs - nowMs).inDays + 1]),
             style: TextStyle(
-              color: Colors.white.withOpacity(0.4),
+              color: AppColors.getTheme().textColor.withOpacity(0.4),
               fontWeight: FontWeight.w400,
               fontSize: isMissed ? 14.0 : 11.0,
             ),

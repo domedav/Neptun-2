@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:neptun2/Misc/emojirich_text.dart';
 import 'package:neptun2/language.dart';
 import '../API/api_coms.dart';
+import '../colors.dart';
 
 class PeriodsElementWidget extends StatelessWidget{
   final String displayName;
@@ -20,127 +21,127 @@ class PeriodsElementWidget extends StatelessWidget{
   EmojiRichText? getIconFromType(PeriodType periodType){
     switch (periodType) {
       case PeriodType.timetableRegistration:
-        return const EmojiRichText(
+        return EmojiRichText(
           text: '📄',
           defaultStyle: TextStyle(
-            color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+            color: AppColors.getTheme().onPrimaryContainer,
             fontWeight: FontWeight.w900,
             fontSize: 20.0,
           ),
           emojiStyle: TextStyle(
-              color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+              color: AppColors.getTheme().onPrimaryContainer,
               fontSize: 20.0,
               fontFamily: "Noto Color Emoji"
           ),
         );
       case PeriodType.gradingTime:
-        return const EmojiRichText(
+        return EmojiRichText(
           text: '⭐',
           defaultStyle: TextStyle(
-            color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+            color: AppColors.getTheme().onPrimaryContainer,
             fontWeight: FontWeight.w900,
             fontSize: 20.0,
           ),
           emojiStyle: TextStyle(
-              color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+              color: AppColors.getTheme().onPrimaryContainer,
               fontSize: 20.0,
               fontFamily: "Noto Color Emoji"
           ),
         );
       case PeriodType.loginTime:
-        return const EmojiRichText(
+        return EmojiRichText(
           text: '🪪',
           defaultStyle: TextStyle(
-            color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+            color: AppColors.getTheme().onPrimaryContainer,
             fontWeight: FontWeight.w900,
             fontSize: 20.0,
           ),
           emojiStyle: TextStyle(
-              color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+              color: AppColors.getTheme().onPrimaryContainer,
               fontSize: 20.0,
               fontFamily: "Noto Color Emoji"
           ),
         );
       case PeriodType.pregivenGradingAccepting:
-        return const EmojiRichText(
+        return EmojiRichText(
           text: '📑',
           defaultStyle: TextStyle(
-            color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+            color: AppColors.getTheme().onPrimaryContainer,
             fontWeight: FontWeight.w900,
             fontSize: 20.0,
           ),
           emojiStyle: TextStyle(
-              color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+              color: AppColors.getTheme().onPrimaryContainer,
               fontSize: 20.0,
               fontFamily: "Noto Color Emoji"
           ),
         );
       case PeriodType.timetableFinalization:
-        return const EmojiRichText(
+        return EmojiRichText(
           text: '📝',
           defaultStyle: TextStyle(
-            color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+            color: AppColors.getTheme().onPrimaryContainer,
             fontWeight: FontWeight.w900,
             fontSize: 20.0,
           ),
           emojiStyle: TextStyle(
-              color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+              color: AppColors.getTheme().onPrimaryContainer,
               fontSize: 20.0,
               fontFamily: "Noto Color Emoji"
           ),
         );
       case PeriodType.coursesRegistration:
-        return const EmojiRichText(
+        return EmojiRichText(
           text: '📚',
           defaultStyle: TextStyle(
-            color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+            color: AppColors.getTheme().onPrimaryContainer,
             fontWeight: FontWeight.w900,
             fontSize: 20.0,
           ),
           emojiStyle: TextStyle(
-              color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+              color: AppColors.getTheme().onPrimaryContainer,
               fontSize: 20.0,
               fontFamily: "Noto Color Emoji"
           ),
         );
       case PeriodType.nerdTime:
-        return const EmojiRichText(
+        return EmojiRichText(
             text: '🤓',
           defaultStyle: TextStyle(
-            color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+            color: AppColors.getTheme().onPrimaryContainer,
             fontWeight: FontWeight.w900,
             fontSize: 20.0,
           ),
           emojiStyle: TextStyle(
-              color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+              color: AppColors.getTheme().onPrimaryContainer,
               fontSize: 20.0,
               fontFamily: "Noto Color Emoji"
           ),
         );
       case PeriodType.examTime:
-        return const EmojiRichText(
+        return EmojiRichText(
           text: '🎓',
           defaultStyle: TextStyle(
-            color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+            color: AppColors.getTheme().onPrimaryContainer,
             fontWeight: FontWeight.w900,
             fontSize: 20.0,
           ),
           emojiStyle: TextStyle(
-              color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+              color: AppColors.getTheme().onPrimaryContainer,
               fontSize: 20.0,
               fontFamily: "Noto Color Emoji"
           ),
         );
       default:
-        return const EmojiRichText(
+        return EmojiRichText(
           text: '❓',
           defaultStyle: TextStyle(
-            color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+            color: AppColors.getTheme().onPrimaryContainer,
             fontWeight: FontWeight.w900,
             fontSize: 20.0,
           ),
           emojiStyle: TextStyle(
-              color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+              color: AppColors.getTheme().onPrimaryContainer,
               fontSize: 20.0,
               fontFamily: "Noto Color Emoji"
           ),
@@ -161,7 +162,7 @@ class PeriodsElementWidget extends StatelessWidget{
         borderRadius: const BorderRadius.all(Radius.circular(16)),
         gradient: LinearGradient(
           colors: [
-            Colors.white.withOpacity(0.05),
+            AppColors.getTheme().textColor.withOpacity(0.05),
             Colors.transparent
           ],
           stops: [1 - (currVal / maxVal), 1 - (currVal / maxVal)]
@@ -173,7 +174,7 @@ class PeriodsElementWidget extends StatelessWidget{
           Text(
             displayName,
             style: TextStyle(
-              color: expired ? Colors.red : Colors.white,
+              color: expired ? AppColors.getTheme().errorRed: AppColors.getTheme().textColor,
               fontWeight: FontWeight.w600,
               fontSize: 17.0,
             ),
@@ -195,7 +196,7 @@ class PeriodsElementWidget extends StatelessWidget{
                       Text(
                         formattedStartTimeYear,
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.55),
+                          color: AppColors.getTheme().textColor.withOpacity(0.55),
                           fontWeight: FontWeight.w400,
                           fontSize: 11.0,
                         ),
@@ -203,8 +204,8 @@ class PeriodsElementWidget extends StatelessWidget{
                       ),
                       Text(
                         formattedStartTime,
-                        style: const TextStyle(
-                          color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                        style: TextStyle(
+                          color: AppColors.getTheme().onPrimaryContainer,
                           fontWeight: FontWeight.w700,
                           fontSize: 14.0,
                         ),
@@ -223,7 +224,7 @@ class PeriodsElementWidget extends StatelessWidget{
                     Text(
                       formattedEndTimeYear,
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.55),
+                        color: AppColors.getTheme().textColor.withOpacity(0.55),
                         fontWeight: FontWeight.w400,
                         fontSize: 11.0,
                       ),
@@ -231,8 +232,8 @@ class PeriodsElementWidget extends StatelessWidget{
                     ),
                     Text(
                       formattedEndTime,
-                      style: const TextStyle(
-                        color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                      style: TextStyle(
+                        color: AppColors.getTheme().onPrimaryContainer,
                         fontWeight: FontWeight.w700,
                         fontSize: 14.0,
                       ),
@@ -259,7 +260,7 @@ class PeriodsElementWidget extends StatelessWidget{
                       child: Text(
                         expired ? AppStrings.getLanguagePack().periodPage_Expired : AppStrings.getLanguagePack().periodPage_Starts,
                         style: TextStyle(
-                          color: expired ? Colors.redAccent : Colors.white.withOpacity(0.6),
+                          color: expired ? AppColors.getTheme().errorRed : AppColors.getTheme().textColor.withOpacity(0.6),
                           fontWeight: FontWeight.normal,
                           fontSize: 14.0,
                         ),
@@ -270,7 +271,7 @@ class PeriodsElementWidget extends StatelessWidget{
                       child: Text(
                         expired ? '$formattedEndTimeYear $formattedEndTime' : '$formattedStartTimeYear $formattedStartTime',
                         style: TextStyle(
-                          color: expired ? Colors.redAccent : Colors.white.withOpacity(0.6),
+                          color: expired ? AppColors.getTheme().errorRed : AppColors.getTheme().textColor.withOpacity(0.6),
                           fontWeight: FontWeight.w600,
                           fontSize: 14.0,
                         ),
@@ -285,7 +286,7 @@ class PeriodsElementWidget extends StatelessWidget{
           Text(
             expired ? AppStrings.getStringWithParams(AppStrings.getLanguagePack().periodPage_ExpiredDays, [-(Duration(milliseconds: endTime - now).inDays + 1) * (Duration(milliseconds: endTime - now).inDays == 0 ? -1 : 1)]) : !isActive ? AppStrings.getStringWithParams(AppStrings.getLanguagePack().periodPage_StartDays, [Duration(milliseconds: startTime - now).inDays + 1]) : AppStrings.getStringWithParams(AppStrings.getLanguagePack().periodPage_ActiveDays, [Duration(milliseconds: endTime - now).inDays + 1]),
             style: TextStyle(
-              color: Colors.white.withOpacity(0.4),
+              color: AppColors.getTheme().textColor.withOpacity(0.4),
               fontWeight: FontWeight.w400,
               fontSize: 11.0,
             ),

@@ -6,6 +6,8 @@ import 'package:neptun2/haptics.dart';
 import 'package:neptun2/language.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../colors.dart';
+
 class ClickableTextSpan extends StatelessWidget{
   final VoidCallback callback;
   final String text;
@@ -35,8 +37,8 @@ class ClickableTextSpan extends StatelessWidget{
           toastLength: Toast.LENGTH_SHORT,
           fontSize: 14,
           gravity: ToastGravity.SNACKBAR,
-          backgroundColor: const Color.fromRGBO(0x1A, 0x1A, 0x1A, 1.0),
-          textColor: Colors.white,
+          backgroundColor: AppColors.getTheme().rootBackground,
+          textColor: AppColors.getTheme().textColor,
         );
       },
     );
@@ -47,7 +49,7 @@ class ClickableTextSpan extends StatelessWidget{
   }
 
   static TextStyle getStockStyle(){
-    return const TextStyle(color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0), decoration: TextDecoration.underline, decorationColor: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0));
+    return TextStyle(color: AppColors.getTheme().onSecondaryContainer, decoration: TextDecoration.underline, decorationColor: AppColors.getTheme().onSecondaryContainer);
   }
 
   static VoidCallback getNewOpenLinkCallback(String text){

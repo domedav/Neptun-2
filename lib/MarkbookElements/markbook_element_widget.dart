@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:neptun2/Misc/popup.dart';
 import '../Misc/emojirich_text.dart';
+import '../colors.dart';
 
 typedef Callback = void Function(int, int);
 
@@ -16,19 +17,19 @@ class MarkbookElementWidget extends StatelessWidget{
 
   Color getGradeColor(){
     if(ghostGrade != -1){
-      return Colors.white.withOpacity(.4);
+      return AppColors.getTheme().textColor.withOpacity(.4);
     }
     switch (grade){
       case 5:
-        return Colors.green.shade200;
+        return AppColors.getTheme().grade5;
       case 4:
-        return Colors.lightGreen.shade200;
+        return AppColors.getTheme().grade4;
       case 3:
-        return Colors.yellow.shade200;
+        return AppColors.getTheme().grade3;
       case 2:
-        return Colors.red.shade200;
+        return AppColors.getTheme().grade2;
       case 1:
-        return Colors.redAccent.shade200;
+        return AppColors.getTheme().grade1;
       default:
         return Colors.transparent;
     }
@@ -48,10 +49,9 @@ class MarkbookElementWidget extends StatelessWidget{
         style: ButtonStyle(
           enableFeedback: true,
           backgroundColor: WidgetStateProperty.resolveWith((states) => Colors.transparent),
-          foregroundColor: WidgetStateProperty.resolveWith((states) => Colors.white),
+          foregroundColor: WidgetStateProperty.resolveWith((states) => AppColors.getTheme().textColor),
           overlayColor: WidgetStateProperty.resolveWith((states) => Colors.transparent),
           shadowColor: WidgetStateProperty.resolveWith((states) => Colors.transparent),
-          surfaceTintColor: WidgetStateProperty.resolveWith((states) => Colors.black.withOpacity(.04)),
         ),
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
@@ -64,13 +64,13 @@ class MarkbookElementWidget extends StatelessWidget{
                 margin: const EdgeInsets.fromLTRB(0, 0, 30, 0),
                 child: EmojiRichText(
                   text: "$credit🎖️",
-                  defaultStyle: const TextStyle(
-                      color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                  defaultStyle: TextStyle(
+                      color: AppColors.getTheme().onPrimaryContainer,
                       fontWeight: FontWeight.w900,
                       fontSize: 26.0,
                     ),
-                  emojiStyle: const TextStyle(
-                    color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                  emojiStyle: TextStyle(
+                    color: AppColors.getTheme().onPrimaryContainer,
                     fontSize: 19.0,
                     fontFamily: "Noto Color Emoji"
                     ),
@@ -86,7 +86,7 @@ class MarkbookElementWidget extends StatelessWidget{
                       fontSize: 17.0,
                       decoration: completed ? TextDecoration.lineThrough : TextDecoration.none,
                       fontWeight: completed ? FontWeight.w300 : FontWeight.normal,
-                      decorationColor: Colors.white
+                      decorationColor: AppColors.getTheme().textColor
                     ),
                   ),
                 )
@@ -102,7 +102,7 @@ class MarkbookElementWidget extends StatelessWidget{
                       children: [
                         Icon(
                           Icons.close_rounded,
-                          color: Colors.red.shade200,
+                          color: AppColors.getTheme().grade2,
                           size: 26.0,
                         )
                       ],
@@ -121,7 +121,7 @@ class MarkbookElementWidget extends StatelessWidget{
                       grade < 2 && ghostGrade == -1 || credit == 0 ?
                       Icon(
                         Icons.check_rounded,
-                        color: Colors.green.shade200,
+                        color: AppColors.getTheme().grade5,
                         size: 26.0,
                       ) : Text(
                         ghostGrade == -1 ? '$grade' : '$ghostGrade',
