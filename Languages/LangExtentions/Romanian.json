@@ -170,5 +170,7 @@
   "popup_case8_ButtonAcceptLang":"Schimbare",
   "popup_case1_langSwap_DownloadingLang":"Se descarcă limba",
   "popup_case1_langSwap_DownloadingLangFail":"Nu se poate descărca, fără internet",
-  "freshTest":"Proaspăt"
+  "freshTest":"Proaspăt",
+  "popup_case1_settingOption9_ThemeSwap":"Tema aplicației",
+  "popup_case1_settingOption9_ThemeSwapDescription":"Selectați cum ar trebui să arate aplicația"
 }
