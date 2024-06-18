@@ -2,8 +2,7 @@
  "themesMap":[
    {
      "themeName":"Test",
-     "themeURL":"Hello World",
-     "asasd":0
+     "themeURL":"Hello World"
    }
  ] 
 }
