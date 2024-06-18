@@ -79,8 +79,6 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
       CurvedAnimation(parent: blurController, curve: Curves.linear),
     );
 
-    FlutterNativeSplash.remove();
-
     if(!_hasAskedLang){
       Future.delayed(Duration(seconds: 1),()async{
         _hasAskedLang = true;
@@ -93,6 +91,17 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
     Future.delayed(Duration(seconds: 1),()async{
       await LanguageManager.refreshAllDownloadedLangs();
     });
+    AppColors.clearThemeChangeCallbacks();
+    AppColors.subThemeChangeCallback((){
+      if(!mounted){
+        return;
+      }
+      setState(() {
+
+      });
+    });
+
+    FlutterNativeSplash.remove();
   }
 
   bool _analiticsDebounce = false;
@@ -370,6 +379,15 @@ class _SetupPageInstitudeSelectionState extends State<SetupPageInstitudeSelectio
     if(storage.DataCache.getHasNetwork()){
       _hasData++;
     }
+
+    AppColors.subThemeChangeCallback((){
+      if(!mounted){
+        return;
+      }
+      setState(() {
+
+      });
+    });
 
     FlutterNativeSplash.remove();
 
@@ -873,6 +891,15 @@ class _SetupPageURLInputState extends State<SetupPageURLInput>{
       statusBarColor: AppColors.getTheme().rootBackground, // status bar color
     ));
 
+    AppColors.subThemeChangeCallback((){
+      if(!mounted){
+        return;
+      }
+      setState(() {
+
+      });
+    });
+
     FlutterNativeSplash.remove();
   }
 
@@ -1185,6 +1212,15 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
       systemNavigationBarColor: AppColors.getTheme().rootBackground, // navigation bar color
       statusBarColor: AppColors.getTheme().rootBackground, // status bar color
     ));
+
+    AppColors.subThemeChangeCallback((){
+      if(!mounted){
+        return;
+      }
+      setState(() {
+
+      });
+    });
 
     FlutterNativeSplash.remove();
 

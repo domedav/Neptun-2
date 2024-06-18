@@ -11,10 +11,7 @@ import 'Misc/popup.dart';
 
 class AppUpdate{
   static Future<void> doUpdateRequest(BuildContext context, VoidCallback? blur, VoidCallback? closeBlur)async{
-    if(DataCache.getIsInstalledFromGPlay() != 0){
-      return; // app is from gplay, and gplay updates are handled differently
-    }
-    final cacheTime = await getInt('ObsolteAppVerUpdateCacheTime') ?? -1;
+    final cacheTime = await getInt('ObsoleteAppVerUpdateCacheTime') ?? -1;
 
     if((DateTime.now().millisecondsSinceEpoch - cacheTime) > const Duration(hours: 24).inMilliseconds || // once a day update check
         await Connectivity().checkConnectivity() == ConnectivityResult.none) // only check for updates, if there is internet
@@ -22,10 +19,14 @@ class AppUpdate{
 
     final appUpdateHelper = await Generic.getAppUpdateHelper();
     final currentBuildNumber = int.parse((await PackageInfo.fromPlatform()).buildNumber);
-    // akik nem szeretnek frissíteni, kicsit erőltetős módon perszuáljuk őket
+    // force users to update to latest version
     if((appUpdateHelper!.minAppVer ?? 0) > currentBuildNumber){
       PopupWidgetHandler(mode: 7, callback: (_){
         if(!Platform.isAndroid){
+          return;
+        }
+        if(DataCache.getIsInstalledFromGPlay() != 0){
+          launchUrl(Uri.parse('market://details?id=com.domedav.neptun2'), mode: LaunchMode.externalNonBrowserApplication);
           return;
         }
         launchUrl(Uri.parse(appUpdateHelper!.updateUrl ?? 'https://github.com/domedav/Neptun-2/releases'), mode: LaunchMode.externalApplication);
@@ -33,13 +34,18 @@ class AppUpdate{
           onCloseCallback: ()async{
             if((appUpdateHelper!.minDisableVer ?? 0) > currentBuildNumber){
               if(Platform.isAndroid){
-                await launchUrl(Uri.parse(appUpdateHelper!.updateUrl ?? 'https://github.com/domedav/Neptun-2/releases'), mode: LaunchMode.externalApplication);
+                if(DataCache.getIsInstalledFromGPlay() != 0){
+                  launchUrl(Uri.parse('market://details?id=com.domedav.neptun2'), mode: LaunchMode.externalNonBrowserApplication);
+                }
+                else{
+                  await launchUrl(Uri.parse(appUpdateHelper!.updateUrl ?? 'https://github.com/domedav/Neptun-2/releases'), mode: LaunchMode.externalApplication);
+                }
               }
               exit(0);
             }
           });
       PopupWidgetHandler.doPopup(context, blur: blur, closeBlur: closeBlur);
-      await saveInt('ObsolteAppVerUpdateCacheTime', DateTime.now().millisecondsSinceEpoch); // save last checked update time
+      await saveInt('ObsoleteAppVerUpdateCacheTime', DateTime.now().millisecondsSinceEpoch); // save last checked update time
       return;
     }
   }

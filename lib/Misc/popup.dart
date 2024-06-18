@@ -161,7 +161,9 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
   late AnimationController popupController;
   late Animation<double> poppuAnimation;
   late String _languageCurrSelect;
+  late String _themesCurrSelect;
   GlobalKey _languageDropdownGlobalKey = GlobalKey();
+  GlobalKey _themesDropdownGlobalKey = GlobalKey();
 
   @override
   void initState() {
@@ -183,14 +185,16 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
     PopupWidgetHandler._instance!.widgetAnimController = popupController;
     popupController.forward(from: 0);
 
-    final idx = DataCache.getUserSelectedLanguage()!;
-    if(idx <= -1){
+    final l_idx = DataCache.getUserSelectedLanguage()!;
+    if(l_idx <= -1){
       final langCodeIdx = AppStrings.getAllLangCodes().indexOf(Platform.localeName.split('_')[0].toLowerCase());
       _languageCurrSelect = AppStrings.getLanguageNamesWithFlag()[langCodeIdx];
     }
     else{
-      _languageCurrSelect = AppStrings.getLanguageNamesWithFlag()[idx];
+      _languageCurrSelect = AppStrings.getLanguageNamesWithFlag()[l_idx];
     }
+
+    _themesCurrSelect = AppColors.getTheme().paletteName;
   }
 
   int selectionValue = -1;
@@ -1065,6 +1069,265 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
             )*/
           ],
         ));
+        list.add(Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(flex: 2, child: Container(
+              margin: const EdgeInsets.all(10),
+              child: Text(
+                AppStrings.getLanguagePack().popup_case1_settingOption8_LangaugeSelection,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.getTheme().textColor
+                ),
+              ),
+            )),
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(90)),
+                  color: AppColors.getTheme().textColor.withOpacity(.06)
+              ),
+              child: IconButton(
+                onPressed: (){
+                  _showSnackbar(AppStrings.getLanguagePack().popup_case1_settingOption8_LangaugeSelectionDescription, 4);
+                  AppHaptics.attentionLightImpact();
+                },
+                icon: Icon(
+                  Icons.question_mark_rounded,
+                  color: AppColors.getTheme().textColor.withOpacity(.4),
+                ),
+                enableFeedback: true,
+                iconSize: 24,
+              ),
+            ),
+            Expanded(
+              flex: 3,
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                child: DropdownButtonFormField<String>(
+                    key: _themesDropdownGlobalKey,
+                    borderRadius: BorderRadius.circular(12),
+                    value: _themesCurrSelect, // The currently selected value.
+                    icon: const SizedBox(),
+                    style: TextStyle(
+                        color: AppColors.getTheme().textColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600
+                    ),
+                    enableFeedback: true,
+                    onTap: AppHaptics.lightImpact,
+                    focusColor: Colors.transparent,
+                    dropdownColor: AppColors.getTheme().rootBackground,
+                    decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.all(18),
+                        suffixIcon: const Icon(Icons.arrow_drop_down_rounded),
+                        labelStyle: TextStyle(
+                            fontSize: 14,
+                            color: AppColors.getTheme().textColor.withOpacity(.6),
+                            fontWeight: FontWeight.w400
+                        ),
+                        border: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                            borderSide: BorderSide.none
+                        ),
+                        filled: true,
+                        fillColor: AppColors.getTheme().textColor.withOpacity(.05)
+                    ),
+                    items: AppColors.getThemesAll().map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                          value: value,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 2),
+                            child: EmojiRichText(
+                              text: value,
+                              defaultStyle: TextStyle(
+                                color: AppColors.getTheme().textColor,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14.0,
+                              ),
+                              emojiStyle: TextStyle(
+                                  color: AppColors.getTheme().textColor,
+                                  fontSize: 18.0,
+                                  fontFamily: "Noto Color Emoji"
+                              ),
+                            ),
+                          )
+                      );
+                    }).toList(),
+                    selectedItemBuilder: (context){
+                      return AppColors.getThemesAll().map<Widget>((String value){
+                        return Container(
+                          constraints: BoxConstraints(maxWidth: _languageDropdownGlobalKey.currentContext?.findRenderObject() == null ? MediaQuery.of(context).size.width : ((_languageDropdownGlobalKey.currentContext!.findRenderObject() as RenderBox).size.width - 60) < 0 ? 0 : ((_languageDropdownGlobalKey.currentContext!.findRenderObject() as RenderBox).size.width - 60)),
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            child: EmojiRichText(
+                              text: value,
+                              defaultStyle: TextStyle(
+                                color: AppColors.getTheme().textColor,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16.0,
+                              ),
+                              emojiStyle: TextStyle(
+                                  color: AppColors.getTheme().textColor,
+                                  fontSize: 20.0,
+                                  fontFamily: "Noto Color Emoji"
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList();
+                    },
+                    onChanged: (String? value) {
+                      return;
+                      // this is not the best solution, but I dont care
+                      AppHaptics.lightImpact();
+                      if(value == null){
+                        return;
+                      }
+                      final flagWeLookFor = value.split(' ')[0];
+                      final languageIdx = AppStrings.getAllLangFlags().indexOf(flagWeLookFor);
+
+                      var selectedLangCode = '';
+                      for(var item in Language.getAllLanguagesWithNative()){
+                        if(item.langFlag == flagWeLookFor){
+                          selectedLangCode = item.langId;
+                          break;
+                        }
+                      }
+                      DataCache.setUserSelectedLanguage(languageIdx <= -1 ? AppStrings.getAllLangFlags().length : languageIdx);
+                      if(!AppStrings.hasLanguageDownloaded(selectedLangCode)){
+                        Future.delayed(Duration.zero, ()async{
+                          if(!DataCache.getHasNetwork()){
+                            if(Platform.isAndroid){
+                              Fluttertoast.showToast(
+                                msg: AppStrings.getLanguagePack().popup_case1_langSwap_DownloadingLangFail, // dont have the new lang, can speak with it
+                                toastLength: Toast.LENGTH_SHORT,
+                                fontSize: 14,
+                                gravity: ToastGravity.SNACKBAR,
+                                backgroundColor: AppColors.getTheme().rootBackground,
+                                textColor: AppColors.getTheme().textColor,
+                              );
+                            }
+                            return;
+                          }
+                          final pack = await Language.getAllLanguages();
+                          await Language.getLanguagePackById(pack, selectedLangCode).then((value)async{
+                            AppStrings.setupPopupPreviews(value!);
+                            if(Platform.isAndroid){
+                              Fluttertoast.showToast(
+                                  msg: AppStrings.popupLangPrev_ObtainingLang,
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  fontSize: 14,
+                                  gravity: ToastGravity.SNACKBAR,
+                                  backgroundColor: AppColors.getTheme().rootBackground,
+                                  textColor: AppColors.getTheme().textColor
+                              );
+                            }
+                            AppStrings.saveDownloadedLanguageData();
+                            Navigator.popUntil(context, (route) => route.willHandlePopInternally);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const Splitter()),
+                            );
+                          });
+                          return;
+                        });
+                      }
+                      setState(() {
+                        _languageCurrSelect = value;
+                        PopupWidgetHandler._instance!._settingsLanguageCurrent = AppStrings.getLanguageNamesWithFlag().indexOf(value);
+                      });
+                    }
+                ),
+              ),
+            ),
+            /*GestureDetector(
+              key: _settingsLanguageWidgetGlobalKey,
+              onTap: (){
+                if(!mounted){
+                  return;
+                }
+                AppHaptics.lightImpact();
+                showMenu(
+                  context: context,
+                  position: RelativeRect.fromLTRB(
+                    (_settingsLanguageWidgetGlobalKey.currentContext!.findRenderObject() as RenderBox).localToGlobal(Offset.zero).dx + 13,
+                    (_settingsLanguageWidgetGlobalKey.currentContext!.findRenderObject() as RenderBox).localToGlobal(Offset.zero).dy + (_settingsLanguageWidgetGlobalKey.currentContext!.findRenderObject() as RenderBox).size.height,
+                    (_settingsLanguageWidgetGlobalKey.currentContext!.findRenderObject() as RenderBox).localToGlobal(Offset.zero).dx + (_settingsLanguageWidgetGlobalKey.currentContext!.findRenderObject() as RenderBox).size.width,
+                    (_settingsLanguageWidgetGlobalKey.currentContext!.findRenderObject() as RenderBox).localToGlobal(Offset.zero).dy,
+                  ),
+                  items: AppStrings.getAllLangFlags().map<PopupMenuEntry<int>>((String value){
+                    return PopupMenuItem(
+                      value: ++_settingsLanguageItemsIdx,
+                      child: EmojiRichText(
+                        text: value,
+                        defaultStyle: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 18.0,
+                        ),
+                        emojiStyle: const TextStyle(
+                            color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                            fontSize: 22.0,
+                            fontFamily: "Noto Color Emoji"
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                  color: Color.fromRGBO(0x2F, 0x2F, 0x2F, 1.0)
+                ).then((val){
+                  _settingsLanguageItemsIdx = -1;
+                  if(val == null){
+                    return;
+                  }
+                  AppHaptics.lightImpact();
+                  DataCache.setUserSelectedLanguage(val);
+
+                  setState(() {
+                    PopupWidgetHandler._instance!._settingsLanguageCurrent = val;
+                  });
+                });
+              },
+              child: Container(
+                width: 120,
+                padding: const EdgeInsets.all(10),
+                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(.05),
+                  borderRadius: const BorderRadius.all(Radius.circular(12)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: EmojiRichText(
+                        text: AppStrings.getLanguagePack().language_flag,
+                        defaultStyle: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 18.0,
+                        ),
+                        emojiStyle: const TextStyle(
+                          color: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+                          fontSize: 22.0,
+                          fontFamily: "Noto Color Emoji"
+                        ),
+                      ),
+                    ),
+                    Icon(
+                      Icons.arrow_drop_down_rounded,
+                      color: Colors.white.withOpacity(.5),
+                    )
+                  ],
+                )
+              ),
+            )*/
+          ],
+        ));
         list.add(Container(
           height: 1,
           color: AppColors.getTheme().textColor.withOpacity(.1),
@@ -1642,7 +1905,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
           children: [
             Flexible(
               child: Text(
-                AppStrings.getLanguagePack().popup_case4_TeachedBy,
+                AppStrings.getLanguagePack().popup_case4_5_SubjectCode,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     color: AppColors.getTheme().onPrimaryContainer,

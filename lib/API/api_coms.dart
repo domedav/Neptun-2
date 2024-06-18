@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:neptun2/Misc/clickable_text_span.dart';
+import 'package:neptun2/colors.dart';
 import 'package:neptun2/language.dart';
 import '../app_analitics.dart';
 import '../storage.dart' as storage;
@@ -1276,7 +1277,7 @@ import '../storage.dart';
     final String langId;
     final String langURL;
 
-    LangPackMap({required this.langName, required this.langId, required this.langURL, required this.langFlag});
+    const LangPackMap({required this.langName, required this.langId, required this.langURL, required this.langFlag});
 
     static LangPackMap fromMap(Map<String, dynamic> json){
       return LangPackMap(langName: json['langName'], langId: json['langId'], langURL: json['langURL'], langFlag: json['langFlag']);
@@ -1284,7 +1285,44 @@ import '../storage.dart';
   }
 
   class Coloring{
+    static List<ThemePackMap>? _themeMapCache;
 
+    static List<ThemePackMap>? getAllThemesCache(){
+      return _themeMapCache;
+    }
+
+    static Future<List<ThemePackMap>?> getAllThemes()async{
+      if(_themeMapCache != null){
+        return _themeMapCache;
+      }
+      final url = Uri.parse('https://raw.githubusercontent.com/domedav/Neptun-2/main/Themes/supportedThemes.json');
+      final response = await http.get(url);
+
+      if (response.statusCode != 200) {
+        AppAnalitics.sendAnaliticsData(AppAnalitics.ERROR, 'api_coms.dart => Coloring.getAllThemes() Error: Failed to fetch supportedThemes.json');
+        return null;
+      }
+
+      Map<String, dynamic> jsonMap = conv.json.decode(response.body);
+      final allThemeItems = jsonMap['themesMap'] as List<dynamic>;
+      final List<ThemePackMap> themePacksRoot = [];
+      for (var item in allThemeItems){
+        themePacksRoot.add(ThemePackMap.fromMap(item));
+      }
+      _themeMapCache = themePacksRoot;
+      return themePacksRoot;
+    }
+  }
+
+  class ThemePackMap{
+    final String themeName;
+    final String themeUrl;
+
+    const ThemePackMap({required this.themeName, required this.themeUrl});
+
+    static ThemePackMap fromMap(Map<String, dynamic> json){
+      return ThemePackMap(themeName: json['themeName'], themeUrl: json['themeURL']);
+    }
   }
   
   class NeptunCerts extends HttpOverrides {

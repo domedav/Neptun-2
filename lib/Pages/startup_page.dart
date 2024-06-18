@@ -48,6 +48,7 @@ class _SplitterState extends State<Splitter>{
       await AppStrings.loadDownloadedLanguageData(context);
       await AppColors.loadDownloadedPaletteData(context);
       api.Language.getAllLanguages();
+      api.Coloring.getAllThemes();
     }).then((value) {
       Navigator.popUntil(context, (route) => route.willHandlePopInternally);
       if (DataCache.getHasLogin() != null && DataCache.getHasLogin()!) {

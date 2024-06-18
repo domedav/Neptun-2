@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'dart:convert' as conv;
-import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:neptun2/API/api_coms.dart';
 import 'package:neptun2/storage.dart';
-
 import 'Pages/startup_page.dart';
 
 class AppColors{
@@ -11,10 +10,18 @@ class AppColors{
   static List<AppPalette> _appColors = [];
   static List<AppPalette> _downloadedAppColors = [];
   static int _themeBatchSelectedIdx = -1;
+
+  static List<VoidCallback> _onThemeChangeCallbacks = [];
+  static void clearThemeChangeCallbacks(){_onThemeChangeCallbacks.clear();}
+  static void subThemeChangeCallback(VoidCallback callback){_onThemeChangeCallbacks.add(callback);}
+
   static bool _isDark = false;
 
   static bool isDarktheme(){
-    return _isDark;
+    if(_themeBatchSelectedIdx == -1){
+      return _isDark;
+    }
+    return getAllThemes()[_themeBatchSelectedIdx].basedOnDark;
   }
 
   static void initialize() {
@@ -41,6 +48,7 @@ class AppColors{
       buttonDisabled: Color.fromRGBO(0xD3, 0xDD, 0xDD, 1.0),
       errorRed: Color.fromRGBO(0xFF, 0x52, 0x52, 1.0),
       currentClassGreen: Color.fromRGBO(0x46, 0x97, 0x32, 1.0),
+      basedOnDark: false
     ));
     _appColors.add(AppPalette('Dark',
       primary: Color.fromRGBO(0x6C, 0x8F, 0x96, 1.0),
@@ -62,6 +70,7 @@ class AppColors{
       buttonDisabled: Color.fromRGBO(0x22, 0x2B, 0x2B, 1.0),
       errorRed: Color.fromRGBO(0xFF, 0xB0, 0xB0, 1.0),
       currentClassGreen: Color.fromRGBO(0x8B, 0xD4, 0x81, 1.0),
+      basedOnDark: true
     ));
 
     _hasInit = true;
@@ -86,10 +95,28 @@ class AppColors{
 
   static void setCurrentSystemTheme(bool isDark) {
     _isDark = isDark;
+    for(var item in _onThemeChangeCallbacks){
+      Future.delayed(Duration.zero,(){
+        item();
+      });
+    }
+  }
+
+  static List<AppPalette> getAllThemes(){
+    return _appColors + _downloadedAppColors;
+  }
+
+  static int appThemeToIdx(String name){
+    for(var item in getAllThemes()){
+      if(item.paletteName == name){
+        return getAllThemes().indexOf(item);
+      }
+    }
+    return -1;
   }
 
   static void refreshThemeIndexing(){
-    final List<AppPalette> batch = _appColors + _downloadedAppColors;
+    final List<AppPalette> batch = getAllThemes();
     final userPreference = DataCache.getPreferredAppTheme();
     var idx = -1;
     for(var item in batch){
@@ -99,10 +126,20 @@ class AppColors{
       }
     }
     _themeBatchSelectedIdx = idx;
+    for(var item in _onThemeChangeCallbacks){
+      Future.delayed(Duration.zero,(){
+        item();
+      });
+    }
   }
 
   static void changedSystemTheme(){
     _isDark = !_isDark;
+    for(var item in _onThemeChangeCallbacks){
+      Future.delayed(Duration.zero,(){
+        item();
+      });
+    }
   }
 
   static void saveDownloadedPaletteData(){
@@ -127,7 +164,7 @@ class AppColors{
           //await Language.getLanguagePackById(await Language.getAllLanguages(), downloadedSupportedLanguages[i]); // redownload language
           _loadDownloadColorTimer.cancel();
           _loadDownloadColorTimer = Timer(const Duration(seconds: 3), (){
-            saveDownloadedPaletteData(); // save after all langs have been fetched
+            saveDownloadedPaletteData(); // save after all colors have been fetched
           });
           Navigator.popUntil(context, (route) => route.willHandlePopInternally);
           Navigator.push(
@@ -139,10 +176,30 @@ class AppColors{
     }
     refreshThemeIndexing();
   }
+
+  static List<String> getThemesAll(){
+    final List<String> list = [];
+    final List<ThemePackMap>? langNames = Coloring.getAllThemesCache();
+    final obtainedList = getAllThemes();
+    for(var item in obtainedList){
+      list.add(item.paletteName);
+    }
+    if(langNames == null){
+      return list;
+    }
+    for(var item in langNames){
+      if(obtainedList.contains(item.themeName)){
+        continue;
+      }
+      list.add(item.themeName);
+    }
+    return list;
+  }
 }
 
 class AppPalette{
   final String paletteName;
+  final bool basedOnDark;
 
   final Color primary;
   final Color onPrimary;
@@ -169,7 +226,7 @@ class AppPalette{
 
   final Color currentClassGreen;
 
-  const AppPalette(this.paletteName, {required this.currentClassGreen, required this.errorRed, required this.buttonDisabled, required this.buttonEnabled, required this.textColor, required this.rootBackground, required this.navbarNavibarColor, required this.navbarStatusBarColor, required this.primary, required this.onPrimary, required this.onPrimaryContainer, required this.secondary, required this.onSecondary, required this.onSecondaryContainer, required this.grade1, required this.grade2, required this.grade3, required this.grade4, required this.grade5});
+  const AppPalette(this.paletteName, {required this.basedOnDark, required this.currentClassGreen, required this.errorRed, required this.buttonDisabled, required this.buttonEnabled, required this.textColor, required this.rootBackground, required this.navbarNavibarColor, required this.navbarStatusBarColor, required this.primary, required this.onPrimary, required this.onPrimaryContainer, required this.secondary, required this.onSecondary, required this.onSecondaryContainer, required this.grade1, required this.grade2, required this.grade3, required this.grade4, required this.grade5});
 
   static AppPalette fromJson(String json, VoidCallback onColorOutdated){
     AppPalette decodedColorPack;
@@ -177,25 +234,26 @@ class AppPalette{
       final color = conv.json.decode(json);
       decodedColorPack = AppPalette(
         color['paletteName'],
-        primary: color['primary'],
-        onPrimary: color['onPrimary'],
-        onPrimaryContainer: color['onPrimaryContainer'],
-        secondary: color['secondary'],
-        onSecondary: color['secondary'],
-        onSecondaryContainer: color['onSecondaryContainer'],
-        grade1: color['grade1'],
-        grade2: color['grade2'],
-        grade3: color['grade3'],
-        grade4: color['grade4'],
-        grade5: color['grade5'],
-        navbarNavibarColor: color['navbarNavibarColor'],
-        navbarStatusBarColor: color['navbarStatusBarColor'],
-        rootBackground: color['rootBackground'],
-        textColor:color['textColor'],
-        buttonDisabled: color['buttonDisabled'],
-        buttonEnabled: color['buttonEnabled'],
-        errorRed: color['errorRed'],
-        currentClassGreen: color['currentClassGreen']
+        primary: Color(color['primary']),
+        onPrimary: Color(color['onPrimary']),
+        onPrimaryContainer: Color(color['onPrimaryContainer']),
+        secondary: Color(color['secondary']),
+        onSecondary: Color(color['secondary']),
+        onSecondaryContainer: Color(color['onSecondaryContainer']),
+        grade1: Color(color['grade1']),
+        grade2: Color(color['grade2']),
+        grade3: Color(color['grade3']),
+        grade4: Color(color['grade4']),
+        grade5: Color(color['grade5']),
+        navbarNavibarColor: Color(color['navbarNavibarColor']),
+        navbarStatusBarColor: Color(color['navbarStatusBarColor']),
+        rootBackground: Color(color['rootBackground']),
+        textColor:Color(color['textColor']),
+        buttonDisabled: Color(color['buttonDisabled']),
+        buttonEnabled: Color(color['buttonEnabled']),
+        errorRed: Color(color['errorRed']),
+        currentClassGreen: Color(color['currentClassGreen']),
+        basedOnDark: color['basedOnDark'],
       );
       for(var item in AppColors._downloadedAppColors){
         if(item.paletteName == decodedColorPack.paletteName){
@@ -203,6 +261,7 @@ class AppPalette{
           break;
         }
       }
+      AppColors._downloadedAppColors.add(decodedColorPack);
     }
     catch(error){
       Future.delayed(Duration.zero,(){
@@ -217,25 +276,26 @@ class AppPalette{
   static String toJson(AppPalette palette){
     final json = conv.json.encode({
       'paletteName':palette.paletteName,
-      'primary':palette.primary,
-      'onPrimary':palette.onPrimary,
-      'onPrimaryContainer':palette.onPrimaryContainer,
-      'secondary':palette.secondary,
-      'onSecondary':palette.onSecondary,
-      'onSecondaryContainer':palette.onSecondaryContainer,
-      'grade1':palette.grade1,
-      'grade2':palette.grade2,
-      'grade3':palette.grade3,
-      'grade4':palette.grade4,
-      'grade5':palette.grade5,
-      'navbarNavibarColor':palette.navbarNavibarColor,
-      'navbarStatusBarColor':palette.navbarStatusBarColor,
-      'rootBackground':palette.rootBackground,
-      'textColor':palette.textColor,
-      'buttonEnabled':palette.buttonEnabled,
-      'buttonDisabled':palette.buttonDisabled,
-      'errorRed':palette.errorRed,
-      'currentClassGreen':palette.currentClassGreen
+      'primary':palette.primary.value,
+      'onPrimary':palette.onPrimary.value,
+      'onPrimaryContainer':palette.onPrimaryContainer.value,
+      'secondary':palette.secondary.value,
+      'onSecondary':palette.onSecondary.value,
+      'onSecondaryContainer':palette.onSecondaryContainer.value,
+      'grade1':palette.grade1.value,
+      'grade2':palette.grade2.value,
+      'grade3':palette.grade3.value,
+      'grade4':palette.grade4.value,
+      'grade5':palette.grade5.value,
+      'navbarNavibarColor':palette.navbarNavibarColor.value,
+      'navbarStatusBarColor':palette.navbarStatusBarColor.value,
+      'rootBackground':palette.rootBackground.value,
+      'textColor':palette.textColor.value,
+      'buttonEnabled':palette.buttonEnabled.value,
+      'buttonDisabled':palette.buttonDisabled.value,
+      'errorRed':palette.errorRed.value,
+      'currentClassGreen':palette.currentClassGreen.value,
+      'basedOnDark':palette.basedOnDark
     });
     return json;
   }

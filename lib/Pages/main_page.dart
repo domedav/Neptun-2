@@ -409,6 +409,16 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       });
       PopupWidgetHandler.doPopup(context);
     });
+
+    AppColors.clearThemeChangeCallbacks();
+    AppColors.subThemeChangeCallback((){
+      if(!mounted){
+        return;
+      }
+      setState(() {
+
+      });
+    });
   }
 
   void userUnavailableAccountLogout(){
