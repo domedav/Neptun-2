@@ -170,5 +170,7 @@
   "popup_case8_ButtonAcceptLang":"Изменить",
   "popup_case1_langSwap_DownloadingLang":"Загрузка языка",
   "popup_case1_langSwap_DownloadingLangFail":"Не удается загрузить, нет интернета",
-  "freshTest":"Свежий"
+  "freshTest":"Свежий",
+  "popup_case1_settingOption9_ThemeSwap":"Тема приложения",
+  "popup_case1_settingOption9_ThemeSwapDescription":"Выберите, как должно выглядеть приложение"
 }
