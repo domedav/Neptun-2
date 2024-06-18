@@ -170,5 +170,7 @@
   "popup_case8_ButtonAcceptLang":"Change",
   "popup_case1_langSwap_DownloadingLang":"Downloadin' language",
   "popup_case1_langSwap_DownloadingLangFail":"Can't download, no internet, ye scallywag",
-  "freshTest":"Fish"
+  "freshTest":"Fish",
+  "popup_case1_settingOption9_ThemeSwap":"App Theme",
+  "popup_case1_settingOption9_ThemeSwapDescription":"Select how the app should look like"
 }
