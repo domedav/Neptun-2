@@ -170,5 +170,7 @@
   "popup_case8_ButtonAcceptLang":"更改",
   "popup_case1_langSwap_DownloadingLang":"正在下载语言",
   "popup_case1_langSwap_DownloadingLangFail":"无法下载，没有网络",
-  "freshTest":"新鲜的"
+  "freshTest":"新鲜的",
+  "popup_case1_settingOption9_ThemeSwap":"应用主题",
+  "popup_case1_settingOption9_ThemeSwapDescription":"选择应用程序的外观"
 }
