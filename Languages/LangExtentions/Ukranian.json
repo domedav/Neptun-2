@@ -170,5 +170,7 @@
   "popup_case8_ButtonAcceptLang":"Змінити",
   "popup_case1_langSwap_DownloadingLang":"Завантаження мови",
   "popup_case1_langSwap_DownloadingLangFail":"Не вдалося завантажити, немає Інтернету",
-  "freshTest":"Свіжий"
+  "freshTest":"Свіжий",
+  "popup_case1_settingOption9_ThemeSwap":"Тема програми",
+  "popup_case1_settingOption9_ThemeSwapDescription":"Виберіть, як має виглядати додаток"
 }
