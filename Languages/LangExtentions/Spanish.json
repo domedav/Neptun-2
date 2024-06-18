@@ -170,5 +170,7 @@
   "popup_case8_ButtonAcceptLang":"Cambiar",
   "popup_case1_langSwap_DownloadingLang":"Descargando idioma",
   "popup_case1_langSwap_DownloadingLangFail":"No se puede descargar, no hay internet",
-  "freshTest":"Fresco"
+  "freshTest":"Fresco",
+  "popup_case1_settingOption9_ThemeSwap":"Tema de la aplicación",
+  "popup_case1_settingOption9_ThemeSwapDescription":"Seleccione cómo debería verse la aplicación"
 }
