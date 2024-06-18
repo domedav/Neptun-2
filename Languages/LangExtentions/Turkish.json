@@ -170,5 +170,7 @@
   "popup_case8_ButtonAcceptLang":"Değiştir",
   "popup_case1_langSwap_DownloadingLang":"Dil indiriliyor",
   "popup_case1_langSwap_DownloadingLangFail":"İnternet bağlantısı yok, dil indirilemiyor",
-  "freshTest":"Taze"
+  "freshTest":"Taze",
+  "popup_case1_settingOption9_ThemeSwap":"Uygulama Teması",
+  "popup_case1_settingOption9_ThemeSwapDescription":"Uygulamanın nasıl görüneceğini seçin"
 }
