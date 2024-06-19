@@ -1,3 +1,23 @@
 {
-  
+  "paletteName":"E-Ink",
+  "primary":4289701268,
+  "onPrimary":4278190080,
+  "onPrimaryContainer":4286083944,
+  "secondary":4291740585,
+  "onSecondary":4279308561,
+  "onSecondaryContainer":4285492577,
+  "grade1":4290737782,
+  "grade2":4287985527,
+  "grade3":4289176712,
+  "grade4":4286614642,
+  "grade5":4285235564,
+  "navbarNavibarColor":4291545279,
+  "navbarStatusBarColor":4291018936,
+  "rootBackground":4294045158,
+  "textColor":4278190080,
+  "buttonEnabled":4288781457,
+  "buttonDisabled":4286544754,
+  "errorRed":4287983214,
+  "currentClassGreen":4285630571,
+  "basedOnDark":false
 }
