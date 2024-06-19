@@ -2,7 +2,7 @@
  "themesMap":[
    {
     "themeName":"E-Ink",
-    "themeURL":"",
+    "themeURL":"https://raw.githubusercontent.com/domedav/Neptun-2/main/Themes/ThemeExtentions/E-Ink.json",
     "themeAccent":4293846999
    }
  ] 
