@@ -1,8 +1,9 @@
 {
  "themesMap":[
    {
-     "themeName":"Test",
-     "themeURL":"Hello World"
+    "themeName":"E-Ink",
+    "themeURL":"",
+    "themeAccent":4293846999
    }
  ] 
 }
