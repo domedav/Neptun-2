@@ -3,7 +3,12 @@
    {
     "themeName":"E-Ink",
     "themeURL":"https://raw.githubusercontent.com/domedav/Neptun-2/main/Themes/ThemeExtentions/E-Ink.json",
-    "themeAccent":4293846999
+    "themeAccent":-4084353
+   },
+   {
+    "themeName":"Gum",
+    "themeURL":"https://raw.githubusercontent.com/domedav/Neptun-2/main/Themes/ThemeExtentions/Gum.json",
+    "themeAccent":15686898
    }
  ] 
 }
