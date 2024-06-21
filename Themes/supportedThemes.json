@@ -9,6 +9,11 @@
     "themeName":"Gum",
     "themeURL":"https://raw.githubusercontent.com/domedav/Neptun-2/main/Themes/ThemeExtentions/Gum.json",
     "themeAccent":-7442269
+   },
+   {
+    "themeName":"Forest",
+    "themeURL":"https://raw.githubusercontent.com/domedav/Neptun-2/main/Themes/ThemeExtentions/Forest.json",
+    "themeAccent":4285567827
    }
  ] 
 }
