@@ -418,31 +418,40 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       setState(() {
 
       });
+      Future.delayed(Duration.zero, (){
+        onCalendarRefresh(false);
+        onMarkbookRefresh();
+        onPaymentsRefresh();
+        onPeriodsRefresh();
+        onMailRefresh();
+      });
     });
 
-    /*debug.log(AppPalette.toJson(AppPalette('E-Ink',
-        primary: Color.fromRGBO(0xAF, 0xA5, 0x94, 1.0),
-        onPrimary: Color.fromRGBO(0x00, 0x00, 0x00, 1.0),
-        onPrimaryContainer: Color.fromRGBO(0x78, 0x73, 0x68, 1.0),
-        secondary: Color.fromRGBO(0xCE, 0xC3, 0xA9, 1.0),
-        onSecondary: Color.fromRGBO(0x11, 0x11, 0x11, 1.0),
-        onSecondaryContainer: Color.fromRGBO(0x6F, 0x6D, 0x61, 1.0),
-        grade1: Color.fromRGBO(0xBF, 0x76, 0x76, 1.0),
-        grade2: Color.fromRGBO(0x95, 0x77, 0x77, 1.0),
-        grade3: Color.fromRGBO(0xA7, 0xA4, 0x88, 1.0),
-        grade4: Color.fromRGBO(0x80, 0x8C, 0x72, 1.0),
-        grade5: Color.fromRGBO(0x6B, 0x81, 0x6C, 1.0),
-        navbarStatusBarColor: Color.fromRGBO(0xC3, 0xC0, 0xB8, 1.0),
-        navbarNavibarColor: Color.fromRGBO(0xCB, 0xC8, 0xBF, 1.0),
-        rootBackground: Color.fromRGBO(0xf1, 0xed, 0xe6, 1.0),
-        textColor: Color.fromRGBO(0x00, 0x00, 0x00, 1.0),
-        buttonEnabled: Color.fromRGBO(0xA1, 0x9C, 0x91, 1.0),
-        buttonDisabled: Color.fromRGBO(0x7F, 0x7B, 0x72, 1.0),
-        errorRed: Color.fromRGBO(0x95, 0x6E, 0x6E, 1.0),
-        currentClassGreen: Color.fromRGBO(0x71, 0x88, 0x6B, 1.0),
-        basedOnDark: false
-    )));*/
-    //debug.log(Color(-7442269).value.toString());
+    /*
+    debug.log(AppPalette.toJson(AppPalette('Forest',
+        primary: Color.fromRGBO(0x7A, 0x84, 0x73, 1.0),
+        onPrimary: Color.fromRGBO(0xD9, 0xCD, 0xC8, 1.0),
+        onPrimaryContainer: Color.fromRGBO(0xA1, 0xA7, 0x98, 1.0),
+        secondary: Color.fromRGBO(0x4D, 0x55, 0x46, 1.0),
+        onSecondary: Color.fromRGBO(0xB2, 0xAA, 0xA6, 1.0),
+        onSecondaryContainer: Color.fromRGBO(0x6C, 0x73, 0x60, 1.0),
+        grade1: Color.fromRGBO(0xDD, 0x62, 0x62, 1.0),
+        grade2: Color.fromRGBO(0xD4, 0x9C, 0x9C, 1.0),
+        grade3: Color.fromRGBO(0xD5, 0xD0, 0x9D, 1.0),
+        grade4: Color.fromRGBO(0xA6, 0xB6, 0x95, 1.0),
+        grade5: Color.fromRGBO(0x93, 0xAE, 0x94, 1.0),
+        navbarStatusBarColor: Color.fromRGBO(0x17, 0x18, 0x17, 1.0),
+        navbarNavibarColor: Color.fromRGBO(0x1E, 0x1F, 0x1E, 1.0),
+        rootBackground: Color.fromRGBO(0x20, 0x22, 0x20, 1.0),
+        textColor: Color.fromRGBO(0xDF, 0xD4, 0xCF, 1.0),
+        buttonEnabled: Color.fromRGBO(0x30, 0x35, 0x28, 1.0),
+        buttonDisabled: Color.fromRGBO(0x20, 0x24, 0x1D, 1.0),
+        errorRed: Color.fromRGBO(0xC8, 0x8D, 0x8D, 1.0),
+        currentClassGreen: Color.fromRGBO(0x75, 0xB3, 0x6D, 1.0),
+        basedOnDark: true
+    )));
+    debug.log(Color.fromRGBO(0x70, 0x93, 0x53, 1.0).value.toString());
+    */
   }
 
   void userUnavailableAccountLogout(){

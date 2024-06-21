@@ -184,7 +184,7 @@ class AppStrings{
       popup_case6_AccountError: '🤷 Probléma van a fiókoddal 🤷',
       popup_case6_AccountErrorDescription: 'Úgy tűnik nem tudjuk lekérni az adatokat a neptunodból.\nKérlek jelentkezz ki, majd vissza.',
       popup_case6_AccountErrorLogoutButton: 'Kijelentkezés',
-      popup_case1_settingOption8_LangaugeSelection: 'App Nyelv',
+      popup_case1_settingOption8_LangaugeSelection: 'App nyelv',
       popup_case1_settingOption8_LangaugeSelectionDescription: 'Válaszd ki milyen nyelven szóljon hozzád az app.',
       popup_case7_ObsolteAppVersion: '🫵 Régi App Verzió 🫵',
       popup_case7_ObsolteAppVersionDescription: 'Ez a app verzió elavult.\nA legjobb felhasználói élmény érdekében, javasoljuk, hogy frissítsd le! 😌',
@@ -195,8 +195,9 @@ class AppStrings{
       popup_case8_ButtonAcceptLang: 'Beállít',
       popup_case1_langSwap_DownloadingLang: 'Nyelv letöltése',
       popup_case1_langSwap_DownloadingLangFail: 'Nem lehet letölteni, nincs internet',
-      popup_case1_settingOption9_ThemeSwap: 'App Téma',
-      popup_case1_settingOption9_ThemeSwapDescription: 'Válaszd ki milyen színű legyen az app'
+      popup_case1_settingOption9_ThemeSwap: 'App téma',
+      popup_case1_settingOption9_ThemeSwapDescription: 'Válaszd ki milyen színű legyen az app',
+      popup_case1_themeSwap_DownloadingThemeFail : 'Téma letöltése',
     )});
     //---
     _languages.addAll({_supportedLanguages[1]: LanguagePack(
@@ -360,7 +361,7 @@ class AppStrings{
       popup_case6_AccountError: '🤷 There is an issue with your account 🤷',
       popup_case6_AccountErrorDescription: 'It seems like we can\'t fetch data from your Neptun.\nPlease log out, and log back in.',
       popup_case6_AccountErrorLogoutButton: 'Logout',
-      popup_case1_settingOption8_LangaugeSelection: 'App Language',
+      popup_case1_settingOption8_LangaugeSelection: 'App language',
       popup_case1_settingOption8_LangaugeSelectionDescription: 'Select what language the app shall speak to you.',
       popup_case7_ObsolteAppVersion: '🫵 Old App Version 🫵',
       popup_case7_ObsolteAppVersionDescription: 'This version of the app is outdated.\nPlease consider updating the app for the best user experience! 😌',
@@ -371,8 +372,9 @@ class AppStrings{
       popup_case8_ButtonAcceptLang: 'Change',
       popup_case1_langSwap_DownloadingLang: 'Downloading language',
       popup_case1_langSwap_DownloadingLangFail: 'Can\'t download, no internet',
-      popup_case1_settingOption9_ThemeSwap: 'App Theme',
-      popup_case1_settingOption9_ThemeSwapDescription: 'Select how the app should look like'
+      popup_case1_settingOption9_ThemeSwap: 'App theme',
+      popup_case1_settingOption9_ThemeSwapDescription: 'Select how the app should look like',
+      popup_case1_themeSwap_DownloadingThemeFail: 'Downloading theme',
     )});
     _hasInit = true;
   }
@@ -706,6 +708,7 @@ class LanguagePack{
 
   final String popup_case1_langSwap_DownloadingLang;
   final String popup_case1_langSwap_DownloadingLangFail;
+  final String popup_case1_themeSwap_DownloadingThemeFail;
 
   final String popup_caseDefault_InvalidPopupState;
 
@@ -882,7 +885,8 @@ class LanguagePack{
     required this.popup_case1_langSwap_DownloadingLang,
     required this.popup_case1_langSwap_DownloadingLangFail,
     required this.popup_case1_settingOption9_ThemeSwap,
-    required this.popup_case1_settingOption9_ThemeSwapDescription
+    required this.popup_case1_settingOption9_ThemeSwapDescription,
+    required this.popup_case1_themeSwap_DownloadingThemeFail,
   });
 
   static LanguagePack fromJson(String countryId, String json, VoidCallback onLanguageOutdated){
@@ -1069,7 +1073,8 @@ class LanguagePack{
         popup_case1_langSwap_DownloadingLang:lang['popup_case1_langSwap_DownloadingLang'],
         popup_case1_langSwap_DownloadingLangFail:lang['popup_case1_langSwap_DownloadingLangFail'],
         popup_case1_settingOption9_ThemeSwap:lang['popup_case1_settingOption9_ThemeSwap'],
-        popup_case1_settingOption9_ThemeSwapDescription:lang['popup_case1_settingOption9_ThemeSwapDescription']
+        popup_case1_settingOption9_ThemeSwapDescription:lang['popup_case1_settingOption9_ThemeSwapDescription'],
+        popup_case1_themeSwap_DownloadingThemeFail:lang['popup_case1_themeSwap_DownloadingThemeFail'],
       );
     }
     catch(error){
@@ -1263,6 +1268,7 @@ class LanguagePack{
       'popup_case1_langSwap_DownloadingLangFail':lang.popup_case1_langSwap_DownloadingLangFail,
       'popup_case1_settingOption9_ThemeSwap':lang.popup_case1_settingOption9_ThemeSwap,
       'popup_case1_settingOption9_ThemeSwapDescription':lang.popup_case1_settingOption9_ThemeSwapDescription,
+      'popup_case1_themeSwap_DownloadingThemeFail':lang.popup_case1_themeSwap_DownloadingThemeFail
     });
     return json;
   }
