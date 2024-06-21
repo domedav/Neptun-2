@@ -442,6 +442,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         currentClassGreen: Color.fromRGBO(0x71, 0x88, 0x6B, 1.0),
         basedOnDark: false
     )));*/
+    //debug.log(Color(-7442269).value.toString());
   }
 
   void userUnavailableAccountLogout(){

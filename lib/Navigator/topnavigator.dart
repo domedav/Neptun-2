@@ -178,6 +178,7 @@ class TopNavigatorWidget extends StatelessWidget{
                             ),
                           ),
                         ],
+                        color: AppColors.getTheme().rootBackground,
                       ).then((selectedValue) {
                         homePage.setBlurComplex(false);
                         if(selectedValue == 'logout'){
