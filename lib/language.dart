@@ -195,6 +195,8 @@ class AppStrings{
       popup_case8_ButtonAcceptLang: 'Beállít',
       popup_case1_langSwap_DownloadingLang: 'Nyelv letöltése',
       popup_case1_langSwap_DownloadingLangFail: 'Nem lehet letölteni, nincs internet',
+      popup_case1_settingOption9_ThemeSwap: 'App Téma',
+      popup_case1_settingOption9_ThemeSwapDescription: 'Válaszd ki milyen színű legyen az app'
     )});
     //---
     _languages.addAll({_supportedLanguages[1]: LanguagePack(
@@ -369,6 +371,8 @@ class AppStrings{
       popup_case8_ButtonAcceptLang: 'Change',
       popup_case1_langSwap_DownloadingLang: 'Downloading language',
       popup_case1_langSwap_DownloadingLangFail: 'Can\'t download, no internet',
+      popup_case1_settingOption9_ThemeSwap: 'App Theme',
+      popup_case1_settingOption9_ThemeSwapDescription: 'Select how the app should look like'
     )});
     _hasInit = true;
   }
@@ -669,6 +673,8 @@ class LanguagePack{
   final String popup_case1_settingBottomText_InstallOrigin3rdParty;
   final String popup_case1_settingOption8_LangaugeSelection;
   final String popup_case1_settingOption8_LangaugeSelectionDescription;
+  final String popup_case1_settingOption9_ThemeSwap;
+  final String popup_case1_settingOption9_ThemeSwapDescription;
 
   final String popup_case2_RateAppPopup;
   final String popup_case2_RateAppPopupDescription;
@@ -875,6 +881,8 @@ class LanguagePack{
     required this.popup_case8_ButtonAcceptLang,
     required this.popup_case1_langSwap_DownloadingLang,
     required this.popup_case1_langSwap_DownloadingLangFail,
+    required this.popup_case1_settingOption9_ThemeSwap,
+    required this.popup_case1_settingOption9_ThemeSwapDescription
   });
 
   static LanguagePack fromJson(String countryId, String json, VoidCallback onLanguageOutdated){
@@ -1060,6 +1068,8 @@ class LanguagePack{
         popup_case8_ButtonAcceptLang:lang['popup_case8_ButtonAcceptLang'],
         popup_case1_langSwap_DownloadingLang:lang['popup_case1_langSwap_DownloadingLang'],
         popup_case1_langSwap_DownloadingLangFail:lang['popup_case1_langSwap_DownloadingLangFail'],
+        popup_case1_settingOption9_ThemeSwap:lang['popup_case1_settingOption9_ThemeSwap'],
+        popup_case1_settingOption9_ThemeSwapDescription:lang['popup_case1_settingOption9_ThemeSwapDescription']
       );
     }
     catch(error){
@@ -1251,6 +1261,8 @@ class LanguagePack{
       'popup_case8_ButtonAcceptLang':lang.popup_case8_ButtonAcceptLang,
       'popup_case1_langSwap_DownloadingLang':lang.popup_case1_langSwap_DownloadingLang,
       'popup_case1_langSwap_DownloadingLangFail':lang.popup_case1_langSwap_DownloadingLangFail,
+      'popup_case1_settingOption9_ThemeSwap':lang.popup_case1_settingOption9_ThemeSwap,
+      'popup_case1_settingOption9_ThemeSwapDescription':lang.popup_case1_settingOption9_ThemeSwapDescription,
     });
     return json;
   }

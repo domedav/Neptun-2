@@ -49,6 +49,7 @@ dependencies:
   http: ^1.2.0
   shared_preferences: ^2.2.3
   connectivity_plus: ^6.0.3
+  provider: ^6.1.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

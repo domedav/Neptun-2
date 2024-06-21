@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -32,6 +33,9 @@ class PopupWidgetHandler{
   int? _settingsLanguagePrevious;
   int? _settingsLanguageCurrent;
 
+  String? _settingsThemesPrevious;
+  String? _settingsThemesCurrent;
+
   final int mode;
 
   AnimationController? widgetAnimController;
@@ -58,6 +62,9 @@ class PopupWidgetHandler{
     _instance!._inUse = true;
     _instance!._settingsLanguagePrevious = DataCache.getUserSelectedLanguage()!;
     _instance!._settingsLanguageCurrent = DataCache.getUserSelectedLanguage()!;
+
+    _instance!._settingsThemesPrevious = DataCache.getPreferredAppTheme();
+    _instance!._settingsThemesCurrent = DataCache.getPreferredAppTheme();
     //_instance!.homePage.setBlurComplex(true);
     if(blur == null){
       HomePageState.showBlurPopup(true);
@@ -121,7 +128,7 @@ class PopupWidgetHandler{
         Future.delayed(Duration.zero, (){ // needed, so when the user spams the back button, the app doesnt get a brainfuck, and turns black
           Navigator.of(context).pop();
         });
-        if(_instance!._settingsLanguageCurrent != _instance!._settingsLanguagePrevious){
+        if(_instance!._settingsLanguageCurrent != _instance!._settingsLanguagePrevious /*|| _instance!._settingsThemesCurrent != _instance!._settingsThemesPrevious*/){
           Navigator.popUntil(context, (route) => route.willHandlePopInternally);
           Navigator.push(
             context,
@@ -1077,7 +1084,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
             Expanded(flex: 2, child: Container(
               margin: const EdgeInsets.all(10),
               child: Text(
-                AppStrings.getLanguagePack().popup_case1_settingOption8_LangaugeSelection,
+                AppStrings.getLanguagePack().popup_case1_settingOption9_ThemeSwap,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 14,
@@ -1093,7 +1100,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
               ),
               child: IconButton(
                 onPressed: (){
-                  _showSnackbar(AppStrings.getLanguagePack().popup_case1_settingOption8_LangaugeSelectionDescription, 4);
+                  _showSnackbar(AppStrings.getLanguagePack().popup_case1_settingOption9_ThemeSwapDescription, 4);
                   AppHaptics.attentionLightImpact();
                 },
                 icon: Icon(
@@ -1137,20 +1144,20 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
                         filled: true,
                         fillColor: AppColors.getTheme().textColor.withOpacity(.05)
                     ),
-                    items: AppColors.getThemesAll().map<DropdownMenuItem<String>>((String value) {
+                    items: AppColors.getThemesOnline().map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                           value: value,
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 2),
                             child: EmojiRichText(
-                              text: value,
+                              text: '■',
                               defaultStyle: TextStyle(
-                                color: AppColors.getTheme().textColor,
+                                color: AppColors.getThemePopupAccentByName(value),
                                 fontWeight: FontWeight.w500,
                                 fontSize: 14.0,
                               ),
                               emojiStyle: TextStyle(
-                                  color: AppColors.getTheme().textColor,
+                                  color: AppColors.getThemePopupAccentByName(value),
                                   fontSize: 18.0,
                                   fontFamily: "Noto Color Emoji"
                               ),
@@ -1159,20 +1166,20 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
                       );
                     }).toList(),
                     selectedItemBuilder: (context){
-                      return AppColors.getThemesAll().map<Widget>((String value){
+                      return AppColors.getThemesOnline().map<Widget>((String value){
                         return Container(
-                          constraints: BoxConstraints(maxWidth: _languageDropdownGlobalKey.currentContext?.findRenderObject() == null ? MediaQuery.of(context).size.width : ((_languageDropdownGlobalKey.currentContext!.findRenderObject() as RenderBox).size.width - 60) < 0 ? 0 : ((_languageDropdownGlobalKey.currentContext!.findRenderObject() as RenderBox).size.width - 60)),
+                          constraints: BoxConstraints(maxWidth: _themesDropdownGlobalKey.currentContext?.findRenderObject() == null ? MediaQuery.of(context).size.width : ((_themesDropdownGlobalKey.currentContext!.findRenderObject() as RenderBox).size.width - 60) < 0 ? 0 : ((_themesDropdownGlobalKey.currentContext!.findRenderObject() as RenderBox).size.width - 60)),
                           child: SizedBox(
                             width: MediaQuery.of(context).size.width,
                             child: EmojiRichText(
-                              text: value,
+                              text: '■',
                               defaultStyle: TextStyle(
-                                color: AppColors.getTheme().textColor,
+                                color: AppColors.getThemePopupAccentByName(value),
                                 fontWeight: FontWeight.w500,
                                 fontSize: 16.0,
                               ),
                               emojiStyle: TextStyle(
-                                  color: AppColors.getTheme().textColor,
+                                  color: AppColors.getThemePopupAccentByName(value),
                                   fontSize: 20.0,
                                   fontFamily: "Noto Color Emoji"
                               ),
@@ -1182,29 +1189,17 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
                       }).toList();
                     },
                     onChanged: (String? value) {
-                      return;
-                      // this is not the best solution, but I dont care
                       AppHaptics.lightImpact();
                       if(value == null){
                         return;
                       }
-                      final flagWeLookFor = value.split(' ')[0];
-                      final languageIdx = AppStrings.getAllLangFlags().indexOf(flagWeLookFor);
-
-                      var selectedLangCode = '';
-                      for(var item in Language.getAllLanguagesWithNative()){
-                        if(item.langFlag == flagWeLookFor){
-                          selectedLangCode = item.langId;
-                          break;
-                        }
-                      }
-                      DataCache.setUserSelectedLanguage(languageIdx <= -1 ? AppStrings.getAllLangFlags().length : languageIdx);
-                      if(!AppStrings.hasLanguageDownloaded(selectedLangCode)){
+                      DataCache.setPreferredAppTheme(value);
+                      if(!AppColors.hasThemeDownloaded(value)){
                         Future.delayed(Duration.zero, ()async{
                           if(!DataCache.getHasNetwork()){
                             if(Platform.isAndroid){
                               Fluttertoast.showToast(
-                                msg: AppStrings.getLanguagePack().popup_case1_langSwap_DownloadingLangFail, // dont have the new lang, can speak with it
+                                msg: AppStrings.getLanguagePack().popup_case1_langSwap_DownloadingLangFail,
                                 toastLength: Toast.LENGTH_SHORT,
                                 fontSize: 14,
                                 gravity: ToastGravity.SNACKBAR,
@@ -1214,9 +1209,11 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
                             }
                             return;
                           }
-                          final pack = await Language.getAllLanguages();
-                          await Language.getLanguagePackById(pack, selectedLangCode).then((value)async{
-                            AppStrings.setupPopupPreviews(value!);
+                          final pack = await Coloring.getAllThemes();
+                          await Coloring.getThemePackById(pack, value).then((value)async{
+                            if(value == null){
+                              return;
+                            }
                             if(Platform.isAndroid){
                               Fluttertoast.showToast(
                                   msg: AppStrings.popupLangPrev_ObtainingLang,
@@ -1227,19 +1224,23 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
                                   textColor: AppColors.getTheme().textColor
                               );
                             }
-                            AppStrings.saveDownloadedLanguageData();
-                            Navigator.popUntil(context, (route) => route.willHandlePopInternally);
+                            AppColors.saveDownloadedPaletteData();
+                            AppColors.setUserThemeByName(value.paletteName, context);
+                            AppColors.refreshThemeIndexing();
+                            /*Navigator.popUntil(context, (route) => route.willHandlePopInternally);
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => const Splitter()),
-                            );
+                            );*/
                           });
                           return;
                         });
                       }
                       setState(() {
-                        _languageCurrSelect = value;
-                        PopupWidgetHandler._instance!._settingsLanguageCurrent = AppStrings.getLanguageNamesWithFlag().indexOf(value);
+                        _themesCurrSelect = value;
+                        PopupWidgetHandler._instance!._settingsThemesCurrent = value;
+                        AppColors.setUserTheme(context);
+                        AppColors.refreshThemeIndexing();
                       });
                     }
                 ),

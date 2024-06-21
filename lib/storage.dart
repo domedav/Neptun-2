@@ -124,7 +124,7 @@ class DataCache{
   late List<String> _languageJsonSupportedLangs;
   late List<String> _languageJsonBatch;
 
-  late String? _themePreference = 'NONE';
+  late String? _themePreference;
   late List<String> _themesJsonBatch;
 
   static Future<void> loadData() async{return _instance._loadData();}
@@ -234,9 +234,11 @@ class DataCache{
 
     _languageJsonSupportedLangs = await getStringList('LANGUAGE_DownloadedSupportedLangs') ?? [];
     _languageJsonBatch = await getStringList('LANGUAGE_DownloadedLanguagesJsonBatch') ?? [];
+  }
 
-    _themePreference = await getString('THEME_AppTheme') ?? 'NONE';
-    _themesJsonBatch = await getStringList('THEME_ThemesJsonBatch') ?? [];
+  static Future<void> loadThemeOnly()async{
+    _instance._themePreference = await getString('THEME_AppTheme') ?? 'Dark';
+    _instance._themesJsonBatch = await getStringList('THEME_ThemesJsonBatch') ?? [];
   }
 
   static String? getUsername(){return _instance._username;}
@@ -411,8 +413,8 @@ class DataCache{
 
   static String? getPreferredAppTheme(){return _instance._themePreference;}
   static Future<void> setPreferredAppTheme(String? value)async{
-    _instance._themePreference = value ?? 'NONE';
-    await saveString('THEME_AppTheme', value ?? 'NONE');
+    _instance._themePreference = value ?? 'Dark';
+    await saveString('THEME_AppTheme', value ?? 'Dark');
   }
 
   static List<String> getAllDownloadedAppThemes(){return _instance._themesJsonBatch;}

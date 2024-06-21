@@ -1,15 +1,18 @@
 import 'dart:async';
 import 'dart:convert' as conv;
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:neptun2/API/api_coms.dart';
 import 'package:neptun2/storage.dart';
+import 'package:provider/provider.dart';
 import 'Pages/startup_page.dart';
+import 'main.dart';
 
 class AppColors{
   static bool _hasInit = false;
   static List<AppPalette> _appColors = [];
   static List<AppPalette> _downloadedAppColors = [];
-  static int _themeBatchSelectedIdx = -1;
+  static int _themeBatchSelectedIdx = 0;
 
   static List<VoidCallback> _onThemeChangeCallbacks = [];
   static void clearThemeChangeCallbacks(){_onThemeChangeCallbacks.clear();}
@@ -29,6 +32,28 @@ class AppColors{
       return;
     }
     _appColors.add(AppPalette('Light',
+        primary: Color.fromRGBO(0x6C, 0x8F, 0x96, 1.0),
+        onPrimary: Color.fromRGBO(0x00, 0x00, 0x00, 1.0),
+        onPrimaryContainer: Color.fromRGBO(0x45, 0x6C, 0x76, 1.0),
+        secondary: Color.fromRGBO(0xA7, 0xC4, 0xC8, 1.0),
+        onSecondary: Color.fromRGBO(0x1B, 0x1B, 0x1B, 1.0),
+        onSecondaryContainer: Color.fromRGBO(0x6C, 0x8F, 0x96, 1.0),
+        grade1: Color.fromRGBO(0xBD, 0x2E, 0x2E, 1.0),
+        grade2: Color.fromRGBO(0x95, 0x51, 0x51, 1.0),
+        grade3: Color.fromRGBO(0x9E, 0x97, 0x54, 1.0),
+        grade4: Color.fromRGBO(0x72, 0x88, 0x5A, 1.0),
+        grade5: Color.fromRGBO(0x56, 0x7B, 0x58, 1.0),
+        navbarStatusBarColor: Color.fromRGBO(0xF0, 0xF0, 0xF0, 1.0),
+        navbarNavibarColor: Color.fromRGBO(0xE0, 0xE0, 0xE0, 1.0),
+        rootBackground: Color.fromRGBO(0xE2, 0xE2, 0xE2, 1.0),
+        textColor: Color.fromRGBO(0x00, 0x00, 0x00, 1.0),
+        buttonEnabled: Color.fromRGBO(0xA7, 0xC4, 0xC8, 1.0),
+        buttonDisabled: Color.fromRGBO(0xD3, 0xDD, 0xDD, 1.0),
+        errorRed: Color.fromRGBO(0xFF, 0x52, 0x52, 1.0),
+        currentClassGreen: Color.fromRGBO(0x46, 0x97, 0x32, 1.0),
+        basedOnDark: false
+    ));
+    /*
       primary: Color.fromRGBO(0x6C, 0x8F, 0x96, 1.0),
       onPrimary: Color.fromRGBO(0x00, 0x00, 0x00, 1.0),
       onPrimaryContainer: Color.fromRGBO(0x45, 0x6C, 0x76, 1.0),
@@ -47,11 +72,31 @@ class AppColors{
       buttonEnabled: Color.fromRGBO(0xA7, 0xC4, 0xC8, 1.0),
       buttonDisabled: Color.fromRGBO(0xD3, 0xDD, 0xDD, 1.0),
       errorRed: Color.fromRGBO(0xFF, 0x52, 0x52, 1.0),
-      currentClassGreen: Color.fromRGBO(0x46, 0x97, 0x32, 1.0),
-      basedOnDark: false
-    ));
+      currentClassGreen: Color.fromRGBO(0x46, 0x97, 0x32, 1.0),*/
     _appColors.add(AppPalette('Dark',
-      primary: Color.fromRGBO(0x6C, 0x8F, 0x96, 1.0),
+        primary: Color.fromRGBO(0x6C, 0x8F, 0x96, 1.0),
+        onPrimary: Color.fromRGBO(0xFF, 0xFF, 0xFF, 1.0),
+        onPrimaryContainer: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
+        secondary: Color.fromRGBO(0x4F, 0x69, 0x6E, 1.0),
+        onSecondary: Color.fromRGBO(0xB6, 0xB6, 0xB6, 1.0),
+        onSecondaryContainer: Color.fromRGBO(0x6C, 0x8F, 0x96, 1.0),
+        grade1: Color.fromRGBO(0xFF, 0x52, 0x52, 1.0),
+        grade2: Color.fromRGBO(0xEF, 0x9A, 0x9A, 1.0),
+        grade3: Color.fromRGBO(0xFF, 0xF5, 0x9D, 1.0),
+        grade4: Color.fromRGBO(0xC5, 0xE1, 0xA5, 1.0),
+        grade5: Color.fromRGBO(0xA5, 0xD6, 0xA7, 1.0),
+        navbarStatusBarColor: Color.fromRGBO(0x0C, 0x0C, 0x0C, 1.0),
+        navbarNavibarColor: Color.fromRGBO(0x1A, 0x1A, 0x1A, 1.0),
+        rootBackground: Color.fromRGBO(0x22, 0x22, 0x22, 1.0),
+        textColor: Color.fromRGBO(0xFF, 0xFF, 0xFF, 1.0),
+        buttonEnabled: Color.fromRGBO(0x31, 0x42, 0x42, 1.0),
+        buttonDisabled: Color.fromRGBO(0x22, 0x2B, 0x2B, 1.0),
+        errorRed: Color.fromRGBO(0xFF, 0xB0, 0xB0, 1.0),
+        currentClassGreen: Color.fromRGBO(0x8B, 0xD4, 0x81, 1.0),
+        basedOnDark: true
+    ));
+    /*
+    primary: Color.fromRGBO(0x6C, 0x8F, 0x96, 1.0),
       onPrimary: Color.fromRGBO(0xFF, 0xFF, 0xFF, 1.0),
       onPrimaryContainer: Color.fromRGBO(0x8A, 0xB6, 0xBF, 1.0),
       secondary: Color.fromRGBO(0x4F, 0x69, 0x6E, 1.0),
@@ -70,12 +115,18 @@ class AppColors{
       buttonDisabled: Color.fromRGBO(0x22, 0x2B, 0x2B, 1.0),
       errorRed: Color.fromRGBO(0xFF, 0xB0, 0xB0, 1.0),
       currentClassGreen: Color.fromRGBO(0x8B, 0xD4, 0x81, 1.0),
-      basedOnDark: true
-    ));
-
+    */
+    final target = DataCache.getPreferredAppTheme()!;
+    for(var item in getAllThemes()){
+      if(item.paletteName == target){
+        _themeBatchSelectedIdx = getAllThemes().indexOf(item);
+        break;
+      }
+    }
     _hasInit = true;
   }
 
+  static AppPalette? _cachedPalette;
   static AppPalette getTheme(){
     if(_themeBatchSelectedIdx == -1){
       if(_isDark){
@@ -85,12 +136,10 @@ class AppColors{
         return _appColors[0];
       }
     }
-    if(_isDark){
-      return _appColors[1];
+    if(_cachedPalette == null){
+      _cachedPalette = getAllThemes()[_themeBatchSelectedIdx];
     }
-    else{
-      return _appColors[0];
-    }
+    return _cachedPalette!;
   }
 
   static void setCurrentSystemTheme(bool isDark) {
@@ -102,8 +151,32 @@ class AppColors{
     }
   }
 
+  static bool hasThemeDownloaded(String name){
+    for(var item in getAllThemes()){
+      if(item.paletteName == name){
+        return true;
+      }
+    }
+    return false;
+  }
+
+  static void setUserTheme(BuildContext context){
+    _cachedPalette = null;
+    refreshThemeIndexing();
+    Provider.of<ThemeNotifier>(context, listen: false).createNewThemeData();
+  }
+
+  static void setUserThemeByName(String name, BuildContext context){
+    _cachedPalette = null;
+    refreshThemeIndexingWithPrefered(name);
+    Provider.of<ThemeNotifier>(context, listen: false).createNewThemeData();
+  }
+
   static List<AppPalette> getAllThemes(){
-    return _appColors + _downloadedAppColors;
+    final List<AppPalette> list = [];
+    list.addAll(_appColors);
+    list.addAll(_downloadedAppColors);
+    return list;
   }
 
   static int appThemeToIdx(String name){
@@ -133,8 +206,17 @@ class AppColors{
     }
   }
 
-  static void changedSystemTheme(){
-    _isDark = !_isDark;
+  static void refreshThemeIndexingWithPrefered(String prefered){
+    final List<AppPalette> batch = getAllThemes();
+    final userPreference = prefered;
+    var idx = -1;
+    for(var item in batch){
+      if(item.paletteName == userPreference){
+        idx = batch.indexOf(item);
+        break;
+      }
+    }
+    _themeBatchSelectedIdx = idx;
     for(var item in _onThemeChangeCallbacks){
       Future.delayed(Duration.zero,(){
         item();
@@ -144,8 +226,7 @@ class AppColors{
 
   static void saveDownloadedPaletteData(){
     List<String> saveList = [];
-    final List<AppPalette> batch = _appColors + _downloadedAppColors;
-    for(var item in batch){
+    for(var item in _downloadedAppColors){
       saveList.add(AppPalette.toJson(item));
     }
     DataCache.setAllDownloadedAppThemes(saveList);
@@ -177,23 +258,42 @@ class AppColors{
     refreshThemeIndexing();
   }
 
-  static List<String> getThemesAll(){
+  static List<String> getThemesOnline(){
     final List<String> list = [];
-    final List<ThemePackMap>? langNames = Coloring.getAllThemesCache();
+    final List<ThemePackMap>? themes = Coloring.getAllThemesCache();
     final obtainedList = getAllThemes();
     for(var item in obtainedList){
       list.add(item.paletteName);
     }
-    if(langNames == null){
+    if(themes == null){
       return list;
     }
-    for(var item in langNames){
-      if(obtainedList.contains(item.themeName)){
+    for(var item in themes){
+      if(list.contains(item.themeName)){
         continue;
       }
       list.add(item.themeName);
     }
     return list;
+  }
+  
+  static Color getThemePopupAccentByName(String name){
+    if(name == _appColors[0].paletteName){
+      return Colors.white;
+    }
+    if(name == _appColors[1].paletteName){
+      return Colors.black;
+    }
+    final onlineThemes = Coloring.getAllThemesCache();
+    if(onlineThemes == null){
+      return Colors.transparent;
+    }
+    for(var item in onlineThemes){
+      if(item.themeName == name){
+        return item.themepackAccent;
+      }
+    }
+    return Colors.transparent;
   }
 }
 
@@ -269,7 +369,6 @@ class AppPalette{
       });
       return AppColors.getTheme();
     }
-    AppColors._downloadedAppColors.add(decodedColorPack);
     return decodedColorPack;
   }
 

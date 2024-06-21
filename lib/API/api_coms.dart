@@ -1312,16 +1312,41 @@ import '../storage.dart';
       _themeMapCache = themePacksRoot;
       return themePacksRoot;
     }
+
+    static Future<AppPalette?> getThemePackById(List<ThemePackMap>? themes, String neededID)async{
+      if(themes == null){
+        return null;
+      }
+      String? themeUrl;
+      for(var item in themes){
+        if(item.themeName == neededID){
+          themeUrl = item.themeUrl;
+          break;
+        }
+      }
+      if(themeUrl == null){
+        return null;
+      }
+
+      final url = Uri.parse(themeUrl);
+      final response = await http.get(url);
+      if (response.statusCode != 200) {
+        AppAnalitics.sendAnaliticsData(AppAnalitics.ERROR, 'api_coms.dart => Coloring.getThemePackById() Error: Failed to fetch $themeUrl $neededID');
+        return null;
+      }
+      return AppPalette.fromJson(response.body, (){}); // auto registers itself, as its downloaded, no need for the callback, def not invalid as it has just been downloaded
+    }
   }
 
   class ThemePackMap{
     final String themeName;
     final String themeUrl;
+    final Color themepackAccent;
 
-    const ThemePackMap({required this.themeName, required this.themeUrl});
+    const ThemePackMap({required this.themeName, required this.themeUrl, required this.themepackAccent});
 
     static ThemePackMap fromMap(Map<String, dynamic> json){
-      return ThemePackMap(themeName: json['themeName'], themeUrl: json['themeURL']);
+      return ThemePackMap(themeName: json['themeName'], themeUrl: json['themeURL'], themepackAccent: Color(json['themeAccent']));
     }
   }
   
