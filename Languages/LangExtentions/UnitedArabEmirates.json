@@ -172,5 +172,6 @@
   "popup_case1_langSwap_DownloadingLangFail":"لا يمكن التنزيل، لا يوجد اتصال بالإنترنت",
   "freshTest":"طازج",
   "popup_case1_settingOption9_ThemeSwap":"موضوع التطبيق",
-  "popup_case1_settingOption9_ThemeSwapDescription":"حدد الشكل الذي يجب أن يبدو عليه التطبيق"
+  "popup_case1_settingOption9_ThemeSwapDescription":"حدد الشكل الذي يجب أن يبدو عليه التطبيق",
+  "popup_case1_themeSwap_DownloadingThemeFail":"جارٍ تنزيل الموضوع"
 }
