@@ -172,5 +172,6 @@
   "popup_case1_langSwap_DownloadingLangFail":"No se puede descargar, no hay internet",
   "freshTest":"Fresco",
   "popup_case1_settingOption9_ThemeSwap":"Tema de la aplicación",
-  "popup_case1_settingOption9_ThemeSwapDescription":"Seleccione cómo debería verse la aplicación"
+  "popup_case1_settingOption9_ThemeSwapDescription":"Seleccione cómo debería verse la aplicación",
+  "popup_case1_themeSwap_DownloadingThemeFail":"Descargando tema"
 }
