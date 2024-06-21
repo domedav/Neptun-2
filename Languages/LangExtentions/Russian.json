@@ -172,5 +172,6 @@
   "popup_case1_langSwap_DownloadingLangFail":"Не удается загрузить, нет интернета",
   "freshTest":"Свежий",
   "popup_case1_settingOption9_ThemeSwap":"Тема приложения",
-  "popup_case1_settingOption9_ThemeSwapDescription":"Выберите, как должно выглядеть приложение"
+  "popup_case1_settingOption9_ThemeSwapDescription":"Выберите, как должно выглядеть приложение",
+  "popup_case1_themeSwap_DownloadingThemeFail":"Скачивание темы"
 }
