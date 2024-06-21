@@ -172,5 +172,6 @@
   "popup_case1_langSwap_DownloadingLangFail":"Не вдалося завантажити, немає Інтернету",
   "freshTest":"Свіжий",
   "popup_case1_settingOption9_ThemeSwap":"Тема програми",
-  "popup_case1_settingOption9_ThemeSwapDescription":"Виберіть, як має виглядати додаток"
+  "popup_case1_settingOption9_ThemeSwapDescription":"Виберіть, як має виглядати додаток",
+  "popup_case1_themeSwap_DownloadingThemeFail":"Завантаження теми"
 }
