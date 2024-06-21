@@ -159,7 +159,7 @@
   "popup_case6_AccountError":"🤷 Thar be an issue wit' yer account 🤷",
   "popup_case6_AccountErrorDescription":"It seems like we can't fetch data from yer Neptun.\nPlease log out, and log right back in.",
   "popup_case6_AccountErrorLogoutButton":"Logout",
-  "popup_case1_settingOption8_LangaugeSelection":"App Language",
+  "popup_case1_settingOption8_LangaugeSelection":"App language",
   "popup_case1_settingOption8_LangaugeSelectionDescription":"Choose what language th' app shall speak t' ye.",
   "popup_case7_ButtonUpdateNow":"Update",
   "popup_case7_ObsolteAppVersion":"🫵 Old App Version 🫵",
@@ -171,6 +171,7 @@
   "popup_case1_langSwap_DownloadingLang":"Downloadin' language",
   "popup_case1_langSwap_DownloadingLangFail":"Can't download, no internet, ye scallywag",
   "freshTest":"Fish",
-  "popup_case1_settingOption9_ThemeSwap":"App Theme",
-  "popup_case1_settingOption9_ThemeSwapDescription":"Select how the app should look like"
+  "popup_case1_settingOption9_ThemeSwap":"App theme",
+  "popup_case1_settingOption9_ThemeSwapDescription":"Select how the app should look like",
+  "popup_case1_themeSwap_DownloadingThemeFail":"Downloadin' theme",
 }
