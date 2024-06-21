@@ -1,0 +1,23 @@
+{
+  "paletteName":"Gum",
+  "primary":4288772031,
+  "onPrimary":4278190080,
+  "onPrimaryContainer":4284368246,
+  "secondary":4291078088,
+  "onSecondary":4279966491,
+  "onSecondaryContainer":4287458454,
+  "grade1":4290588206,
+  "grade2":4287975761,
+  "grade3":4288583508,
+  "grade4":4285696090,
+  "grade5":4283857752,
+  "navbarNavibarColor":4292598235,
+  "navbarStatusBarColor":4293848046,
+  "rootBackground":4292860639,
+  "textColor":4278190080,
+  "buttonEnabled":4291274696,
+  "buttonDisabled":4292662237,
+  "errorRed":4288959133,
+  "currentClassGreen":4281426792,
+  "basedOnDark":false
+}
