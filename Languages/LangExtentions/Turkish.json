@@ -172,5 +172,6 @@
   "popup_case1_langSwap_DownloadingLangFail":"İnternet bağlantısı yok, dil indirilemiyor",
   "freshTest":"Taze",
   "popup_case1_settingOption9_ThemeSwap":"Uygulama Teması",
-  "popup_case1_settingOption9_ThemeSwapDescription":"Uygulamanın nasıl görüneceğini seçin"
+  "popup_case1_settingOption9_ThemeSwapDescription":"Uygulamanın nasıl görüneceğini seçin",
+  "popup_case1_themeSwap_DownloadingThemeFail":"Tema indiriliyor"
 }
