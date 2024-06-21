@@ -1,0 +1,23 @@
+{
+  "paletteName":"Forest",
+  "primary":4286219379,
+  "onPrimary":4292464072,
+  "onPrimaryContainer":4288784280,
+  "secondary":4283258182,
+  "onSecondary":4289899174,
+  "onSecondaryContainer":4285297504,
+  "grade1":4292698722,
+  "grade2":4292123804,
+  "grade3":4292202653,
+  "grade4":4289115797,
+  "grade5":4287868564,
+  "navbarNavibarColor":4280164126,
+  "navbarStatusBarColor":4279703575,
+  "rootBackground":4280295968,
+  "textColor":4292859087,
+  "buttonEnabled":4281349416,
+  "buttonDisabled":4280296477,
+  "errorRed":4291333517,
+  "currentClassGreen":4285903725,
+  "basedOnDark":true
+}
