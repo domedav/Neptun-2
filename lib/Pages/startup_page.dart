@@ -46,7 +46,6 @@ class _SplitterState extends State<Splitter>{
       }
     }).then((value)async{
       await AppStrings.loadDownloadedLanguageData(context);
-      await AppColors.loadDownloadedPaletteData(context);
       Future.delayed(Duration.zero,()async{
         await api.Language.getAllLanguages();
       });

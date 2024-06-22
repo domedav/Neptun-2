@@ -53,7 +53,8 @@ class NeptunApp extends StatelessWidget with WidgetsBindingObserver {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
     if(!_themeSetup){
       _themeSetup = true;
-      WidgetsBinding.instance.addPostFrameCallback((_){
+      WidgetsBinding.instance.addPostFrameCallback((_)async{
+        await AppColors.loadDownloadedPaletteData(context);
         final isDark = AppColors.getTheme().basedOnDark;
         AppColors.setCurrentSystemTheme(isDark);
         final userTheme = DataCache.getPreferredAppTheme();
