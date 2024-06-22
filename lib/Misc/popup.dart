@@ -1199,7 +1199,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
                           if(!DataCache.getHasNetwork()){
                             if(Platform.isAndroid){
                               Fluttertoast.showToast(
-                                msg: AppStrings.getLanguagePack().popup_case1_langSwap_DownloadingLangFail,
+                                msg: AppStrings.getLanguagePack().popup_case1_themeSwap_DownloadingThemeFail,
                                 toastLength: Toast.LENGTH_SHORT,
                                 fontSize: 14,
                                 gravity: ToastGravity.SNACKBAR,
@@ -1216,7 +1216,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
                             }
                             if(Platform.isAndroid){
                               Fluttertoast.showToast(
-                                  msg: AppStrings.popupLangPrev_ObtainingLang,
+                                  msg: AppStrings.getLanguagePack().popup_case1_themeSwap_DownloadingThemeFail,
                                   toastLength: Toast.LENGTH_SHORT,
                                   fontSize: 14,
                                   gravity: ToastGravity.SNACKBAR,
