@@ -50,6 +50,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
   bool _confettiCanGetFreshAnim = true;
   bool _confettiCanBePlayed = false;
+  bool _confettiRefreshRetrigger = true;
 
   double _fbPosX = 0;
   double _fbPosY = 0;
@@ -2135,6 +2136,7 @@ class MarkbookPageWidget extends StatelessWidget{
 
   Future<void> onRefresh() async{
     AppHaptics.lightImpact();
+    homePage._confettiRefreshRetrigger = true;
     homePage.onMarkbookRefresh();
   }
 
@@ -2187,8 +2189,9 @@ class MarkbookPageWidget extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
-    if(homePage._confettiCanBePlayed && homePage._confettiCanGetFreshAnim){
+    if(homePage._confettiCanBePlayed && homePage._confettiCanGetFreshAnim && homePage._confettiRefreshRetrigger){
       homePage._confettiCanGetFreshAnim = false;
+      homePage._confettiRefreshRetrigger = false;
       homePage._confettiController.forward().whenComplete((){
         homePage._confettiCanGetFreshAnim = true;
         homePage._confettiList.clear();
