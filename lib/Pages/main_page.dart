@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer' as debug;
 import 'dart:io';
+import 'dart:math';
 import 'dart:ui';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +41,15 @@ class HomePage extends StatefulWidget{
 }
 
 class HomePageState extends State<HomePage> with TickerProviderStateMixin{
+
+  final List<Widget> _confettiList = [];
+  final List<ConfettiHelper> _confettiHelperList = [];
+
+  late AnimationController _confettiController;
+  late Animation<double> _confettiAnimation;
+
+  bool _confettiCanGetFreshAnim = true;
+  bool _confettiCanBePlayed = false;
 
   double _fbPosX = 0;
   double _fbPosY = 0;
@@ -231,6 +241,14 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     );
     blurAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: blurController, curve: Curves.linear),
+    );
+
+    _confettiController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 7),
+    );
+    _confettiAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _confettiController, curve: Curves.linear)
     );
 
     currentMailPageController = ScrollController();
@@ -1141,6 +1159,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         idx++;
       }
     }
+    _confettiCanBePlayed = !hasIncomplete && hasCompleted; // all finished
     _markbookCalcAvg();
   }
 
@@ -2119,8 +2138,64 @@ class MarkbookPageWidget extends StatelessWidget{
     homePage.onMarkbookRefresh();
   }
 
+  List<Widget> _getConfetti(BuildContext context){
+    if(homePage._confettiList.isNotEmpty){
+      return homePage._confettiList;
+    }
+    final confettiAmount = 55 + Random().nextInt(234243) % 30;
+    for(int i = 0; i < confettiAmount; i++){
+      final randomRed = 0xCC000000 + Random().nextInt(0x33000000);
+      final randomGreen = 0x00CC0000 + Random().nextInt(0x0033000);
+      final randomBlue = 0x0000CC00 + Random().nextInt(0x00003300);
+      final alpha = 0x000000FF;
+      final added = randomRed + randomBlue + randomGreen + alpha;
+      final confetti = ConfettiHelper(
+        confettiColor: Color(added),
+        startOffset: Offset(lerpDouble(0, MediaQuery.of(context).size.width, Random().nextDouble() % 0.9999)!, lerpDouble(-MediaQuery.of(context).size.height, -50, Random().nextDouble() % 0.9999)!),
+        startRotation: Random().nextDouble() % 360.0,
+        rotationMultiplier: -35 + Random().nextInt(35*2),
+        startSize: Size((8 + Random().nextInt(12)).toDouble(), (8 + Random().nextInt(12)).toDouble()),
+        offsetMultiplier: -100 + Random().nextInt(100*2),
+      );
+      homePage._confettiHelperList.add(confetti);
+      homePage._confettiList.add(
+        IgnorePointer(
+          child: AnimatedBuilder(
+            animation: homePage._confettiController,
+            builder: (context, _) {
+              return Transform.translate(
+                offset: Offset(confetti.startOffset.dx + confetti.offsetMultiplier * homePage._confettiAnimation.value, lerpDouble(confetti.startOffset.dy, clampDouble(MediaQuery.of(context).size.height * 2 + confetti.startOffset.dy + confetti.offsetMultiplier * 6 /*3d effect, the larger the prettier*/ * homePage._confettiAnimation.value, MediaQuery.of(context).size.height + 100, MediaQuery.of(context).size.height * 4), homePage._confettiAnimation.value)!),
+                child: Transform.rotate(
+                  angle: confetti.startRotation + confetti.rotationMultiplier * homePage._confettiAnimation.value,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: confetti.confettiColor,
+                      borderRadius: BorderRadius.all(Radius.circular(90))
+                    ),
+                    width: confetti.startSize.width,
+                    height: confetti.startSize.height,
+                  ),
+                ),
+              );
+            }
+          ),
+        )
+      );
+    }
+    return homePage._confettiList;
+  }
+
   @override
   Widget build(BuildContext context){
+    if(homePage._confettiCanBePlayed && homePage._confettiCanGetFreshAnim){
+      homePage._confettiCanGetFreshAnim = false;
+      homePage._confettiController.forward().whenComplete((){
+        homePage._confettiCanGetFreshAnim = true;
+        homePage._confettiList.clear();
+        homePage._confettiHelperList.clear();
+        homePage._confettiController.reset();
+      });
+    }
     return Scaffold(
       body: Stack(
         children: [
@@ -2227,11 +2302,25 @@ class MarkbookPageWidget extends StatelessWidget{
               bottomnav.BottomNavigatorWidget(homePage: homePage),
             ],
           ),
+          Stack(
+            children: _getConfetti(context),
+          )
         ],
       ),
       floatingActionButton: null
     );
   }
+}
+
+class ConfettiHelper{
+  final Color confettiColor;
+  final Offset startOffset;
+  final double startRotation;
+  final int rotationMultiplier;
+  final Size startSize;
+  final int offsetMultiplier;
+
+  const ConfettiHelper({required this.confettiColor, required this.startOffset, required this.startRotation, required this.rotationMultiplier, required this.startSize, required this.offsetMultiplier});
 }
 
 class PaymentsPageWidget extends StatelessWidget{

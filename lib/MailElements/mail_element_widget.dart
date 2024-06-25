@@ -87,7 +87,7 @@ class MailElementWidget extends StatelessWidget{
                           style: TextStyle(
                             color: AppColors.getTheme().onPrimaryContainer,
                             fontWeight: !isRead ? FontWeight.w800 : FontWeight.w500,
-                            fontSize: 18.0,
+                            fontSize: isRead ? 15.0 : 18.0,
                           ),
                           textAlign: TextAlign.start,
                         ),

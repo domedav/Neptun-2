@@ -1128,7 +1128,7 @@ import '../storage.dart';
 
             spans.add(ClickableTextSpan.getNewClickableSpan(
                 ClickableTextSpan.getNewOpenLinkCallback(
-                    isMailTo ? 'mailto:$newText' : newText), newText,
+                    isMailTo ? 'mailto:$newText' : newText.contains('www') && !newText.contains('http') ? 'https://$newText' : newText), newText,
                 ClickableTextSpan.getStockStyle()));
           } else {
             // Handle URLs
