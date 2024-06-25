@@ -248,7 +248,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
       vsync: this,
       duration: const Duration(seconds: 7),
     );
-    _confettiAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+    _confettiAnimation = Tween<double>(begin: -0.2, end: 1.0).animate(
       CurvedAnimation(parent: _confettiController, curve: Curves.linear)
     );
 
@@ -2155,9 +2155,10 @@ class MarkbookPageWidget extends StatelessWidget{
         confettiColor: Color(added),
         startOffset: Offset(lerpDouble(0, MediaQuery.of(context).size.width, Random().nextDouble() % 0.9999)!, lerpDouble(-MediaQuery.of(context).size.height, -50, Random().nextDouble() % 0.9999)!),
         startRotation: Random().nextDouble() % 360.0,
-        rotationMultiplier: -35 + Random().nextInt(35*2),
+        rotationMultiplier: -60 + Random().nextInt(60*2),
         startSize: Size((8 + Random().nextInt(12)).toDouble(), (8 + Random().nextInt(12)).toDouble()),
-        offsetMultiplier: -100 + Random().nextInt(100*2),
+        offsetMultiplier: -200 + Random().nextInt(200*2),
+        startRadius: BorderRadius.only(topLeft: Radius.circular(4 + 12 * Random().nextDouble() % 0.999), topRight: Radius.circular(4 + 12 * Random().nextDouble() % 0.999), bottomRight: Radius.circular(4 + 12 * Random().nextDouble() % 0.999), bottomLeft: Radius.circular(4 + 12 * Random().nextDouble() % 0.999))
       );
       homePage._confettiHelperList.add(confetti);
       homePage._confettiList.add(
@@ -2166,13 +2167,16 @@ class MarkbookPageWidget extends StatelessWidget{
             animation: homePage._confettiController,
             builder: (context, _) {
               return Transform.translate(
-                offset: Offset(confetti.startOffset.dx + confetti.offsetMultiplier * homePage._confettiAnimation.value, lerpDouble(confetti.startOffset.dy, clampDouble(MediaQuery.of(context).size.height * 2 + confetti.startOffset.dy + confetti.offsetMultiplier * 6 /*3d effect, the larger the prettier*/ * homePage._confettiAnimation.value, MediaQuery.of(context).size.height + 100, MediaQuery.of(context).size.height * 4), homePage._confettiAnimation.value)!),
+                offset: Offset(
+                    confetti.startOffset.dx + confetti.offsetMultiplier * homePage._confettiAnimation.value,
+                    lerpDouble(confetti.startOffset.dy, confetti.startOffset.dy + MediaQuery.of(context).size.height * 2 + (confetti.offsetMultiplier < 0 ? -confetti.offsetMultiplier : confetti.offsetMultiplier) * 6 /*3d effect*/ * homePage._confettiAnimation.value, homePage._confettiAnimation.value)!
+                ),
                 child: Transform.rotate(
                   angle: confetti.startRotation + confetti.rotationMultiplier * homePage._confettiAnimation.value,
                   child: Container(
                     decoration: BoxDecoration(
                       color: confetti.confettiColor,
-                      borderRadius: BorderRadius.all(Radius.circular(90))
+                      borderRadius: confetti.startRadius
                     ),
                     width: confetti.startSize.width,
                     height: confetti.startSize.height,
@@ -2322,8 +2326,9 @@ class ConfettiHelper{
   final int rotationMultiplier;
   final Size startSize;
   final int offsetMultiplier;
+  final BorderRadius startRadius;
 
-  const ConfettiHelper({required this.confettiColor, required this.startOffset, required this.startRotation, required this.rotationMultiplier, required this.startSize, required this.offsetMultiplier});
+  const ConfettiHelper({required this.startRadius, required this.confettiColor, required this.startOffset, required this.startRotation, required this.rotationMultiplier, required this.startSize, required this.offsetMultiplier});
 }
 
 class PaymentsPageWidget extends StatelessWidget{
