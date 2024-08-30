@@ -21,12 +21,24 @@ jobs:
         uses: flutter-actions/setup-flutter@v3
         with:
           channel: stable
+
+      - name: Setup Android SDK
+        uses: actions/setup-android@v4
+        with:
+          java-version: '8'
+          components: 'build-tools;30.0.3,platform-tools,platforms;android-30'
+
+      - name: Run Flutter Doctor (To check environment)
+        run: flutter doctor
+
+      - name: Accept Android Licenses
+        run: flutter doctor --android-licenses
       
       - name: Install dependencies
         run: flutter pub get
 
       - name: Build for Android
-        run: flutter build apk
+        run: flutter build apk --release
 
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
