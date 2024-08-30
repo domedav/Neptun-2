@@ -23,8 +23,11 @@ Töltsd le másmilyen áruházból!
 - https://apkpure.com/p/com.domedav.neptun2 • Apkpure
 - https://neptun-2.en.uptodown.com/android • Uptodown
 - https://neptun-2.bd.aptoide.com/app • Apptoide
+- 
+# 1.7.3
+Kisebb javítások
 
-# 1.7.2
+## 1.7.2
 Konfetti a jegyeknél, ha teljesített a félév
 
 ## 1.7.1

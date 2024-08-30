@@ -1,5 +1,5 @@
 {
-  "latestMinimumAllowedVerBuildNum": 37,
-  "disableAppMinimumVersion": 35,
+  "latestMinimumAllowedVerBuildNum": 39,
+  "disableAppMinimumVersion": 38,
   "updatePageJumper": "https://github.com/domedav/Neptun-2/releases/tag/1.7"
 }

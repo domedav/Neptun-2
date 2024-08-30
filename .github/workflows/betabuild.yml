@@ -1,0 +1,47 @@
+name: Beta Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build_android:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Install build dependencies
+        run: sudo apt-get update && sudo apt-get install -y cmake ninja-build clang libgtk-3-dev pkg-config
+      
+      - name: Setup Flutter SDK
+        uses: flutter-actions/setup-flutter@v3
+        with:
+          channel: stable
+
+      - name: Run Flutter Doctor (To check environment)
+        run: flutter doctor
+
+      - name: Accept Android Licenses
+        run: yes | flutter doctor --android-licenses
+      
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build for Android
+        run: flutter build apk --release --no-shrink
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: beta-build
+          path: build/app/flutter-apk/
