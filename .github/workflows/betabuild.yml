@@ -26,7 +26,7 @@ jobs:
         run: flutter pub get
 
       - name: Build for Android
-        run: flutter build android --release
+        run: flutter build apk
 
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
