@@ -132,6 +132,20 @@ class PeriodsElementWidget extends StatelessWidget{
               fontFamily: "Noto Color Emoji"
           ),
         );
+      case PeriodType.signinTime:
+        return EmojiRichText(
+          text: '🖋️',
+          defaultStyle: TextStyle(
+            color: AppColors.getTheme().onPrimaryContainer,
+            fontWeight: FontWeight.w900,
+            fontSize: 20.0,
+          ),
+          emojiStyle: TextStyle(
+              color: AppColors.getTheme().onPrimaryContainer,
+              fontSize: 20.0,
+              fontFamily: "Noto Color Emoji"
+          ),
+        );
       default:
         return EmojiRichText(
           text: '❓',

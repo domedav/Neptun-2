@@ -1342,7 +1342,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
         expiredPeriods.add(item);
         continue; // expired
       }
-      if(prevSemester == -1){
+      if(prevSemester == -1 && countActivePeriods != 0){
         prevSemester = item.partofSemester;
         periodList.add(
             const Padding(padding: EdgeInsets.only(top: 10))

@@ -804,6 +804,7 @@ import '../storage.dart';
     coursesRegistration,
     nerdTime,
     examTime,
+    signinTime,
     none
   }
   
@@ -882,6 +883,9 @@ import '../storage.dart';
           break;
         case 'vizsgajelentkezési időszak':
           type = PeriodType.examTime;
+          break;
+        case 'beiratkozási időszak':
+          type = PeriodType.signinTime;
           break;
         default:
           type = PeriodType.none;
