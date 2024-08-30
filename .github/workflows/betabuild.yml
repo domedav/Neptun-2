@@ -22,12 +22,6 @@ jobs:
         with:
           channel: stable
 
-      - name: Setup Android SDK
-        uses: actions/setup-android@v4
-        with:
-          java-version: '8'
-          components: 'build-tools;30.0.3,platform-tools,platforms;android-30'
-
       - name: Run Flutter Doctor (To check environment)
         run: flutter doctor
 
