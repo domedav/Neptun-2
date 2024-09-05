@@ -44,4 +44,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: beta-build
-          path: build/app/flutter-apk/
+          path: build/app/outputs/flutter-apk/
