@@ -2,13 +2,15 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
-
+import 'dart:developer' as debug;
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:neptun2/colors.dart';
 import 'package:neptun2/haptics.dart';
+import 'package:neptun2/local_file_actions.dart';
 import 'package:neptun2/language.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../API/api_coms.dart' as api;
@@ -261,6 +263,98 @@ class _SetupPageLoginTypeSelectionState extends State<SetupPageLoginTypeSelectio
                           ),
                         )
                       ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Expanded(
+                          child: Container(
+                            color: AppColors.getTheme().textColor.withOpacity(.6),
+                            height: 1,
+                            margin: EdgeInsets.only(right: 15, left: 85)
+                          ),
+                        ),
+                        Text(
+                          AppStrings.getLanguagePack().rootpage_setupPage_OtherUsageModes,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: AppColors.getTheme().textColor.withOpacity(.6),
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(
+                            color: AppColors.getTheme().textColor.withOpacity(.6),
+                            height: 1,
+                            margin: EdgeInsets.only(right: 85, left: 15),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    GestureDetector(
+                      onTap: (){
+                        AppHaptics.lightImpact();
+                        if(!_analiticsDebounce){
+                          _analiticsDebounce = true;
+                          AppAnalitics.sendAnaliticsData(AppAnalitics.INFO, 'setup_page.dart => _SetupPageLoginTypeSelectionState.build() Info: Calendar ICS Login');
+                        }
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const SetupPageCalendarLogin()));
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(20),
+                        margin: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            color: AppColors.getTheme().rootBackground,
+                            borderRadius: const BorderRadius.all(Radius.circular(30)),
+                            border: Border.all(
+                                color: AppColors.getTheme().textColor.withOpacity(.3),
+                                width: 1
+                            )
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Icon(
+                                  Icons.calendar_month_rounded,
+                                  color: AppColors.getTheme().textColor,
+                                  size: 40,
+                                ),
+                                Flexible(
+                                  child: Text(
+                                    AppStrings.getLanguagePack().rootpage_setupPage_IcsImport,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: AppColors.getTheme().textColor,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            Text(
+                              AppStrings.getLanguagePack().rootpage_setupPage_IcsImportDescription,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: AppColors.getTheme().textColor.withOpacity(.6),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 50),
                     Container(
@@ -1712,6 +1806,359 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                       )
                   ),
                 ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SetupPageCalendarLogin extends StatefulWidget{
+  const SetupPageCalendarLogin({super.key});
+  @override
+  State<StatefulWidget> createState() => _SetupPageURLCalendarState();
+}
+class _SetupPageURLCalendarState extends State<SetupPageCalendarLogin>{
+
+  bool _canProceed = false;
+
+  void proceedToLogin(){
+    if(!_canProceed){
+      return;
+    }
+
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const main_page.HomePage()));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarIconBrightness: AppColors.isDarktheme() ? Brightness.light : Brightness.dark,
+      systemNavigationBarColor: AppColors.getTheme().rootBackground, // navigation bar color
+      statusBarColor: AppColors.getTheme().rootBackground, // status bar color
+    ));
+
+    AppColors.subThemeChangeCallback((){
+      if(!mounted){
+        return;
+      }
+      setState(() {
+
+      });
+    });
+
+    FlutterNativeSplash.remove();
+  }
+
+  String _snackbarMessage = "";
+  Duration _displayDuration = Duration.zero;
+  bool _shouldShowSnackbar = false;
+
+  void _showSnackbar(String text, int displayDurationSec){
+    if(!mounted){
+      return;
+    }
+    setState(() {
+      _shouldShowSnackbar = true;
+      _displayDuration = Duration(seconds: displayDurationSec);
+      _snackbarMessage = text;
+    });
+  }
+
+  double _horizontalDrag = 0;
+  bool _dragDebounce = false;
+  Timer? _warnTimer;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: GestureDetector(
+        onHorizontalDragStart: (_){
+          _horizontalDrag = 0;
+          _dragDebounce = false;
+        },
+        onHorizontalDragEnd: (_){
+          _horizontalDrag = 0;
+          _dragDebounce = false;
+        },
+        onHorizontalDragUpdate: (e){
+          _horizontalDrag += e.delta.dx;
+          if(_horizontalDrag <= -25 && !_dragDebounce){
+            _horizontalDrag = 0;
+            _dragDebounce = true;
+
+            if(!_canProceed){
+              _showSnackbar(AppStrings.getLanguagePack().calendarLogin_setupPage_InvalidFile, 5);
+              AppHaptics.attentionLightImpact();
+              return;
+            }
+
+            AppHaptics.lightImpact();
+            proceedToLogin();
+          }
+          else if(_horizontalDrag >= 25 && !_dragDebounce){
+            _horizontalDrag = 0;
+            _dragDebounce = true;
+
+            AppHaptics.lightImpact();
+            Navigator.pop(context);
+          }
+        },
+        child: Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            Center(
+              child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const SizedBox(height: 40),
+                        Text(
+                          AppStrings.getLanguagePack().calendarLogin_setupPage_LoginViaICSHeader,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.w800,
+                              color: AppColors.getTheme().textColor
+                          ),
+                        ),
+                        const SizedBox(height: 60),
+                        /*Container(
+                          padding: const EdgeInsets.all(8),
+                          child: TextField(
+                            keyboardType: TextInputType.url,
+                            decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.all(18),
+                                suffixIcon: Icon(Icons.link_rounded),
+                                labelText: AppStrings.getLanguagePack().urlLogin_setupPage_InstituteNeptunUrl,
+                                labelStyle: TextStyle(
+                                    fontSize: 14,
+                                    color: AppColors.getTheme().textColor.withOpacity(.6),
+                                    fontWeight: FontWeight.w400
+                                ),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                                    borderSide: BorderSide.none
+                                ),
+                                filled: true,
+                                fillColor: AppColors.getTheme().textColor.withOpacity(.05)
+                            ),
+                            style: TextStyle(
+                                fontSize: 16,
+                                color: AppColors.getTheme().textColor,
+                                fontWeight: FontWeight.w600
+                            ),
+                            autofocus: true,
+                            enableSuggestions: false,
+                            autocorrect: false,
+                            onChanged: (value) {
+                              AppHaptics.textEditingImpact();
+                              setState(() {
+                                _canProceed = false;
+                              });
+                              if(_warnTimer != null){
+                                _warnTimer!.cancel();
+                              }
+                              _warnTimer = Timer(const Duration(seconds: 2),(){
+                                _showSnackbar(AppStrings.getLanguagePack().urlLogin_setupPage_InstituteNeptunUrlInvalid, 18);
+                                AppHaptics.attentionLightImpact();
+                              });
+                            },
+                          ),
+                        ),*/
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                AppStrings.getLanguagePack().calendarLogin_setupPage_ImportICSFileHelpText,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: AppColors.getTheme().textColor.withOpacity(.6),
+                                    fontWeight: FontWeight.w600
+                                ),
+                              ),
+                              SizedBox(height: 12),
+                              FilledButton(
+                                onPressed: () {
+                                  IcsImportHelper.onCalendarUploadAction(); //toast ha szar ics
+                                },
+                                child: Container(
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.upload_file_rounded,
+                                        color: AppColors.getTheme().textColor,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        AppStrings.getLanguagePack().calendarLogin_setupPage_ImportICSFileButton
+                                      )
+                                    ]
+                                  ),
+                                ),
+                                style: ButtonStyle(
+                                  foregroundColor: WidgetStateProperty.all(AppColors.getTheme().textColor),
+                                  backgroundColor: WidgetStateProperty.all(AppColors.getTheme().textColor.withOpacity(.05)),
+                                  surfaceTintColor: WidgetStateProperty.all(Colors.transparent),
+                                  shadowColor: WidgetStateProperty.all(Colors.transparent),
+                                  overlayColor: WidgetStateProperty.all(AppColors.getTheme().textColor.withOpacity(.05)),
+                                  padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20)),
+                                  side: WidgetStateProperty.all(BorderSide(
+                                    color: AppColors.getTheme().primary,
+                                    width: 1
+                                  ))
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 50),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              ElevatedButton(
+                                  onPressed: (){
+                                    AppHaptics.lightImpact();
+                                    Navigator.pop(context);
+                                  },
+                                  style: ButtonStyle(
+                                      backgroundColor: WidgetStateProperty.all(AppColors.getTheme().buttonEnabled),
+                                      padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.arrow_back_ios_rounded,
+                                        color: AppColors.getTheme().textColor.withOpacity(.6),
+                                      ),
+                                      Text(
+                                        AppStrings.getLanguagePack().any_setupPage_GoBack,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 12,
+                                            color: AppColors.getTheme().textColor
+                                        ),
+                                      )
+                                    ],
+                                  )
+                              ),
+                              SizedBox(width: MediaQuery.of(context).size.width / 10),
+                              ElevatedButton(
+                                  onPressed: _canProceed ? (){
+                                    AppHaptics.lightImpact();
+                                    proceedToLogin();
+                                  } : (){
+                                    _showSnackbar(AppStrings.getLanguagePack().urlLogin_setupPage_InvalidUrl, 5);
+                                    AppHaptics.attentionLightImpact();
+                                  },
+                                  style: ButtonStyle(
+                                      backgroundColor: _canProceed ? WidgetStateProperty.all(AppColors.getTheme().buttonEnabled) : WidgetStateProperty.all(AppColors.getTheme().buttonDisabled),
+                                      padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 35, vertical: 20))
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        AppStrings.getLanguagePack().any_setupPage_ProceedLogin,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 12,
+                                            color: AppColors.getTheme().textColor
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.arrow_forward_ios_rounded,
+                                        color: AppColors.getTheme().textColor.withOpacity(.6),
+                                      ),
+                                    ],
+                                  )
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 60),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Flexible(
+                              child: Container(
+                                margin: const EdgeInsets.all(15),
+                                child: Text(
+                                  AppStrings.getLanguagePack().calendarLogin_setupPage_WhereIsICSHelper,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.getTheme().textColor.withOpacity(.6)
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.all(15),
+                              decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(Radius.circular(90)),
+                                  color: AppColors.getTheme().textColor.withOpacity(.06)
+                              ),
+                              child: IconButton(
+                                onPressed: (){
+                                  _showSnackbar(AppStrings.getLanguagePack().calendarLogin_setupPage_WhereIsICSHelperDescription, 18);
+                                  AppHaptics.attentionLightImpact();
+                                },
+                                icon: Icon(
+                                  Icons.question_mark_rounded,
+                                  color: AppColors.getTheme().textColor.withOpacity(.4),
+                                ),
+                                enableFeedback: true,
+                                iconSize: 24,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  )
+              ),
+            ),
+            Visibility(
+              visible: _shouldShowSnackbar,
+              child: AppSnackbar(text: _snackbarMessage, displayDuration: _displayDuration, /*dragAmmount: _snackbarDelta,*/ changer: (){
+                if(!mounted){
+                  return;
+                }
+                AppSnackbar.cancelTimer();
+                setState(() {
+                  _shouldShowSnackbar = false;
+                });
+              }, state: _shouldShowSnackbar,
               ),
             ),
           ],

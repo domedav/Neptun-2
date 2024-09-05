@@ -198,6 +198,15 @@ class AppStrings{
       popup_case1_settingOption9_ThemeSwap: 'App téma',
       popup_case1_settingOption9_ThemeSwapDescription: 'Válaszd ki milyen színű legyen az app',
       popup_case1_themeSwap_DownloadingThemeFail : 'Téma letöltése',
+      rootpage_setupPage_IcsImport: 'Naptár használat',
+      rootpage_setupPage_IcsImportDescription: 'Betudod importálni a neptunos órarendedet, viszont ha az órarendedben változás történik, arról te nem fogsz értesülni.\nCsak annak ajánlott, aki semmilyen módon nem tud bejelentkezni!',
+      rootpage_setupPage_OtherUsageModes: 'Offline módok',
+      calendarLogin_setupPage_InvalidFile: '😵 Hibás ICS fájl!',
+      calendarLogin_setupPage_LoginViaICSHeader: 'Naptár használat',
+      calendarLogin_setupPage_WhereIsICSHelper: 'Nem tudod merre találod a neptunos órarended (.ics fájl)?',
+      calendarLogin_setupPage_WhereIsICSHelperDescription: 'Lépj a "Saját adatok" > "Beállítások" > "Naptár export"\nHa pontos heti megjelenítést akarsz akkor, szeptember 1.-jétől (xxxx.09.01), a következő év szeptember 1.-éig (xxxx.09.01) exportáld ki a naptárad!',
+      calendarLogin_setupPage_ImportICSFileHelpText: 'Kattits a gombra, majd válaszd ki a frissen letöltött órarend fájlodat!',
+      calendarLogin_setupPage_ImportICSFileButton: 'Feltöltés'
     )});
     //---
     _languages.addAll({_supportedLanguages[1]: LanguagePack(
@@ -375,6 +384,15 @@ class AppStrings{
       popup_case1_settingOption9_ThemeSwap: 'App theme',
       popup_case1_settingOption9_ThemeSwapDescription: 'Select how the app should look like',
       popup_case1_themeSwap_DownloadingThemeFail: 'Downloading theme',
+      rootpage_setupPage_IcsImport: 'Calendar Use',
+      rootpage_setupPage_IcsImportDescription: 'You can load your timetable, if it was a calendar, but if the university makes a change with it, you will not have the latest one.\nYou should only use this, if you can not login into the app!',
+      rootpage_setupPage_OtherUsageModes: 'Offline modes',
+      calendarLogin_setupPage_InvalidFile: '😵 Bad ICS file!',
+      calendarLogin_setupPage_LoginViaICSHeader: 'Calendar use',
+      calendarLogin_setupPage_WhereIsICSHelper: 'Dont know where you can find your neptun timetable (.ics file)?',
+      calendarLogin_setupPage_WhereIsICSHelperDescription: 'Go to "My data" > "Settings" > "Calendar export"\nIf you want accurate data, select exporting from september 1. (xxxx.09.01), to the next years september 1. (xxxx.09.01)!',
+      calendarLogin_setupPage_ImportICSFileHelpText: 'Click on the button, then select your freshly downloaded timetable file!',
+      calendarLogin_setupPage_ImportICSFileButton: 'Import'
     )});
     _hasInit = true;
   }
@@ -511,6 +529,10 @@ class LanguagePack{
   final String rootpage_setupPage_UrlLoginDescription;
   final String rootpage_setupPage_AppProblemReporting;
 
+  final String rootpage_setupPage_OtherUsageModes;
+  final String rootpage_setupPage_IcsImport;
+  final String rootpage_setupPage_IcsImportDescription;
+
   final String instituteSelection_setupPage_LoadingText;
   final String instituteSelection_setupPage_NoNetwork;
   final String instituteSelection_setupPage_SelectValidInstitute;
@@ -529,6 +551,13 @@ class LanguagePack{
   final String urlLogin_setupPage_InstituteNeptunUrlInvalid;
   final String urlLogin_setupPage_WhereIsURLHelper;
   final String urlLogin_setupPage_WhereIsURLHelperDescription;
+
+  final String calendarLogin_setupPage_InvalidFile;
+  final String calendarLogin_setupPage_LoginViaICSHeader;
+  final String calendarLogin_setupPage_WhereIsICSHelper;
+  final String calendarLogin_setupPage_WhereIsICSHelperDescription;
+  final String calendarLogin_setupPage_ImportICSFileHelpText;
+  final String calendarLogin_setupPage_ImportICSFileButton;
 
   final String loginPage_setupPage_InvalidCredentials;
   final String loginPage_setupPage_LoginHeaderText;
@@ -887,6 +916,16 @@ class LanguagePack{
     required this.popup_case1_settingOption9_ThemeSwap,
     required this.popup_case1_settingOption9_ThemeSwapDescription,
     required this.popup_case1_themeSwap_DownloadingThemeFail,
+
+    required this.rootpage_setupPage_IcsImport,
+    required this.rootpage_setupPage_IcsImportDescription,
+    required this.rootpage_setupPage_OtherUsageModes,
+    required this.calendarLogin_setupPage_InvalidFile,
+    required this.calendarLogin_setupPage_LoginViaICSHeader,
+    required this.calendarLogin_setupPage_WhereIsICSHelper,
+    required this.calendarLogin_setupPage_WhereIsICSHelperDescription,
+    required this.calendarLogin_setupPage_ImportICSFileHelpText,
+    required this.calendarLogin_setupPage_ImportICSFileButton
   });
 
   static LanguagePack fromJson(String countryId, String json, VoidCallback onLanguageOutdated){
@@ -1075,6 +1114,15 @@ class LanguagePack{
         popup_case1_settingOption9_ThemeSwap:lang['popup_case1_settingOption9_ThemeSwap'],
         popup_case1_settingOption9_ThemeSwapDescription:lang['popup_case1_settingOption9_ThemeSwapDescription'],
         popup_case1_themeSwap_DownloadingThemeFail:lang['popup_case1_themeSwap_DownloadingThemeFail'],
+        rootpage_setupPage_IcsImport:lang['rootpage_setupPage_IcsImport'],
+        rootpage_setupPage_IcsImportDescription:lang['rootpage_setupPage_IcsImportDescription'],
+        rootpage_setupPage_OtherUsageModes:lang['rootpage_setupPage_OtherUsageModes'],
+        calendarLogin_setupPage_InvalidFile:lang['calendarLogin_setupPage_InvalidFile'],
+        calendarLogin_setupPage_LoginViaICSHeader:lang['calendarLogin_setupPage_LoginViaICSHeader'],
+        calendarLogin_setupPage_WhereIsICSHelper:lang['calendarLogin_setupPage_WhereIsICSHelper'],
+        calendarLogin_setupPage_WhereIsICSHelperDescription:lang['calendarLogin_setupPage_WhereIsICSHelperDescription'],
+        calendarLogin_setupPage_ImportICSFileHelpText:lang['calendarLogin_setupPage_ImportICSFileHelpText'],
+        calendarLogin_setupPage_ImportICSFileButton:lang['calendarLogin_setupPage_ImportICSFileButton']
       );
     }
     catch(error){
@@ -1268,7 +1316,16 @@ class LanguagePack{
       'popup_case1_langSwap_DownloadingLangFail':lang.popup_case1_langSwap_DownloadingLangFail,
       'popup_case1_settingOption9_ThemeSwap':lang.popup_case1_settingOption9_ThemeSwap,
       'popup_case1_settingOption9_ThemeSwapDescription':lang.popup_case1_settingOption9_ThemeSwapDescription,
-      'popup_case1_themeSwap_DownloadingThemeFail':lang.popup_case1_themeSwap_DownloadingThemeFail
+      'popup_case1_themeSwap_DownloadingThemeFail':lang.popup_case1_themeSwap_DownloadingThemeFail,
+      'rootpage_setupPage_IcsImport':lang.rootpage_setupPage_IcsImport,
+      'rootpage_setupPage_IcsImportDescription':lang.rootpage_setupPage_IcsImportDescription,
+      'rootpage_setupPage_OtherUsageModes':lang.rootpage_setupPage_OtherUsageModes,
+      'calendarLogin_setupPage_InvalidFile':lang.calendarLogin_setupPage_InvalidFile,
+      'calendarLogin_setupPage_LoginViaICSHeader':lang.calendarLogin_setupPage_LoginViaICSHeader,
+      'calendarLogin_setupPage_WhereIsICSHelper':lang.calendarLogin_setupPage_WhereIsICSHelper,
+      'calendarLogin_setupPage_WhereIsICSHelperDescription':lang.calendarLogin_setupPage_WhereIsICSHelperDescription,
+      'calendarLogin_setupPage_ImportICSFileHelpText':lang.calendarLogin_setupPage_ImportICSFileHelpText,
+      'calendarLogin_setupPage_ImportICSFileButton':lang.calendarLogin_setupPage_ImportICSFileButton
     });
     return json;
   }
