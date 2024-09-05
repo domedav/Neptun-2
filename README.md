@@ -23,7 +23,12 @@ Töltsd le másmilyen áruházból!
 - https://apkpure.com/p/com.domedav.neptun2 • Apkpure
 - https://neptun-2.en.uptodown.com/android • Uptodown
 - https://neptun-2.bd.aptoide.com/app • Apptoide
-- 
+
+Ha a tesztelés alatt lévő funkciókat is szeretnéd kipróbálni mielőtt azok megjelennek, számodra lett kitalálva a béta!
+
+Legfrissebb Béta: [![Beta Build](https://github.com/domedav/Neptun-2/actions/workflows/betabuild.yml/badge.svg)](https://github.com/domedav/Neptun-2/actions/workflows/betabuild.yml)
+
+
 # 1.7.3
 Kisebb javítások
 
