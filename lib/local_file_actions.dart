@@ -44,10 +44,10 @@ class IcsImportHelper{
     try{
       Future.delayed(Duration.zero, ()async{
         final path = await LocalFileActions.openFilePicker('');
-        if(path != null && path.isEmpty){
+        if(path == null || path.isEmpty){
           return false;
         }
-        final clonePath = await LocalFileActions.cloneFileToTemp(path!, IcsImportHelper.ICSFILENAME);
+        final clonePath = await LocalFileActions.cloneFileToTemp(path, IcsImportHelper.ICSFILENAME);
 
         return true;
       });

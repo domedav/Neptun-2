@@ -26,6 +26,10 @@ class _SplitterState extends State<Splitter>{
 
     DataCache.loadData().then((value) async {
       AppHaptics.initialise();
+      if(((await getInt('NextFirstWeekCacheTime')) ?? 0) < DateTime.now().millisecondsSinceEpoch){
+        DataCache.setHasCachedFirstWeekEpoch(0);
+        saveInt('NextFirstWeekCacheTime', DateTime.now().add(Duration(days: 1)).millisecondsSinceEpoch);
+      }
       final flag = DataCache.getHasCachedFirstWeekEpoch();
 
       if(flag != null && !flag && DataCache.getHasNetwork() && DataCache.getHasLogin()!){

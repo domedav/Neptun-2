@@ -298,6 +298,10 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
     AppNotifications.initialize();
     Future.delayed(Duration.zero, ()async{
+      if(((await storage.getInt('NextFirstWeekCacheTime')) ?? 0) < DateTime.now().millisecondsSinceEpoch){
+        storage.DataCache.setHasCachedFirstWeekEpoch(0);
+        storage.saveInt('NextFirstWeekCacheTime', DateTime.now().add(Duration(days: 1)).millisecondsSinceEpoch);
+      }
       if(storage.DataCache.getHasCachedFirstWeekEpoch()!){
         return;
       }

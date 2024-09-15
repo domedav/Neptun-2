@@ -1535,6 +1535,7 @@ class _SetupPageLoginState extends State<SetupPageLogin>{
                               enableSuggestions: false,
                               autocorrect: false,
                               controller: _usernameController,
+                              textInputAction: TextInputAction.next,
                               style: TextStyle(
                                 color: _paintRed ? AppColors.getTheme().errorRed : AppColors.getTheme().textColor,
                                 fontWeight: FontWeight.w600,

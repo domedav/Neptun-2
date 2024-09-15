@@ -100,7 +100,7 @@ class TimetableElementWidget extends StatelessWidget{
                   "$position.",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: AppColors.getTheme().onPrimaryContainer,
+                    color: isCurrent ? AppColors.getTheme().currentClassGreen : AppColors.getTheme().onPrimaryContainer,
                     fontWeight: FontWeight.w900,
                     fontSize: 26.0,
                   ),
@@ -121,13 +121,21 @@ class TimetableElementWidget extends StatelessWidget{
                   children: [
                     Text(
                       title,
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                    Text(
-                      location,
                       style: TextStyle(
-                        color: AppColors.getTheme().textColor.withOpacity(0.7),
-                        fontSize: 14.0,
+                        color: AppColors.getTheme().textColor,
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.w600
+                      )
+                    ),
+                    Visibility(
+                      visible: location.trim().isNotEmpty,
+                      child: Text(
+                        location,
+                        style: TextStyle(
+                          color: isExam ? AppColors.getTheme().errorRed.withOpacity(.7) : AppColors.getTheme().textColor.withOpacity(0.7),
+                          fontSize: 11.0,
+                          fontWeight: FontWeight.w500
+                        ),
                       ),
                     ),
                   ],
@@ -137,7 +145,29 @@ class TimetableElementWidget extends StatelessWidget{
               // Rightmost position
               Expanded(
                 flex: 1,
-                child: Column(
+                child: isCurrent ? Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.timelapse_rounded,
+                      color: AppColors.getTheme().currentClassGreen,
+                      size: 24,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      '${(Duration(milliseconds: entry.endEpoch - DateTime.now().millisecondsSinceEpoch)).inHours.remainder(60).toString().padLeft(2, '0')}:${((Duration(milliseconds: entry.endEpoch - DateTime.now().millisecondsSinceEpoch)).inMinutes.remainder(60)).toString().padLeft(2, '0')}',
+                      //Duration(milliseconds: entry.endEpoch - DateTime.now().millisecondsSinceEpoch).inMinutes.toString().padLeft(2, '0'),
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        color: AppColors.getTheme().currentClassGreen,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14.0,
+                      ),
+                    ),
+                  ],
+                ) : Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -146,7 +176,7 @@ class TimetableElementWidget extends StatelessWidget{
                       displayStartTime,
                       textAlign: TextAlign.right,
                       style: TextStyle(
-                        color: AppColors.getTheme().textColor.withOpacity(0.7),
+                        color: isExam ? AppColors.getTheme().errorRed : AppColors.getTheme().onPrimaryContainer,
                         fontWeight: FontWeight.w600,
                         fontSize: !isExam ? 14.0 : 16.0,
                       ),
@@ -156,8 +186,8 @@ class TimetableElementWidget extends StatelessWidget{
                       displayEndTime,
                       textAlign: TextAlign.right,
                       style: TextStyle(
-                        color: AppColors.getTheme().textColor.withOpacity(0.4),
-                        fontWeight: FontWeight.w300,
+                        color: AppColors.getTheme().onPrimary.withOpacity(.7),
+                        fontWeight: FontWeight.w500,
                         fontSize: 12.0,
                       ),
                     ) : const SizedBox(),

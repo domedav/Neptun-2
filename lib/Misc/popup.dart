@@ -918,7 +918,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
                               defaultStyle: TextStyle(
                                 color: AppColors.getTheme().textColor,
                                 fontWeight: FontWeight.w500,
-                                fontSize: 16.0,
+                                fontSize: 0.0,
                               ),
                               emojiStyle: TextStyle(
                                   color: AppColors.getTheme().textColor,
@@ -1718,7 +1718,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Flexible(
+            /*Flexible(
               child: Text(
                 AppStrings.getLanguagePack().popup_case4_TeachedBy,
                 textAlign: TextAlign.center,
@@ -1728,6 +1728,13 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
                     fontSize: 14.5
                 ),
               ),
+            ),*/
+            Flexible(
+              child: Icon(
+                Icons.person_rounded,
+                color: AppColors.getTheme().onPrimaryContainer,
+                size: 24,
+              )
             ),
             const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
             Flexible(
@@ -1750,7 +1757,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Flexible(
+            /*Flexible(
               child: Text(
                 AppStrings.getLanguagePack().popup_case4_5_SubjectCode,
                 textAlign: TextAlign.center,
@@ -1760,6 +1767,13 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
                     fontSize: 14.5
                 ),
               ),
+            ),*/
+            Flexible(
+                child: Icon(
+                  Icons.tag_rounded,
+                  color: AppColors.getTheme().onPrimaryContainer,
+                  size: 24,
+                )
             ),
             const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
             Flexible(
@@ -1776,13 +1790,14 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
             )
           ],
         ));
-        list.add(const SizedBox(height: 4));
-        list.add(Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Flexible(
+        if(entry.location.trim().isNotEmpty){
+          list.add(const SizedBox(height: 4));
+          list.add(Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              /*Flexible(
               child: Text(
                 AppStrings.getLanguagePack().popup_case4_5_SubjectLocation,
                 textAlign: TextAlign.center,
@@ -1792,22 +1807,30 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
                     fontSize: 14.5
                 ),
               ),
-            ),
-            const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
-            Flexible(
-              child: SelectableText.rich(
-                TextSpan(
-                  text: entry.location,
-                  style: TextStyle(
-                      color: AppColors.getTheme().textColor,
-                      fontWeight: FontWeight.w400,
-                      fontSize: 14
-                  ),
-                ),
+            ),*/
+              Flexible(
+                  child: Icon(
+                    Icons.location_on_rounded,
+                    color: AppColors.getTheme().onPrimaryContainer,
+                    size: 24,
+                  )
+              ),
+              const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
+              Flexible(
+                  child: SelectableText.rich(
+                    TextSpan(
+                      text: entry.location,
+                      style: TextStyle(
+                          color: AppColors.getTheme().textColor,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14
+                      ),
+                    ),
+                  )
               )
-            )
-          ],
-        ));
+            ],
+          ));
+        }
         final timeStart = DateTime.fromMillisecondsSinceEpoch(entry.startEpoch);
         list.add(const SizedBox(height: 4));
         list.add(Row(
@@ -1815,7 +1838,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Flexible(
+            /*Flexible(
               child: Text(
                 AppStrings.getLanguagePack().popup_case4_SubjectStartTime,
                 textAlign: TextAlign.center,
@@ -1825,6 +1848,13 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
                     fontSize: 14.5
                 ),
               ),
+            ),*/
+            Flexible(
+                child: Icon(
+                  Icons.access_time_filled_rounded,
+                  color: AppColors.getTheme().onPrimaryContainer,
+                  size: 24,
+                )
             ),
             const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
             Flexible(
@@ -1904,7 +1934,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Flexible(
+            /*Flexible(
               child: Text(
                 AppStrings.getLanguagePack().popup_case4_5_SubjectCode,
                 textAlign: TextAlign.center,
@@ -1914,6 +1944,13 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
                     fontSize: 14.5
                 ),
               ),
+            ),*/
+            Flexible(
+                child: Icon(
+                  Icons.tag_rounded,
+                  color: AppColors.getTheme().onPrimaryContainer,
+                  size: 24,
+                )
             ),
             const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
             Flexible(
@@ -1936,7 +1973,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Flexible(
+            /*Flexible(
               child: Text(
                 AppStrings.getLanguagePack().popup_case4_5_SubjectLocation,
                 textAlign: TextAlign.center,
@@ -1946,6 +1983,13 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
                     fontSize: 14.5
                 ),
               ),
+            ),*/
+            Flexible(
+                child: Icon(
+                  Icons.location_on_rounded,
+                  color: AppColors.getTheme().onPrimaryContainer,
+                  size: 24,
+                )
             ),
             const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
             Flexible(
@@ -1969,7 +2013,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Flexible(
+            /*Flexible(
               child: Text(
                 AppStrings.getLanguagePack().popup_case5_ExamStartTime,
                 textAlign: TextAlign.center,
@@ -1979,6 +2023,13 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
                     fontSize: 14.5
                 ),
               ),
+            ),*/
+            Flexible(
+                child: Icon(
+                  Icons.access_time_filled_rounded,
+                  color: AppColors.getTheme().onPrimaryContainer,
+                  size: 24,
+                )
             ),
             const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
             Flexible(
