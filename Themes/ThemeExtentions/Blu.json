@@ -1,0 +1,23 @@
+{
+  "paletteName":"Blu",
+  "primary":4282358951,
+  "onPrimary":4278190080,
+  "onPrimaryContainer":4281425250,
+  "secondary":4281697679,
+  "onSecondary":4278190080,
+  "onSecondaryContainer":4280698956,
+  "grade1":4280245866,
+  "grade2":4280245866,
+  "grade3":4280245866,
+  "grade4":4280245866,
+  "grade5":4280245866,
+  "navbarNavibarColor":4290304991,
+  "navbarStatusBarColor":4290304991,
+  "rootBackground":4290304991,
+  "textColor":4278190080,
+  "buttonEnabled":4288796379,
+  "buttonDisabled":4289908690,
+  "errorRed":4290838528,
+  "currentClassGreen":4278223139,
+  "basedOnDark":false
+}

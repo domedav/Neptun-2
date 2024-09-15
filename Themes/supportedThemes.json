@@ -14,6 +14,11 @@
     "themeName":"Forest",
     "themeURL":"https://raw.githubusercontent.com/domedav/Neptun-2/main/Themes/ThemeExtentions/Forest.json",
     "themeAccent":4285567827
+   },
+   {
+     "themeName":"Blu",
+     "themeURL":"https://raw.githubusercontent.com/domedav/Neptun-2/main/Themes/ThemeExtentions/Blu.json",
+     "themeAccent":4282358951
    }
  ] 
 }

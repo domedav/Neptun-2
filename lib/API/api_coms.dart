@@ -542,13 +542,18 @@ import '../storage.dart';
 
   class MailRequest{
     static Future<List<int>> getUnreadMessagesAndAllMessages()async{
-      List<int> list = [];
-      final json = await _getMailJson(0);
-      var result = conv.json.decode(json)['NewMessagesNumber'];
-      list.add(result);
-      result = conv.json.decode(json)['TotalRowCount'];
-      list.add(result);
-      return list;
+      try{
+        List<int> list = [];
+        final json = await _getMailJson(0);
+        var result = conv.json.decode(json)['NewMessagesNumber'];
+        list.add(result);
+        result = conv.json.decode(json)['TotalRowCount'];
+        list.add(result);
+        return list;
+      }
+      catch(_){
+        return [0, 0, 0];
+      }
     }
     static Future<List<MailEntry>?> getMails(int page) async{
       if(storage.DataCache.getIsDemoAccount()!){

@@ -23,7 +23,7 @@ class PaymentElementWidget extends StatelessWidget{
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
       decoration: isMissed ? BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(20.0)),
-        color: AppColors.getTheme().rootBackground,
+        //color: AppColors.getTheme().rootBackground,
         border: Border.all(
           color: AppColors.getTheme().errorRed,
           width: 1
@@ -37,11 +37,8 @@ class PaymentElementWidget extends StatelessWidget{
             style: TextStyle(
               color: AppColors.getTheme().textColor,
               fontWeight: FontWeight.w600,
-              fontSize: 15.0,
+              fontSize: 14.0,
             ),
-          ),
-          const SizedBox(
-            height: 10,
           ),
           Row(
             mainAxisSize: MainAxisSize.max,
@@ -82,9 +79,9 @@ class PaymentElementWidget extends StatelessWidget{
                     Text(
                       dueDate.year.toString(),
                       style: TextStyle(
-                        color: AppColors.getTheme().textColor.withOpacity(0.4),
+                        color: AppColors.getTheme().textColor.withOpacity(0.7),
                         fontWeight: FontWeight.w400,
-                        fontSize: 11.0,
+                        fontSize: 12.0,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -105,9 +102,9 @@ class PaymentElementWidget extends StatelessWidget{
           !isNonTimed ? Text(
             isMissed ? AppStrings.getStringWithParams(AppStrings.getLanguagePack().paymentPage_PaymentMissedTime, [-(Duration(milliseconds: dueDateMs - nowMs).inDays + 1)]) : AppStrings.getStringWithParams(AppStrings.getLanguagePack().paymentPage_PaymentDeadlineTime, [Duration(milliseconds: dueDateMs - nowMs).inDays + 1]),
             style: TextStyle(
-              color: AppColors.getTheme().textColor.withOpacity(0.4),
-              fontWeight: FontWeight.w400,
-              fontSize: isMissed ? 14.0 : 11.0,
+              color: AppColors.getTheme().textColor.withOpacity(0.5),
+              fontWeight: FontWeight.w600,
+              fontSize: 12,
             ),
             textAlign: TextAlign.center,
           ) : const SizedBox(),

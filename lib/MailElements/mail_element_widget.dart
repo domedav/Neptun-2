@@ -67,72 +67,57 @@ class MailElementWidget extends StatelessWidget{
                   fontFamily: "Noto Color Emoji"
               ),
             ),
-            const Padding(padding: EdgeInsets.symmetric(horizontal: 12)),
+            const Padding(padding: EdgeInsets.symmetric(horizontal: 6)),
             Expanded(
               flex: 10,
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Flexible(
-                        flex: 2,
-                        child: Text(
-                          '$subject',
-                          style: TextStyle(
-                            color: AppColors.getTheme().onPrimaryContainer,
-                            fontWeight: !isRead ? FontWeight.w800 : FontWeight.w500,
-                            fontSize: isRead ? 15.0 : 18.0,
-                          ),
-                          textAlign: TextAlign.start,
-                        ),
-                      )
-                    ],
+                  Text(
+                    '$subject',
+                    style: TextStyle(
+                      color: AppColors.getTheme().onPrimaryContainer,
+                      fontWeight: !isRead ? FontWeight.w800 : FontWeight.w500,
+                      fontSize: isRead ? 15.0 : 18.0,
+                    ),
+                    textAlign: TextAlign.start,
                   ),
                   Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      Icon(
+                        Icons.person_rounded,
+                        color: AppColors.getTheme().textColor,
+                        size: 20,
+                      ),
+                      SizedBox(width: 4),
                       Flexible(
-                        flex: 2,
                         child: Text(
-                          AppStrings.getStringWithParams(AppStrings.getLanguagePack().messagePage_SentBy, [sender]),
+                          sender,
                           style: TextStyle(
                             color: AppColors.getTheme().textColor,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 13.0,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12.0,
                           ),
                           textAlign: TextAlign.start,
                         ),
-                      )
+                      ),
                     ],
                   ),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Flexible(
-                        flex: 2,
-                        child: Text(
-                          '${(parts.join().toString()).replaceAll('\n', ' ').replaceAll('\t', ' ')}...',
-                          style: TextStyle(
-                            color: AppColors.getTheme().textColor,
-                            fontWeight: FontWeight.w300,
-                            fontSize: 13.0,
-                          ),
-                          textAlign: TextAlign.start,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
-                      )
-                    ],
+                  Text(
+                    '${(parts.join().toString()).replaceAll('\n', ' ').replaceAll('\t', ' ')}...',
+                    style: TextStyle(
+                      color: AppColors.getTheme().textColor,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 10.0,
+                    ),
+                    textAlign: TextAlign.start,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
                 ],
               ),

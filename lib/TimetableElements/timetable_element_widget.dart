@@ -113,7 +113,7 @@ class TimetableElementWidget extends StatelessWidget{
               ),
               // Center
               Expanded(
-                flex: 2,
+                flex: 3,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.max,
@@ -144,7 +144,7 @@ class TimetableElementWidget extends StatelessWidget{
 
               // Rightmost position
               Expanded(
-                flex: 1,
+                flex: 2,
                 child: isCurrent ? Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -153,17 +153,19 @@ class TimetableElementWidget extends StatelessWidget{
                     Icon(
                       Icons.timelapse_rounded,
                       color: AppColors.getTheme().currentClassGreen,
-                      size: 24,
+                      size: 20,
                     ),
                     const SizedBox(width: 4),
-                    Text(
-                      '${(Duration(milliseconds: entry.endEpoch - DateTime.now().millisecondsSinceEpoch)).inHours.remainder(60).toString().padLeft(2, '0')}:${((Duration(milliseconds: entry.endEpoch - DateTime.now().millisecondsSinceEpoch)).inMinutes.remainder(60)).toString().padLeft(2, '0')}',
-                      //Duration(milliseconds: entry.endEpoch - DateTime.now().millisecondsSinceEpoch).inMinutes.toString().padLeft(2, '0'),
-                      textAlign: TextAlign.right,
-                      style: TextStyle(
-                        color: AppColors.getTheme().currentClassGreen,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14.0,
+                    Flexible(
+                      child: Text(
+                        '${(Duration(milliseconds: entry.endEpoch - DateTime.now().millisecondsSinceEpoch)).inHours.remainder(60).toString().padLeft(2, '0')}:${((Duration(milliseconds: entry.endEpoch - DateTime.now().millisecondsSinceEpoch)).inMinutes.remainder(60)).toString().padLeft(2, '0')}',
+                        //Duration(milliseconds: entry.endEpoch - DateTime.now().millisecondsSinceEpoch).inMinutes.toString().padLeft(2, '0'),
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                          color: AppColors.getTheme().currentClassGreen,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14.0,
+                        ),
                       ),
                     ),
                   ],

@@ -190,17 +190,18 @@ class PeriodsElementWidget extends StatelessWidget{
             style: TextStyle(
               color: expired ? AppColors.getTheme().errorRed: AppColors.getTheme().textColor,
               fontWeight: FontWeight.w600,
-              fontSize: 17.0,
+              fontSize: 14.0,
             ),
           ),
           const SizedBox(
-            height: 10,
+            height: 5,
           ),
           isActive ? Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               getIconFromType(periodType) ?? const SizedBox(),
+              SizedBox(width: 5),
               Expanded(
                   flex: 2,
                   child: Column(
@@ -210,9 +211,9 @@ class PeriodsElementWidget extends StatelessWidget{
                       Text(
                         formattedStartTimeYear,
                         style: TextStyle(
-                          color: AppColors.getTheme().textColor.withOpacity(0.55),
+                          color: AppColors.getTheme().textColor.withOpacity(0.7),
                           fontWeight: FontWeight.w400,
-                          fontSize: 11.0,
+                          fontSize: 12.0,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -238,9 +239,9 @@ class PeriodsElementWidget extends StatelessWidget{
                     Text(
                       formattedEndTimeYear,
                       style: TextStyle(
-                        color: AppColors.getTheme().textColor.withOpacity(0.55),
+                        color: AppColors.getTheme().textColor.withOpacity(0.7),
                         fontWeight: FontWeight.w400,
-                        fontSize: 11.0,
+                        fontSize: 12.0,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -274,9 +275,9 @@ class PeriodsElementWidget extends StatelessWidget{
                       child: Text(
                         expired ? AppStrings.getLanguagePack().periodPage_Expired : AppStrings.getLanguagePack().periodPage_Starts,
                         style: TextStyle(
-                          color: expired ? AppColors.getTheme().errorRed : AppColors.getTheme().textColor.withOpacity(0.6),
-                          fontWeight: FontWeight.normal,
-                          fontSize: 14.0,
+                          color: expired ? AppColors.getTheme().errorRed : AppColors.getTheme().textColor.withOpacity(0.7),
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12.0,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -285,9 +286,9 @@ class PeriodsElementWidget extends StatelessWidget{
                       child: Text(
                         expired ? '$formattedEndTimeYear $formattedEndTime' : '$formattedStartTimeYear $formattedStartTime',
                         style: TextStyle(
-                          color: expired ? AppColors.getTheme().errorRed : AppColors.getTheme().textColor.withOpacity(0.6),
+                          color: expired ? AppColors.getTheme().errorRed : AppColors.getTheme().textColor.withOpacity(0.7),
                           fontWeight: FontWeight.w600,
-                          fontSize: 14.0,
+                          fontSize: 12.0,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -300,9 +301,9 @@ class PeriodsElementWidget extends StatelessWidget{
           Text(
             expired ? AppStrings.getStringWithParams(AppStrings.getLanguagePack().periodPage_ExpiredDays, [-(Duration(milliseconds: endTime - now).inDays + 1) * (Duration(milliseconds: endTime - now).inDays == 0 ? -1 : 1)]) : !isActive ? AppStrings.getStringWithParams(AppStrings.getLanguagePack().periodPage_StartDays, [Duration(milliseconds: startTime - now).inDays + 1]) : AppStrings.getStringWithParams(AppStrings.getLanguagePack().periodPage_ActiveDays, [Duration(milliseconds: endTime - now).inDays + 1]),
             style: TextStyle(
-              color: AppColors.getTheme().textColor.withOpacity(0.4),
-              fontWeight: FontWeight.w400,
-              fontSize: 11.0,
+              color: AppColors.getTheme().textColor.withOpacity(0.5),
+              fontWeight: FontWeight.w600,
+              fontSize: 12.0,
             ),
             textAlign: TextAlign.center,
           ),
