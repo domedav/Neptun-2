@@ -246,14 +246,13 @@ import '../storage.dart';
       }
       return list;
     }
-  
+
     static Future<String> makeCalendarRequest(String calendarJson) async{
       if(storage.DataCache.getIsDemoAccount()!){
-        return '';
+        return '{}';
       }
       final url = Uri.parse(storage.DataCache.getInstituteUrl()! + URLs.CALENDAR_URL);
       final request = await _APIRequest.postRequest(url, calendarJson);
-      //debug.log(request);
       return request;
     }
   
@@ -434,7 +433,7 @@ import '../storage.dart';
   }
   
   class CashinRequest{
-    static Future<List<CashinEntry>> getAllCashins() async{
+    static Future<List<CashinEntry>?> getAllCashins() async{
       if(storage.DataCache.getIsDemoAccount()!){
         final now = DateTime.now();
         return <CashinEntry>[
@@ -465,16 +464,23 @@ import '../storage.dart';
       if(storage.DataCache.getIsDemoAccount()!){
         return <CashinEntry>[CashinEntry(87878, 999999999, 'DEMO befizetés', 0, 'teljesítve')];
       }
-      List<CashinEntry> ls = List.empty(growable: true);
-      final List<dynamic> cashins = conv.json.decode(json)['CashinDataRows'];
-      for (var cashin in cashins){
-        ls.add(CashinEntry(
-            cashin['amount'],
-            int.parse(cashin['deadline'] == null ? '0' : cashin['deadline'].toString().replaceAll('/Date(', '').replaceAll(')/', '')),
-            cashin['appellation'],
-            cashin['ID'],
-            cashin['status_name']
-        ));
+      List<CashinEntry> ls = [];
+      try {
+        final List<dynamic> cashins = conv.json.decode(json)['CashinDataRows'];
+        for (var cashin in cashins) {
+          ls.add(CashinEntry(
+              cashin['amount'],
+              int.parse(cashin['deadline'] == null ? '0' : cashin['deadline']
+                  .toString().replaceAll('/Date(', '')
+                  .replaceAll(')/', '')),
+              cashin['appellation'],
+              cashin['ID'],
+              cashin['status_name']
+          ));
+        }
+      }
+      catch (_){
+        return [];
       }
       return ls;
     }
@@ -1130,18 +1136,32 @@ import '../storage.dart';
             if (match == null) {
               continue;
             }
-            final newText = match.group(1)!;
+            String newText = match.group(1)!;
 
-            final isMailTo = newText.contains('@') &&
-                !(newText.contains('https://') || newText.contains('http://'));
+            if(!newText.contains('@') || !newText.contains('https://') || !newText.contains('http://')){
+              final htmlLink3 = RegExp(r'href="(.*?)"');
+              final match = htmlLink3.firstMatch(matches[i]);
+              if (match == null) {
+                break;
+              }
+              final url = match.group(1)!;
+              spans.add(ClickableTextSpan.getNewClickableSpan(
+                  ClickableTextSpan.getNewOpenLinkCallback(url), newText,
+                  ClickableTextSpan.getStockStyle()));
+            }
+            else{
+              final isMailTo = newText.contains('@') &&
+                  !(newText.contains('https://') || newText.contains('http://'));
 
-            spans.add(ClickableTextSpan.getNewClickableSpan(
-                ClickableTextSpan.getNewOpenLinkCallback(
-                    isMailTo ? 'mailto:$newText' : newText.contains('www') && !newText.contains('http') ? 'https://$newText' : newText), newText,
-                ClickableTextSpan.getStockStyle()));
-          } else {
+              spans.add(ClickableTextSpan.getNewClickableSpan(
+                  ClickableTextSpan.getNewOpenLinkCallback(
+                      isMailTo ? 'mailto:$newText' : newText.contains('www.') && !newText.contains('http:') ? 'https://$newText' : newText), newText,
+                  ClickableTextSpan.getStockStyle()));
+            }
+          }
+          else {
             // Handle URLs
-            final url = matches[i];
+            String url = matches[i];
             spans.add(ClickableTextSpan.getNewClickableSpan(
                 ClickableTextSpan.getNewOpenLinkCallback(url), url,
                 ClickableTextSpan.getStockStyle()));

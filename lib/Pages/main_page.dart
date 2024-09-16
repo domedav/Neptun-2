@@ -1588,6 +1588,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     }
     storage.DataCache.setHasCachedCalendar(1);
   }
+
   Future<void> fetchMarkbook() async{
     bool hasCachedMarkbook= storage.DataCache.getHasCachedMarkbook() ?? false;
     final cacheTime = await storage.getString('MarkbookCacheTime');
@@ -1608,11 +1609,11 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
     //otherwise, just fetch again
     final request = await api.MarkbookRequest.getMarkbookSubjects();
-    if(request != null && request.isEmpty){
+    if(request == null || request.isEmpty){
       markbookEntries = [];
       return;
     }
-    markbookEntries = request!;
+    markbookEntries = request;
 
     storage.saveInt('CachedMarkbookLength', markbookEntries.length);
     //cache calendar
@@ -1645,7 +1646,7 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
     //otherwise, just fetch again
     final request = await api.CashinRequest.getAllCashins();
-    if(request.isEmpty){
+    if(request == null || request.isEmpty){
       return;
     }
     paymentsEntries = request;
@@ -1682,10 +1683,10 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
     //otherwise, just fetch again
     final request = await api.PeriodsRequest.getPeriods();
-    if(request != null && request.isEmpty){
+    if(request == null || request.isEmpty){
       return;
     }
-    periodEntries = request!;
+    periodEntries = request;
 
     storage.saveInt('CachedPeriodsLength', periodEntries.length);
     //cache calendar
@@ -1721,10 +1722,10 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     }
 
     final request = await api.MailRequest.getMails(currentMailPage);
-    if(request != null && request.isEmpty){
+    if(request == null || request.isEmpty){
       return;
     }
-    mailEntries = request!;
+    mailEntries = request;
     //debug.log(request!.toString());
 
     if(force){
@@ -1754,8 +1755,15 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
   bool keepHomeButtonHidden = true;
 
+  bool _noRefreshCalendar = true;
+
   Future<void> onCalendarRefresh(bool isPaging) async{
-    if(!storage.DataCache.getHasNetwork() || _calendarDebounce){
+    if(_noRefreshCalendar){
+      Future.delayed(Duration(seconds: 2), (){
+        _noRefreshCalendar = false;
+      });
+    }
+    if(!storage.DataCache.getHasNetwork() || _calendarDebounce || _noRefreshCalendar){
       return;
     }
     keepHomeButtonHidden = true;
@@ -1783,8 +1791,14 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   }
 
   bool _markbookDebounce = false;
+  bool _noRefreshMarkbook = true;
   Future<void> onMarkbookRefresh() async{
-    if(!storage.DataCache.getHasNetwork() || _markbookDebounce){
+    if(_noRefreshMarkbook){
+      Future.delayed(Duration(seconds: 2), (){
+        _noRefreshMarkbook = false;
+      });
+    }
+    if(!storage.DataCache.getHasNetwork() || _markbookDebounce || _noRefreshMarkbook){
       return;
     }
     _markbookDebounce = true;
@@ -1796,8 +1810,15 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   }
 
   bool _paymentsDebounce = false;
+  bool _noRefreshPayments = true;
+
   Future<void> onPaymentsRefresh() async{
-    if(!storage.DataCache.getHasNetwork() || _paymentsDebounce){
+    if(_noRefreshPayments){
+      Future.delayed(Duration(seconds: 2), (){
+        _noRefreshPayments = false;
+      });
+    }
+    if(!storage.DataCache.getHasNetwork() || _paymentsDebounce || _noRefreshPayments){
       return;
     }
     _paymentsDebounce = true;
@@ -1809,8 +1830,15 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   }
 
   bool _periodsDebounce = false;
+  bool _noRefreshPeriods = true;
+
   Future<void> onPeriodsRefresh()async{
-    if(!storage.DataCache.getHasNetwork() || _periodsDebounce){
+    if(_noRefreshPeriods){
+      Future.delayed(Duration(seconds: 2), (){
+        _noRefreshPeriods = false;
+      });
+    }
+    if(!storage.DataCache.getHasNetwork() || _periodsDebounce || _noRefreshPeriods){
       return;
     }
     _periodsDebounce = true;
@@ -1822,8 +1850,15 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   }
 
   bool _mailsDebounce = false;
+  bool _noRefreshMail = true;
+
   Future<void> onMailRefresh()async{
-    if(!storage.DataCache.getHasNetwork() || _mailsDebounce){
+    if(_noRefreshMail){
+      Future.delayed(Duration(seconds: 2), (){
+        _noRefreshMail = false;
+      });
+    }
+    if(!storage.DataCache.getHasNetwork() || _mailsDebounce || _noRefreshMail){
       return;
     }
     _mailsDebounce = true;

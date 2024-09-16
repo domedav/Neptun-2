@@ -23,6 +23,10 @@ class TimetableElementWidget extends StatelessWidget{
   late final bool isExam;
   final bool isCurrent;
 
+  late final DateTime endDateNormalized;
+
+  late final bool currentOverride;
+
   TimetableElementWidget({super.key, required this.entry, required this.position, required this.isCurrent}){
     title = entry.title;
     location = entry.location;
@@ -55,7 +59,16 @@ class TimetableElementWidget extends StatelessWidget{
     minute = date.minute.toString().padLeft(2, '0');
     displayEndTime =  "$hour:$minute";
 
+    endDateNormalized = date;
+
     isExam = entry.isExam;
+
+    if(endDateNormalized.millisecondsSinceEpoch < DateTime.now().millisecondsSinceEpoch){
+      currentOverride = false;
+    }
+    else{
+      currentOverride = isCurrent;
+    }
   }
 
   final api.CalendarEntry entry;
@@ -76,9 +89,9 @@ class TimetableElementWidget extends StatelessWidget{
         PopupWidgetHandler.doPopup(context);
       },
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 15, vertical: isCurrent ? 10 : 25),
-        padding: isExam || isCurrent ? const EdgeInsets.symmetric(vertical: 20, horizontal: 15) : null,
-        decoration: isExam || isCurrent ? BoxDecoration(
+        margin: EdgeInsets.symmetric(horizontal: 15, vertical: currentOverride ? 10 : 25),
+        padding: isExam || currentOverride ? const EdgeInsets.symmetric(vertical: 20, horizontal: 15) : null,
+        decoration: isExam || currentOverride ? BoxDecoration(
           border: Border.all(
             color: isExam ? AppColors.getTheme().errorRed.withOpacity(.5) : AppColors.getTheme().currentClassGreen.withOpacity(.5),
             width: .75
@@ -100,7 +113,7 @@ class TimetableElementWidget extends StatelessWidget{
                   "$position.",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: isCurrent ? AppColors.getTheme().currentClassGreen : AppColors.getTheme().onPrimaryContainer,
+                    color: currentOverride ? AppColors.getTheme().currentClassGreen : AppColors.getTheme().onPrimaryContainer,
                     fontWeight: FontWeight.w900,
                     fontSize: 26.0,
                   ),
@@ -145,7 +158,7 @@ class TimetableElementWidget extends StatelessWidget{
               // Rightmost position
               Expanded(
                 flex: 2,
-                child: isCurrent ? Row(
+                child: currentOverride ? Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.end,
                   mainAxisSize: MainAxisSize.min,
@@ -158,7 +171,7 @@ class TimetableElementWidget extends StatelessWidget{
                     const SizedBox(width: 4),
                     Flexible(
                       child: Text(
-                        '${(Duration(milliseconds: entry.endEpoch - DateTime.now().millisecondsSinceEpoch)).inHours.remainder(60).toString().padLeft(2, '0')}:${((Duration(milliseconds: entry.endEpoch - DateTime.now().millisecondsSinceEpoch)).inMinutes.remainder(60)).toString().padLeft(2, '0')}',
+                        '${(Duration(milliseconds: endDateNormalized.millisecondsSinceEpoch - DateTime.now().millisecondsSinceEpoch)).inHours.remainder(60).toString().padLeft(2, '0')}:${((Duration(milliseconds: endDateNormalized.millisecondsSinceEpoch - DateTime.now().millisecondsSinceEpoch)).inMinutes.remainder(60)).toString().padLeft(2, '0')}',
                         //Duration(milliseconds: entry.endEpoch - DateTime.now().millisecondsSinceEpoch).inMinutes.toString().padLeft(2, '0'),
                         textAlign: TextAlign.right,
                         style: TextStyle(

@@ -53,7 +53,7 @@ class AppColors{
         currentClassGreen: Color.fromRGBO(0x46, 0x97, 0x32, 1.0),
         basedOnDark: false
     ));
-    log(AppPalette.toJson(_appColors[0]).toString());
+    //log(AppPalette.toJson(_appColors[0]).toString());
     /*
       primary: Color.fromRGBO(0x6C, 0x8F, 0x96, 1.0),
       onPrimary: Color.fromRGBO(0x00, 0x00, 0x00, 1.0),
