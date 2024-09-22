@@ -68,6 +68,8 @@ class DataCache{
     _hasCachedPeriods = false;
     _firstweekOfSemesterEpoch = 0;
     _isDemoAccount = false;
+    _icsLocationPath = '';
+    _icsIsUploaded = false;
     setNeedFamilyFriendlyComments(_persistentSetting_familyFriendlyLoadingComments! ? 1 : 0);
     setNeedExamNotifications(_persistentSetting_showExamNotifications! ? 1 : 0);
     setNeedClassNotifications(_persistentSetting_showClassNotifications! ? 1 : 0);
@@ -89,9 +91,9 @@ class DataCache{
 
   static final DataCache _instance = DataCache();
 
-  late String? _username;
-  late String? _password;
-  late String? _instituteUrl;
+  late String? _username = '';
+  late String? _password = '';
+  late String? _instituteUrl = '';
   late bool _hasNetwork = false;
   late bool? _hasLogin = false;
   late bool? _hasCachedCalendar = false;
@@ -121,11 +123,14 @@ class DataCache{
 
   late bool? _persistentAnalytics_enrolledInSendingAnaliticsData = true;
 
-  late List<String> _languageJsonSupportedLangs;
-  late List<String> _languageJsonBatch;
+  late List<String> _languageJsonSupportedLangs = [];
+  late List<String> _languageJsonBatch = [];
 
-  late String? _themePreference;
-  late List<String> _themesJsonBatch;
+  late String? _themePreference = '';
+  late List<String> _themesJsonBatch = [];
+
+  late String? _icsLocationPath = '';
+  late bool? _icsIsUploaded = false;
 
   static Future<void> loadData() async{return _instance._loadData();}
 
@@ -234,6 +239,11 @@ class DataCache{
 
     _languageJsonSupportedLangs = await getStringList('LANGUAGE_DownloadedSupportedLangs') ?? [];
     _languageJsonBatch = await getStringList('LANGUAGE_DownloadedLanguagesJsonBatch') ?? [];
+
+    _icsLocationPath = await getString('ICS_FileLocation') ?? '';
+
+    tmp = await getInt('ICS_HasIcsUpload');
+    _icsIsUploaded = tmp != null && tmp != 0;
   }
 
   static Future<void> loadThemeOnly()async{
@@ -421,5 +431,17 @@ class DataCache{
   static Future<void> setAllDownloadedAppThemes(List<String>? value)async{
     _instance._themesJsonBatch = value ?? [];
     await saveStringList('THEME_ThemesJsonBatch', value ?? []);
+  }
+
+  static String? getICSFileLocation(){return _instance._icsLocationPath;}
+  static Future<void> setICSFileLocation(String? value)async{
+    _instance._icsLocationPath = value ?? '';
+    await saveString('ICS_FileLocation', value ?? '');
+  }
+
+  static bool? getHasICSFile(){return _instance._icsIsUploaded;}
+  static Future<void> setHasICSFile(bool? value)async{
+    _instance._icsIsUploaded = value ?? false;
+    await saveInt('ICS_HasIcsUpload', value != null && value != 0 ? 1 : 0);
   }
 }

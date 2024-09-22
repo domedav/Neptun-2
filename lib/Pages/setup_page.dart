@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:neptun2/API/ics_calendar.dart';
 import 'package:neptun2/colors.dart';
 import 'package:neptun2/haptics.dart';
 import 'package:neptun2/local_file_actions.dart';
@@ -1830,7 +1831,42 @@ class _SetupPageURLCalendarState extends State<SetupPageCalendarLogin>{
       return;
     }
 
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const main_page.HomePage()));
+    ICSCalendar.getFirstEventStartMs().whenComplete((){
+      storage.DataCache.setUsername('');
+      storage.DataCache.setPassword('');
+      storage.DataCache.setInstituteUrl('');
+      storage.DataCache.setHasLogin(1);
+      // proceed logic
+      Navigator.popUntil(context, (route) => route.willHandlePopInternally);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const main_page.HomePage()));
+    });
+
+    /*IcsImportHelper.streamIcsFileContent(ICSCalendar.icsStream).then((status){
+      if(!status){
+        setState(() {
+          _canProceed = false;
+          _showSnackbar(AppStrings.getLanguagePack().calendarLogin_setupPage_InvalidFile, 5);
+        });
+        return; // ics has issue
+      }
+      try{
+        final first = ICSCalendar.getFirstEventStartMs();
+        ICSCalendar.clearAll(first);
+        storage.DataCache.setUsername('');
+        storage.DataCache.setPassword('');
+        storage.DataCache.setInstituteUrl('');
+        storage.DataCache.setHasLogin(1);
+        // proceed logic
+        Navigator.popUntil(context, (route) => route.willHandlePopInternally);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const main_page.HomePage()));
+      }
+      catch (_){
+        setState(() {
+          _canProceed = false;
+          _showSnackbar(AppStrings.getLanguagePack().calendarLogin_setupPage_InvalidFile, 5);
+        });
+      }
+    });*/
   }
 
   @override
@@ -1852,6 +1888,10 @@ class _SetupPageURLCalendarState extends State<SetupPageCalendarLogin>{
     });
 
     FlutterNativeSplash.remove();
+
+    setState(() {
+      _canProceed = storage.DataCache.getHasICSFile() ?? false;
+    });
   }
 
   String _snackbarMessage = "";
@@ -1866,6 +1906,16 @@ class _SetupPageURLCalendarState extends State<SetupPageCalendarLogin>{
       _shouldShowSnackbar = true;
       _displayDuration = Duration(seconds: displayDurationSec);
       _snackbarMessage = text;
+    });
+  }
+
+  void _onICSImported(bool status){
+    if(!status){
+      _showSnackbar(AppStrings.getLanguagePack().calendarLogin_setupPage_InvalidFile, 5);
+      return;
+    }
+    setState(() {
+      _canProceed = true;
     });
   }
 
@@ -1993,7 +2043,8 @@ class _SetupPageURLCalendarState extends State<SetupPageCalendarLogin>{
                               SizedBox(height: 12),
                               FilledButton(
                                 onPressed: () {
-                                  IcsImportHelper.onCalendarUploadAction(); //toast ha szar ics
+                                  AppHaptics.lightImpact();
+                                  IcsImportHelper.onCalendarUploadAction(_onICSImported); //toast ha szar ics
                                 },
                                 child: Container(
                                   child: Row(
@@ -2072,7 +2123,7 @@ class _SetupPageURLCalendarState extends State<SetupPageCalendarLogin>{
                                     AppHaptics.lightImpact();
                                     proceedToLogin();
                                   } : (){
-                                    _showSnackbar(AppStrings.getLanguagePack().urlLogin_setupPage_InvalidUrl, 5);
+                                    _showSnackbar(AppStrings.getLanguagePack().calendarLogin_setupPage_InvalidFile, 5);
                                     AppHaptics.attentionLightImpact();
                                   },
                                   style: ButtonStyle(

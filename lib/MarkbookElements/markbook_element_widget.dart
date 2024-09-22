@@ -71,16 +71,19 @@ class MarkbookElementWidget extends StatelessWidget{
                   ),
                 ),
               // Center
-              Container(
-                margin: EdgeInsets.fromLTRB(30, 0, 0, 0),
-                child: Text.rich(
-                  TextSpan(
-                    text: name,
-                    style: TextStyle(
-                        fontSize: 14.0,
-                        decoration: completed ? TextDecoration.lineThrough : TextDecoration.none,
-                        fontWeight: completed ? FontWeight.w400 : FontWeight.w600,
-                        decorationColor: AppColors.getTheme().textColor
+              Expanded(
+                flex: 2,
+                child: Container(
+                  margin: EdgeInsets.fromLTRB(30, 0, 0, 0),
+                  child: Text.rich(
+                    TextSpan(
+                      text: name,
+                      style: TextStyle(
+                          fontSize: 14.0,
+                          decoration: completed ? TextDecoration.lineThrough : TextDecoration.none,
+                          fontWeight: completed ? FontWeight.w400 : FontWeight.w600,
+                          decorationColor: AppColors.getTheme().textColor
+                      ),
                     ),
                   ),
                 ),

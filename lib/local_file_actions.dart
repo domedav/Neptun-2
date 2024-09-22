@@ -1,7 +1,12 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:neptun2/storage.dart';
 import 'package:path_provider/path_provider.dart' as path;
+
+typedef Callback = void Function(bool);
+typedef IcsCallback = void Function(Stream<List<int>>);
+
 class LocalFileActions{
 
   static Future<String> _getTempDirectory()async{
@@ -35,26 +40,45 @@ class LocalFileActions{
     await clone.writeAsBytes(fileBytes, flush: true);
     return clone.path;
   }
+
+  static Future<Stream<List<int>>?> openFileReadStream(String path)async{
+    final file = File(path);
+    if(!await file.exists()){
+      return null;
+    }
+    final stream = file.openRead();
+    return stream;
+  }
 }
 
 class IcsImportHelper{
   static const String ICSFILENAME = 'OfflineUserCalendar.ics';
 
-  static bool onCalendarUploadAction(){
+  static void onCalendarUploadAction(Callback onResult){
     try{
       Future.delayed(Duration.zero, ()async{
         final path = await LocalFileActions.openFilePicker('');
         if(path == null || path.isEmpty){
-          return false;
+          onResult(false);
+          return;
         }
         final clonePath = await LocalFileActions.cloneFileToTemp(path, IcsImportHelper.ICSFILENAME);
-
-        return true;
+        await DataCache.setICSFileLocation(clonePath);
+        await DataCache.setHasICSFile(true);
+        onResult(true);
       });
     }
     catch (_){
+      onResult(false);
+    }
+  }
+
+  static Future<bool> streamIcsFileContent(IcsCallback fileStream)async{
+    final result = await LocalFileActions.openFileReadStream(DataCache.getICSFileLocation() ?? '');
+    if(result == null){
       return false;
     }
-    return false;
+    fileStream(result);
+    return true;
   }
 }

@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
+import 'package:neptun2/API/ics_calendar.dart';
 import 'package:neptun2/MailElements/mail_element_widget.dart';
 import 'package:neptun2/colors.dart';
 import 'package:neptun2/language.dart';
@@ -171,6 +172,10 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
     ));
 
     api.Generic.setupDaylightSavingsTime();
+
+    if(storage.DataCache.getHasICSFile() ?? false){
+      ICSCalendar.initialize();
+    }
 
     Future.delayed(Duration(seconds: 4), ()async{
       await AppUpdate.doUpdateRequest(context, null, null);
@@ -1534,6 +1539,31 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin{
   }
 
   Future<void> fetchCalendar() async{
+    if(storage.DataCache.getHasICSFile() ?? false){
+      final DateTime now = DateTime.now();
+      DateTime previousMonday = now.subtract(Duration(days: now.weekday));
+      if (previousMonday.weekday == 7) {
+        previousMonday = previousMonday.subtract(const Duration(days: 7));
+      }
+      previousMonday = DateTime(previousMonday.year, previousMonday.month, previousMonday.day, 0, 0);
+
+      DateTime nextSunday = previousMonday.add(const Duration(days: 6, hours: 23, minutes: 59));
+      if (nextSunday.weekday == 7) {
+        nextSunday = nextSunday.subtract(const Duration(days: 7));
+      }
+
+      DateTime startOfTargetWeek = previousMonday.add(Duration(days: currentWeekOffset * 7));
+      DateTime endOfTargetWeek = nextSunday.add(Duration(days: currentWeekOffset * 7));
+
+      final epochStart = startOfTargetWeek.millisecondsSinceEpoch;
+      final epochEnd = endOfTargetWeek.millisecondsSinceEpoch;
+
+      calendarEntries.clear();
+      calendarEntries = ICSCalendar.getCalendarInterval(epochStart, epochEnd);
+
+      storage.DataCache.setHasCachedFirstWeekEpoch(1);
+      return;
+    }
     bool hasCachedCalendar = storage.DataCache.getHasCachedCalendar() ?? false;
     final cacheTime = await storage.getString('CalendarCacheTime');
 

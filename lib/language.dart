@@ -201,10 +201,10 @@ class AppStrings{
       rootpage_setupPage_IcsImport: 'Naptár használat',
       rootpage_setupPage_IcsImportDescription: 'Betudod importálni a neptunos órarendedet, viszont ha az órarendedben változás történik, arról te nem fogsz értesülni.\nCsak annak ajánlott, aki semmilyen módon nem tud bejelentkezni!',
       rootpage_setupPage_OtherUsageModes: 'Offline módok',
-      calendarLogin_setupPage_InvalidFile: '😵 Hibás ICS fájl!',
+      calendarLogin_setupPage_InvalidFile: 'Hibás ICS fájl! 😵',
       calendarLogin_setupPage_LoginViaICSHeader: 'Naptár használat',
       calendarLogin_setupPage_WhereIsICSHelper: 'Nem tudod merre találod a neptunos órarended (.ics fájl)?',
-      calendarLogin_setupPage_WhereIsICSHelperDescription: 'Lépj a "Saját adatok" > "Beállítások" > "Naptár export"\nHa pontos heti megjelenítést akarsz akkor, szeptember 1.-jétől (xxxx.09.01), a következő év szeptember 1.-éig (xxxx.09.01) exportáld ki a naptárad!',
+      calendarLogin_setupPage_WhereIsICSHelperDescription: 'Lépj a "Saját adatok" > "Beállítások" > "Naptár export"\nHa pontos heti megjelenítést akarsz akkor, szeptember 1.-jétől (xxxx.09.01), a következő év szeptember 1.-éig (xxxx.09.01) exportáld ki a naptárad! 🤓',
       calendarLogin_setupPage_ImportICSFileHelpText: 'Kattits a gombra, majd válaszd ki a frissen letöltött órarend fájlodat!',
       calendarLogin_setupPage_ImportICSFileButton: 'Feltöltés'
     )});
@@ -387,10 +387,10 @@ class AppStrings{
       rootpage_setupPage_IcsImport: 'Calendar Use',
       rootpage_setupPage_IcsImportDescription: 'You can load your timetable, if it was a calendar, but if the university makes a change with it, you will not have the latest one.\nYou should only use this, if you can not login into the app!',
       rootpage_setupPage_OtherUsageModes: 'Offline modes',
-      calendarLogin_setupPage_InvalidFile: '😵 Bad ICS file!',
+      calendarLogin_setupPage_InvalidFile: 'Bad ICS file! 😵',
       calendarLogin_setupPage_LoginViaICSHeader: 'Calendar use',
       calendarLogin_setupPage_WhereIsICSHelper: 'Dont know where you can find your neptun timetable (.ics file)?',
-      calendarLogin_setupPage_WhereIsICSHelperDescription: 'Go to "My data" > "Settings" > "Calendar export"\nIf you want accurate data, select exporting from september 1. (xxxx.09.01), to the next years september 1. (xxxx.09.01)!',
+      calendarLogin_setupPage_WhereIsICSHelperDescription: 'Go to "My data" > "Settings" > "Calendar export"\nIf you want accurate data, select exporting from september 1. (xxxx.09.01), to the next years september 1. (xxxx.09.01)! 🤓',
       calendarLogin_setupPage_ImportICSFileHelpText: 'Click on the button, then select your freshly downloaded timetable file!',
       calendarLogin_setupPage_ImportICSFileButton: 'Import'
     )});

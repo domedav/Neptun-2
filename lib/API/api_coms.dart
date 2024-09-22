@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:neptun2/API/ics_calendar.dart';
 import 'package:neptun2/Misc/clickable_text_span.dart';
 import 'package:neptun2/colors.dart';
 import 'package:neptun2/language.dart';
@@ -134,6 +135,9 @@ import '../storage.dart';
         AppAnalitics.sendAnaliticsData(AppAnalitics.INFO, 'api_coms.dart => InstitudesRequest.validateLoginCredentials() Info: Login on demo account');
         return true;
       }
+      else if(storage.DataCache.getHasICSFile() ?? false){
+        return true;
+      }
       final request = await _APIRequest.postRequest(Uri.parse(url + URLs.TRAININGS_URL), _APIRequest.getGenericPostData(username, password));
       if(conv.json.decode(request)["ErrorMessage"] != null){
         AppAnalitics.sendAnaliticsData(AppAnalitics.ERROR, 'api_coms.dart => InstitudesRequest.validateLoginCredentials() NeptunError: ${conv.json.decode(request)["ErrorMessage"]}');
@@ -144,7 +148,7 @@ import '../storage.dart';
     static Future<int?> getFirstStudyweek() async{
       final periods = await PeriodsRequest.getPeriods();
       if(storage.DataCache.getIsDemoAccount()!){
-        return DateTime(2023, 9, 1).millisecondsSinceEpoch;
+        return DateTime(2024, 9, 1).millisecondsSinceEpoch;
       }
       final now = DateTime.now().millisecondsSinceEpoch;
       if(periods == null){
@@ -248,7 +252,7 @@ import '../storage.dart';
     }
 
     static Future<String> makeCalendarRequest(String calendarJson) async{
-      if(storage.DataCache.getIsDemoAccount()!){
+      if(storage.DataCache.getIsDemoAccount()! || storage.DataCache.getHasICSFile()!){
         return '{}';
       }
       final url = Uri.parse(storage.DataCache.getInstituteUrl()! + URLs.CALENDAR_URL);
@@ -329,6 +333,9 @@ import '../storage.dart';
           Subject(false, 10, 'DEMO szellemjegy 1', 1, 0, 0),
           Subject(true, 2, 'DEMO szellemjegy 2', 1, 0, 0),
         ];
+      }
+      else if(storage.DataCache.getHasICSFile() ?? false){
+        return [];
       }
       /*List<Term> terms = await _APIRequest._getTermIDs();
       if(terms.isEmpty){
@@ -444,6 +451,9 @@ import '../storage.dart';
           CashinEntry(1000, 0, 'DEMO befizetés 5', 0, 'aktív'),
         ];
       }
+      else if(storage.DataCache.getHasICSFile() ?? false){
+        return [];
+      }
       final username = storage.DataCache.getUsername();
       final password = storage.DataCache.getPassword();
       final json =
@@ -504,6 +514,11 @@ import '../storage.dart';
           PeriodEntry('none', DateTime(now.year, now.month + 1, now.day).millisecondsSinceEpoch, DateTime(now.year + 1, now.month, now.day).millisecondsSinceEpoch, 4),
 
           //PeriodEntry('bejelentkezési időszak', DateTime(2024, 01, 15, 00, 00).millisecondsSinceEpoch, DateTime(2024, 02, 09, 24, 59, 59).millisecondsSinceEpoch, 1),
+        ];
+      }
+      else if(storage.DataCache.getHasICSFile() ?? false){
+        return [
+          PeriodEntry('végleges tárgyjelentkezés', await ICSCalendar.getFirstEventStartMs(), await ICSCalendar.getFirstEventStartMs() + Duration(days: 365).inMilliseconds, 1)
         ];
       }
       final terms = await _APIRequest._getTermIDs();
@@ -572,6 +587,9 @@ import '../storage.dart';
           MailEntry('DEMO', 'Demo Demo Demo\n\n\nDEmo demo', 'DEMO feladó', now.subtract(const Duration(days: 100)).millisecondsSinceEpoch, false, 0),
           MailEntry('DEMO', 'Demo Demo Demo\n\n\nDEmo demo', 'DEMO feladó', now.subtract(const Duration(days: 370)).millisecondsSinceEpoch, true, 0),
         ];
+      }
+      else if(storage.DataCache.getHasICSFile() ?? false){
+        return [];
       }
 
       final request = await _getMailJson(page);

@@ -1832,6 +1832,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
           ));
         }
         final timeStart = DateTime.fromMillisecondsSinceEpoch(entry.startEpoch);
+        final timeEnd = DateTime.fromMillisecondsSinceEpoch(entry.endEpoch);
         list.add(const SizedBox(height: 4));
         list.add(Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -1860,7 +1861,7 @@ class PopupWidget extends State<PopupWidgetState> with TickerProviderStateMixin{
             Flexible(
               child: SelectableText.rich(
                   TextSpan(
-                    text: '${timeStart.hour.toString().padLeft(2, '0')}:${timeStart.minute.toString().padLeft(2, '0')}',
+                    text: '${timeStart.hour.toString().padLeft(2, '0')}:${timeStart.minute.toString().padLeft(2, '0')} - ${timeEnd.hour.toString().padLeft(2, '0')}:${timeEnd.minute.toString().padLeft(2, '0')}',
                     style: TextStyle(
                         color: AppColors.getTheme().textColor,
                         fontWeight: FontWeight.w400,
